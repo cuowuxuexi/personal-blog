@@ -445,7 +445,7 @@
 
 .VPHome .VPHero.has-image .main,
 .VPHome .VPHero .main {
-  order: unset !important;
+  order: 1 !important; /* 文案在前：移动端在上，桌面在左 */
   position: relative;
   z-index: 2;
   flex: 1 1 auto !important;
@@ -489,7 +489,7 @@
 /* 插画：文档流排版，取消绝对定位与负边距 */
 .VPHome .VPHero.has-image .image,
 .VPHome .VPHero .image {
-  order: unset !important;
+  order: 2 !important; /* 插画在后：移动端在下，桌面在右 */
   position: relative !important;
   flex: 0 0 auto !important;
   width: 100% !important;
@@ -539,42 +539,43 @@
   opacity: 0.94;
 }
 
-/* 桌面：左文案 + 右插画（放大 1.5×） */
-@media (min-width: 960px) {
+/* 桌面：强制 左文案 + 右插画（不用 grid-area，避免被默认主题 order/定位打乱） */
+@media (min-width: 768px) {
   .VPHome .VPHero.VPHomeHero {
     padding: 3rem var(--blog-home-pad-x) 1.5rem !important;
   }
 
   .VPHome .VPHero.has-image .container,
   .VPHome .VPHero .container {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 48%);
-    grid-template-areas: "hero-main hero-image";
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     align-items: center !important;
+    justify-content: space-between !important;
     column-gap: 1.5rem;
     row-gap: 0;
-    flex-direction: unset !important;
   }
 
   .VPHome .VPHero.has-image .main,
   .VPHome .VPHero .main {
-    grid-area: hero-main;
+    order: 1 !important;
+    flex: 1 1 48% !important;
     width: auto !important;
     max-width: none !important;
-    flex: unset !important;
   }
 
   .VPHome .VPHero.has-image .image,
   .VPHome .VPHero .image {
-    grid-area: hero-image;
-    width: 100% !important;
-    flex: unset !important;
+    order: 2 !important;
+    flex: 0 1 48% !important;
+    width: 48% !important;
+    max-width: 540px !important;
   }
 
   .VPHome .VPHero .image-src,
   .VPHome .VPHero .image .VPImage {
     width: 100% !important;
-    max-width: 540px !important; /* 360 × 1.5 */
+    max-width: 540px !important;
     margin: 0 0 0 auto !important; /* 靠右 */
   }
 }
