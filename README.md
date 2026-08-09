@@ -24,6 +24,26 @@ pnpm docs:preview
 
 开发服务器默认：`http://localhost:5173/`（端口以终端输出为准）。
 
+## 线上地址
+
+| 入口 | URL |
+| --- | --- |
+| 生产（自定义域） | https://blog.cuowo.win/ |
+| Cloudflare Pages | https://personal-blog-eue.pages.dev/ |
+| 源码 | https://github.com/cuowuxuexi/personal-blog |
+
+自动部署：push `main` 触发 `.github/workflows/deploy-pages.yml`。仓库需配置 Secrets：
+
+- `CLOUDFLARE_API_TOKEN`（密码本 `cxks-agent-ops`）
+- `CLOUDFLARE_ACCOUNT_ID`=`4b4fb1b1a6a89a919d58bfbbf913fd3d`
+
+本机直接发布：
+
+```bash
+pnpm docs:build
+npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
+```
+
 ## 目录结构
 
 ```text
