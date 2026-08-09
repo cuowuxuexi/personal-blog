@@ -1,0 +1,19 @@
+{
+  "name": "personal-blog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "误君在脑海里放烟花 — 投资 / AI与生活 个人博客",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  },
+  "packageManager": "pnpm@9.12.1",
+  "engines": {
+    "node": ">=18"
+  }
+}
