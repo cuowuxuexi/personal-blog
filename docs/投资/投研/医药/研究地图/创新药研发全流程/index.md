@@ -33,6 +33,22 @@ outline: [2, 3]
   <p>一款创新药从“疾病问题”到“商业化生产”，大致经历哪些阶段？每个阶段解决什么问题？哪些地方最容易失败、最需要外部能力介入？</p>
 </section>
 
+<section class="research-section" aria-labelledby="overview">
+  <header class="research-section-head">
+    <div><p>OVERVIEW / 总览图</p><h2 id="overview">总览图</h2></div>
+  </header>
+  <figure class="research-figure">
+    <img
+      src="/images/research/innov-drug-rd-process-map.png"
+      alt="创新药研发全流程知识图谱：从疾病问题到药物上市的主流程、CMC 线与关键概念"
+      width="1024"
+      height="724"
+      loading="lazy"
+    />
+    <figcaption>教学向总览：主流程、贯穿全程的 CMC 线、关键概念。用于建立框架，非正式公司证据。</figcaption>
+  </figure>
+</section>
+
 <section class="research-section" aria-labelledby="stage">
   <header class="research-section-head">
     <div><p>STAGE / 当前研究阶段</p><h2 id="stage">当前研究阶段</h2></div>
@@ -50,17 +66,59 @@ outline: [2, 3]
   <header class="research-section-head">
     <div><p>PROCESS / 流程地图</p><h2 id="process">流程地图</h2></div>
   </header>
+  <p class="process-map-lead">下面按时间顺序走一遍。先看正规说法，再看<strong>大白话</strong>：这一步到底在干什么、为什么不能跳。</p>
   <div class="process-map">
-    <div class="process-map__step"><span>01</span><div><strong>疾病问题 / 未满足需求</strong><p>先确认要解决什么医学问题，而不是先找分子。</p></div></div>
-    <div class="process-map__step"><span>02</span><div><strong>靶点发现与验证</strong><p>找到可能干预疾病的生物学靶点，并验证它是否值得做药。</p></div></div>
-    <div class="process-map__step"><span>03</span><div><strong>Hit → Lead → PCC</strong><p>从苗头化合物，到先导优化，再到候选药物。目标是找到“值得进入临床前”的分子。</p></div></div>
-    <div class="process-map__step"><span>04</span><div><strong>临床前研究</strong><p>在人体试验前证明：药效、安全性、体内行为大致站得住。</p><p class="process-map__note">常见支撑：药理、毒理、PK / ADME。</p></div></div>
-    <div class="process-map__step"><span>05</span><div><strong>IND</strong><p>向监管机构申请进入人体试验。不只是科学故事，也开始触及制造与质量体系。</p></div></div>
-    <div class="process-map__step"><span>06</span><div><strong>临床 I 期</strong><p>重点看安全与剂量，不是大规模疗效证明。</p></div></div>
-    <div class="process-map__step"><span>07</span><div><strong>临床 II 期</strong><p>开始认真看初步疗效与适用人群。</p></div></div>
-    <div class="process-map__step"><span>08</span><div><strong>临床 III 期</strong><p>大样本验证疗效与安全性，是高投入、高失败风险阶段。</p></div></div>
-    <div class="process-map__step"><span>09</span><div><strong>NDA / BLA 与获批</strong><p>监管审查疗效、安全性，也审查 CMC 与生产体系。</p></div></div>
-    <div class="process-map__step"><span>10</span><div><strong>商业化生产与上市后研究</strong><p>稳定、合规、可放大地生产；并持续观察真实世界使用。</p></div></div>
+    <div class="process-map__step"><span>01</span><div>
+      <strong>疾病问题 / 未满足需求</strong>
+      <p>先确认要解决什么医学问题，而不是先找分子。</p>
+      <p class="process-map__plain">大白话：先想清楚病人到底缺什么药，再动手找药。否则后面全是瞎忙。</p>
+    </div></div>
+    <div class="process-map__step"><span>02</span><div>
+      <strong>靶点发现与验证</strong>
+      <p>找到可能干预疾病的生物学靶点，并验证它是否值得做药。</p>
+      <p class="process-map__plain">大白话：疾病链条上找一个“开关”。要证明拨这个开关真的有用，不是看起来相关而已。</p>
+    </div></div>
+    <div class="process-map__step"><span>03</span><div>
+      <strong>Hit → Lead → PCC</strong>
+      <p>从苗头化合物，到先导优化，再到候选药物。目标是找到“值得进入临床前”的分子。</p>
+      <p class="process-map__plain">大白话：先捞一堆可能管用的分子（Hit），再挑几个改得更好用（Lead），最后定一个“值得认真砸钱测”的候选（PCC）。</p>
+    </div></div>
+    <div class="process-map__step"><span>04</span><div>
+      <strong>临床前研究</strong>
+      <p>在人体试验前证明：药效、安全性、体内行为大致站得住。</p>
+      <p class="process-map__note">常见支撑：药理、毒理、PK / ADME。</p>
+      <p class="process-map__plain">大白话：还没给人吃。先在细胞、动物上问三件事：有没有用、毒不毒、进身体后会怎样。</p>
+    </div></div>
+    <div class="process-map__step"><span>05</span><div>
+      <strong>IND</strong>
+      <p>向监管机构申请进入人体试验。不只是科学故事，也开始触及制造与质量体系。</p>
+      <p class="process-map__plain">大白话：向监管交作业：“我们准备在人身上试了。”要交安全证据，也要说清药是怎么做、怎么控质的。</p>
+    </div></div>
+    <div class="process-map__step"><span>06</span><div>
+      <strong>临床 I 期</strong>
+      <p>重点看安全与剂量，不是大规模疗效证明。</p>
+      <p class="process-map__plain">大白话：少数人先试。主问题不是“治好了吗”，而是“人吃得了吗、大概吃多少”。</p>
+    </div></div>
+    <div class="process-map__step"><span>07</span><div>
+      <strong>临床 II 期</strong>
+      <p>开始认真看初步疗效与适用人群。</p>
+      <p class="process-map__plain">大白话：扩大一点人数，开始看“好像有用吗、对哪类人更有用”。还不能算最终定论。</p>
+    </div></div>
+    <div class="process-map__step"><span>08</span><div>
+      <strong>临床 III 期</strong>
+      <p>大样本验证疗效与安全性，是高投入、高失败风险阶段。</p>
+      <p class="process-map__plain">大白话：大考。人多、钱多、时间长。这里翻车最贵，很多项目死在这一步。</p>
+    </div></div>
+    <div class="process-map__step"><span>09</span><div>
+      <strong>NDA / BLA 与获批</strong>
+      <p>监管审查疗效、安全性，也审查 CMC 与生产体系。</p>
+      <p class="process-map__plain">大白话：正式申请上市。监管不只看“有效”，还看你能不能稳定、合规地把药做出来。</p>
+    </div></div>
+    <div class="process-map__step"><span>10</span><div>
+      <strong>商业化生产与上市后研究</strong>
+      <p>稳定、合规、可放大地生产；并持续观察真实世界使用。</p>
+      <p class="process-map__plain">大白话：获批不是终点。要能大批量做出来，还要继续盯真实病人用了之后怎么样。</p>
+    </div></div>
   </div>
 </section>
 

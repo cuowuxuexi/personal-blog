@@ -20,29 +20,57 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    siteTitle: '误君在脑海里放烟花',
+    siteTitle: false,
     logo: undefined,
 
     nav: [
       {
-        text: '投资',
+        text: '投资哲学档',
         items: [
-          { text: '投资首页', link: '/投资/' },
-          { text: '周记', link: '/投资/周记/' },
-          { text: '投研标的', link: '/投资/投研/' },
+          { text: '总览', link: '/投资哲学/' },
+          { text: '认识与证据', link: '/投资哲学/认识与证据/' },
+          { text: '市场与价格', link: '/投资哲学/市场与价格/' },
+          { text: '企业与回报', link: '/投资哲学/企业与回报/' },
+          { text: '个人与研究边界', link: '/投资哲学/个人与研究边界/' },
         ],
       },
-      { text: 'AI与生活', link: '/AI与生活/' },
+      {
+        text: '大问题的问与答',
+        items: [
+          { text: '总览', link: '/大问题/' },
+        ],
+      },
       { text: '关于', link: '/关于' },
     ],
 
     sidebar: {
+      // 站名下拉进入的独立栏目：架构类似投研 hub，彼此不互链
+      '/大问题/': [
+        {
+          text: '大问题的问与答',
+          items: [
+            { text: '总览', link: '/大问题/' },
+          ],
+        },
+      ],
+      '/投资哲学/': [
+        {
+          text: '投资哲学档',
+          items: [
+            { text: '总览', link: '/投资哲学/' },
+            { text: '认识与证据', link: '/投资哲学/认识与证据/' },
+            { text: '市场与价格', link: '/投资哲学/市场与价格/' },
+            { text: '企业与回报', link: '/投资哲学/企业与回报/' },
+            { text: '个人与研究边界', link: '/投资哲学/个人与研究边界/' },
+          ],
+        },
+      ],
       // 投研侧栏：行业为一级入口（默认展开）；其下「研究地图 / 标的档案」默认收起。
       '/投资/投研/': [
         {
-          text: '投资',
+          text: '投研',
           items: [
-            { text: '投资首页', link: '/投资/' },
+            { text: '投研首页', link: '/投资/' },
             { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
@@ -149,9 +177,9 @@ export default defineConfig({
       ],
       '/投资/周记/': [
         {
-          text: '投资',
+          text: '投研',
           items: [
-            { text: '投资首页', link: '/投资/' },
+            { text: '投研首页', link: '/投资/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
@@ -165,9 +193,9 @@ export default defineConfig({
       ],
       '/投资/': [
         {
-          text: '投资',
+          text: '投研',
           items: [
-            { text: '投资首页', link: '/投资/' },
+            { text: '投研首页', link: '/投资/' },
             { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],

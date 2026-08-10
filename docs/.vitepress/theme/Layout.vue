@@ -5,6 +5,7 @@ import { useRoute, inBrowser } from 'vitepress'
 import PostMeta from './components/PostMeta.vue'
 import HomeHeroCta from './components/HomeHeroCta.vue'
 import HomeRecent from './components/HomeRecent.vue'
+import SiteTitleMenu from './components/SiteTitleMenu.vue'
 
 const { Layout } = Theme
 const route = useRoute()
@@ -104,6 +105,9 @@ watch(
 
 <template>
   <Layout>
+    <template #nav-bar-title-before>
+      <SiteTitleMenu />
+    </template>
     <template #doc-before>
       <PostMeta />
     </template>

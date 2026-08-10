@@ -101,6 +101,148 @@
   border-bottom-color: var(--vp-c-divider);
 }
 
+/* 站名：仅回首页；阻断父级默认 <a> 抢点击 */
+.VPNavBarTitle a.title {
+  position: relative;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.site-title-home {
+  display: inline-block;
+  max-width: min(56vw, 17rem);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  color: var(--vp-c-text-1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.site-title-home:hover {
+  color: var(--vp-c-brand-1);
+}
+
+@media (max-width: 767px) {
+  .site-title-home {
+    max-width: 46vw;
+    font-size: 0.88rem;
+  }
+}
+
+/* 顶栏下拉：与首页磨砂/细线/轻量阅读气质一致 */
+.VPNavBarMenu .VPFlyout .button {
+  padding: 0 0.7rem;
+  color: var(--vp-c-text-1);
+}
+
+.VPNavBarMenu .VPFlyout .button .text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: inherit;
+}
+
+.VPNavBarMenu .VPFlyout:hover .button,
+.VPNavBarMenu .VPFlyout:hover .button .text,
+.VPNavBarMenu .VPFlyout.active .button .text {
+  color: var(--vp-c-brand-1);
+}
+
+.VPNavBarMenu .VPFlyout .text-icon,
+.VPNavBarMenu .VPFlyout .vpi-chevron-down {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 0;
+  height: 0;
+  margin-left: 0.35rem;
+  margin-top: 0.12rem;
+  padding: 0;
+  border-style: solid;
+  border-width: 5px 4px 0;
+  border-color: var(--vp-c-text-2) transparent transparent;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  opacity: 1;
+  transform: none !important;
+  transition: border-top-color 0.2s ease, transform 0.2s ease;
+}
+
+.VPNavBarMenu .VPFlyout:hover .text-icon,
+.VPNavBarMenu .VPFlyout:hover .vpi-chevron-down,
+.VPNavBarMenu .VPFlyout .button[aria-expanded='true'] .text-icon,
+.VPNavBarMenu .VPFlyout .button[aria-expanded='true'] .vpi-chevron-down {
+  border-top-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  opacity: 1;
+}
+
+.VPNavBarMenu .VPFlyout .button[aria-expanded='true'] .text-icon,
+.VPNavBarMenu .VPFlyout .button[aria-expanded='true'] .vpi-chevron-down {
+  transform: rotate(180deg) !important;
+  margin-top: 0;
+}
+
+.VPNavBarMenu .VPFlyout .menu {
+  top: calc(var(--vp-nav-height) - 0.45rem);
+  right: 0;
+  left: auto;
+  min-width: 11rem;
+  padding-top: 0.25rem;
+}
+
+.VPNavBarMenu .VPMenu {
+  min-width: 11rem;
+  padding: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--vp-c-text-1) 12%, transparent);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.86);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+}
+
+.dark .VPNavBarMenu .VPMenu {
+  border-color: color-mix(in srgb, var(--vp-c-text-1) 16%, transparent);
+  background-color: rgba(26, 26, 30, 0.88);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
+.VPNavBarMenu .VPMenu .VPMenuLink .link {
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  line-height: 1.35;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--vp-c-text-1);
+  background: transparent;
+}
+
+.VPNavBarMenu .VPMenu .VPMenuLink .link:hover {
+  color: var(--vp-c-brand-1);
+  background: color-mix(in srgb, var(--vp-c-brand-1) 7%, transparent);
+}
+
+.VPNavBarMenu .VPMenu .VPMenuLink .link.active {
+  color: var(--vp-c-brand-1);
+  background: color-mix(in srgb, var(--vp-c-brand-1) 9%, transparent);
+}
+
 /* ---------- Sidebar ---------- */
 
 .VPSidebar .items p,
@@ -1028,19 +1170,23 @@
   transform: translateX(2px);
 }
 
-/* 板块入口从“默认功能卡”改为轻量墨纸分栏。 */
+/* 板块入口：横排（方案 B）— 左标题 / 右三行主张，整卡可点 */
 .VPHomeFeatures {
   padding: 0.35rem var(--blog-home-pad-x) 1rem !important;
 }
 
 .VPHomeFeatures .item {
   padding: 6px !important;
+  display: flex;
 }
 
 .VPHomeFeatures .VPFeature {
   position: relative;
-  min-height: 136px;
-  padding: 1.15rem 1.25rem 1rem;
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--blog-ink-line);
   border-radius: 4px;
@@ -1065,17 +1211,61 @@
   border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
 }
 
+/* 默认 .box 是竖排；改为左标题右文案，两卡共用固定标题栏宽 */
+.VPHomeFeatures .VPFeature .box {
+  display: grid;
+  /* 固定左栏：短标题不“塌”，长标题不把箭头挤到第二行 */
+  grid-template-columns: 8.25rem minmax(0, 1fr);
+  align-items: center; /* 标题与三行文案垂直居中 */
+  justify-items: stretch;
+  column-gap: 0;
+  row-gap: 0;
+  height: 100%;
+  min-height: 0;
+  padding: 1.05rem 1.05rem 1.05rem 1.1rem;
+}
+
 .VPHomeFeatures .title {
+  margin: 0;
+  padding: 0 0.75rem 0 0;
+  max-width: none;
+  white-space: nowrap;
+  line-height: 1.45;
   font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  color: var(--vp-c-text-1);
+  text-align: center; /* 投研 / AI下的生活 在标题栏内居中 */
+}
+
+/* 标题后轻箭头：与标题同一行 */
+.VPHomeFeatures .title::after {
+  content: "→";
+  margin-left: 0.3em;
+  font-weight: 500;
+  color: var(--vp-c-brand-1);
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.VPHomeFeatures .VPFeature:hover .title::after {
+  transform: translateX(2px);
+  opacity: 1;
 }
 
 .VPHomeFeatures .details {
-  margin-top: 0.7rem;
-  font-size: 0.86rem;
-  line-height: 1.85;
-  white-space: pre-line; /* 支持 frontmatter 多行 details */
+  margin: 0;
+  padding: 0 0 0 0.95rem;
+  border-left: 1px solid var(--section-line, var(--blog-ink-line));
+  /* 与标题同字号体系下的次级字重；两卡共用，避免一侧更“满” */
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+  white-space: pre-line; /* 保留 frontmatter 三行 */
+  overflow-wrap: anywhere;
+  text-align: left;
+  display: block;
 }
 
 /* 整卡可点；无 linkText 时卡片本身即入口 */
@@ -1083,6 +1273,29 @@
   cursor: pointer;
   text-decoration: none !important;
   color: inherit;
+}
+
+/* 窄屏：仍横排优先；极窄才上下叠，三行照旧 */
+@media (max-width: 420px) {
+  .VPHomeFeatures .VPFeature .box {
+    grid-template-columns: 1fr;
+    row-gap: 0.55rem;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .VPHomeFeatures .title {
+    padding-right: 0;
+  }
+
+  .VPHomeFeatures .details {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--section-line, var(--blog-ink-line));
+    padding-top: 0.55rem;
+    width: 100%;
+    text-align: left;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1118,10 +1331,6 @@
   .VPHome .VPHero .home-hero-cta {
     margin-top: 0.85rem;
     justify-self: start;
-  }
-
-  .VPHomeFeatures .VPFeature {
-    min-height: 124px;
   }
 
   .home-recent__list {
@@ -1834,21 +2043,27 @@
 
 .subject-masthead {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.65fr);
-  gap: 2rem;
-  padding: 1.4rem 0 1.8rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(13rem, 0.55fr);
+  gap: 1.25rem 1.5rem;
+  align-items: start;
+  padding: 1.1rem 0 1.35rem;
   border-bottom: 1px solid var(--section-line);
 }
 
 .subject-masthead h1 {
-  margin: 0;
-  font-size: clamp(2.4rem, 6vw, 3.7rem);
-  letter-spacing: 0.06em;
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+  line-height: 1.28;
+  letter-spacing: 0.03em;
+  font-weight: 650;
 }
 
 .subject-masthead > div > span {
+  display: block;
+  margin: 0;
   font-family: var(--vp-font-family-mono);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
+  line-height: 1.45;
   color: var(--vp-c-text-3);
 }
 
@@ -1871,6 +2086,35 @@
 
 .subject-masthead dd {
   margin: 0;
+}
+
+/* 研究页总览图：宽图可横向滚动，不撑破正文栏 */
+.research-figure {
+  margin: 0.35rem 0 0;
+  padding: 0.85rem 0.9rem 0.75rem;
+  border: 1px solid var(--section-line);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, var(--section-wash), transparent 42%),
+    var(--vp-c-bg-soft);
+  overflow-x: auto;
+}
+
+.research-figure img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.research-figure figcaption {
+  margin: 0.65rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--vp-c-text-3);
 }
 
 .subject-thesis {
@@ -1963,6 +2207,13 @@
   margin: 0 0 1.2rem;
 }
 
+.process-map-lead {
+  margin: 0 0 0.85rem !important;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: var(--vp-c-text-2);
+}
+
 .process-map__step {
   display: grid;
   grid-template-columns: 2.4rem minmax(0, 1fr);
@@ -1990,10 +2241,25 @@
   color: var(--vp-c-text-2);
 }
 
+.process-map__step p + p {
+  margin-top: 0.35rem !important;
+}
+
 .process-map__note {
   margin: 0.35rem 0 0 !important;
   font-size: 0.75rem !important;
   color: var(--vp-c-text-3) !important;
+}
+
+/* 大白话：与正式定义区分，略提亮便于扫读 */
+.process-map__plain {
+  margin: 0.4rem 0 0 !important;
+  padding: 0.4rem 0.55rem;
+  border-left: 2px solid color-mix(in srgb, var(--vp-c-brand-1) 55%, transparent);
+  background: color-mix(in srgb, var(--vp-c-brand-1) 6%, transparent);
+  font-size: 0.8rem !important;
+  line-height: 1.55;
+  color: var(--vp-c-text-1) !important;
 }
 
 .relation-map {
@@ -2445,5 +2711,70 @@
   .weekly-archive .cat-list__meta {
     grid-row: auto;
     flex-direction: row;
+  }
+}
+
+/* ---------- Philosophy archive: 2x2 paths + quotes ---------- */
+
+.philosophy-paths {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.philosophy-paths .invest-path {
+  border-left: 0;
+  border-top: 0;
+}
+
+.philosophy-paths .invest-path:nth-child(2n) {
+  border-left: 1px solid var(--section-line);
+}
+
+.philosophy-paths .invest-path:nth-child(n + 3) {
+  border-top: 1px solid var(--section-line);
+}
+
+.philosophy-quote {
+  margin: 0 0 1.1rem !important;
+  padding: 0.95rem 1rem;
+  border-left: 3px solid var(--vp-c-brand-1);
+  background: var(--section-wash);
+  color: var(--vp-c-text-1);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.philosophy-loop {
+  margin: 0.9rem 0 0 !important;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--section-line);
+  background: var(--vp-c-bg-soft);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+.philosophy-boundary-list {
+  margin: 0 !important;
+  padding-left: 1.2rem !important;
+}
+
+.philosophy-boundary-list li {
+  margin: 0.45rem 0;
+  color: var(--vp-c-text-1);
+}
+
+.philosophy-boundary-list strong {
+  color: var(--vp-c-brand-1);
+}
+
+@media (max-width: 700px) {
+  .philosophy-paths {
+    grid-template-columns: 1fr;
+  }
+
+  .philosophy-paths .invest-path:nth-child(2n),
+  .philosophy-paths .invest-path:nth-child(n + 3) {
+    border-left: 0;
+    border-top: 1px solid var(--section-line);
   }
 }

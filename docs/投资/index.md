@@ -1,19 +1,19 @@
 ---
-title: 投资
+title: 投研
 description: 周记与按行业组织的投研标的
 pageClass: investment-hub
 outline: false
 ---
 
 <section class="invest-hub-masthead">
-  <p>INVESTMENT / 投资</p>
-  <h1>投资</h1>
-  <p>一条线记录市场与判断，另一条线积累行业与标的研究。</p>
+  <p>RESEARCH / 投研</p>
+  <h1>投研</h1>
+  <p>世界由已经成立的事实构成，而人的认识只能借助有限且可错的证据和逻辑，在多个可能路径之间不断修正。</p>
 </section>
 
-<div class="invest-hub-disclaimer"><strong>非投资建议</strong><span>仅记录个人研究过程，据此决策风险自负。</span></div>
+<div class="invest-hub-disclaimer"><span>市场是异质参与者共同生成的反身性系统，价格是重要的市场事实，但不能单独说明企业的长期经营状态和投资回报前景。</span></div>
 
-<section class="invest-paths" aria-label="投资内容入口">
+<section class="invest-paths" aria-label="投研内容入口">
   <a class="invest-path invest-path--weekly" href="/投资/周记/">
     <span class="invest-path__index">01 / WEEKLY</span>
     <h2>周记</h2>
