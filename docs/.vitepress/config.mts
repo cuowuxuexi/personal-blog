@@ -22,47 +22,83 @@ export default defineConfig({
     logo: undefined,
 
     nav: [
-      { text: '投资', link: '/投资/' },
+      {
+        text: '投资',
+        items: [
+          { text: '投资首页', link: '/投资/' },
+          { text: '周记', link: '/投资/周记/' },
+          { text: '投研标的', link: '/投资/投研/' },
+        ],
+      },
       { text: 'AI与生活', link: '/AI与生活/' },
       { text: '关于', link: '/关于' },
     ],
 
     sidebar: {
-      '/投资/': [
+      '/投资/投研/': [
+        {
+          text: '投资',
+          items: [
+            { text: '投资首页', link: '/投资/' },
+            { text: '周记', link: '/投资/周记/' },
+            { text: '投研标的', link: '/投资/投研/' },
+          ],
+        },
+        {
+          text: '医药',
+          collapsed: false,
+          items: [
+            { text: '行业总览', link: '/投资/投研/医药/' },
+            { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
+          ],
+        },
+      ],
+      '/投资/周记/': [
+        {
+          text: '投资',
+          items: [
+            { text: '投资首页', link: '/投资/' },
+            { text: '投研标的', link: '/投资/投研/' },
+          ],
+        },
         {
           text: '2026年',
           collapsed: false,
           items: [
-            { text: '2026-08-08 · 写在投资笔记开始之前', link: '/投资/2026-08-08-写在投资笔记开始之前' },
+            { text: '第001期 · 写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
           ],
         },
+      ],
+      '/投资/': [
         {
-          text: '板块',
+          text: '投资',
           items: [
             { text: '投资首页', link: '/投资/' },
+            { text: '周记', link: '/投资/周记/' },
+            { text: '投研标的', link: '/投资/投研/' },
           ],
         },
       ],
       '/AI与生活/': [
         {
-          text: '2026年',
-          collapsed: false,
+          text: 'AI与生活',
           items: [
-            { text: '2026-08-08 · 用 AI 整理日常的一周', link: '/AI与生活/2026-08-08-用AI整理日常的一周' },
+            { text: '周记归档', link: '/AI与生活/' },
           ],
         },
         {
-          text: '板块',
+          text: '2026年',
+          collapsed: false,
           items: [
-            { text: 'AI与生活首页', link: '/AI与生活/' },
+            { text: '第001期 · 用 AI 整理日常的一周', link: '/AI与生活/2026-08-08-用AI整理日常的一周' },
           ],
         },
       ],
     },
 
     outline: {
-      level: [2, 4],
-      label: '本页指引',
+      level: [2, 3],
+      label: '大纲',
     },
 
     search: {
@@ -111,6 +147,6 @@ export default defineConfig({
     darkModeSwitchTitle: '切换到深色',
     sidebarMenuLabel: '菜单',
     returnToTopLabel: '回到顶部',
-    outlineTitle: '本页指引',
+    outlineTitle: '大纲',
   },
 })

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData } from 'vitepress'
-import { formatDateZh, type Category } from '../../posts'
+import { formatDateZh, formatIssue, type Category } from '../../posts'
 
 const { frontmatter, page } = useData()
 
@@ -9,6 +9,8 @@ const date = computed(() => (frontmatter.value.date as string | undefined) || ''
 const category = computed(
   () => (frontmatter.value.category as Category | undefined) || '',
 )
+const issue = computed(() => Number(frontmatter.value.issue || 0))
+const type = computed(() => (frontmatter.value.type as string | undefined) || '')
 const description = computed(
   () => (frontmatter.value.description as string | undefined) || '',
 )
@@ -19,6 +21,8 @@ const cover = computed(
 /** 仅文章页展示（有 date 或 category，且非首页/纯导航页） */
 const show = computed(() => {
   if (page.value.isNotFound) return false
+  // 周记标题已包含期数，左栏承担日期索引；保持参考周刊的简洁文章开头。
+  if (type.value === 'weekly') return false
   return Boolean(date.value || category.value)
 })
 
@@ -39,12 +43,13 @@ const categoryClass = computed(() => {
       <time v-if="date" class="post-meta__date" :datetime="date">
         {{ formatDateZh(date) }}
       </time>
+      <span v-if="issue" class="post-meta__issue">{{ formatIssue(issue) }}</span>
       <span
         v-if="category"
         class="post-meta__cat"
         :class="categoryClass"
       >
-        {{ category }}
+        {{ category }}<template v-if="type === 'weekly'">周记</template>
       </span>
     </div>
 

@@ -1,18 +1,14 @@
 ---
 title: AI与生活
-description: AI 实践与生活随笔
+description: AI 工具、工作流与生活观察的周记归档
+pageClass: weekly-archive weekly-archive--life
+outline: false
 ---
 
 # AI与生活
 
-本板块记录 AI 工具实践、工作流整理，以及与技术相关的日常随笔。下方列表与首页「最近更新」同源。
+关于 AI 工具、工作流与生活切片的个人周记。按年份与期数归档，最新一期在前。
 
-## 笔记列表
+## 2026年
 
-<CategoryList category="AI与生活" />
-
-## 如何阅读
-
-- 左栏：当前板块时间序列
-- 中栏：正文；文首有日期与板块标签
-- 右栏：本页指引跟随标题层级
+<CategoryList category="AI与生活" type="weekly" />
