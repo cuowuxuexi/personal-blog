@@ -1,7 +1,7 @@
 /**
  * 误君在脑海里放烟花 — 阅读骨架样式
  * 布局/质感：VitePress 三栏 + 周刊式阅读手法（磨砂顶栏、橙链、引用条、大纲高亮）
- * 字体：系统中文栈（轻量）+ FiraCode 自托管；10MB 全量思源 VF 已弃用
+ * 字体：系统中文栈（轻量）+ Hero 衬线子集 + FiraCode 自托管；10MB 全量思源 VF 已弃用
  * 品牌独立：不包含评论/订阅/第三方周刊资产
  */
 
@@ -16,6 +16,15 @@
     local("FiraCode"),
     local("Fira Code"),
     url("/fonts/FiraCode-VF.woff2") format("woff2");
+}
+
+/* 仅覆盖首页 Hero「看，烟花！」；~2KB，避免全量中文衬线 */
+@font-face {
+  font-family: "NotoSerifSC-Hero";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/NotoSerifSC-Bold-hero.woff2") format("woff2");
 }
 
 /**
@@ -465,7 +474,7 @@
   display: block;
 }
 
-/* 仅展示「看呐，烟花。」：去掉默认 max-width / 居中 / 裁切风险 */
+/* 仅展示「看，烟花！」：去掉默认 max-width / 居中 / 裁切风险 */
 .VPHome .VPHero .name,
 .VPHome .VPHero .tagline {
   display: none !important;
@@ -488,9 +497,7 @@
 }
 
 .VPHome .VPHero .actions {
-  justify-content: flex-start !important;
-  margin: 0 !important;
-  padding-top: 1.25rem !important;
+  display: none !important; /* 路线2：板块导航改由顶栏；Hero 仅 HomeHeroCta */
 }
 
 /* 插画：文档流排版，取消绝对定位与负边距 */
@@ -617,10 +624,10 @@
   }
 }
 
-/* ---------- Home recent ---------- */
+/* ---------- Home recent：墨纸卡 + 编辑向元信息 ---------- */
 
 .home-recent {
-  padding: 0.35rem var(--blog-home-pad-x) 3.5rem;
+  padding: 0.3rem var(--blog-home-pad-x) 2.75rem;
 }
 
 .home-recent__inner {
@@ -629,25 +636,42 @@
 }
 
 .home-recent__head {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.5rem 1rem;
-  margin-bottom: 1.1rem;
+  gap: 0.45rem 0.85rem;
+  margin-bottom: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--blog-ink-line);
+}
+
+.home-recent__head::before {
+  content: "RECENT / 近期";
+  position: absolute;
+  top: -0.62rem;
+  right: 0;
+  padding-left: 0.6rem;
+  background: var(--vp-c-bg);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--vp-c-text-3);
 }
 
 .home-recent__head h2 {
   margin: 0;
   border: none;
-  font-size: 1.35rem;
-  font-weight: 650;
-  letter-spacing: 0.02em;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   color: var(--vp-c-text-1);
 }
 
 .home-recent__sub {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
   color: var(--vp-c-text-3);
 }
 
@@ -655,124 +679,113 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--vp-c-bg);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
 }
 
-.home-recent__item + .home-recent__item {
-  border-top: 1px solid var(--vp-c-divider);
+.home-recent__item {
+  min-width: 0;
+  border: 1px solid var(--blog-ink-line);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, var(--blog-ink-wash), transparent 62%),
+    var(--vp-c-bg-soft);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.home-recent__item:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
 }
 
 .home-recent__link {
   display: block;
-  padding: 1rem 1.15rem;
+  height: 100%;
+  padding: 1rem 1.15rem 1.05rem;
   text-decoration: none !important;
   color: inherit;
-  transition: background-color 0.15s ease;
+  transition: none;
 }
 
 .home-recent__link:hover {
-  background: var(--vp-c-bg-soft);
+  background: transparent;
 }
 
-.home-recent__row {
+.home-recent__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem 0.7rem;
-  margin-bottom: 0.35rem;
+  gap: 0.35rem;
+  margin-bottom: 0.55rem;
 }
 
 .home-recent__date {
-  font-size: 0.82rem;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
   color: var(--vp-c-text-3);
   font-variant-numeric: tabular-nums;
 }
 
-.home-recent__cat {
+.home-recent__dot {
+  color: var(--vp-c-text-3);
   font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.08rem 0.48rem;
-  border-radius: 999px;
-  border: 1px solid var(--vp-c-divider);
+  line-height: 1;
+}
+
+/* 分类：字色区分，非胶囊 pill */
+.home-recent__cat {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--vp-c-text-2);
 }
 
 .home-recent__cat.is-invest {
   color: var(--blog-cat-invest);
-  border-color: color-mix(in srgb, var(--blog-cat-invest) 30%, transparent);
-  background: color-mix(in srgb, var(--blog-cat-invest) 9%, transparent);
 }
 
 .home-recent__cat.is-life {
   color: var(--blog-cat-life);
-  border-color: color-mix(in srgb, var(--blog-cat-life) 30%, transparent);
-  background: color-mix(in srgb, var(--blog-cat-life) 9%, transparent);
 }
 
 .home-recent__title {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.45;
+  letter-spacing: 0.02em;
   color: var(--vp-c-text-1);
 }
 
 .home-recent__desc {
-  margin: 0.35rem 0 0;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  margin: 0.45rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.7;
   color: var(--vp-c-text-2);
 }
 
 .home-recent__empty {
   margin: 0;
-  padding: 1.2rem;
-  border: 1px dashed var(--vp-c-divider);
-  border-radius: 12px;
+  padding: 1.15rem;
+  border: 1px dashed var(--blog-ink-line);
+  border-radius: 4px;
   color: var(--vp-c-text-3);
   text-align: center;
+  font-size: 0.88rem;
 }
-
-.home-recent__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-top: 1.25rem;
-}
-
-.home-recent__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.2rem;
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none !important;
-  color: var(--vp-c-bg) !important;
-  background: var(--vp-c-brand-1);
-  border: 1px solid transparent;
-  transition: opacity 0.15s ease, background-color 0.15s ease;
-}
-
-.home-recent__cta:hover {
-  opacity: 0.92;
-}
-
-.home-recent__cta--alt {
-  color: var(--vp-c-text-1) !important;
-  background: transparent;
-  border-color: var(--vp-c-divider);
-}
-
-.home-recent__cta--alt:hover {
-  background: var(--vp-c-bg-soft);
-  opacity: 1;
-}
-
 
 /* ---------- Category list (板块 index) ---------- */
 
@@ -952,43 +965,67 @@
 }
 
 .VPHome .VPHero .text {
+  font-family: "NotoSerifSC-Hero", "Noto Serif SC", "Source Han Serif SC",
+    "Songti SC", "STSong", serif !important;
   font-size: clamp(2rem, 4.5vw, 3.25rem) !important;
-  font-weight: 720 !important;
+  font-weight: 700 !important;
   letter-spacing: 0.06em;
   text-wrap: balance;
 }
 
-.VPHome .VPHero .actions {
+/* Hero 唯一 CTA：墨纸编辑向入口，非 VitePress 胶囊按钮 */
+.VPHome .VPHero .home-hero-cta {
   align-self: center;
-  flex-wrap: nowrap;
-  gap: 0.55rem;
-  padding-top: 0 !important;
+  justify-self: end;
 }
 
-.VPHome .VPHero .actions .VPButton {
-  min-width: 0;
-  padding: 0 1rem;
-  border-radius: 4px;
-  border-color: var(--blog-ink-line);
+.VPHome .VPHero .home-hero-cta__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.35rem 0 0.4rem;
+  border: none;
+  border-bottom: 1px solid var(--blog-ink-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  text-decoration: none !important;
+  letter-spacing: 0.04em;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.VPHome .VPHero .home-hero-cta__kicker {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--vp-c-text-3);
+}
+
+.VPHome .VPHero .home-hero-cta__text {
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.VPHome .VPHero .home-hero-cta__arrow {
   font-size: 0.88rem;
-  letter-spacing: 0.03em;
-  box-shadow: none;
+  color: var(--vp-c-brand-1);
+  transition: transform 0.15s ease;
 }
 
-.VPHome .VPHero .actions .VPButton.brand {
-  position: relative;
-  overflow: hidden;
+.VPHome .VPHero .home-hero-cta__link:hover {
+  border-bottom-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
 }
 
-.VPHome .VPHero .actions .VPButton.brand::after {
-  content: "";
-  position: absolute;
-  right: -8px;
-  bottom: -12px;
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  transform: rotate(45deg);
+.VPHome .VPHero .home-hero-cta__link:hover .home-hero-cta__kicker {
+  color: var(--vp-c-brand-1);
+}
+
+.VPHome .VPHero .home-hero-cta__link:hover .home-hero-cta__arrow {
+  transform: translateX(2px);
 }
 
 /* 板块入口从“默认功能卡”改为轻量墨纸分栏。 */
@@ -1029,90 +1066,23 @@
 }
 
 .VPHomeFeatures .title {
-  font-size: 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
 }
 
 .VPHomeFeatures .details {
-  margin-top: 0.55rem;
+  margin-top: 0.7rem;
   font-size: 0.86rem;
-  line-height: 1.65;
+  line-height: 1.85;
+  white-space: pre-line; /* 支持 frontmatter 多行 details */
 }
 
-.VPHomeFeatures .link-text {
-  margin-top: 0.65rem;
-  font-size: 0.84rem;
-}
-
-/* 最近更新桌面双列，让第一屏更早进入内容。 */
-.home-recent {
-  padding: 0.3rem var(--blog-home-pad-x) 2.75rem;
-}
-
-.home-recent__head {
-  position: relative;
-  margin-bottom: 0.8rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--blog-ink-line);
-}
-
-.home-recent__head::before {
-  content: "RECENT / 近期";
-  position: absolute;
-  top: -0.62rem;
-  right: 0;
-  padding-left: 0.6rem;
-  background: var(--vp-c-bg);
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--vp-c-text-3);
-}
-
-.home-recent__head h2 {
-  font-size: 1.28rem;
-  letter-spacing: 0.06em;
-}
-
-.home-recent__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  border: 0;
-  border-radius: 0;
-  overflow: visible;
-  background: transparent;
-}
-
-.home-recent__item {
-  min-width: 0;
-  border: 1px solid var(--blog-ink-line) !important;
-  border-radius: 4px;
-  background: var(--vp-c-bg);
-}
-
-.home-recent__link {
-  height: 100%;
-  padding: 0.9rem 1rem;
-}
-
-.home-recent__title {
-  font-size: 1rem;
-}
-
-.home-recent__desc {
-  font-size: 0.86rem;
-}
-
-.home-recent__actions {
-  margin-top: 0.85rem;
-}
-
-.home-recent__cta {
-  min-height: 2rem;
-  padding: 0.25rem 0.85rem;
-  border-radius: 4px;
-  font-size: 0.82rem;
+/* 整卡可点；无 linkText 时卡片本身即入口 */
+.VPHomeFeatures .VPFeature.link {
+  cursor: pointer;
+  text-decoration: none !important;
+  color: inherit;
 }
 
 @media (max-width: 767px) {
@@ -1145,20 +1115,9 @@
     font-size: clamp(1.9rem, 9vw, 2.6rem) !important;
   }
 
-  .VPHome .VPHero .actions {
-    margin-top: 0.85rem !important;
-    overflow-x: auto;
-    padding-bottom: 0.2rem !important;
-    scrollbar-width: none;
-  }
-
-  .VPHome .VPHero .actions::-webkit-scrollbar {
-    display: none;
-  }
-
-  .VPHome .VPHero .actions .VPButton {
-    flex: 0 0 auto;
-    padding: 0 0.85rem;
+  .VPHome .VPHero .home-hero-cta {
+    margin-top: 0.85rem;
+    justify-self: start;
   }
 
   .VPHomeFeatures .VPFeature {
@@ -1171,8 +1130,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .VPHomeFeatures .VPFeature {
+  .VPHomeFeatures .VPFeature,
+  .home-recent__item {
     transition: none;
+  }
+
+  .home-recent__item:hover {
+    transform: none;
   }
 }
 

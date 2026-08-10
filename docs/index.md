@@ -2,30 +2,26 @@
 layout: home
 title: 误君在脑海里放烟花
 hero:
-  # 首页主文案仅保留「看呐，烟花。」；站名在顶栏/页脚
+  # 首页主文案仅保留「看，烟花！」；站名在顶栏/页脚
+  # 导航留给顶栏；Hero 仅一个「读最新一篇」（见 HomeHeroCta）
   name: ''
-  text: 看呐，烟花！
+  text: 看，烟花！
   tagline: ''
   image:
     src: /images/hero-fireworks.jpg
     alt: 机械之手指向夜空烟花
-  actions:
-    - theme: brand
-      text: 看投资
-      link: /投资/
-    - theme: alt
-      text: AI与生活
-      link: /AI与生活/
-    - theme: alt
-      text: 关于
-      link: /关于
 features:
-  - title: 投资
-    details: 市场观察、框架与复盘。仅供学习交流，不构成任何投资建议。
+  # 整卡可点；不写 linkText，避免与顶栏/Hero 重复成「第四个按钮」
+  - title: 投研
+    details: |
+      以可错性为前提认识世界
+      研究企业生存与价值传导
+      寻找能容纳错误的位置
     link: /投资/
-    linkText: 进入投资
-  - title: AI与生活
-    details: 工具实践、工作流与日常随笔。判断与取舍留在自己手里。
+  - title: AI下的生活
+    details: |
+      它已经在这里了。
+      聊天、研究、写代码、做决定——
+      记录 AI 嵌进生活后真实发生的事。
     link: /AI与生活/
-    linkText: 进入 AI与生活
 ---

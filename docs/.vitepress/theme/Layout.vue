@@ -3,6 +3,7 @@ import { onMounted, watch, nextTick } from 'vue'
 import Theme from 'vitepress/theme-without-fonts'
 import { useRoute, inBrowser } from 'vitepress'
 import PostMeta from './components/PostMeta.vue'
+import HomeHeroCta from './components/HomeHeroCta.vue'
 import HomeRecent from './components/HomeRecent.vue'
 
 const { Layout } = Theme
@@ -105,6 +106,9 @@ watch(
   <Layout>
     <template #doc-before>
       <PostMeta />
+    </template>
+    <template #home-hero-actions-after>
+      <HomeHeroCta />
     </template>
     <template #home-features-after>
       <HomeRecent />
