@@ -12,6 +12,8 @@ export default defineConfig({
   description: '投资观察与 AI 生活随笔',
   cleanUrls: true,
   lastUpdated: true,
+  // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
+  srcExclude: ['**/agents/**', '**/adr/**'],
 
   head: [
     ['meta', { name: 'theme-color', content: '#2949a4' }],

@@ -50,11 +50,18 @@ npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
 personal-blog/
   package.json
   README.md
+  PROJECT.md                 # 工程权威与路径边界
+  CONTEXT.md                 # 领域词汇与投研前端边界
+  RESEARCH-FRONTEND.md       # 投研前端分阶段计划
+  AGENTS.md                  # Agent 技能入口
+  research-sources.local.yaml  # 本地回源索引（gitignore，不进仓库）
   docs/
     index.md                 # 首页（hero 插画 + features + 最近更新）
     关于.md
     投资/
     AI与生活/
+    agents/                  # Agent 协议（非站点内容）
+    adr/                     # 架构决策
     public/
       fonts/               # FiraCode-VF.woff2（可选保留）
       images/hero-fireworks.jpg
@@ -70,6 +77,19 @@ personal-blog/
           HomeRecent.vue
           CategoryList.vue
 ```
+
+## 投研内容工作流（作者）
+
+投资板块是**投研前端**：记录研究成果、学习路径、研究思路和投资思路，而不是把私有投研指挥系统原样公开。
+
+1. 研究与取证在私有投研指挥系统中进行。  
+2. 准备发到博客时，先讨论页面目标、范围和结构。  
+3. Agent / 作者按 `docs/agents/research-publishing.md` 回源并本地起草。  
+4. 本地 `pnpm docs:dev` / `docs:preview` 检查。  
+5. 你明确批准后，才 push / 部署。  
+
+本地来源索引 `research-sources.local.yaml` 只给本机 Agent 使用，不进 Git，也不进网站。  
+分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。
 
 ## 如何新增文章
 
@@ -128,4 +148,4 @@ description: 一句话摘要（首页与板块列表展示）
 - 勿拷贝第三方周刊正文、封面或品牌资产。  
 - 勿将密钥写入仓库。  
 
-最后更新：2026-08-09
+最后更新：2026-08-10

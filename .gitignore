@@ -7,3 +7,7 @@ docs/.vitepress/cache/
 .env.*
 !.env.example
 .pnpm-store/
+
+# Local-only research origin index for agents (never publish)
+research-sources.local.yaml
+research-sources.local.yml
