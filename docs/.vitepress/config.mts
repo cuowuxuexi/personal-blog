@@ -51,6 +51,9 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: '行业总览', link: '/投资/投研/医药/' },
+            { text: '研究地图', link: '/投资/投研/医药/研究地图/' },
+            { text: '创新药研发全流程', link: '/投资/投研/医药/研究地图/创新药研发全流程/' },
+            { text: 'CXO 与 CRDMO', link: '/投资/投研/医药/研究地图/CXO与CRDMO/' },
             { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
           ],
         },

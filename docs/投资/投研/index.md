@@ -23,7 +23,7 @@ outline: false
       <strong>医药</strong>
       <span>创新药、CXO 与医疗产业链的长期观察</span>
     </div>
-    <div class="industry-row__subjects">药明康德</div>
+    <div class="industry-row__subjects">研究地图 · 药明康德</div>
     <span class="industry-row__arrow">→</span>
   </a>
 </section>

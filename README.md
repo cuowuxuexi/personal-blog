@@ -89,7 +89,8 @@ personal-blog/
 5. 你明确批准后，才 push / 部署。  
 
 本地来源索引 `research-sources.local.yaml` 只给本机 Agent 使用，不进 Git，也不进网站。  
-分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。
+分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。  
+Phase 2 版面/内容设计交接（Cursor）：`docs/agents/handoff-phase2-research-ui.md`。
 
 ## 如何新增文章
 
