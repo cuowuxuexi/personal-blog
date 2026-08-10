@@ -5,7 +5,7 @@ pageClass: map-index
 outline: [2, 3]
 ---
 
-<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药</a><span>/</span><a href="/投资/投研/医药/研究地图/">研究地图</a><span>/</span><strong>CXO 与 CRDMO</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">研究地图</a><span>/</span><strong>CXO 与 CRDMO</strong></nav>
 
 <section class="subject-masthead">
   <div>

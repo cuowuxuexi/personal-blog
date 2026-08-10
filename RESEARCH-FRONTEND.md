@@ -86,6 +86,30 @@ Routes:
 | CXO 与 CRDMO | `/投资/投研/医药/研究地图/CXO与CRDMO/` |
 | 药明康德档案 | `/投资/投研/医药/药明康德/` |
 
+### Sidebar IA (local experiment)
+
+Sidebar is **industry-first**, not global map/subject pools:
+
+```text
+投资                    → 站内板块跳转
+医药行业（默认展开）
+  行业总览
+  研究地图（默认收起）
+    地图总览 / 各图
+  标的档案（默认收起）
+    药明康德 / 后续标的
+互联网行业（默认展开）  → 与医药同级；壳已建，地图与标的待补
+  行业总览
+  研究地图（默认收起）
+  标的档案（默认收起）
+```
+
+Later industries are **sibling groups** of 医药行业 / 互联网行业, each carrying their own maps + subjects.
+
+Map and subject subgroups use `collapsed: true` so the sidebar stays short. VitePress expands groups that contain the current page.
+
+File layout under `docs/投资/投研/医药/` may still use folders for URLs; presentation nav follows industry ownership, not a flat file tree.
+
 ### Page duties (experimental)
 
 | Page | Answers | Does not do |

@@ -5,7 +5,7 @@ pageClass: subject-index
 outline: false
 ---
 
-<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药</a><span>/</span><strong>药明康德</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><strong>药明康德</strong></nav>
 
 <section class="subject-masthead">
   <div>

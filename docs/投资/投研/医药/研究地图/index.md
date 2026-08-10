@@ -5,7 +5,7 @@ pageClass: map-index
 outline: false
 ---
 
-<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药</a><span>/</span><strong>研究地图</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><strong>研究地图</strong></nav>
 
 <section class="industry-masthead">
   <p>RESEARCH MAP / 研究地图</p>

@@ -37,6 +37,7 @@ export default defineConfig({
     ],
 
     sidebar: {
+      // 投研侧栏：行业为一级入口（默认展开）；其下「研究地图 / 标的档案」默认收起。
       '/投资/投研/': [
         {
           text: '投资',
@@ -47,14 +48,102 @@ export default defineConfig({
           ],
         },
         {
-          text: '医药',
+          text: '医药行业',
           collapsed: false,
           items: [
             { text: '行业总览', link: '/投资/投研/医药/' },
-            { text: '研究地图', link: '/投资/投研/医药/研究地图/' },
-            { text: '创新药研发全流程', link: '/投资/投研/医药/研究地图/创新药研发全流程/' },
-            { text: 'CXO 与 CRDMO', link: '/投资/投研/医药/研究地图/CXO与CRDMO/' },
-            { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
+            {
+              text: '研究地图',
+              collapsed: true,
+              items: [
+                { text: '地图总览', link: '/投资/投研/医药/研究地图/' },
+                { text: '创新药研发全流程', link: '/投资/投研/医药/研究地图/创新药研发全流程/' },
+                { text: 'CXO 与 CRDMO', link: '/投资/投研/医药/研究地图/CXO与CRDMO/' },
+              ],
+            },
+            {
+              text: '标的档案',
+              collapsed: true,
+              items: [
+                { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
+              ],
+            },
+          ],
+        },
+        {
+          text: '互联网行业',
+          collapsed: true,
+          items: [
+            { text: '行业总览', link: '/投资/投研/互联网/' },
+            {
+              text: '研究地图',
+              collapsed: true,
+              items: [
+                { text: '地图总览', link: '/投资/投研/互联网/研究地图/' },
+              ],
+            },
+            {
+              text: '标的档案',
+              collapsed: true,
+              items: [],
+            },
+          ],
+        },
+        {
+          text: '猪肉养殖行业',
+          collapsed: true,
+          items: [
+            { text: '行业总览', link: '/投资/投研/猪肉养殖/' },
+            {
+              text: '研究地图',
+              collapsed: true,
+              items: [
+                { text: '地图总览', link: '/投资/投研/猪肉养殖/研究地图/' },
+              ],
+            },
+            {
+              text: '标的档案',
+              collapsed: true,
+              items: [],
+            },
+          ],
+        },
+        {
+          text: '白酒行业',
+          collapsed: true,
+          items: [
+            { text: '行业总览', link: '/投资/投研/白酒/' },
+            {
+              text: '研究地图',
+              collapsed: true,
+              items: [
+                { text: '地图总览', link: '/投资/投研/白酒/研究地图/' },
+              ],
+            },
+            {
+              text: '标的档案',
+              collapsed: true,
+              items: [],
+            },
+          ],
+        },
+        {
+          text: '硬件制造行业',
+          collapsed: true,
+          items: [
+            { text: '行业总览', link: '/投资/投研/硬件制造/' },
+            {
+              text: '研究地图',
+              collapsed: true,
+              items: [
+                { text: '地图总览', link: '/投资/投研/硬件制造/研究地图/' },
+              ],
+            },
+            {
+              text: '标的档案',
+              collapsed: true,
+              items: [],
+            },
           ],
         },
       ],
