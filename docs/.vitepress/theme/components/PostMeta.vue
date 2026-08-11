@@ -22,7 +22,8 @@ const cover = computed(
 const show = computed(() => {
   if (page.value.isNotFound) return false
   // 周记标题已包含期数，左栏承担日期索引；保持参考周刊的简洁文章开头。
-  if (type.value === 'weekly') return false
+  // Hermes 日记标题含日期，侧栏按天索引，同样不重复 meta 条。
+  if (type.value === 'weekly' || type.value === 'hermes') return false
   return Boolean(date.value || category.value)
 })
 

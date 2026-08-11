@@ -23,7 +23,7 @@ outline: false
   <a class="invest-path invest-path--research" href="/投资/投研/">
     <span class="invest-path__index">02 / RESEARCH</span>
     <h2>投研标的</h2>
-    <p>按行业与标的建立长期研究档案，持续更新证据。</p>
+    <p>以具体公司为研究锚点，沿着解释其价值创造、价值捕获与投资风险所必需的上位结构，建立一条“最短充分认知链”；研究范围由这家公司约束，而不是由整个行业领域知识体系决定。</p>
     <strong>浏览研究目录 →</strong>
   </a>
 </section>

@@ -274,6 +274,13 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* 行业侧栏：研究地图 与 标的档案 之间用虚线分组 */
+.VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1.collapsible + .VPSidebarItem.level-1.collapsible {
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed color-mix(in srgb, var(--vp-c-text-1) 18%, transparent);
+}
+
 /* ---------- Doc body reading ---------- */
 
 .VPDoc.has-aside .content-container {
@@ -1792,6 +1799,17 @@
   border-left: 1px solid var(--section-line);
 }
 
+@media (max-width: 960px) {
+  .invest-paths {
+    grid-template-columns: 1fr;
+  }
+
+  .invest-path + .invest-path {
+    border-left: none;
+    border-top: 1px solid var(--section-line);
+  }
+}
+
 .invest-path__index {
   font-family: var(--vp-font-family-mono);
   font-size: 0.66rem;
@@ -2108,6 +2126,10 @@
   margin: 0 auto;
   border-radius: 2px;
   background: #fff;
+}
+
+.research-figure + .research-figure {
+  margin-top: 0.85rem;
 }
 
 .research-figure figcaption {

@@ -39,13 +39,23 @@ outline: [2, 3]
   </header>
   <figure class="research-figure">
     <img
-      src="/images/research/innov-drug-rd-process-map.png"
-      alt="创新药研发全流程知识图谱：从疾病问题到药物上市的主流程、CMC 线与关键概念"
-      width="1024"
-      height="724"
+      src="/images/research/innov-drug-rd-path-upper.png"
+      alt="创新药研发路径图谱（上）：从疾病问题到候选药物与临床前研究"
+      width="1448"
+      height="1086"
       loading="lazy"
     />
-    <figcaption>教学向总览：主流程、贯穿全程的 CMC 线、关键概念。用于建立框架，非正式公司证据。</figcaption>
+    <figcaption>上半程：从疾病问题出发，找到值得推进的候选药物，并完成进入临床前研究的准备。</figcaption>
+  </figure>
+  <figure class="research-figure">
+    <img
+      src="/images/research/innov-drug-rd-path-lower.png"
+      alt="创新药研发路径图谱（下）：从 IND 到上市，以及 CMC / 制造线如何贯穿全程"
+      width="1448"
+      height="1086"
+      loading="lazy"
+    />
+    <figcaption>下半程：完成临床验证与监管审批，并依靠 CMC 与制造体系把药真正推向市场。</figcaption>
   </figure>
 </section>
 
@@ -199,6 +209,7 @@ outline: [2, 3]
     </thead>
     <tbody>
       <tr><td>2026-08-10</td><td>建立初版流程地图</td><td>为理解 CRDMO 与药明康德建立前置基础</td></tr>
+      <tr><td>2026-08-11</td><td>总览图改为上下两张路径图谱</td><td>拆成上半程（到临床前）与下半程（IND 到上市 + CMC 线），便于分段理解</td></tr>
     </tbody>
   </table>
 </section>

@@ -1,10 +1,10 @@
 /**
  * 站点内容索引：首页、板块归档和周记列表共用。
- * 投资内容分为 weekly（周记）和 research（投研跟踪）。
+ * 投资：weekly / research；AI与生活：weekly / hermes（Hermes 日记，按天）。
  */
 
 export type Category = '投资' | 'AI与生活'
-export type PostType = 'weekly' | 'research'
+export type PostType = 'weekly' | 'research' | 'hermes'
 
 export interface PostItem {
   title: string
@@ -29,6 +29,14 @@ export const posts: PostItem[] = [
     issue: 1,
     link: '/投资/周记/2026-08-08-写在投资笔记开始之前',
     description: '投资板块开篇：分栏约定、写作框架与风险边界。',
+  },
+  {
+    title: '建档日',
+    date: '2026-08-11',
+    category: 'AI与生活',
+    type: 'hermes',
+    link: '/AI与生活/Hermes日记/2026-08-11',
+    description: 'Hermes 日记开篇：按天记录的约定与本页结构。',
   },
   {
     title: '用 AI 整理日常的一周',

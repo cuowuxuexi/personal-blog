@@ -13,7 +13,8 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
-  srcExclude: ['**/agents/**', '**/adr/**'],
+  // agents/adr 为仓库协议；目录 README 仅给作者/Agent，不进公开站点
+  srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],
 
   head: [
     ['meta', { name: 'theme-color', content: '#2949a4' }],
@@ -180,6 +181,7 @@ export default defineConfig({
           text: '投研',
           items: [
             { text: '投研首页', link: '/投资/' },
+            { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
@@ -206,13 +208,37 @@ export default defineConfig({
           text: 'AI与生活',
           items: [
             { text: '周记归档', link: '/AI与生活/' },
+            { text: 'Hermes日记', link: '/AI与生活/Hermes日记/' },
           ],
         },
         {
-          text: '2026年',
+          text: '周记 · 2026年',
           collapsed: false,
           items: [
             { text: '第001期 · 用 AI 整理日常的一周', link: '/AI与生活/2026-08-08-用AI整理日常的一周' },
+          ],
+        },
+        {
+          text: 'Hermes日记',
+          collapsed: false,
+          items: [
+            { text: '2026-08-11 · 建档日', link: '/AI与生活/Hermes日记/2026-08-11' },
+          ],
+        },
+      ],
+      '/AI与生活/Hermes日记/': [
+        {
+          text: 'AI与生活',
+          items: [
+            { text: '周记归档', link: '/AI与生活/' },
+            { text: 'Hermes日记', link: '/AI与生活/Hermes日记/' },
+          ],
+        },
+        {
+          text: 'Hermes日记',
+          collapsed: false,
+          items: [
+            { text: '2026-08-11 · 建档日', link: '/AI与生活/Hermes日记/2026-08-11' },
           ],
         },
       ],
