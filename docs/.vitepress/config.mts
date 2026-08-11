@@ -1,11 +1,15 @@
 import { defineConfig } from 'vitepress'
+import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
+import { hermesSidebarItems } from './hermes-diary'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
- * 侧栏按板块分路径、按日期倒序；新增文章后请同步：
- * 1) docs/.vitepress/posts.ts
- * 2) 下方 themeConfig.sidebar
+ * 侧栏按板块分路径、按日期倒序。
+ * - 周记 / 投研：新增后同步 posts.ts（手写）与下方 sidebar
+ * - Hermes 日记：只需新增 docs/AI与生活/Hermes日记/YYYY-MM-DD.md，侧栏与列表自动扫描
  */
+const hermesDiaryNav = hermesSidebarItems(loadHermesDiaryPostsFromFs())
+
 export default defineConfig({
   lang: 'zh-CN',
   title: '误君在脑海里放烟花',
@@ -221,9 +225,7 @@ export default defineConfig({
         {
           text: 'Hermes日记',
           collapsed: false,
-          items: [
-            { text: '2026-08-11 · 建档日', link: '/AI与生活/Hermes日记/2026-08-11' },
-          ],
+          items: hermesDiaryNav,
         },
       ],
       '/AI与生活/Hermes日记/': [
@@ -237,9 +239,7 @@ export default defineConfig({
         {
           text: 'Hermes日记',
           collapsed: false,
-          items: [
-            { text: '2026-08-11 · 建档日', link: '/AI与生活/Hermes日记/2026-08-11' },
-          ],
+          items: hermesDiaryNav,
         },
       ],
     },

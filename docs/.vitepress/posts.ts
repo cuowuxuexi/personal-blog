@@ -1,7 +1,10 @@
 /**
  * 站点内容索引：首页、板块归档和周记列表共用。
- * 投资：weekly / research；AI与生活：weekly / hermes（Hermes 日记，按天）。
+ * 投资：weekly / research（手写登记）；
+ * AI与生活：weekly 手写；hermes 日记从目录自动扫描。
  */
+
+import { hermesPostsFromGlob } from './hermes-diary'
 
 export type Category = '投资' | 'AI与生活'
 export type PostType = 'weekly' | 'research' | 'hermes'
@@ -20,7 +23,8 @@ export interface PostItem {
   status?: string
 }
 
-export const posts: PostItem[] = [
+/** 手写登记：周记 / 投研等。Hermes 日记不要写在这里。 */
+const manualPosts: PostItem[] = [
   {
     title: '写在投资笔记开始之前',
     date: '2026-08-08',
@@ -29,14 +33,6 @@ export const posts: PostItem[] = [
     issue: 1,
     link: '/投资/周记/2026-08-08-写在投资笔记开始之前',
     description: '投资板块开篇：分栏约定、写作框架与风险边界。',
-  },
-  {
-    title: '建档日',
-    date: '2026-08-11',
-    category: 'AI与生活',
-    type: 'hermes',
-    link: '/AI与生活/Hermes日记/2026-08-11',
-    description: 'Hermes 日记开篇：按天记录的约定与本页结构。',
   },
   {
     title: '用 AI 整理日常的一周',
@@ -48,6 +44,17 @@ export const posts: PostItem[] = [
     description: '用 AI 压缩收件箱与周回顾，判断仍留在自己手里。',
   },
 ]
+
+// 客户端 / 主题用 glob；config 侧栏用 hermes-diary 的 fs 扫描，避免 config 加载 glob 失败
+const hermesModules = import.meta.glob<string>('../AI与生活/Hermes日记/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})
+
+const hermesPosts = hermesPostsFromGlob(hermesModules)
+
+export const posts: PostItem[] = [...manualPosts, ...hermesPosts]
 
 export function postsByCategory(category: Category, type?: PostType): PostItem[] {
   return posts
