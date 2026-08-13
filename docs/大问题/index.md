@@ -23,10 +23,14 @@ outline: false
     </div>
     <span>学习中</span>
   </header>
-  <div class="research-note">
-    <strong>空状态</strong>
-    <span>尚未写入具体问答条目。确定第一批「大问题」后，在此按问—答—修订记录。</span>
-  </div>
+  <section class="invest-paths" aria-label="开放问题入口">
+    <a class="invest-path" href="/大问题/开源与闭源/">
+      <span class="invest-path__index">01 / OPEN VS CLOSED</span>
+      <h2>在 AI 时代，开源和闭源谁能走得更远</h2>
+      <p>不限大模型：从模型层、中间层到应用层，拆开「谁走得更远」的尺度与证据。</p>
+      <strong>阅读本页 →</strong>
+    </a>
+  </section>
 </section>
 
 <section class="invest-hub-section" aria-labelledby="qa-method">

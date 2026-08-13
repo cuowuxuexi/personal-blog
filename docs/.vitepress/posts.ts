@@ -7,7 +7,7 @@
 import { hermesPostsFromGlob } from './hermes-diary'
 
 export type Category = '投资' | 'AI与生活'
-export type PostType = 'weekly' | 'research' | 'hermes'
+export type PostType = 'weekly' | 'research' | 'hermes' | 'journey'
 
 export interface PostItem {
   title: string
@@ -35,13 +35,29 @@ const manualPosts: PostItem[] = [
     description: '投资板块开篇：分栏约定、写作框架与风险边界。',
   },
   {
-    title: '用 AI 整理日常的一周',
-    date: '2026-08-08',
+    title: '第001期-看烟花',
+    date: '2026-08-12',
     category: 'AI与生活',
     type: 'weekly',
     issue: 1,
-    link: '/AI与生活/2026-08-08-用AI整理日常的一周',
-    description: '用 AI 压缩收件箱与周回顾，判断仍留在自己手里。',
+    link: '/AI与生活/2026-08-12',
+    description: 'Cursor Ultra、Grok 4.6 与 DeepSeek 4 Pro 上线、蛋白粉涨价、/ljg-classic 读古文，以及 Trae 产品随记。',
+  },
+  {
+    title: '基础设施篇',
+    date: '2026-08-12',
+    category: 'AI与生活',
+    type: 'journey',
+    link: '/AI与生活/我的AI历程/基础设施篇',
+    description: '我的 AI 历程 · 基础设施篇：协作通道、发布边界与底座。',
+  },
+  {
+    title: '工具篇',
+    date: '2026-08-12',
+    category: 'AI与生活',
+    type: 'journey',
+    link: '/AI与生活/我的AI历程/工具篇',
+    description: '我的 AI 历程 · 工具篇：日常真正在用的工具与取舍。',
   },
 ]
 

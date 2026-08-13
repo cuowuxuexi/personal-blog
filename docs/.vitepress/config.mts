@@ -6,7 +6,8 @@ import { hermesSidebarItems } from './hermes-diary'
  * 误君在脑海里放烟花 — VitePress 站点配置
  * 侧栏按板块分路径、按日期倒序。
  * - 周记 / 投研：新增后同步 posts.ts（手写）与下方 sidebar
- * - Hermes 日记：只需新增 docs/AI与生活/Hermes日记/YYYY-MM-DD.md，侧栏与列表自动扫描
+ * - AI 历程：docs/AI与生活/我的AI历程/（系列入口 + 两个独立篇章页）
+ * - Hermes 日记：只需新增 docs/AI与生活/Hermes日记/YYYY-MM-DD.md；协作本路径仍自动扫描
  */
 const hermesDiaryNav = hermesSidebarItems(loadHermesDiaryPostsFromFs())
 
@@ -43,6 +44,7 @@ export default defineConfig({
         text: '大问题的问与答',
         items: [
           { text: '总览', link: '/大问题/' },
+          { text: '开源与闭源', link: '/大问题/开源与闭源/' },
         ],
       },
       { text: '关于', link: '/关于' },
@@ -55,6 +57,7 @@ export default defineConfig({
           text: '大问题的问与答',
           items: [
             { text: '总览', link: '/大问题/' },
+            { text: '开源与闭源', link: '/大问题/开源与闭源/' },
           ],
         },
       ],
@@ -211,33 +214,63 @@ export default defineConfig({
         {
           text: 'AI与生活',
           items: [
-            { text: '周记归档', link: '/AI与生活/' },
-            { text: 'Hermes日记', link: '/AI与生活/Hermes日记/' },
+            { text: '最新周记', link: '/AI与生活/' },
+            {
+              text: '我的AI历程：基础设施与工具使用',
+              link: '/AI与生活/我的AI历程/',
+            },
           ],
         },
         {
           text: '周记 · 2026年',
           collapsed: false,
           items: [
-            { text: '第001期 · 用 AI 整理日常的一周', link: '/AI与生活/2026-08-08-用AI整理日常的一周' },
+            { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
           ],
         },
         {
-          text: 'Hermes日记',
+          text: '我的AI历程：基础设施与工具使用',
           collapsed: false,
-          items: hermesDiaryNav,
+          items: [
+            { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
+            { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
+          ],
+        },
+      ],
+      '/AI与生活/我的AI历程/': [
+        {
+          text: 'AI与生活',
+          items: [
+            { text: '最新周记', link: '/AI与生活/' },
+            {
+              text: '我的AI历程：基础设施与工具使用',
+              link: '/AI与生活/我的AI历程/',
+            },
+          ],
+        },
+        {
+          text: '我的AI历程：基础设施与工具使用',
+          collapsed: false,
+          items: [
+            { text: '系列入口', link: '/AI与生活/我的AI历程/' },
+            { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
+            { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
+          ],
         },
       ],
       '/AI与生活/Hermes日记/': [
         {
           text: 'AI与生活',
           items: [
-            { text: '周记归档', link: '/AI与生活/' },
-            { text: 'Hermes日记', link: '/AI与生活/Hermes日记/' },
+            { text: '最新周记', link: '/AI与生活/' },
+            {
+              text: '我的AI历程：基础设施与工具使用',
+              link: '/AI与生活/我的AI历程/',
+            },
           ],
         },
         {
-          text: 'Hermes日记',
+          text: 'Hermes日记（协作本）',
           collapsed: false,
           items: hermesDiaryNav,
         },

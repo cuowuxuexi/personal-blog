@@ -8,7 +8,7 @@ hero:
   text: 看，烟花！
   tagline: ''
   image:
-    src: /images/hero-fireworks.jpg
+    src: /images/hero-fireworks.png
     alt: 机械之手指向夜空烟花
 features:
   # 整卡可点；不写 linkText，避免与顶栏/Hero 重复成「第四个按钮」

@@ -2,7 +2,7 @@
 
 个人博客站点（slug: `personal-blog`）。双主题：**投资**、**AI与生活**。基于 VitePress 1.6.x，本地开发、静态构建。
 
-阅读体验对齐 VitePress 默认三栏骨架与参考周刊主题手法（磨砂顶栏、橙系正文链、引用装饰条、大纲激活高亮、图片点击放大）；站名与品牌为「误君在脑海里放烟花」。字体策略为**系统中文栈 + 自托管 FiraCode**（不再捆绑 10MB 全量思源 VF）。不搬第三方内容与评论/订阅组件。
+阅读体验对齐 VitePress 默认三栏骨架与参考周刊主题手法（磨砂顶栏、橙系正文链、引用装饰条、大纲激活高亮、图片点击放大）；站名与品牌为「误君在脑海里放烟花」。字体策略为**自托管全量思源宋体 CN VF（~10MB）+ FiraCode**。不搬第三方内容与评论/订阅组件。
 
 > 本站投资相关内容**非投资建议**，仅供学习交流。
 
@@ -64,7 +64,7 @@ personal-blog/
     adr/                     # 架构决策
     public/
       fonts/               # FiraCode-VF.woff2（可选保留）
-      images/hero-fireworks.jpg
+      images/hero-fireworks.png
     .vitepress/
       config.mts             # nav / sidebar / search
       posts.ts               # 文章登记表（首页与板块列表）
@@ -140,7 +140,7 @@ description: 一句话摘要（首页与板块列表展示）
 - 双板块路径：`/投资/`、`/AI与生活/`  
 - 文章页 `PostMeta`（日期、板块标签、可选 description/cover）  
 - 首页 `HomeRecent` + 板块 `CategoryList`（同源 `posts.ts`）  
-- 系统字体减负；local search、明暗模式、页脚免责  
+- 全量思源宋体 CN VF + FiraCode；local search、明暗模式、页脚免责  
 - 不包含：Algolia、Giscus、RSS、公网部署、CMS  
 
 ## 许可与边界

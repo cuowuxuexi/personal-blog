@@ -12,6 +12,17 @@ Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `
 
 Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.
 
+### Blog editor
+
+Project skill for adding or revising public blog content, page design, theme styles, navigation, sidebars, posts index, or public assets.
+
+- Formal skill: `.agents/skills/blog-editor/SKILL.md`
+- Explicit invoke: `/blog-editor`
+- When the user asks to add/edit blog content or page design, read and follow that skill first for intent routing and file location.
+- AI 与生活周记固定模板：skill 内 `content.weekly-life` + `.agents/skills/blog-editor/templates/weekly-life.md`
+- Platform discovery wrappers only: `.cursor/skills/blog-editor/`, `.claude/skills/blog-editor/`
+- Do not auto commit, push, or deploy.
+
 ### Research publishing
 
 Investment research content uses the research-frontend protocol. See `docs/agents/research-publishing.md`.

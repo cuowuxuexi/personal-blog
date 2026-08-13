@@ -48,7 +48,10 @@ function setupImageZoom() {
       target.tagName === 'IMG' &&
       target.closest('.vp-doc') &&
       !target.closest('.blog-zoom-overlay') &&
-      !target.closest('.post-cover')
+      !target.closest('.post-cover') &&
+      !target.closest('.weekly-entry__badge') &&
+      !target.classList.contains('weekly-section-icon') &&
+      !target.classList.contains('weekly-entry__badge-image')
     ) {
       openZoom(target as HTMLImageElement)
     }
