@@ -27,7 +27,8 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 不替代：
 
 - 投研发布协议：`docs/agents/research-publishing.md`
-- Hermes 专用协议：`docs/agents/hermes-diary.md` 与 `docs/AI与生活/Hermes日记/README.md`
+- 作者本人的周记发布：本地发布面板（`panel/`，`docs/agents/publishing-panel.md`）
+- Hermes 专用协议（已停用）：`docs/agents/hermes-diary.md` 与 `docs/AI与生活/Hermes日记/README.md`
 - 领域词与 ADR：`CONTEXT.md`、`docs/adr/`
 
 ## Startup
@@ -71,7 +72,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 | --- | --- | --- | --- |
 | `content.weekly-investment` | 投资周记新增/修改 | `docs/投资/周记/*.md` | 更新 `posts.ts` + `/投资/周记/` 侧栏；`/投资/周记/` 经 `LatestWeeklyRedirect` 进最新一期；走投资门禁 |
 | `content.weekly-life` | AI与生活周记新增/修改 | `docs/AI与生活/*.md`（非 Hermes） | 更新 `posts.ts` + `/AI与生活/` 侧栏；`/AI与生活/` 经 `LatestWeeklyRedirect` 进最新一期 |
-| `content.hermes-diary` | Hermes 日记 | `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` | **禁止**改 `posts.ts` / `config.mts` |
+| `content.hermes-diary` | Hermes 日记（**已停用**，除非作者明确要求恢复） | `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` | **禁止**改 `posts.ts` / `config.mts` |
 | `content.research-*` | 行业/地图/标的 | `docs/投资/投研/**` | 更新入口、侧栏、硬编码计数/卡片；走投资门禁 |
 | `content.philosophy` | 投资哲学 | `docs/投资哲学/**` | 新增主题时更新 nav/sidebar |
 | `content.big-question` | 大问题 | `docs/大问题/**` | 路由变化时更新 nav/sidebar |
@@ -118,6 +119,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 3. 共用组件：
    - 正文由多条 `<WeeklyEntry>` 组成；组件：`docs/.vitepress/theme/components/WeeklyEntry.vue`
    - 每条：`tag` 或 `tags`（多标签用 `/` 分隔）+ `title` + 独立 `image`（可省）+ 默认 slot 正文；条目内可再插图（连续插图各自单独成段，间距由 CSS 处理）
+   - 标签固定显示在条目标题**下方**（主题 CSS，全站周记共用）；不要排到标题右侧
    - 可选标题外链：`link-href` 始终挂主标题（橙色 ↗）。副标题默认纯文本；只有用户明确要求时才加 `subtitle-href`。可选 `subtitle`；可选 `badge-image`（标题下无链接小图）；正文外链可加 class `weekly-ext-link`
    - 条目标题图默认完整显示（`contain`）；照片封面要裁切时才加 `image-fit="cover"`
    - 可选 `date`（`YYYY-MM-DD`）：条目创建日；默认用文章 frontmatter.date。有「展开 / 收起」时，日期出现在按钮右侧，格式 `YYYY年MM月DD日`（月日补零）
@@ -140,7 +142,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 - 标题风格：`# 第NNN期-主题`（无空格，与生活周记一致；投资与生活各自从 001 起算；开篇约定页不算期数）
 - 封面默认复用 `/images/hero-fireworks.png`（与 AI 第001期头图相同）；用户另给封面时再换
 - `/投资/周记/` 经 `LatestWeeklyRedirect` 进入最新一期
-- 起草正文前过 Gate 1；不编造研究事实或结论；不写持仓、成本、交易
+- 起草正文前过 Gate 1；不编造研究事实或结论；持仓、成本、交易可按作者意愿写入（2026-08-14 起不再默认禁写）
 - 保留作者原话与「想法：」/`💡` 标记；不润色成复盘腔
 
 固定骨架与栏目规则同下方「AI与生活周记结构」，只把 `pageClass` / `category` / 文件路径换成投资周记。
@@ -186,9 +188,9 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 - 不改写成正式复盘、总结报告或第三人称评测
 - 未要求“重写”时不做大幅改写；核心判断句保持作者立场
 
-### Hermes diary
+### Hermes diary（已停用）
 
-完整规则：`docs/AI与生活/Hermes日记/README.md`
+2026-08-14 起默认不再新写。完整历史规则：`docs/AI与生活/Hermes日记/README.md`
 
 - 只写 `docs/AI与生活/Hermes日记/YYYY-MM-DD.md`
 - 按天一个文件；末尾追加 `## #N · HH:mm · 类型`
