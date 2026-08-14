@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useData } from 'vitepress'
+import { formatDateZhPad } from '../../posts'
 
 const props = defineProps<{
   /** 单标签（兼容旧写法） */
@@ -10,16 +12,43 @@ const props = defineProps<{
   image?: string
   imageAlt?: string
   /**
-   * 外链：无副标题时挂在主标题上；有副标题时挂在副标题上。
-   * 样式追加橙色 ↗
+   * 主标题外链，橙色 ↗。有副标题时仍挂主标题。
    */
   linkHref?: string
-  /** 主标题下的副标题文案（可与 linkHref 组成「副标题 + 链接」） */
+  /** 仅当用户明确要求副标题可点时使用 */
+  subtitleHref?: string
+  /** 主标题下的副标题文案（默认纯文本） */
   subtitle?: string
   /** 标题下展示图（不带链接，仅装饰/说明） */
   badgeImage?: string
   badgeAlt?: string
+  /** contain：完整显示（默认）；cover：栏宽裁切照片封面 */
+  imageFit?: 'contain' | 'cover'
+  /** 条目创建日期 YYYY-MM-DD；默认用文章 frontmatter.date */
+  date?: string
 }>()
+
+const titleLink = computed(() => props.linkHref?.trim() || '')
+const subtitleLink = computed(() => props.subtitleHref?.trim() || '')
+
+const { frontmatter } = useData()
+const entryDate = computed(() => {
+  const raw = props.date?.trim() || frontmatter.value.date
+  if (typeof raw === 'string') {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw)
+    return match ? match[0] : raw.slice(0, 10)
+  }
+  if (raw instanceof Date && !Number.isNaN(raw.getTime())) {
+    const month = String(raw.getMonth() + 1).padStart(2, '0')
+    const day = String(raw.getDate()).padStart(2, '0')
+    return `${raw.getFullYear()}-${month}-${day}`
+  }
+  return ''
+})
+const formattedDate = computed(() =>
+  entryDate.value ? formatDateZhPad(entryDate.value) : '',
+)
+const isWeekly = computed(() => frontmatter.value.type === 'weekly')
 
 const tagList = computed(() => {
   if (Array.isArray(props.tags)) {
@@ -41,6 +70,9 @@ const expanded = ref(false)
 const overflow = ref(false)
 const collapsedHeight = ref(PREVIEW_HEIGHT)
 const bodyRef = ref<HTMLElement | null>(null)
+const showDate = computed(
+  () => isWeekly.value && Boolean(formattedDate.value),
+)
 let ro: ResizeObserver | null = null
 
 function getCollapsedHeight(el: HTMLElement) {
@@ -103,7 +135,7 @@ onBeforeUnmount(() => {
 })
 
 watch(
-  () => [props.image, props.title, props.subtitle, props.tag, props.tags, props.linkHref],
+  () => [props.image, props.title, props.subtitle, props.tag, props.tags, props.linkHref, props.subtitleHref, props.imageFit],
   () => {
     expanded.value = false
     void measure()
@@ -121,9 +153,9 @@ function toggle() {
     <header class="weekly-entry__head">
       <h3 class="weekly-entry__title">
         <a
-          v-if="linkHref"
+          v-if="titleLink"
           class="weekly-entry__title-link"
-          :href="linkHref"
+          :href="titleLink"
           target="_blank"
           rel="noopener noreferrer"
         >{{ title }}</a>
@@ -140,9 +172,9 @@ function toggle() {
 
     <p v-if="subtitle" class="weekly-entry__subtitle">
       <a
-        v-if="linkHref"
+        v-if="subtitleLink"
         class="weekly-entry__subtitle-link"
-        :href="linkHref"
+        :href="subtitleLink"
         target="_blank"
         rel="noopener noreferrer"
       >{{ subtitle }}</a>
@@ -161,6 +193,7 @@ function toggle() {
     <div v-if="image" class="weekly-entry__media">
       <img
         class="weekly-entry__image"
+        :class="{ 'is-cover': imageFit === 'cover' }"
         :src="image"
         :alt="imageAlt || title"
         loading="lazy"
@@ -176,14 +209,20 @@ function toggle() {
       <slot />
     </div>
 
-    <button
-      v-if="overflow || expanded"
-      type="button"
-      class="weekly-entry__toggle"
-      :aria-expanded="expanded ? 'true' : 'false'"
-      @click="toggle"
-    >
-      {{ expanded ? '收起' : '展开' }}
-    </button>
+    <div v-if="overflow || expanded" class="weekly-entry__foot">
+      <button
+        type="button"
+        class="weekly-entry__toggle"
+        :aria-expanded="expanded ? 'true' : 'false'"
+        @click="toggle"
+      >
+        {{ expanded ? '收起' : '展开' }}
+      </button>
+      <time
+        v-if="showDate"
+        class="weekly-entry__date"
+        :datetime="entryDate"
+      >{{ formattedDate }}</time>
+    </div>
   </article>
 </template>

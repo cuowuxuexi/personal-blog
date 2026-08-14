@@ -20,6 +20,7 @@ Project skill for adding or revising public blog content, page design, theme sty
 - Explicit invoke: `/blog-editor`
 - When the user asks to add/edit blog content or page design, read and follow that skill first for intent routing and file location.
 - AI 与生活周记固定模板：skill 内 `content.weekly-life` + `.agents/skills/blog-editor/templates/weekly-life.md`
+- 投资周记固定模板：skill 内 `content.weekly-investment` + `.agents/skills/blog-editor/templates/weekly-invest.md`；版面与生活周记同一套，走投资门禁
 - Platform discovery wrappers only: `.cursor/skills/blog-editor/`, `.claude/skills/blog-editor/`
 - Do not auto commit, push, or deploy.
 

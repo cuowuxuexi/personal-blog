@@ -121,7 +121,9 @@ export default defineConfig({
             {
               text: '标的档案',
               collapsed: true,
-              items: [],
+              items: [
+                { text: '腾讯', link: '/投资/投研/互联网/腾讯/' },
+              ],
             },
           ],
         },
@@ -196,7 +198,8 @@ export default defineConfig({
           text: '2026年',
           collapsed: false,
           items: [
-            { text: '第001期 · 写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
+            { text: '第001期-看烟花', link: '/投资/周记/2026-08-13-看烟花' },
+            { text: '写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
           ],
         },
       ],
@@ -226,6 +229,13 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
+          ],
+        },
+        {
+          text: '大事件记录区',
+          collapsed: false,
+          items: [
+            { text: '2026年大事件', link: '/AI与生活/大事件/2026' },
           ],
         },
         {

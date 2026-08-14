@@ -34,8 +34,10 @@ outline: false
   <header class="research-section-head">
     <div><p>RELATED / 相关档案</p><h2 id="map-related">相关档案</h2></div>
   </header>
-  <div class="research-note">
-    <strong>空状态</strong>
-    <span>尚无关联标的档案。</span>
-  </div>
+  <a class="subject-row" href="/投资/投研/互联网/腾讯/">
+    <div><span class="subject-row__ticker">0700.HK</span><strong>腾讯</strong></div>
+    <p>第一张公司底图写在标的档案里。行业地图仍空，不把腾讯页冒充可复用产业结论。</p>
+    <span class="subject-row__status">学习中</span>
+    <span class="subject-row__arrow">→</span>
+  </a>
 </section>

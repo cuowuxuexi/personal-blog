@@ -2565,6 +2565,73 @@
   line-height: 26px;
 }
 
+.weekly-post .weekly-events {
+  margin: 16px 0 0;
+  border-top: 1px solid var(--weekly-divider);
+  border-bottom: 1px solid var(--weekly-divider);
+}
+
+.weekly-post .weekly-events__summary,
+.weekly-post .weekly-events__year-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 0;
+  color: var(--weekly-accent);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.weekly-post .weekly-events__summary::-webkit-details-marker,
+.weekly-post .weekly-events__year-summary::-webkit-details-marker {
+  display: none;
+}
+
+.weekly-post .weekly-events__summary::before,
+.weekly-post .weekly-events__year-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 12px;
+}
+
+.weekly-post .weekly-events[open] > .weekly-events__summary::before,
+.weekly-post .weekly-events__year[open] > .weekly-events__year-summary::before {
+  content: '▾';
+}
+
+.weekly-post .weekly-events__panel {
+  padding: 0 0 12px;
+}
+
+.weekly-post .weekly-events__year {
+  margin: 0 0 8px;
+  padding: 0 0 0 4px;
+  border-bottom: 0;
+}
+
+.weekly-post .weekly-events__year-body {
+  padding: 0 0 8px 20px;
+  color: var(--vp-c-text-1);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.weekly-post .weekly-events__year-body > :first-child {
+  margin-top: 0;
+}
+
+.weekly-post .weekly-events__year-body > :last-child {
+  margin-bottom: 0;
+}
+
+.weekly-post .vp-doc .weekly-events__year-body h4 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
 .weekly-post .vp-doc h2 {
   margin: 48px 0 16px;
   padding-top: 24px;
@@ -2717,17 +2784,23 @@
   margin: 0 0 14px;
 }
 
-/* 条目头图：宽度始终对齐栏宽；竖图按 max-height 裁切，不缩窄 */
+/* 条目头图：默认完整显示截图；照片封面才用 cover 裁切 */
 .weekly-post .vp-doc .weekly-entry__image {
   display: block;
   width: 100%;
   max-width: 100%;
-  max-height: min(400px, 50vh);
+  max-height: none;
   height: auto;
   margin: 0;
+  object-fit: contain;
+  object-position: top center;
+  border-radius: 3px;
+}
+
+.weekly-post .vp-doc .weekly-entry__image.is-cover {
+  max-height: min(400px, 50vh);
   object-fit: cover;
   object-position: center;
-  border-radius: 3px;
 }
 
 .weekly-post .weekly-entry__tags {
@@ -2778,17 +2851,17 @@
   line-height: 1;
 }
 
-/* 主标题下的副标题（可带外链） */
+/* 主标题下的副标题：默认纯文本；仅 subtitle-href 时变橙色链接 */
 .weekly-post .vp-doc .weekly-entry__subtitle {
-  margin: -2px 0 12px;
-  color: var(--blog-link);
+  margin: 0 0 14px;
+  color: var(--vp-c-text-2);
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
 }
 
 .weekly-post .vp-doc .weekly-entry__subtitle-link {
-  color: inherit;
+  color: var(--blog-link);
   font: inherit;
   text-decoration: none;
 }
@@ -2854,10 +2927,17 @@
   margin-top: 28px;
 }
 
+.weekly-post .weekly-entry__foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
 .weekly-post .weekly-entry__toggle {
   display: inline-flex;
   align-items: center;
-  margin-top: 10px;
+  margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
@@ -2867,6 +2947,13 @@
   font-weight: 500;
   line-height: 22px;
   cursor: pointer;
+}
+
+.weekly-post .weekly-entry__date {
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
 }
 
 .weekly-post .weekly-entry__toggle:hover {

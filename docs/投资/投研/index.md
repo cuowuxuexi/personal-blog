@@ -14,7 +14,7 @@ outline: false
 <section class="research-directory" aria-labelledby="research-industries">
   <header class="research-section-head">
     <div><p>INDUSTRIES / 行业</p><h2 id="research-industries">行业目录</h2></div>
-    <span>5 个行业 · 1 个标的</span>
+    <span>5 个行业 · 2 个标的</span>
   </header>
 
   <a class="industry-row" href="/投资/投研/医药/">
@@ -33,7 +33,7 @@ outline: false
       <strong>互联网行业</strong>
       <span>平台、内容与互联网商业模式的长期观察</span>
     </div>
-    <div class="industry-row__subjects">壳已建 · 待补地图与标的</div>
+    <div class="industry-row__subjects">腾讯 · 地图待建</div>
     <span class="industry-row__arrow">→</span>
   </a>
 

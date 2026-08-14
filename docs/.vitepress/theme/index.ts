@@ -7,6 +7,8 @@ import Layout from './Layout.vue'
 import CategoryList from './components/CategoryList.vue'
 import LatestWeeklyRedirect from './components/LatestWeeklyRedirect.vue'
 import WeeklyEntry from './components/WeeklyEntry.vue'
+import WeeklyEvents from './components/WeeklyEvents.vue'
+import WeeklyEventYear from './components/WeeklyEventYear.vue'
 import type { EnhanceAppContext } from 'vitepress'
 import './style.css'
 
@@ -17,5 +19,7 @@ export default {
     app.component('CategoryList', CategoryList)
     app.component('LatestWeeklyRedirect', LatestWeeklyRedirect)
     app.component('WeeklyEntry', WeeklyEntry)
+    app.component('WeeklyEvents', WeeklyEvents)
+    app.component('WeeklyEventYear', WeeklyEventYear)
   },
 }

@@ -69,7 +69,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 
 | Mode | Trigger | Primary files | Side effects |
 | --- | --- | --- | --- |
-| `content.weekly-investment` | 投资周记新增/修改 | `docs/投资/周记/*.md` | 更新 `posts.ts` + `/投资/周记/` 侧栏；走投资门禁 |
+| `content.weekly-investment` | 投资周记新增/修改 | `docs/投资/周记/*.md` | 更新 `posts.ts` + `/投资/周记/` 侧栏；`/投资/周记/` 经 `LatestWeeklyRedirect` 进最新一期；走投资门禁 |
 | `content.weekly-life` | AI与生活周记新增/修改 | `docs/AI与生活/*.md`（非 Hermes） | 更新 `posts.ts` + `/AI与生活/` 侧栏；`/AI与生活/` 经 `LatestWeeklyRedirect` 进最新一期 |
 | `content.hermes-diary` | Hermes 日记 | `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` | **禁止**改 `posts.ts` / `config.mts` |
 | `content.research-*` | 行业/地图/标的 | `docs/投资/投研/**` | 更新入口、侧栏、硬编码计数/卡片；走投资门禁 |
@@ -117,8 +117,10 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 2. Frontmatter：`title`、`date`、`category`、`type: weekly`、`issue`、`description`、`pageClass`
 3. 共用组件：
    - 正文由多条 `<WeeklyEntry>` 组成；组件：`docs/.vitepress/theme/components/WeeklyEntry.vue`
-   - 每条：`tag` 或 `tags`（多标签用 `/` 分隔）+ `title` + 独立 `image`（可省）+ 默认 slot 正文；条目内可再插图（连续插图各自成段，间距由 CSS 处理）
-   - 可选标题外链：`link-href`（无副标题时主标题可点；有 `subtitle` 时外链挂在副标题上，样式追加橙色 ↗）；可选 `subtitle`；可选 `badge-image`（标题下无链接小图）；正文外链可加 class `weekly-ext-link`
+   - 每条：`tag` 或 `tags`（多标签用 `/` 分隔）+ `title` + 独立 `image`（可省）+ 默认 slot 正文；条目内可再插图（连续插图各自单独成段，间距由 CSS 处理）
+   - 可选标题外链：`link-href` 始终挂主标题（橙色 ↗）。副标题默认纯文本；只有用户明确要求时才加 `subtitle-href`。可选 `subtitle`；可选 `badge-image`（标题下无链接小图）；正文外链可加 class `weekly-ext-link`
+   - 条目标题图默认完整显示（`contain`）；照片封面要裁切时才加 `image-fit="cover"`
+   - 可选 `date`（`YYYY-MM-DD`）：条目创建日；默认用文章 frontmatter.date。有「展开 / 收起」时，日期出现在按钮右侧，格式 `YYYY年MM月DD日`（月日补零）
    - 右侧大纲只收 Markdown `##`/`###`；条目标题在组件内时，用 `weekly-outline-only` 包一层同名 `###` 供大纲收录
    - 正文默认约 6 行折叠，超出显示「展开 / 收起」
 4. 同步：
@@ -127,11 +129,21 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 5. 创建前检查重复 date/title/link/issue；issue 取同分类最高值 + 1
 6. 当前实践：**不要**把研究页自动登记进 `manualPosts`（会进首页最近更新）；仅在用户明确要求时再登记
 
-#### 投资周记结构
+#### 投资周记结构（固定模板）
 
-- 整期主题写在 `# 第NNN期 - 标题`（可跟一句期说明或免责，不写 emoji 大栏目）
-- 正文由多条 `<WeeklyEntry>` 组成；结构可按当篇需要组织
+权威可复制骨架：`templates/weekly-invest.md`。参考实例：`docs/投资/周记/2026-08-13-看烟花.md`。
+
+版面与 AI 与生活周记同一套（封面、一句说明、「看烟花！！！」栏目、其下多条 `WeeklyEntry`）。差异只在栏目归属与门禁：
+
+- 文件：`docs/投资/周记/YYYY-MM-DD-标题.md`
+- `pageClass` 固定：`weekly-post weekly-post--invest`
+- 标题风格：`# 第NNN期-主题`（无空格，与生活周记一致；投资与生活各自从 001 起算；开篇约定页不算期数）
+- 封面默认复用 `/images/hero-fireworks.png`（与 AI 第001期头图相同）；用户另给封面时再换
+- `/投资/周记/` 经 `LatestWeeklyRedirect` 进入最新一期
+- 起草正文前过 Gate 1；不编造研究事实或结论；不写持仓、成本、交易
 - 保留作者原话与「想法：」/`💡` 标记；不润色成复盘腔
+
+固定骨架与栏目规则同下方「AI与生活周记结构」，只把 `pageClass` / `category` / 文件路径换成投资周记。
 
 #### AI与生活周记结构（固定模板）
 
@@ -156,10 +168,12 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 - 默认整期只有这一栏目；栏目下的每个小标题 = 一条 `WeeklyEntry`
 - 不要为每条内容再机械加一层 `##`
 - 用户未明确要求时，不自行发明第二栏目
-- 可选字段按条目需要：`image`、`link-href`、`subtitle`、`badge-image` / `badge-alt`；没有就省略
+- 可选字段按条目需要：`image`、`link-href`、`subtitle`、`subtitle-href`、`badge-image` / `badge-alt`、`date`、`image-fit`；没有就省略。`date` 缺省时用文章 frontmatter 日期；「展开 / 收起」右侧显示创建日期
 - 图片放到 `docs/public/images/weekly/`，正文引用以 `/images/weekly/...` 开头
 - `pageClass` 固定：`weekly-post weekly-post--life`
 - 用户给原始素材即可：主题、封面、主题说明、条目（标题/标签/链接/图片/原文）；由 agent 套模板、编号、索引与轻度润色
+
+大事件记录区在 AI 与生活**左侧栏**，不写进周记正文。文件：`docs/AI与生活/大事件/YYYY.md`；侧栏组名「大事件记录区」，子项「YYYY年大事件」。闭门材料不要把卡量、融资安排和不可再分发原文写进公开页。
 
 #### AI与生活周记润色
 
@@ -353,6 +367,8 @@ Design Mode 是探索工具；真实源文件是最终事实。
 4. 根 `README.md`（可能滞后）
 
 ## Quick commands
+
+本地预览由 Cursor 打开本仓库时自动启动（`.vscode/tasks.json`，`127.0.0.1:5173`）。不要另起一份 `docs:dev`，除非用户说预览打不开。改完文件后热更新即可，不必重启。
 
 ```powershell
 pnpm docs:dev

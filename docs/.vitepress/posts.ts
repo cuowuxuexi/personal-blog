@@ -26,11 +26,19 @@ export interface PostItem {
 /** 手写登记：周记 / 投研等。Hermes 日记不要写在这里。 */
 const manualPosts: PostItem[] = [
   {
+    title: '第001期-看烟花',
+    date: '2026-08-13',
+    category: '投资',
+    type: 'weekly',
+    issue: 1,
+    link: '/投资/周记/2026-08-13-看烟花',
+    description: '腾讯2026年Q2自由现金流转负。电话会里，528亿资本开支、算力优先级和回购被放在同一张桌子上。',
+  },
+  {
     title: '写在投资笔记开始之前',
     date: '2026-08-08',
     category: '投资',
     type: 'weekly',
-    issue: 1,
     link: '/投资/周记/2026-08-08-写在投资笔记开始之前',
     description: '投资板块开篇：分栏约定、写作框架与风险边界。',
   },
@@ -90,6 +98,13 @@ export function formatDateZh(date: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date)
   if (!match) return date
   return `${match[1]}年${Number(match[2])}月${Number(match[3])}日`
+}
+
+/** 周记条目「收起」右侧日期：2026年08月12日 */
+export function formatDateZhPad(date: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date)
+  if (!match) return date
+  return `${match[1]}年${match[2]}月${match[3]}日`
 }
 
 export function formatIssue(issue?: number): string {

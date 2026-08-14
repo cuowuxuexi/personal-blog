@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "VitePress 本地预览",
+      "type": "shell",
+      "command": "pnpm docs:dev --host 127.0.0.1 --port 5173",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "BROWSER": "none"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vitepress",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "Local:"
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
