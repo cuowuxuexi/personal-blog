@@ -54,5 +54,7 @@ pnpm docs:preview
 | `RESEARCH-FRONTEND.md` | 投研前端分阶段计划 |
 | `docs/agents/research-publishing.md` | Agent 回源与发布协议 |
 | `docs/adr/0001-research-authority-and-publication-boundary.md` | 架构决策 |
+| `panel/` | 发布面板：本地更新投资 / AI与生活周记 |
+| `docs/agents/publishing-panel.md` | 发布面板与 agent 的分工 |
 
 更完整的站点约定见 `README.md`。

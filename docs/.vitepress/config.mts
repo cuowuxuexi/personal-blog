@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
 import { hermesSidebarItems } from './hermes-diary'
+import { normalizeDisplayMath } from './normalize-math.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
@@ -20,6 +21,16 @@ export default defineConfig({
   // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
   // agents/adr 为仓库协议；目录 README 仅给作者/Agent，不进公开站点
   srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],
+
+  markdown: {
+    math: true,
+    config(md) {
+      const parse = md.parse.bind(md)
+      const render = md.render.bind(md)
+      md.parse = (src, env) => parse(normalizeDisplayMath(src), env)
+      md.render = (src, env) => render(normalizeDisplayMath(src), env)
+    },
+  },
 
   head: [
     ['meta', { name: 'theme-color', content: '#2949a4' }],

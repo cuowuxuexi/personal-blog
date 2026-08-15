@@ -11,3 +11,6 @@ docs/.vitepress/cache/
 # Local-only research origin index for agents (never publish)
 research-sources.local.yaml
 research-sources.local.yml
+
+# Publishing panel local backups
+panel/.local-backups/

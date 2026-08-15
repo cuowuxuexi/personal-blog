@@ -1,5 +1,7 @@
 # Hermes diary protocol (agents)
 
+> **已停用（2026-08-14）**：不再新写 Hermes 日记。已发布页面保留。除非作者明确要求恢复，否则不要创建新的日记天文件。
+
 Shared day-log under the public blog for ideas, plans, and notes worth keeping after discussion with Hermes.
 
 ## Authority

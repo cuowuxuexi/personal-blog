@@ -1,5 +1,7 @@
 # Hermes日记 — 操作说明（作者 / Hermes）
 
+> **已停用（2026-08-14）**：不再新写。已发布页面保留。周记请走发布面板或 blog-editor。
+
 「AI与生活」下的**按天协作本**：记录想法、规划、与 Hermes 探讨后值得留下的内容。  
 **az / huizhang / shizun 三 profile 共用同一目录、同一 git 仓库。**
 

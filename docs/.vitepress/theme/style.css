@@ -2726,6 +2726,18 @@
   margin: 0;
 }
 
+.vp-doc mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.vp-doc mjx-container[display="true"] {
+  display: block;
+  margin: 1.25rem 0;
+  text-align: center;
+}
+
 /* 正文插图默认：限宽限高居中（装饰小图由更具体选择器覆盖） */
 .weekly-post .vp-doc img {
   display: block;

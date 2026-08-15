@@ -23,6 +23,7 @@ Project skill for adding or revising public blog content, page design, theme sty
 - 投资周记固定模板：skill 内 `content.weekly-investment` + `.agents/skills/blog-editor/templates/weekly-invest.md`；版面与生活周记同一套，走投资门禁
 - Platform discovery wrappers only: `.cursor/skills/blog-editor/`, `.claude/skills/blog-editor/`
 - Do not auto commit, push, or deploy.
+- The author may publish weekly notes through the local **publishing panel** (`panel/`, `pnpm panel`). See `docs/agents/publishing-panel.md`.
 
 ### Research publishing
 
@@ -39,10 +40,9 @@ Before creating, restructuring, or materially updating **any** investment weekly
 5. Do not auto-sync, auto-publish, push, or deploy research content without explicit human approval for that content instance.
 6. Never write private absolute paths, handoff prompts, raw review files, workpapers, cognition originals, or non-redistributable source copies into public docs.
 
-### Hermes diary
+### Hermes diary（已停用）
 
-Day-log for ideas / plans / worth-keeping notes after Hermes discussion. Shared write path for az / huizhang / shizun. See `docs/agents/hermes-diary.md` and `docs/AI与生活/Hermes日记/README.md`.
+2026-08-14 起不再新写 Hermes 日记。已发布页面保留；协议仅作历史说明：`docs/agents/hermes-diary.md`、`docs/AI与生活/Hermes日记/README.md`。
 
-- Write only under `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` (append entries with `#N` + time).
-- Do not hand-edit `posts.ts` / sidebar for new diary days (auto-scanned).
-- Default: push `main` publishes; not a substitute for research publication gates.
+- Do not create new diary days unless the author explicitly reopens this protocol.
+- Do not hand-edit `posts.ts` / sidebar for diary days (auto-scanned).

@@ -1,18 +1,18 @@
 # 博客挂腾讯云 + ICP 备案 — Cursor 操作说明
 
-> 大白话版。目标：用国内机 `guonei` 给 **`cuowocom.com`** 做备案接入，并挂上静态博客。  
+> 大白话版。目标：用国内机 `guonei` 给 **`cuowo.cn`** 做备案接入，并挂上静态博客。  
 > 原则：**UHT 是这台机主业，博客只做静态站；不在服务器上 build。**
 
-> **域名变更（2026-08-10）：** `.win` **不能** ICP 备案。备案与国内公网博客改用 **`cuowocom.com`**（`.com`）。  
-> 旧域 `blog.cuowo.win` 可继续当 Cloudflare Pages / 海外备份，**不再**作为备案主体。  
-> 域名注册商侧现为 **Squarespace Domains**（NS：`nsd*.squarespacedns.com`）；DNS 建议迁 Cloudflare 后用 **灰云** 指 guonei。
+> **域名变更（2026-08-13）：** `cuowocom.com` 备案失败，改用腾讯云注册的 **`cuowo.cn`**（DNSPod）。  
+> `.win` 不能备案；`blog.cuowo.win` 可继续当 Cloudflare Pages / 海外备份。  
+> 国内 HTTPS：**源站 certbot**（DNSPod A 记录直指 `114.132.244.14`），不走 Cloudflare 橙云。
 
 ---
 
 ## 你要达成的结果
 
 1. 腾讯云 ICP 备案通过（主体：你本人）
-2. `https://cuowocom.com`（及可选 `www`）解析到国内机，能打开博客
+2. `https://cuowo.cn`（及可选 `www`）解析到国内机，能打开博客
 3. 页脚有备案号
 4. 微信里不再因「未 ICP 备案」被死拦（可能仍有一次确认，视微信策略）
 
@@ -28,8 +28,8 @@
 | 公网 IP | `114.132.244.14` |
 | Tailscale | `100.88.115.43`（优先用这个 SSH） |
 | SSH 密钥 | `C:\Users\74287\.ssh\id_ed25519_servers` |
-| 博客域名 | `cuowocom.com`（可选 `www.cuowocom.com`） |
-| 主域名（备案用） | `cuowocom.com` |
+| 博客域名 | `cuowo.cn`（可选 `www.cuowo.cn`） |
+| 主域名（备案用） | `cuowo.cn` |
 | 本地仓库 | `D:\项目\personal-blog` |
 | 构建产物 | `docs/.vitepress/dist` |
 | 服务器文档 | `D:\cxks\服务器\国内服务器\` |
@@ -72,9 +72,9 @@ ssh -i $KEY root@114.132.244.14
 
 ### A2. 域名实名
 
-- [ ] `cuowocom.com` 在注册商侧状态正常（Squarespace Domains；**退掉 Workspace 后仍要确认域名 auto-renew 与付款方式**）
-- [ ] 腾讯云备案主体姓名 = 你本人身份证（与账号实名一致）
-- [ ] 海外注册商域名：按腾讯云向导完成**域名权属验证**（常为 TXT）；新购域按提示满足等待期后再交（以页面为准）
+- [ ] `cuowo.cn` 在腾讯云域名控制台状态 **正常**（命名审核 + 实名已过；自动续费开着）
+- [ ] 腾讯云备案主体姓名 = 域名所有者 = 账号实名（身份证一致）
+- [ ] 腾讯云注册域：实名通过后建议满 **3 个工作日**再交（过早交可能被管局查不到实名而驳回，可改完再提）
 
 ### A3. 本机仓库能构建
 
@@ -126,7 +126,7 @@ ss -lntp | head -50
 | 主体 | **个人** |
 | 姓名/证件 | 与域名实名、腾讯云账号实名一致 |
 | 网站名称 | 个人博客类，按管局规则起名（不要太像公司名/经营性） |
-| 域名 | **`cuowocom.com`**（不要填 `cuowo.win` / `.win`） |
+| 域名 | **`cuowo.cn`**（不要填 `cuowo.win` / `cuowocom.com`） |
 | 服务内容 | 个人博客 / 学习分享（**不要**写成荐股、理财销售） |
 | 接入 | 选这台 guonei 对应的服务器/IP |
 
@@ -300,7 +300,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -H "Host: cuowocom.com" http://127.0.0.
 ```bash
 dnf install -y certbot python3-certbot-nginx
 # DNS 已指向本机且 80 通时：
-certbot --nginx -d cuowocom.com -d www.cuowocom.com
+certbot --nginx -d cuowo.cn -d www.cuowo.cn
 nginx -t && systemctl reload nginx
 ```
 
@@ -310,14 +310,14 @@ nginx -t && systemctl reload nginx
 
 | 类型 | 主机记录 | 值 | 说明 |
 |------|----------|-----|------|
-| A | `@` | `114.132.244.14` | `cuowocom.com` → 国内机 |
-| A | `www` | `114.132.244.14` | `www.cuowocom.com` → 国内机 |
+| A | `@` | `114.132.244.14` | `cuowo.cn` → 国内机 |
+| A | `www` | `114.132.244.14` | `www.cuowo.cn` → 国内机 |
 
 注意：
 
-- DNS 在 Cloudflare 时：**DNS only（灰云）**，先别橙云。  
-- 域名若仍在 Squarespace NS：先把 NS 改成 Cloudflare 再在 CF 写记录；或暂在 Squarespace 写同样的 A 记录。  
-- 旧 `blog.cuowo.win`（Pages）可作备份，与 `cuowocom.com` 备案互不影响。
+- **`cuowo.cn` 用 DNSPod**，A 记录直指本机；不要橙云、不必迁 Cloudflare。  
+- 旧 `blog.cuowo.win`（Pages）可作海外备份，与 `cuowo.cn` 备案互不影响。  
+- `cuowocom.com` 已有 Let's Encrypt，备案失败后不再作为国内主域。
 
 ### E3. 页脚挂备案号（改博客源码）
 
@@ -379,9 +379,9 @@ pnpm docs:build
 
 | 方案 | 说明 |
 |------|------|
-| **推荐** | 备案与微信走 **`cuowocom.com` → guonei**；`blog.cuowo.win` / Pages 可当海外备份 |
+| **推荐** | 备案与微信走 **`cuowo.cn` → guonei**（DNSPod）；`blog.cuowo.win` / Pages 可当海外备份 |
 | 双写 | 本机 build 一次，可同时 `wrangler pages deploy` + 上传 guonei（你愿维护再弄） |
-| 只国内 | 只维护 `cuowocom.com` 即可 |
+| 只国内 | 只维护 `cuowo.cn` 即可 |
 
 ---
 
@@ -423,4 +423,4 @@ pnpm docs:build
 
 ---
 
-最后更新：2026-08-10（域名改为 cuowocom.com；.win 不可备案）
+最后更新：2026-08-13（备案域改为 cuowo.cn；国内 HTTPS 用源站 certbot）

@@ -22,6 +22,7 @@ This repository is a personal blog. Recording matters more than polished exhibit
 | **Current understanding** | The author's present interpretation. It may be incomplete, provisional, or later revised. |
 | **Open questions** | Explicit unresolved problems that define the next research direction. |
 | **Origin kind** | How a blog page was formed relative to private research: `command` (mainly from private research), `blog` (mainly from writing/thinking on the blog), or `mixed`. |
+| **Publishing panel (发布面板)** | The local, non-coding publishing tool for weekly notes (investment + AI/life). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note. Research pages are outside its scope. |
 
 ## Authority boundaries
 
@@ -47,6 +48,8 @@ All weekly notes and research content require two human gates:
 2. Review local draft/preview before any push or deploy.
 
 One approval applies only to that content instance. There is no auto-sync and no auto-publish.
+
+The gates constrain **agent-mediated** drafting and publishing. When the author personally drafts and publishes a weekly note through the local publishing panel, the author's own preview-and-confirm action satisfies both gates for that weekly note instance. Research pages (`docs/投资/投研/`) are outside panel scope and keep the full agent-mediated gate process.
 
 ## Public research page states
 
@@ -83,7 +86,7 @@ Research pages should make these easy to find, without forcing a rigid body temp
 
 ## Account privacy
 
-Holdings, costs, orders, account size, and trade logs are private by default. Any disclosure is per-article and human-decided.
+Holdings, costs, orders, account size, and trade logs may be disclosed at the author's discretion. There is no default privacy restriction on them, and agents do not need to screen weekly content for them. (Relaxed 2026-08-14; previously private by default.)
 
 ## Experimental content architecture
 
@@ -104,5 +107,6 @@ The first three-page split is experimental and may change after preview and use.
 | subject archive | one-off company report only, private campaign folder |
 | local source index | public source dump, auto-sync database |
 | publication gate | auto deploy, silent publish |
+| publishing panel / 发布面板 | 微博后台, CMS, 云端编辑器 |
 
-最后更新：2026-08-10
+最后更新：2026-08-14

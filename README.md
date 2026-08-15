@@ -15,6 +15,10 @@ pnpm install
 # 本地开发
 pnpm docs:dev
 
+# 发布面板（投资周记 / AI与生活周记，无需打开 Cursor）
+pnpm panel
+pnpm panel:shortcut   # 首次：在桌面创建快捷方式
+
 # 静态构建
 pnpm docs:build
 
@@ -55,6 +59,7 @@ personal-blog/
   RESEARCH-FRONTEND.md       # 投研前端分阶段计划
   AGENTS.md                  # Agent 技能入口
   research-sources.local.yaml  # 本地回源索引（gitignore，不进仓库）
+  panel/                   # 发布面板（本地周记更新，不进站点构建）
   docs/
     index.md                 # 首页（hero 插画 + features + 最近更新）
     关于.md
@@ -91,6 +96,16 @@ personal-blog/
 本地来源索引 `research-sources.local.yaml` 只给本机 Agent 使用，不进 Git，也不进网站。  
 分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。  
 Phase 2 版面/内容设计交接（Cursor）：`docs/agents/handoff-phase2-research-ui.md`。
+
+## 发布面板（周记）
+
+投资周记和 AI与生活周记的日常更新走本地**发布面板**：选栏目、填标题/正文/图/链接，可选 AI 润色，预览真实页面后确认发布。
+
+```bash
+pnpm panel
+```
+
+桌面快捷方式：`pnpm panel:shortcut`。clipro 配置放根目录 `.env`（见 `.env.example`）。协议：`docs/agents/publishing-panel.md`。投研页等其它栏目仍用 Cursor。
 
 ## 如何新增文章
 
@@ -149,4 +164,4 @@ description: 一句话摘要（首页与板块列表展示）
 - 勿拷贝第三方周刊正文、封面或品牌资产。  
 - 勿将密钥写入仓库。  
 
-最后更新：2026-08-10
+最后更新：2026-08-14

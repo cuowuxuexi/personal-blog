@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>发布面板</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">误君在脑海里放烟花</p>
+        <h1>发布面板</h1>
+      </div>
+      <p class="status" id="status">正在读取栏目…</p>
+    </header>
+
+    <nav class="kinds" id="kinds"></nav>
+
+    <section class="issue-bar" id="issue-bar"></section>
+
+    <main class="layout">
+      <aside class="entries" id="entries"></aside>
+
+      <section class="editor">
+        <form id="form" autocomplete="off">
+          <div class="row">
+            <label class="field grow">
+              <span>标题</span>
+              <input name="title" required placeholder="这条想叫什么" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>正文</span>
+            <textarea name="body" required rows="10" placeholder="几句话就行。💡 想法可以写在后面。"></textarea>
+          </label>
+
+          <div class="media-grid">
+            <div class="drop" data-role="image" id="drop-image">
+              <strong>题图</strong>
+              <p>拖入或点击上传，自动压成 WebP</p>
+              <input type="file" accept="image/*" hidden />
+              <div class="thumbs"></div>
+            </div>
+            <div class="drop" data-role="body" id="drop-body">
+              <strong>正文图</strong>
+              <p>可多张，按顺序插入正文</p>
+              <input type="file" accept="image/*" multiple hidden />
+              <div class="thumbs"></div>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>主链接</span>
+            <input name="linkHref" type="url" placeholder="https:// 标题上的橙色 ↗" />
+          </label>
+
+          <details class="more">
+            <summary>更多选项</summary>
+            <div class="row">
+              <label class="field grow">
+                <span>标签</span>
+                <input name="tags" placeholder="用 / 分隔，如 腾讯/财报" />
+                <div class="tag-cloud" id="tag-cloud"></div>
+              </label>
+            </div>
+            <div class="row">
+              <label class="field grow">
+                <span>副标题</span>
+                <input name="subtitle" />
+              </label>
+              <label class="field grow">
+                <span>副标题链接</span>
+                <input name="subtitleHref" type="url" />
+              </label>
+            </div>
+            <div class="row">
+              <label class="field">
+                <span>条目日期</span>
+                <input name="date" type="date" />
+              </label>
+              <label class="field">
+                <span>题图裁切</span>
+                <select name="imageFit">
+                  <option value="">完整显示</option>
+                  <option value="cover">裁切铺满</option>
+                </select>
+              </label>
+              <label class="field grow">
+                <span>题图说明</span>
+                <input name="imageAlt" />
+              </label>
+            </div>
+            <div class="issue-only hidden" id="issue-fields">
+              <div class="row">
+                <label class="field grow">
+                  <span>新期主题</span>
+                  <input name="theme" placeholder="看烟花" />
+                </label>
+                <label class="field">
+                  <span>新期日期</span>
+                  <input name="issueDate" type="date" />
+                </label>
+              </div>
+              <label class="field">
+                <span>主题说明</span>
+                <input name="caption" placeholder="烟花朵朵开，想法自然来。" />
+              </label>
+              <label class="field">
+                <span>一句话摘要</span>
+                <input name="description" placeholder="首页列表用" />
+              </label>
+              <div class="drop" data-role="cover" id="drop-cover">
+                <strong>封面</strong>
+                <p>不传则沿用烟花封面</p>
+                <input type="file" accept="image/*" hidden />
+                <div class="thumbs"></div>
+              </div>
+            </div>
+          </details>
+
+          <section class="polish" id="polish">
+            <div class="polish-head">
+              <label class="field">
+                <span>润色模型</span>
+                <select name="model" id="model"></select>
+              </label>
+              <button type="button" class="ghost" id="btn-polish">AI 润色</button>
+            </div>
+            <div class="compare hidden" id="compare">
+              <article>
+                <h3>你的原文</h3>
+                <pre id="orig-title"></pre>
+                <pre id="orig-body"></pre>
+              </article>
+              <article>
+                <h3>AI 建议 · 可改</h3>
+                <label class="field">
+                  <span>标题</span>
+                  <input id="sug-title" />
+                </label>
+                <label class="field">
+                  <span>正文</span>
+                  <textarea id="sug-body" rows="12"></textarea>
+                </label>
+                <label class="field">
+                  <span>建议标签</span>
+                  <input id="sug-tags" placeholder="用 / 分隔" />
+                </label>
+              </article>
+              <div class="compare-actions">
+                <button type="button" class="primary" id="btn-apply-all">全部采用</button>
+                <button type="button" class="ghost" id="btn-apply-title">只用标题</button>
+                <button type="button" class="ghost" id="btn-apply-body">只用正文</button>
+                <button type="button" class="ghost" id="btn-apply-tags">采用标签</button>
+                <button type="button" class="ghost" id="btn-discard">不用</button>
+              </div>
+            </div>
+          </section>
+
+          <footer class="actions">
+            <button type="button" class="primary" id="btn-preview">保存并预览</button>
+            <button type="button" class="danger" id="btn-publish">确认发布</button>
+            <button type="button" class="ghost" id="btn-discard-draft">清空草稿</button>
+          </footer>
+          <p class="notice" id="notice"></p>
+        </form>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

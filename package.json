@@ -7,9 +7,16 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "panel": "node panel/start.mjs",
+    "panel:shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-panel-shortcut.ps1",
+    "test:panel": "node --test panel/*.test.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.3"
   },
   "devDependencies": {
+    "markdown-it-mathjax3": "^4",
     "vitepress": "^1.6.4"
   },
   "packageManager": "pnpm@9.12.1",
