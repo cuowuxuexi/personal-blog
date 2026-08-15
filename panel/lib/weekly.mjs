@@ -1,7 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { CONFIG_MTS, KINDS, POSTS_TS, REPO_ROOT, issueTitle, padIssue } from './paths.mjs'
+import { writeTargetsAtomic } from './atomic-write.mjs'
+import { defaultPaths, issueTitle, padIssue } from './paths.mjs'
 import { collectReferencedWeeklyImages } from './publish.mjs'
+
+function resolvePaths(paths) {
+  return paths || defaultPaths
+}
 
 const PROP_TO_FIELD = {
   tag: 'tag',
@@ -246,14 +251,9 @@ function readUtf8(file) {
   return fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n')
 }
 
-function writeUtf8(file, content) {
-  fs.mkdirSync(path.dirname(file), { recursive: true })
-  fs.writeFileSync(file, content.endsWith('\n') ? content : `${content}\n`, 'utf8')
-}
-
-function backupWeeklyFile(file) {
+function backupWeeklyFile(file, paths) {
   if (!fs.existsSync(file)) return
-  const dir = path.join(REPO_ROOT, 'panel', '.local-backups')
+  const dir = path.join(paths.REPO_ROOT, 'panel', '.local-backups')
   fs.mkdirSync(dir, { recursive: true })
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   const name = `${path.basename(file, '.md')}-${stamp}.md`
@@ -264,8 +264,9 @@ function isWeeklyMarkdown(name) {
   return /^\d{4}-\d{2}-\d{2}.*\.md$/.test(name)
 }
 
-export function listIssues(kindId) {
-  const kind = KINDS[kindId]
+export function listIssues(kindId, paths) {
+  const resolved = resolvePaths(paths)
+  const kind = resolved.KINDS[kindId]
   if (!kind) throw new Error(`未知栏目：${kindId}`)
   const names = fs.readdirSync(kind.dir).filter(isWeeklyMarkdown)
   const issues = []
@@ -306,21 +307,22 @@ export function listIssues(kindId) {
   return issues
 }
 
-export function currentIssue(kindId) {
-  return listIssues(kindId).find((item) => item.issue != null) || null
+export function currentIssue(kindId, paths) {
+  return listIssues(kindId, paths).find((item) => item.issue != null) || null
 }
 
-export function nextIssueNumber(kindId) {
-  const numbers = listIssues(kindId)
+export function nextIssueNumber(kindId, paths) {
+  const numbers = listIssues(kindId, paths)
     .map((item) => item.issue)
     .filter((item) => typeof item === 'number')
   return (numbers[0] || 0) + 1
 }
 
-export function collectTags() {
+export function collectTags(paths) {
+  const resolved = resolvePaths(paths)
   const counts = new Map()
-  for (const kindId of Object.keys(KINDS)) {
-    for (const issue of listIssues(kindId)) {
+  for (const kindId of Object.keys(resolved.KINDS)) {
+    for (const issue of listIssues(kindId, resolved)) {
       for (const entry of issue.entries) {
         for (const tag of entry.tags) {
           counts.set(tag, (counts.get(tag) || 0) + 1)
@@ -428,8 +430,9 @@ function renderNewIssue(kind, { issue, theme, date, description, caption, cover,
   ].join('\n')
 }
 
-export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }) {
-  const kind = KINDS[kindId]
+export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }, paths) {
+  const resolved = resolvePaths(paths)
+  const kind = resolved.KINDS[kindId]
   if (!kind) throw new Error(`未知栏目：${kindId}`)
   if (!entry?.title?.trim()) throw new Error('标题不能为空')
   if (!entry?.body?.trim()) throw new Error('正文不能为空')
@@ -438,13 +441,14 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
   let previewLink = ''
   let title = entry.title.trim()
   let commitHint = ''
+  let targets = []
 
   if (mode === 'newIssue') {
     const date = issue?.date
     const theme = (issue?.theme || '').trim()
     if (!date) throw new Error('开新期需要日期')
     if (!theme) throw new Error('开新期需要主题')
-    const number = nextIssueNumber(kindId)
+    const number = nextIssueNumber(kindId, resolved)
     const fileName = kind.id === 'life' ? kind.fileName(date) : kind.fileName(date, theme)
     const abs = path.join(kind.dir, fileName)
     if (fs.existsSync(abs)) throw new Error(`文件已存在：${fileName}`)
@@ -460,10 +464,7 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       coverAlt: issue?.coverAlt,
       entry,
     })
-    writeUtf8(abs, markdown)
-    files.push(path.posix.join(kind.relDir, fileName))
-
-    const posts = insertManualPost(readUtf8(POSTS_TS), {
+    const posts = insertManualPost(readUtf8(resolved.POSTS_TS), {
       title: issueTitle(number, theme),
       date,
       category: kind.category,
@@ -471,27 +472,27 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       link,
       description,
     })
-    writeUtf8(POSTS_TS, posts)
-    files.push('docs/.vitepress/posts.ts')
-
     const year = date.slice(0, 4)
-    const config = insertSidebarItem(readUtf8(CONFIG_MTS), {
+    const config = insertSidebarItem(readUtf8(resolved.CONFIG_MTS), {
       sidebarKey: kind.sidebarKey,
       yearText: kind.yearText(year),
       title: issueTitle(number, theme),
       link,
     })
-    writeUtf8(CONFIG_MTS, config)
-    files.push('docs/.vitepress/config.mts')
-
+    targets = [
+      { abs, content: markdown },
+      { abs: resolved.POSTS_TS, content: posts },
+      { abs: resolved.CONFIG_MTS, content: config },
+    ]
+    files.push(path.posix.join(kind.relDir, fileName), 'docs/.vitepress/posts.ts', 'docs/.vitepress/config.mts')
     previewLink = link
     title = issueTitle(number, theme)
     commitHint = `weekly: 第${padIssue(number)}期-${theme}`
   } else {
-    const issues = listIssues(kindId)
+    const issues = listIssues(kindId, resolved)
     const target = issueLink
       ? issues.find((item) => item.link === issueLink)
-      : currentIssue(kindId)
+      : currentIssue(kindId, resolved)
     if (!target) throw new Error('没有可写入的当期周记，请先开新一期')
     const block = serializeEntry(entry)
     const currentText = readUtf8(target.file)
@@ -506,8 +507,8 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
     if (mode !== 'edit' && afterCount !== beforeCount + 1) {
       throw new Error('拒绝写入：追加后条目数量不对，已中止以免覆盖历史内容')
     }
-    backupWeeklyFile(target.file)
-    writeUtf8(target.file, next)
+    backupWeeklyFile(target.file, resolved)
+    targets = [{ abs: target.file, content: next }]
     files.push(target.rel)
     previewLink = target.link
     title = target.title
@@ -516,13 +517,14 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       : `weekly: ${target.title} 追加「${entry.title}」`
   }
 
+  writeTargetsAtomic(targets)
   return {
-    files: [...new Set([...files, ...collectReferencedWeeklyImages(files)])],
+    files: [...new Set([...files, ...collectReferencedWeeklyImages(files, resolved.REPO_ROOT)])],
     previewLink,
     title,
     commitHint,
     mode: mode === 'edit' ? 'edit' : mode === 'newIssue' ? 'newIssue' : 'append',
-    repoRoot: REPO_ROOT,
+    repoRoot: resolved.REPO_ROOT,
   }
 }
 

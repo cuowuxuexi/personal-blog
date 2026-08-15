@@ -1,57 +1,25 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createRepoPaths } from './repo-paths.mjs'
 
 export const PANEL_DIR = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 export const REPO_ROOT = path.resolve(PANEL_DIR, '..')
+export const defaultPaths = createRepoPaths(REPO_ROOT)
+export { createRepoPaths }
 
 export const PINNED_MODELS = ['grok-4.5', 'gpt-5.6-terra', 'gemini-3.7-flash-high']
 export const DEFAULT_MODEL = 'grok-4.5'
 
-export const KINDS = {
-  life: {
-    id: 'life',
-    label: 'AI与生活周记',
-    category: 'AI与生活',
-    pageClass: 'weekly-post weekly-post--life',
-    dir: path.join(REPO_ROOT, 'docs', 'AI与生活'),
-    relDir: 'docs/AI与生活',
-    sidebarKey: '/AI与生活/',
-    yearText: (year) => `周记 · ${year}年`,
-    defaultCover: '/images/hero-fireworks.png',
-    defaultCoverAlt: '机械之手指向夜空烟花',
-    defaultCaption: '烟花朵朵开，想法自然来。',
-    fileName(date) {
-      return `${date}.md`
-    },
-    siteLink(date) {
-      return `/AI与生活/${date}`
-    },
-  },
-  invest: {
-    id: 'invest',
-    label: '投资周记',
-    category: '投资',
-    pageClass: 'weekly-post weekly-post--invest',
-    dir: path.join(REPO_ROOT, 'docs', '投资', '周记'),
-    relDir: 'docs/投资/周记',
-    sidebarKey: '/投资/周记/',
-    yearText: (year) => `${year}年`,
-    defaultCover: '/images/hero-fireworks.png',
-    defaultCoverAlt: '机械之手指向夜空烟花',
-    defaultCaption: '烟花朵朵开，想法自然来。',
-    fileName(date, theme) {
-      return `${date}-${theme}.md`
-    },
-    siteLink(date, theme) {
-      return `/投资/周记/${date}-${theme}`
-    },
-  },
-}
+export const KINDS = defaultPaths.KINDS
+export const POSTS_TS = defaultPaths.POSTS_TS
+export const CONFIG_MTS = defaultPaths.CONFIG_MTS
+export const WEEKLY_IMAGES = defaultPaths.WEEKLY_IMAGES
 
-export const POSTS_TS = path.join(REPO_ROOT, 'docs', '.vitepress', 'posts.ts')
-export const CONFIG_MTS = path.join(REPO_ROOT, 'docs', '.vitepress', 'config.mts')
-export const WEEKLY_IMAGES = path.join(REPO_ROOT, 'docs', 'public', 'images', 'weekly')
+export function isPathInside(root, candidate) {
+  const relative = path.relative(path.resolve(root), path.resolve(candidate))
+  return relative === '' || (!path.isAbsolute(relative) && relative !== '..' && !relative.startsWith(`..${path.sep}`))
+}
 
 export function loadEnv() {
   const file = path.join(REPO_ROOT, '.env')

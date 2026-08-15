@@ -37,8 +37,10 @@ pnpm panel:shortcut
 
 1. 选栏目 → 追加 / 开新期 / 点开已有条目修改
 2. 可选：AI 润色（左右对照，逐项采用）
-3. 保存并预览（看 VitePress 真实渲染）
-4. 确认发布：`pnpm docs:build` 通过后才 commit + push `main`
+3. 保存并预览：写入草稿，打开**工作区预览**（VitePress 开发服，不是发布预览）
+4. 准备发布：从 main HEAD + 本次清单打隔离快照，生成发布前预览
+5. 核对清单和发布前预览后，确认发布：只提交该快照
+6. 面板轮询自定义域名的 `build.json`；只有线上 SHA 对上才显示发布完成
 
 图片会压到约 1600px 宽的 WebP，按 `YYYY-MM-DD-序号-slug.webp` 写入 `docs/public/images/weekly/`。
 

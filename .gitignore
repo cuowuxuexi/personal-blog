@@ -17,3 +17,6 @@ panel/.local-backups/
 
 # Agent scratch screenshots
 .cursor-shots/
+
+# Local test runner state
+test-results/

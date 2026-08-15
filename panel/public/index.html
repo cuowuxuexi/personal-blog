@@ -163,9 +163,24 @@
 
           <footer class="actions">
             <button type="button" class="primary" id="btn-preview">保存并预览</button>
-            <button type="button" class="danger" id="btn-publish">确认发布</button>
+            <button type="button" class="ghost" id="btn-prepare">准备发布</button>
+            <button type="button" class="danger" id="btn-publish" disabled>确认发布</button>
             <button type="button" class="ghost" id="btn-discard-draft">清空草稿</button>
           </footer>
+          <section class="publish-job hidden" id="publish-job">
+            <p class="eyebrow">PUBLISH JOB</p>
+            <p class="job-state" id="job-state"></p>
+            <p class="job-preview-label" id="job-preview-label"></p>
+            <ul class="job-manifest" id="job-manifest"></ul>
+            <p class="job-excluded" id="job-excluded"></p>
+            <div class="actions job-actions">
+              <a class="ghost hidden" id="btn-release-preview" target="_blank" rel="noreferrer">发布前预览</a>
+              <a class="ghost hidden" id="btn-verified-online" target="_blank" rel="noreferrer">已校验的线上页</a>
+              <button type="button" class="ghost hidden" id="btn-retry-push">重试推送</button>
+              <button type="button" class="ghost hidden" id="btn-retry-verify">重新校验生产</button>
+            </div>
+            <pre class="job-summary" id="job-summary"></pre>
+          </section>
           <p class="notice" id="notice"></p>
         </form>
       </section>

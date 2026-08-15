@@ -31,14 +31,25 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      - name: Install & build
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm run docs:build
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Panel tests
+        run: pnpm test:panel
+
+      - name: Production build
+        run: pnpm run docs:build
+
+      - name: Write public build metadata
+        run: node scripts/write-build-metadata.mjs
+
+      - name: Check build metadata contract
+        run: node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('docs/.vitepress/dist/build.json','utf8')); if(!m.sha||!m.builtAt||Object.keys(m).sort().join(',')!=='builtAt,sha') process.exit(1)"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "3.114.0"
           command: pages deploy docs/.vitepress/dist --project-name=personal-blog --branch=main

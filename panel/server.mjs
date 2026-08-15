@@ -2,19 +2,29 @@ import fs from 'node:fs'
 import http from 'node:http'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createPanelContext } from './lib/context.mjs'
 import { saveWeeklyImage } from './lib/images.mjs'
 import { clearFormDraft, readFormDraft, writeFormDraft } from './lib/form-draft.mjs'
+import { newId } from './lib/hash.mjs'
 import { listModels, polishEntry, POLISH_TIMEOUT_MS } from './lib/polish.mjs'
 import {
   DEFAULT_MODEL,
   KINDS,
   PANEL_DIR,
   PINNED_MODELS,
-  REPO_ROOT,
+  isPathInside,
   loadEnv,
   todayISO,
 } from './lib/paths.mjs'
-import { buildSite, publishFiles } from './lib/publish.mjs'
+import {
+  confirmPublication,
+  getPublication,
+  listRecoverableJobs,
+  preparePublication,
+  retryPush,
+  retryVerification,
+  snapshotDist,
+} from './lib/publish-job.mjs'
 import {
   applyDraft,
   collectTags,
@@ -30,7 +40,6 @@ const PUBLIC_DIR = path.join(PANEL_DIR, 'public')
 const PORT = Number(process.env.PANEL_PORT || 4177)
 const VITEPRESS_URL = process.env.VITEPRESS_URL || 'http://127.0.0.1:5173'
 
-let lastDraft = null
 let modelsCache = { at: 0, ids: PINNED_MODELS }
 
 function cliproConfig() {
@@ -50,25 +59,48 @@ function send(res, status, payload, headers = {}) {
   res.end(body)
 }
 
-function readBody(req) {
+function readBody(req, { maxBytes, timeoutMs }) {
   return new Promise((resolve, reject) => {
     const chunks = []
-    req.on('data', (chunk) => chunks.push(chunk))
+    let size = 0
+    const timer = setTimeout(() => {
+      req.pause()
+      const error = new Error('请求超时')
+      error.status = 408
+      reject(error)
+    }, timeoutMs)
+    req.on('data', (chunk) => {
+      size += chunk.length
+      if (size > maxBytes) {
+        clearTimeout(timer)
+        req.pause()
+        const error = new Error('请求体过大')
+        error.status = 413
+        reject(error)
+        return
+      }
+      chunks.push(chunk)
+    })
     req.on('end', () => {
+      clearTimeout(timer)
       const raw = Buffer.concat(chunks).toString('utf8')
       if (!raw) return resolve({})
       try {
         resolve(JSON.parse(raw))
-      } catch (error) {
+      } catch {
         reject(new Error('请求体不是合法 JSON'))
       }
     })
-    req.on('error', reject)
+    req.on('error', (error) => {
+      clearTimeout(timer)
+      reject(error)
+    })
   })
 }
 
 function mimeFor(file) {
   if (file.endsWith('.html')) return 'text/html; charset=utf-8'
+  if (file.endsWith('.json')) return 'application/json; charset=utf-8'
   if (file.endsWith('.css')) return 'text/css; charset=utf-8'
   if (file.endsWith('.js') || file.endsWith('.mjs')) return 'text/javascript; charset=utf-8'
   if (file.endsWith('.svg')) return 'image/svg+xml'
@@ -88,11 +120,11 @@ function streamFile(res, abs) {
 
 function serveStatic(req, res) {
   const url = new URL(req.url, 'http://127.0.0.1')
-  // 图片与字体复用博客的公共资源，面板排版与博客同源
   if (url.pathname.startsWith('/images/') || url.pathname.startsWith('/fonts/')) {
-    const publicRoot = path.join(REPO_ROOT, 'docs', 'public')
+    const publicRoot = path.join(PANEL_DIR, '..', 'docs', 'public')
     const abs = path.normalize(path.join(publicRoot, url.pathname))
-    if (!abs.startsWith(publicRoot) || !fs.existsSync(abs)) return send(res, 404, 'not found')
+    if (!isPathInside(publicRoot, abs)) return send(res, 403, 'forbidden')
+    if (!fs.existsSync(abs)) return send(res, 404, 'not found')
     return streamFile(res, abs)
   }
   if (url.pathname === '/favicon.ico') {
@@ -102,14 +134,39 @@ function serveStatic(req, res) {
   }
   const rel = url.pathname === '/' ? '/index.html' : url.pathname
   const abs = path.normalize(path.join(PUBLIC_DIR, rel))
-  if (!abs.startsWith(PUBLIC_DIR)) return send(res, 403, 'forbidden')
+  if (!isPathInside(PUBLIC_DIR, abs)) return send(res, 403, 'forbidden')
   if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
     return send(res, 404, 'not found')
   }
   return streamFile(res, abs)
 }
 
-async function handleBootstrap() {
+function serveReleasePreview(ctx, res, pathname) {
+  const match = pathname.match(/^\/release-preview\/([^/]+)(?:\/(.*))?$/)
+  if (!match) return false
+  const jobId = match[1]
+  let rel = decodeURIComponent(match[2] || 'index.html')
+  if (!rel || rel.endsWith('/')) rel += 'index.html'
+  const dist = snapshotDist(ctx, jobId)
+  const abs = path.normalize(path.join(dist, rel))
+  if (!isPathInside(dist, abs)) {
+    send(res, 403, 'forbidden')
+    return true
+  }
+  if (fs.existsSync(abs) && fs.statSync(abs).isFile()) {
+    streamFile(res, abs)
+    return true
+  }
+  const html = `${abs.replace(/\.html$/, '')}.html`
+  if (fs.existsSync(html)) {
+    streamFile(res, html)
+    return true
+  }
+  send(res, 404, 'not found')
+  return true
+}
+
+async function handleBootstrap(ctx) {
   const clipro = cliproConfig()
   let models = modelsCache.ids
   if (clipro.apiKey && Date.now() - modelsCache.at > 5 * 60 * 1000) {
@@ -117,27 +174,29 @@ async function handleBootstrap() {
       models = await listModels(clipro)
       modelsCache = { at: Date.now(), ids: models }
     } catch {
-      models = sortFallback(modelsCache.ids)
+      models = modelsCache.ids
     }
   }
   return {
     ok: true,
     today: todayISO(),
     vitepressUrl: VITEPRESS_URL,
+    productionOrigin: ctx.productionOrigin,
     cliproReady: Boolean(clipro.apiKey),
     defaultModel: clipro.defaultModel,
     polishTimeoutMs: POLISH_TIMEOUT_MS,
     autosave: readFormDraft(),
+    activeJobs: listRecoverableJobs(ctx),
     models,
-    tags: collectTags(),
-    kinds: Object.values(KINDS).map((kind) => {
-      const issues = listIssues(kind.id).map(summarizeIssue)
+    tags: collectTags(ctx.paths),
+    kinds: Object.values(ctx.paths.KINDS || KINDS).map((kind) => {
+      const issues = listIssues(kind.id, ctx.paths).map(summarizeIssue)
       return {
         id: kind.id,
         label: kind.label,
         category: kind.category,
-        nextIssue: nextIssueNumber(kind.id),
-        current: summarizeIssue(currentIssue(kind.id)),
+        nextIssue: nextIssueNumber(kind.id, ctx.paths),
+        current: summarizeIssue(currentIssue(kind.id, ctx.paths)),
         issues,
       }
     }),
@@ -175,85 +234,82 @@ function summarizeIssue(issue) {
   }
 }
 
-function sortFallback(ids) {
-  return ids
-}
-
-const routes = {
-  'GET /api/bootstrap': async () => handleBootstrap(),
-  'POST /api/images': async (req) => {
-    const body = await readBody(req)
-    const files = Array.isArray(body.files) ? body.files : []
-    if (!files.length) throw new Error('没有图片')
-    const images = []
-    for (const file of files) {
-      images.push({
-        role: file.role || 'body',
-        alt: file.alt || '',
-        ...await saveWeeklyImage({
-          data: file.data,
-          name: file.name,
-          date: body.date || todayISO(),
-          hint: file.hint || file.name,
-        }),
+export function createServer(options = {}) {
+  const ctx = options.ctx || createPanelContext(options)
+  const routes = {
+    'GET /api/bootstrap': async () => handleBootstrap(ctx),
+    'POST /api/images': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxUploadBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const files = Array.isArray(body.files) ? body.files : []
+      if (!files.length) throw new Error('没有图片')
+      const images = []
+      for (const file of files) {
+        images.push({
+          role: file.role || 'body',
+          alt: file.alt || '',
+          ...await saveWeeklyImage({
+            data: file.data,
+            name: file.name,
+            date: body.date || todayISO(),
+            hint: file.hint || file.name,
+          }),
+        })
+      }
+      return { ok: true, images }
+    },
+    'POST /api/autosave': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      if (body.clear) {
+        clearFormDraft()
+        return { ok: true, cleared: true }
+      }
+      return { ok: true, draft: writeFormDraft(body) }
+    },
+    'POST /api/polish': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const clipro = cliproConfig()
+      if (!clipro.apiKey) throw new Error('未配置 CLIPRO_API_KEY，请检查仓库根目录 .env')
+      const result = await polishEntry({
+        ...clipro,
+        model: body.model || clipro.defaultModel,
+        title: body.title || '',
+        body: body.body || '',
+        tags: body.tags || [],
+        historicalTags: collectTags(ctx.paths).map((item) => item.tag),
       })
-    }
-    return { ok: true, images }
-  },
-  'POST /api/autosave': async (req) => {
-    const body = await readBody(req)
-    if (body.clear) {
-      clearFormDraft()
-      return { ok: true, cleared: true }
-    }
-    return { ok: true, draft: writeFormDraft(body) }
-  },
-  'POST /api/polish': async (req) => {
-    const body = await readBody(req)
-    const clipro = cliproConfig()
-    if (!clipro.apiKey) throw new Error('未配置 CLIPRO_API_KEY，请检查仓库根目录 .env')
-    const result = await polishEntry({
-      ...clipro,
-      model: body.model || clipro.defaultModel,
-      title: body.title || '',
-      body: body.body || '',
-      tags: body.tags || [],
-      historicalTags: collectTags().map((item) => item.tag),
-    })
-    return { ok: true, ...result }
-  },
-  'POST /api/draft': async (req) => {
-    const body = await readBody(req)
-    const result = applyDraft(body)
-    lastDraft = result
-    return {
-      ok: true,
-      ...result,
-      previewUrl: previewUrl(result.previewLink, VITEPRESS_URL),
-    }
-  },
-  'POST /api/publish': async (req) => {
-    const body = await readBody(req)
-    const files = body.files || lastDraft?.files
-    const message = body.message || lastDraft?.commitHint || 'weekly: 发布面板更新'
-    if (!files?.length) throw new Error('请先保存草稿再发布')
-    try {
-      await buildSite()
-    } catch (error) {
-      const err = new Error(`构建失败，已中止推送。\n${error.message}`)
-      err.status = 422
-      throw err
-    }
-    const published = await publishFiles(files, message)
-    return {
-      ok: true,
-      ...published,
-      notice: '已推送到 main。Cloudflare Pages 部署大约 1–2 分钟后可见。',
-    }
-  },
-}
+      return { ok: true, ...result }
+    },
+    'POST /api/draft': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const result = applyDraft(body, ctx.paths)
+      const draftId = newId('d')
+      ctx.drafts.set(draftId, { ...result, createdAt: new Date().toISOString() })
+      return {
+        ok: true,
+        ...result,
+        draftId,
+        previewUrl: previewUrl(result.previewLink, VITEPRESS_URL),
+        previewKind: 'workspace',
+      }
+    },
+    'POST /api/publish/prepare': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const job = await preparePublication(ctx, {
+        draftId: body.draftId,
+        headingAnchor: body.headingAnchor || '',
+      })
+      return { ok: true, ...job }
+    },
+    'POST /api/publish/confirm': async (req) => {
+      const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const job = await confirmPublication(ctx, {
+        jobId: body.jobId,
+        confirmationToken: body.confirmationToken,
+      })
+      return { ok: true, ...job }
+    },
+  }
 
-export function createServer() {
   const server = http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url, `http://127.0.0.1:${PORT}`)
@@ -262,15 +318,33 @@ export function createServer() {
         const payload = await routes[key](req, res, url)
         return send(res, 200, payload)
       }
+      const jobGet = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)$/)
+      if (req.method === 'GET' && jobGet) {
+        return send(res, 200, { ok: true, ...await getPublication(ctx, jobGet[1]) })
+      }
+      const jobRetry = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)\/retry-verify$/)
+      if (req.method === 'POST' && jobRetry) {
+        await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+        return send(res, 200, { ok: true, ...await retryVerification(ctx, jobRetry[1]) })
+      }
+      const jobRetryPush = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)\/retry-push$/)
+      if (req.method === 'POST' && jobRetryPush) {
+        await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+        return send(res, 200, { ok: true, ...await retryPush(ctx, jobRetryPush[1]) })
+      }
+      if (req.method === 'GET' && url.pathname.startsWith('/release-preview/')) {
+        if (serveReleasePreview(ctx, res, url.pathname)) return
+      }
       if (req.method === 'GET') return serveStatic(req, res)
       send(res, 404, { ok: false, error: 'not found' })
     } catch (error) {
       send(res, error.status || 400, { ok: false, error: error.message || String(error) })
     }
   })
-  server.requestTimeout = 0
-  server.headersTimeout = 0
-  server.timeout = 0
+  server.requestTimeout = ctx.bodyTimeoutMs + 1000
+  server.headersTimeout = ctx.bodyTimeoutMs + 1000
+  server.timeout = Math.max(ctx.verifyTimeoutMs + 30000, 300000)
+  server.panelContext = ctx
   return server
 }
 

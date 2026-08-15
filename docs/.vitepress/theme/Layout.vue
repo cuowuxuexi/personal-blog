@@ -64,6 +64,8 @@ function setupImageZoom() {
 /* ---------- 右侧大纲：条目可折叠，只听点击，不跟滚动展开 ---------- */
 
 const outlineFoldState = new Map<string, boolean>()
+let outlineDecorateRunning = false
+let outlineDecorateQueued = false
 
 function outlineItemKey(link: HTMLElement) {
   return link.getAttribute('href') || link.textContent?.trim() || ''
@@ -102,40 +104,59 @@ function setupOutlineAutoScroll() {
 }
 
 function decorateOutlineFolds() {
-  const root = document.querySelector('.weekly-post .VPDocAsideOutline .root')
-  if (!root) return
-  root.querySelectorAll(':scope li').forEach((li) => {
-    const childList = li.querySelector(':scope > ul')
-    const link = li.querySelector<HTMLElement>(':scope > .outline-link')
-    if (!childList || !link) return
-    li.classList.add('has-outline-children')
-    const key = outlineItemKey(link)
-    const parentLi = li.parentElement?.closest('li')
-    const underSection = Boolean(parentLi?.parentElement?.classList.contains('root'))
-    const collapsed = outlineFoldState.has(key)
-      ? Boolean(outlineFoldState.get(key))
-      : underSection
-    li.classList.toggle('is-collapsed', collapsed)
-    const existing = li.querySelector<HTMLButtonElement>(':scope > .outline-fold')
-    if (existing) {
-      existing.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
-      return
-    }
-    const btn = document.createElement('button')
-    btn.className = 'outline-fold'
-    btn.type = 'button'
-    btn.setAttribute('aria-label', '展开或收起')
-    btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
-    btn.addEventListener('click', (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      const next = !li.classList.contains('is-collapsed')
-      li.classList.toggle('is-collapsed', next)
-      outlineFoldState.set(key, next)
-      btn.setAttribute('aria-expanded', next ? 'false' : 'true')
+  if (outlineDecorateRunning) {
+    outlineDecorateQueued = true
+    return
+  }
+  outlineDecorateRunning = true
+  try {
+    const root = document.querySelector('.weekly-post .VPDocAsideOutline .root')
+    if (!root) return
+    root.querySelectorAll(':scope li').forEach((li) => {
+      const childList = li.querySelector(':scope > ul')
+      const link = li.querySelector<HTMLElement>(':scope > .outline-link')
+      if (!childList || !link) return
+      li.classList.add('has-outline-children')
+      const key = outlineItemKey(link)
+      const parentLi = li.parentElement?.closest('li')
+      const underSection = Boolean(parentLi?.parentElement?.classList.contains('root'))
+      const collapsed = outlineFoldState.has(key)
+        ? Boolean(outlineFoldState.get(key))
+        : underSection
+      if (li.classList.contains('is-collapsed') !== collapsed) {
+        li.classList.toggle('is-collapsed', collapsed)
+      }
+      const existing = li.querySelector<HTMLButtonElement>(':scope > .outline-fold')
+      if (existing) {
+        existing.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
+        return
+      }
+      const btn = document.createElement('button')
+      btn.className = 'outline-fold'
+      btn.type = 'button'
+      btn.setAttribute('aria-label', '展开或收起')
+      btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true')
+      btn.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const next = !li.classList.contains('is-collapsed')
+        li.classList.toggle('is-collapsed', next)
+        outlineFoldState.set(key, next)
+        btn.setAttribute('aria-expanded', next ? 'false' : 'true')
+      })
+      link.before(btn)
     })
-    link.before(btn)
-  })
+  } finally {
+    outlineDecorateRunning = false
+    if (outlineDecorateQueued) {
+      outlineDecorateQueued = false
+      scheduleDecorateOutlineFolds()
+    }
+  }
+}
+
+function scheduleDecorateOutlineFolds() {
+  requestAnimationFrame(() => decorateOutlineFolds())
 }
 
 function setupOutlineFolds() {
@@ -143,12 +164,10 @@ function setupOutlineFolds() {
   const aside = document.querySelector('.VPDocAside')
   if (!aside || aside.dataset.outlineFoldBound === '1') return
   aside.dataset.outlineFoldBound = '1'
-  const observer = new MutationObserver(() => decorateOutlineFolds())
+  const observer = new MutationObserver(() => scheduleDecorateOutlineFolds())
   observer.observe(aside, {
     childList: true,
     subtree: true,
-    attributes: true,
-    attributeFilter: ['class'],
   })
 }
 

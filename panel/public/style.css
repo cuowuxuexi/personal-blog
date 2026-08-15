@@ -562,6 +562,56 @@ button:focus-visible {
 .notice.ok { color: var(--life); }
 .notice.err { color: var(--seal); }
 
+.publish-job {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--card);
+}
+
+.publish-job .eyebrow {
+  margin: 0 0 6px;
+}
+
+.job-state {
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.job-preview-label,
+.job-excluded {
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.job-manifest {
+  margin: 0 0 10px;
+  padding-left: 1.2em;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.job-actions { margin-top: 8px; padding-top: 10px; }
+
+.job-summary {
+  margin: 10px 0 0;
+  white-space: pre-wrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+a.ghost {
+  display: inline-block;
+  text-decoration: none;
+}
+
 .hidden { display: none !important; }
 
 /* ---------- 窄屏 ---------- */

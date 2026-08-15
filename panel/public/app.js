@@ -1,4 +1,5 @@
 import { chooseRestoreDraft, draftHasText, shouldPersistDraft } from './draft.mjs'
+import { escapeHtml, escapeAttr } from './escape.mjs'
 import { bodyImageUrls, removeImageMarkdown } from './media.mjs'
 import {
   imageFilesFromClipboard,
@@ -15,6 +16,9 @@ const state = {
   entryIndex: null,
   images: { image: '', cover: '' },
   suggestion: null,
+  draftId: '',
+  job: null,
+  pollTimer: 0,
 }
 
 const form = document.getElementById('form')
@@ -140,7 +144,7 @@ function writeHint() {
 
 function renderKinds() {
   document.getElementById('kinds').innerHTML = state.bootstrap.kinds.map((kind) => (
-    `<button type="button" class="chip ${kind.id === state.kind ? 'active' : ''}" data-kind="${kind.id}">${kind.label}</button>`
+    `<button type="button" class="chip ${kind.id === state.kind ? 'active' : ''}" data-kind="${escapeAttr(kind.id)}">${escapeHtml(kind.label)}</button>`
   )).join('')
 }
 
@@ -149,12 +153,12 @@ function renderIssueBar() {
   const issue = selectedIssue()
   const options = kind.issues
     .filter((item) => item.issue != null)
-    .map((item) => `<option value="${item.link}" ${item.link === (issue?.link || '') ? 'selected' : ''}>${item.title}</option>`)
+    .map((item) => `<option value="${escapeAttr(item.link)}" ${item.link === (issue?.link || '') ? 'selected' : ''}>${escapeHtml(item.title)}</option>`)
     .join('')
   document.getElementById('issue-bar').innerHTML = `
-    <h2>${issue ? issue.title : '还没有编号周记'}</h2>
-    <p class="issue-meta">${issue ? `${issue.date} · ${issue.entryCount} 条` : '先开新一期'}</p>
-    <p class="write-hint">${writeHint()}</p>
+    <h2>${issue ? escapeHtml(issue.title) : '还没有编号周记'}</h2>
+    <p class="issue-meta">${issue ? `${escapeHtml(issue.date)} · ${issue.entryCount} 条` : '先开新一期'}</p>
+    <p class="write-hint">${escapeHtml(writeHint())}</p>
     <div class="modes">
       <button type="button" class="chip ${state.mode === 'append' ? 'active' : ''}" data-mode="append">追加一条</button>
       <button type="button" class="chip ${state.mode === 'newIssue' ? 'active' : ''}" data-mode="newIssue">开新一期</button>
@@ -169,8 +173,8 @@ function renderEntries() {
   const entries = issue?.entries || []
   const list = entries.map((entry) => `
     <button type="button" class="entry-btn ${state.mode === 'edit' && state.entryIndex === entry.index ? 'active' : ''}" data-index="${entry.index}">
-      ${entry.title}
-      <small>${(entry.tags || []).join(' / ')}</small>
+      ${escapeHtml(entry.title)}
+      <small>${escapeHtml((entry.tags || []).join(' / '))}</small>
     </button>
   `).join('')
   document.getElementById('entries').innerHTML = `
@@ -182,7 +186,7 @@ function renderEntries() {
 
 function renderTags() {
   document.getElementById('tag-cloud').innerHTML = state.bootstrap.tags.slice(0, 16).map((item) => (
-    `<button type="button" data-tag="${item.tag}">${item.tag}</button>`
+    `<button type="button" data-tag="${escapeAttr(item.tag)}">${escapeHtml(item.tag)}</button>`
   )).join('')
 }
 
@@ -222,12 +226,6 @@ function resetForm() {
   renderThumbs('drop-cover', '')
 }
 
-function escapeAttr(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-}
 
 function renderThumbs(id, urls) {
   const list = (Array.isArray(urls) ? urls : [urls]).filter(Boolean)
@@ -528,7 +526,10 @@ function bindEvents() {
   document.getElementById('btn-discard').addEventListener('click', hideCompare)
 
   document.getElementById('btn-preview').addEventListener('click', () => saveDraft(true))
-  document.getElementById('btn-publish').addEventListener('click', publish)
+  document.getElementById('btn-prepare').addEventListener('click', preparePublish)
+  document.getElementById('btn-publish').addEventListener('click', confirmPublish)
+  document.getElementById('btn-retry-verify').addEventListener('click', retryVerify)
+  document.getElementById('btn-retry-push').addEventListener('click', retryPushJob)
 }
 
 async function saveDraft(openPreview) {
@@ -555,34 +556,162 @@ async function saveDraft(openPreview) {
         },
       }),
     })
-    state.lastDraft = payload
+    state.draftId = payload.draftId
+    state.job = null
     clearLocalDraft()
     if (openPreview) window.open(payload.previewUrl, '_blank')
-    setNotice(`已${payload.mode === 'edit' ? '修改' : payload.mode === 'newIssue' ? '开新期' : '追加'} ${payload.files.join('、')}\n预览：${payload.previewUrl}`, 'ok')
-    state.bootstrap = await api('/api/bootstrap')
+    setNotice(`已${payload.mode === 'edit' ? '修改' : payload.mode === 'newIssue' ? '开新期' : '追加'} ${payload.files.join('、')}\n工作区预览（非发布预览）：${payload.previewUrl}`, 'ok')
     if (payload.previewLink) state.issueLink = payload.previewLink
     if (state.mode === 'newIssue') state.mode = 'append'
     state.entryIndex = null
     resetForm()
     render()
+    void api('/api/bootstrap').then((bootstrap) => {
+      state.bootstrap = bootstrap
+      render()
+    }).catch((error) => {
+      setNotice(`草稿已写入，但刷新条目列表失败：${error.message}`, 'err')
+    })
   } catch (error) {
     setNotice(error.message, 'err')
   }
 }
 
-async function publish() {
-  if (!state.lastDraft && !confirm('还没有保存草稿。确定直接按上次写入的文件发布？')) return
-  if (!confirm('确认发布到线上？会先构建，通过后才 push main。')) return
+function headingAnchor() {
+  return 'kan-yanhua'
+}
+
+function applyJob(job) {
+  state.job = job
+  renderJob()
+  const verifying = ['Pushed', 'Deploying', 'VerifyingProduction'].includes(job.state)
+  if (verifying) startJobPoll()
+  else stopJobPoll()
+}
+
+function startJobPoll() {
+  stopJobPoll()
+  state.pollTimer = setInterval(async () => {
+    if (!state.job?.jobId) return
+    try {
+      const job = await api(`/api/publish/jobs/${state.job.jobId}`)
+      applyJob(job)
+      if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
+      if (job.state === 'Failed' || job.state === 'Superseded') setNotice(job.failureReason || job.state, 'err')
+    } catch (error) {
+      setNotice(error.message, 'err')
+    }
+  }, 2000)
+}
+
+function stopJobPoll() {
+  if (state.pollTimer) clearInterval(state.pollTimer)
+  state.pollTimer = 0
+}
+
+function renderJob() {
+  const job = state.job
+  const box = document.getElementById('publish-job')
+  const publishBtn = document.getElementById('btn-publish')
+  if (!job) {
+    box.classList.add('hidden')
+    publishBtn.disabled = true
+    return
+  }
+  box.classList.remove('hidden')
+  document.getElementById('job-state').textContent = `状态 ${job.state}${job.commitSha ? ` · ${job.commitSha.slice(0, 8)}` : ''}`
+  document.getElementById('job-preview-label').textContent = job.state === 'PreviewReady'
+    ? '下面清单对应发布前预览，不是工作区预览。'
+    : (job.failureReason || '')
+  document.getElementById('job-manifest').innerHTML = (job.manifest || []).map((item) => (
+    `<li>${escapeHtml(item.action)} ${escapeHtml(item.path)}</li>`
+  )).join('')
+  const excluded = (job.excluded || []).map((item) => item.path).join('、')
+  document.getElementById('job-excluded').textContent = excluded
+    ? `未纳入本次发布：${excluded}`
+    : '工作树里没有额外未纳入的改动。'
+  const preview = document.getElementById('btn-release-preview')
+  preview.classList.toggle('hidden', !job.releasePreviewUrl)
+  preview.href = job.releasePreviewUrl || '#'
+  const online = document.getElementById('btn-verified-online')
+  online.classList.toggle('hidden', job.state !== 'Published' || !job.verifiedUrl)
+  online.href = job.verifiedUrl || '#'
+  document.getElementById('btn-retry-verify').classList.toggle('hidden', !(job.retryActions || []).includes('retry-verify'))
+  document.getElementById('btn-retry-push').classList.toggle('hidden', !(job.retryActions || []).includes('retry-push'))
+  publishBtn.disabled = job.state !== 'PreviewReady' && !(job.retryActions || []).includes('retry-push')
+  document.getElementById('job-summary').textContent = job.summary
+    ? [
+      `文件：${(job.summary.files || []).join('、')}`,
+      `SHA：${job.summary.commitSha || ''}`,
+      `部署时间：${job.summary.deployedAt || ''}`,
+      `已校验 URL：${job.summary.verifiedUrl || ''}`,
+    ].join('\n')
+    : ''
+}
+
+async function preparePublish() {
+  if (!state.draftId) {
+    setNotice('请先保存草稿，再准备发布。', 'err')
+    return
+  }
   try {
-    setNotice('正在构建并推送…')
-    const payload = await api('/api/publish', {
+    setNotice('正在准备隔离快照与发布前预览…')
+    const job = await api('/api/publish/prepare', {
+      method: 'POST',
+      body: JSON.stringify({ draftId: state.draftId, headingAnchor: headingAnchor() }),
+    })
+    applyJob(job)
+    setNotice('发布前预览已就绪。请核对清单后再确认发布。准备不是发布。', 'ok')
+  } catch (error) {
+    setNotice(error.message, 'err')
+  }
+}
+
+async function confirmPublish() {
+  if (!state.job?.confirmationToken) {
+    setNotice('请先准备发布并查看发布前预览。', 'err')
+    return
+  }
+  if (!confirm('确认发布这一份快照？只有生产域名切到该提交后才会显示发布完成。')) return
+  try {
+    setNotice('正在提交并推送精确快照…')
+    const job = await api('/api/publish/confirm', {
       method: 'POST',
       body: JSON.stringify({
-        files: state.lastDraft?.files,
-        message: state.lastDraft?.commitHint,
+        jobId: state.job.jobId,
+        confirmationToken: state.job.confirmationToken,
       }),
     })
-    setNotice(`${payload.notice}\n${payload.message}`, 'ok')
+    applyJob(job)
+    if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
+    else if (job.commitSha) setNotice(`已推送 ${job.commitSha}，正在校验生产域名…`, 'ok')
+    else setNotice(job.failureReason || job.state, 'err')
+  } catch (error) {
+    setNotice(error.message, 'err')
+  }
+}
+
+async function retryPushJob() {
+  if (!state.job?.jobId) return
+  try {
+    setNotice('正在重试推送…')
+    const job = await api(`/api/publish/jobs/${state.job.jobId}/retry-push`, { method: 'POST', body: '{}' })
+    applyJob(job)
+    if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
+    else if (job.commitSha && (job.retryActions || []).includes('retry-verify')) setNotice(job.failureReason || '已推送，生产校验未完成。', 'err')
+    else setNotice(job.failureReason || job.state, job.state === 'Published' ? 'ok' : 'err')
+  } catch (error) {
+    setNotice(error.message, 'err')
+  }
+}
+
+async function retryVerify() {
+  if (!state.job?.jobId) return
+  try {
+    setNotice('正在重新校验生产域名…')
+    const job = await api(`/api/publish/jobs/${state.job.jobId}/retry-verify`, { method: 'POST', body: '{}' })
+    applyJob(job)
+    setNotice(job.state === 'Published' ? `发布完成。${job.verifiedUrl || ''}` : (job.failureReason || job.state), job.state === 'Published' ? 'ok' : 'err')
   } catch (error) {
     setNotice(error.message, 'err')
   }
@@ -592,6 +721,7 @@ function render() {
   renderKinds()
   renderIssueBar()
   renderEntries()
+  renderJob()
   const ready = state.bootstrap.cliproReady
     ? `clipro 已就绪 · 默认 ${state.bootstrap.defaultModel}`
     : '未读到 clipro key，润色不可用，发周记不受影响'
@@ -622,6 +752,15 @@ async function main() {
     restoreLocalDraft(draft)
     saveLocalDraft()
     setNotice(`已恢复上次没保存的草稿（${draft.savedAt?.slice(0, 16).replace('T', ' ')}）。不想要就点「清空草稿」。`, 'ok')
+  }
+  const active = (state.bootstrap.activeJobs || []).find((job) => (
+    ['PreviewReady', 'Pushed', 'Deploying', 'VerifyingProduction'].includes(job.state)
+    || (job.retryActions || []).some((action) => action === 'retry-verify' || action === 'retry-push')
+  ))
+  if (active) {
+    state.draftId = active.draftId
+    applyJob(active)
+    setNotice(`已恢复发布任务 ${active.jobId}（${active.state}）。`, 'ok')
   }
   render()
 }
