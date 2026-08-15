@@ -11,7 +11,7 @@ position: blog-editor 的 AI 与生活周记固定骨架；非公开站点内容
 
 1. 复制下方 Markdown 骨架，替换占位符。
 2. `## 看烟花！！！` 只保留一次：它是主题封面区与正文栏目区的分割点，不是每条内容的标题。
-3. 栏目下每增加一条内容，就增加一组「隐藏 `###` + `<WeeklyEntry>`」。
+3. 栏目下每增加一条内容，就增加一组「隐藏 `###` + `<WeeklyEntry>`」。条目里的长文按普通文章写标题，不必改层级。
 4. 无外链就删 `link-href`；无副标题就删 `subtitle`；无主图就删 `image`；无徽标就删 `badge-image` / `badge-alt`。`link-href` 始终挂主标题。副标题默认纯文本；只有用户明确要求时才加 `subtitle-href`。标签由主题显示在标题下方，不要改到右侧。
 5. `issue` = 同分类最高期数 + 1（投资与生活各自从 001 起算；开篇约定页不算期数）；`date` 默认当天；文件名默认 `YYYY-MM-DD.md`。标题为 `第NNN期-主题`。「展开 / 收起」右侧显示创建日期。
 6. 同步 `docs/.vitepress/posts.ts` 与 `docs/.vitepress/config.mts` 对应年份侧栏。

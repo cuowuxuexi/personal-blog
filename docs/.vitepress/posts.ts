@@ -26,6 +26,15 @@ export interface PostItem {
 /** 手写登记：周记 / 投研等。Hermes 日记不要写在这里。 */
 const manualPosts: PostItem[] = [
   {
+    title: '第002期-利润比收入好看',
+    date: '2026-08-15',
+    category: '投资',
+    type: 'weekly',
+    issue: 2,
+    link: '/投资/周记/2026-08-15-利润比收入好看',
+    description: '京东2026年Q2收入掉了，利润却扭亏。减亏和加投入同时成立，关键是别把新业务亏损写成外卖亏损。',
+  },
+  {
     title: '第001期-看烟花',
     date: '2026-08-13',
     category: '投资',

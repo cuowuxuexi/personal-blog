@@ -123,7 +123,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
    - 可选标题外链：`link-href` 始终挂主标题（橙色 ↗）。副标题默认纯文本；只有用户明确要求时才加 `subtitle-href`。可选 `subtitle`；可选 `badge-image`（标题下无链接小图）；正文外链可加 class `weekly-ext-link`
    - 条目标题图默认完整显示（`contain`）；照片封面要裁切时才加 `image-fit="cover"`
    - 可选 `date`（`YYYY-MM-DD`）：条目创建日；默认用文章 frontmatter.date。有「展开 / 收起」时，日期出现在按钮右侧，格式 `YYYY年MM月DD日`（月日补零）
-   - 右侧大纲只收 Markdown `##`/`###`；条目标题在组件内时，用 `weekly-outline-only` 包一层同名 `###` 供大纲收录
+   - 右侧大纲：栏目 `##`、条目标题 `###`（组件内标题用 `weekly-outline-only` 同名 `###`）。条目里的长文按普通文章写 `#`/`##`/`###` 即可，构建时自动挂到该条目下；有下级的条目默认收起，只点三角才展开
    - 正文默认约 6 行折叠，超出显示「展开 / 收起」
 4. 同步：
    - `docs/.vitepress/posts.ts` 的 `manualPosts`

@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
 import { hermesSidebarItems } from './hermes-diary'
 import { normalizeDisplayMath } from './normalize-math.mjs'
+import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
@@ -27,9 +28,17 @@ export default defineConfig({
     config(md) {
       const parse = md.parse.bind(md)
       const render = md.render.bind(md)
-      md.parse = (src, env) => parse(normalizeDisplayMath(src), env)
-      md.render = (src, env) => render(normalizeDisplayMath(src), env)
+      const normalize = (src) =>
+        normalizeWeeklyEntryHeadings(normalizeDisplayMath(src))
+      md.parse = (src, env) => parse(normalize(src), env)
+      md.render = (src, env) => render(normalize(src), env)
     },
+  },
+
+  transformPageData(pageData) {
+    if (pageData.frontmatter?.type === 'weekly') {
+      pageData.frontmatter.outline = [2, 6]
+    }
   },
 
   head: [
@@ -209,6 +218,7 @@ export default defineConfig({
           text: '2026年',
           collapsed: false,
           items: [
+            { text: '第002期-利润比收入好看', link: '/投资/周记/2026-08-15-利润比收入好看' },
             { text: '第001期-看烟花', link: '/投资/周记/2026-08-13-看烟花' },
             { text: '写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
           ],
