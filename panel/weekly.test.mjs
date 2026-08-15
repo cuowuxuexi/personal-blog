@@ -6,6 +6,7 @@ import {
   parseEntries,
   parseFrontmatter,
   replaceEntry,
+  removeEntry,
   serializeEntry,
   listIssues,
   insertManualPost,
@@ -58,6 +59,16 @@ test('editing a later entry leaves earlier entries alone', () => {
   assert.equal(after.length, entries.length)
   assert.equal(after[0].title, entries[0].title)
   assert.equal(after.at(-1).title, '改了最后一条')
+})
+
+test('removing one entry deletes only its outline and WeeklyEntry block', () => {
+  const raw = fs.readFileSync(lifeFile, 'utf8').replace(/\r\n/g, '\n')
+  const before = parseEntries(raw)
+  assert.ok(before.length >= 2)
+  const next = removeEntry(raw, before.length - 1)
+  const after = parseEntries(next)
+  assert.equal(after.length, before.length - 1)
+  assert.deepEqual(after.map((entry) => entry.title), before.slice(0, -1).map((entry) => entry.title))
 })
 
 test('each entry keeps its own outline heading', () => {

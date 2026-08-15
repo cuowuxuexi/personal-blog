@@ -288,6 +288,27 @@ h1 {
   padding-left: 8px;
 }
 
+.entry-row {
+  position: relative;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.entry-row .entry-btn { border-bottom: 0; padding-right: 42px; }
+
+.entry-delete {
+  position: absolute;
+  top: 9px;
+  right: 0;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.entry-delete:hover { color: var(--seal); }
+
 .entry-btn small {
   display: block;
   margin-top: 1px;

@@ -163,6 +163,23 @@ export function parseEntries(markdown) {
   return entries
 }
 
+function entryFingerprint(entry) {
+  return JSON.stringify({
+    tags: entry.tags,
+    title: entry.title,
+    subtitle: entry.subtitle,
+    subtitleHref: entry.subtitleHref,
+    image: entry.image,
+    imageAlt: entry.imageAlt,
+    imageFit: entry.imageFit,
+    linkHref: entry.linkHref,
+    badgeImage: entry.badgeImage,
+    badgeAlt: entry.badgeAlt,
+    date: entry.date,
+    body: entry.body.trim(),
+  })
+}
+
 export function parseChrome(body) {
   const cover = body.match(/<p class="weekly-theme-cover">\s*<img src="([^"]+)"(?:\s+alt="([^"]*)")?/)
   const caption = body.match(/<p class="weekly-theme-caption">([\s\S]*?)<\/p>/)
@@ -243,6 +260,22 @@ export function replaceEntry(fileContent, entryIndex, entryMarkdown) {
   const next = fileContent.slice(0, current.rawStart) + entryMarkdown + fileContent.slice(current.rawEnd)
   if (parseEntries(next).length !== entries.length) {
     throw new Error('拒绝写入：修改后条目数量变了，已中止以免覆盖历史内容')
+  }
+  return next
+}
+
+export function removeEntry(fileContent, entryIndex) {
+  if (typeof entryIndex !== 'number' || entryIndex < 0) {
+    throw new Error('删除条目需要明确的序号')
+  }
+  const entries = parseEntries(fileContent)
+  const current = entries[entryIndex]
+  if (!current) throw new Error(`条目 #${entryIndex} 不存在`)
+  const before = fileContent.slice(0, current.rawStart).replace(/\s*$/, '\n\n')
+  const after = fileContent.slice(current.rawEnd).replace(/^\s*/, '')
+  const next = before + after
+  if (parseEntries(next).length !== entries.length - 1) {
+    throw new Error('拒绝写入：删除范围异常，已中止以免覆盖其它内容')
   }
   return next
 }
@@ -434,12 +467,12 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
   const resolved = resolvePaths(paths)
   const kind = resolved.KINDS[kindId]
   if (!kind) throw new Error(`未知栏目：${kindId}`)
-  if (!entry?.title?.trim()) throw new Error('标题不能为空')
-  if (!entry?.body?.trim()) throw new Error('正文不能为空')
+  if (mode !== 'delete' && !entry?.title?.trim()) throw new Error('标题不能为空')
+  if (mode !== 'delete' && !entry?.body?.trim()) throw new Error('正文不能为空')
 
   const files = []
   let previewLink = ''
-  let title = entry.title.trim()
+  let title = entry?.title?.trim() || ''
   let commitHint = ''
   let targets = []
 
@@ -494,17 +527,29 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       ? issues.find((item) => item.link === issueLink)
       : currentIssue(kindId, resolved)
     if (!target) throw new Error('没有可写入的当期周记，请先开新一期')
-    const block = serializeEntry(entry)
     const currentText = readUtf8(target.file)
-    const beforeCount = parseEntries(currentText).length
-    const next = mode === 'edit'
-      ? replaceEntry(currentText, Number(entryIndex), block)
-      : appendEntry(currentText, block)
+    const currentEntries = parseEntries(currentText)
+    const beforeCount = currentEntries.length
+    const block = mode === 'delete' ? '' : serializeEntry(entry)
+    if (mode !== 'edit' && mode !== 'delete') {
+      const candidate = parseEntries(block)[0]
+      if (currentEntries.some((current) => entryFingerprint(current) === entryFingerprint(candidate))) {
+        throw new Error(`条目「${candidate.title}」已经存在，已拒绝重复追加`)
+      }
+    }
+    const next = mode === 'delete'
+      ? removeEntry(currentText, Number(entryIndex))
+      : mode === 'edit'
+        ? replaceEntry(currentText, Number(entryIndex), block)
+        : appendEntry(currentText, block)
     const afterCount = parseEntries(next).length
     if (mode === 'edit' && afterCount !== beforeCount) {
       throw new Error('拒绝写入：修改不应改变条目数量')
     }
-    if (mode !== 'edit' && afterCount !== beforeCount + 1) {
+    if (mode === 'delete' && afterCount !== beforeCount - 1) {
+      throw new Error('拒绝写入：删除后条目数量不对，已中止以免覆盖历史内容')
+    }
+    if (mode !== 'edit' && mode !== 'delete' && afterCount !== beforeCount + 1) {
       throw new Error('拒绝写入：追加后条目数量不对，已中止以免覆盖历史内容')
     }
     backupWeeklyFile(target.file, resolved)
@@ -512,9 +557,12 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
     files.push(target.rel)
     previewLink = target.link
     title = target.title
+    const changedTitle = mode === 'delete' ? currentEntries[Number(entryIndex)]?.title : entry.title
     commitHint = mode === 'edit'
-      ? `weekly: ${target.title} 修订「${entry.title}」`
-      : `weekly: ${target.title} 追加「${entry.title}」`
+      ? `weekly: ${target.title} 修订「${changedTitle}」`
+      : mode === 'delete'
+        ? `weekly: ${target.title} 删除重复条目「${changedTitle}」`
+        : `weekly: ${target.title} 追加「${changedTitle}」`
   }
 
   writeTargetsAtomic(targets)
@@ -523,7 +571,7 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
     previewLink,
     title,
     commitHint,
-    mode: mode === 'edit' ? 'edit' : mode === 'newIssue' ? 'newIssue' : 'append',
+    mode: ['edit', 'delete', 'newIssue'].includes(mode) ? mode : 'append',
     repoRoot: resolved.REPO_ROOT,
   }
 }

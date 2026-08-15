@@ -208,7 +208,12 @@ export async function preparePublication(ctx, { draftId, headingAnchor = '' }) {
     job.snapshotDir = snapshotDir
     const testResult = await ctx.probes.test({ snapshotDir, repoRoot: ctx.repoRoot })
     if (testResult && testResult.ok === false) fail(testResult.error || '测试失败', 422)
-    const built = await ctx.probes.build({ snapshotDir, repoRoot: ctx.repoRoot })
+    const previewBase = `/release-preview/${job.id}/`
+    const built = await ctx.probes.build({
+      snapshotDir,
+      repoRoot: ctx.repoRoot,
+      previewBase,
+    })
     job.distDir = built.distDir
     writePreviewBuildMeta(job.distDir, job.id)
     job.releasePreviewUrl = `/release-preview/${job.id}${draft.previewLink}`

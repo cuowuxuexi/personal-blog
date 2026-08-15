@@ -9,7 +9,7 @@ The **publishing panel** is the author's local, non-coding tool for weekly notes
 
 ## Who does what
 
-- The author drafts, polishes, previews, and publishes through the panel. Prepare is not publishing; confirming a prepared snapshot, then seeing the custom-domain SHA match, satisfies the publication gates for that weekly note.
+- The author drafts, polishes, previews, and publishes through the panel. “Save and generate release preview” writes the draft and prepares an isolated snapshot in one action; it is not publishing. Confirming that snapshot, then seeing the custom-domain SHA match, satisfies the publication gates for that weekly note.
 - Agents still use `.agents/skills/blog-editor/SKILL.md` when asked to edit weekly notes in chat. Do not start the panel, do not commit, and do not push unless the author explicitly asks.
 
 ## Do not
@@ -18,4 +18,4 @@ The **publishing panel** is the author's local, non-coding tool for weekly notes
 - Treat panel publish as a license to auto-publish research pages
 - Register research pages into `manualPosts` unless the author asks
 
-最后更新：2026-08-14
+最后更新：2026-08-15

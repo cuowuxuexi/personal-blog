@@ -1,10 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawn } from 'node:child_process'
+import { validateWeeklySnapshot } from './content-validation.mjs'
 
-function run(command, args, { cwd, timeout = 240000, shell = false } = {}) {
+function run(command, args, {
+  cwd,
+  timeout = 240000,
+  shell = false,
+  env = process.env,
+} = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd, shell, windowsHide: true })
+    const child = spawn(command, args, { cwd, shell, env, windowsHide: true })
     let stdout = ''
     let stderr = ''
     const timer = setTimeout(() => {
@@ -25,11 +31,11 @@ function run(command, args, { cwd, timeout = 240000, shell = false } = {}) {
   })
 }
 
-function runPnpm(script, cwd) {
+function runPnpm(script, cwd, { env = process.env } = {}) {
   if (process.platform === 'win32') {
-    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${script}`], { cwd })
+    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${script}`], { cwd, env })
   }
-  return run('pnpm', [script], { cwd })
+  return run('pnpm', [script], { cwd, env })
 }
 
 export function createDefaultProbes({ repoRoot, productionOrigin }) {
@@ -44,13 +50,13 @@ export function createDefaultProbes({ repoRoot, productionOrigin }) {
 
   return {
     async test({ snapshotDir }) {
-      linkDependencies(snapshotDir)
-      await runPnpm('test:panel', snapshotDir)
-      return { ok: true }
+      return { ok: true, ...validateWeeklySnapshot(snapshotDir) }
     },
-    async build({ snapshotDir }) {
+    async build({ snapshotDir, previewBase }) {
       linkDependencies(snapshotDir)
-      await runPnpm('docs:build', snapshotDir)
+      await runPnpm(`docs:build --base ${previewBase || '/'}`, snapshotDir, {
+        env: { ...process.env, VITEPRESS_BASE: previewBase || '/' },
+      })
       return { distDir: path.join(snapshotDir, 'docs', '.vitepress', 'dist') }
     },
     async push({ git }) {

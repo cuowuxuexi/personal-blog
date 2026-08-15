@@ -131,9 +131,10 @@ function makeProbes(overrides = {}) {
       if (overrides.failTest) throw new Error('测试失败：fake')
       return { ok: true }
     },
-    async build({ snapshotDir }) {
+    async build({ snapshotDir, previewBase }) {
       if (overrides.failBuild) throw new Error('构建失败：vitepress exploded')
       if (overrides.assertSnapshot) overrides.assertSnapshot(snapshotDir)
+      if (overrides.assertPreviewBase) overrides.assertPreviewBase(previewBase)
       const distDir = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
       fs.mkdirSync(path.join(distDir, 'AI与生活'), { recursive: true })
       fs.writeFileSync(path.join(distDir, 'index.html'), '<html>ok</html>')
@@ -224,7 +225,14 @@ const appendBody = {
 }
 
 test('prepare, preview, confirm, push and production verification succeed', async () => {
-  await withPanel({}, async ({ url, dir }) => {
+  let expectedPreviewBase = ''
+  await withPanel({
+    probes: {
+      assertPreviewBase(previewBase) {
+        expectedPreviewBase = previewBase
+      },
+    },
+  }, async ({ url, dir }) => {
     const draft = await post(url, '/api/draft', appendBody)
     assert.equal(draft.status, 200)
     assert.ok(draft.payload.draftId)
@@ -235,6 +243,7 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     })
     assert.equal(prepared.status, 200)
     assert.equal(prepared.payload.state, 'PreviewReady')
+    assert.equal(expectedPreviewBase, `/release-preview/${prepared.payload.jobId}/`)
     assert.ok(prepared.payload.confirmationToken)
     assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-12.md')))
     assert.equal(prepared.payload.manifest.filter((item) => item.path.includes('2026-08-12-01-test.webp')).length, 1)
@@ -349,6 +358,43 @@ test('new issue writes article, posts index and sidebar together', async () => {
       confirmationToken: prepared.payload.confirmationToken,
     })
     assert.equal(confirmed.payload.state, 'Published')
+  })
+})
+
+test('deleting an existing entry creates a publishable draft without touching other entries', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+    const appended = await post(url, '/api/draft', appendBody)
+    assert.equal(appended.status, 200)
+    const before = fs.readFileSync(weekly, 'utf8')
+    const beforeCount = (before.match(/<WeeklyEntry\b/g) || []).length
+    const deleted = await post(url, '/api/draft', {
+      kindId: 'life',
+      mode: 'delete',
+      issueLink: '/AI与生活/2026-08-12',
+      entryIndex: 0,
+    })
+    assert.equal(deleted.status, 200)
+    assert.equal(deleted.payload.mode, 'delete')
+    assert.ok(deleted.payload.draftId)
+    const after = fs.readFileSync(weekly, 'utf8')
+    assert.equal((after.match(/<WeeklyEntry\b/g) || []).length, beforeCount - 1)
+    assert.match(after, /追加正文/)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: deleted.payload.draftId })
+    assert.equal(prepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('repeating the same append is rejected before another entry is written', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+    const first = await post(url, '/api/draft', appendBody)
+    assert.equal(first.status, 200)
+    const countAfterFirst = (fs.readFileSync(weekly, 'utf8').match(/<WeeklyEntry\b/g) || []).length
+    const repeated = await post(url, '/api/draft', appendBody)
+    assert.ok(repeated.status >= 400)
+    assert.match(repeated.payload.error, /重复|已经存在/)
+    assert.equal((fs.readFileSync(weekly, 'utf8').match(/<WeeklyEntry\b/g) || []).length, countAfterFirst)
   })
 })
 

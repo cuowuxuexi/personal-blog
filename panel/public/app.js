@@ -1,6 +1,7 @@
 import { chooseRestoreDraft, draftHasText, shouldPersistDraft } from './draft.mjs'
 import { escapeHtml, escapeAttr } from './escape.mjs'
 import { bodyImageUrls, removeImageMarkdown } from './media.mjs'
+import { singleFlight } from './publish-flow.mjs'
 import {
   imageFilesFromClipboard,
   namePasteFile,
@@ -172,10 +173,13 @@ function renderEntries() {
   const issue = selectedIssue()
   const entries = issue?.entries || []
   const list = entries.map((entry) => `
-    <button type="button" class="entry-btn ${state.mode === 'edit' && state.entryIndex === entry.index ? 'active' : ''}" data-index="${entry.index}">
-      ${escapeHtml(entry.title)}
-      <small>${escapeHtml((entry.tags || []).join(' / '))}</small>
-    </button>
+    <div class="entry-row">
+      <button type="button" class="entry-btn ${state.mode === 'edit' && state.entryIndex === entry.index ? 'active' : ''}" data-index="${entry.index}">
+        ${escapeHtml(entry.title)}
+        <small>${escapeHtml((entry.tags || []).join(' / '))}</small>
+      </button>
+      <button type="button" class="entry-delete" data-delete-index="${entry.index}" aria-label="删除「${escapeAttr(entry.title)}」">删除</button>
+    </div>
   `).join('')
   document.getElementById('entries').innerHTML = `
     <h3>当期条目 · 点开可改</h3>
@@ -435,6 +439,7 @@ function bindEvents() {
   })
 
   document.getElementById('entries').addEventListener('click', (event) => {
+    const deleteButton = event.target.closest('[data-delete-index]')
     const button = event.target.closest('[data-index]')
     if (event.target.id === 'btn-new-entry') {
       if (!confirmDiscard()) return
@@ -443,6 +448,13 @@ function bindEvents() {
       state.entryIndex = null
       resetForm()
       render()
+      return
+    }
+    if (deleteButton) {
+      const entry = selectedIssue()?.entries?.[Number(deleteButton.dataset.deleteIndex)]
+      if (!entry || !confirmDiscard()) return
+      if (!confirm(`确定删除「${entry.title}」？删除后会直接生成发布前预览，确认发布前仍可核对。`)) return
+      void deleteAndPrepare(entry.index)
       return
     }
     if (!button || !confirmDiscard()) return
@@ -525,28 +537,22 @@ function bindEvents() {
   })
   document.getElementById('btn-discard').addEventListener('click', hideCompare)
 
-  document.getElementById('btn-preview').addEventListener('click', () => saveDraft(true))
+  document.getElementById('btn-preview').addEventListener('click', saveAndPrepare)
   document.getElementById('btn-prepare').addEventListener('click', preparePublish)
   document.getElementById('btn-publish').addEventListener('click', confirmPublish)
   document.getElementById('btn-retry-verify').addEventListener('click', retryVerify)
   document.getElementById('btn-retry-push').addEventListener('click', retryPushJob)
 }
 
-async function saveDraft(openPreview) {
-  try {
-    if (state.mode === 'edit') {
-      const title = selectedIssue()?.entries?.[state.entryIndex]?.title || '该条'
-      if (!confirm(`确定只改「${title}」？其它历史条目不会动。\n若要发新内容，请先点「追加一条」。`)) return
-    }
-    setNotice('正在写入草稿…')
-    const payload = await api('/api/draft', {
+async function persistDraft({ mode = state.mode, entryIndex = state.entryIndex, entry = collectEntry() } = {}) {
+  return api('/api/draft', {
       method: 'POST',
       body: JSON.stringify({
         kindId: state.kind,
-        mode: state.mode,
+        mode,
         issueLink: state.issueLink,
-        entryIndex: state.entryIndex,
-        entry: collectEntry(),
+        entryIndex,
+        entry,
         issue: {
           theme: field('theme').value.trim(),
           date: field('issueDate').value,
@@ -556,25 +562,58 @@ async function saveDraft(openPreview) {
         },
       }),
     })
+}
+
+async function acceptSavedDraft(payload) {
     state.draftId = payload.draftId
     state.job = null
     clearLocalDraft()
-    if (openPreview) window.open(payload.previewUrl, '_blank')
-    setNotice(`已${payload.mode === 'edit' ? '修改' : payload.mode === 'newIssue' ? '开新期' : '追加'} ${payload.files.join('、')}\n工作区预览（非发布预览）：${payload.previewUrl}`, 'ok')
+    const action = payload.mode === 'edit' ? '修改' : payload.mode === 'delete' ? '删除' : payload.mode === 'newIssue' ? '开新期' : '追加'
+    setNotice(`已${action} ${payload.files.join('、')}，正在生成发布前预览…`, 'ok')
     if (payload.previewLink) state.issueLink = payload.previewLink
     if (state.mode === 'newIssue') state.mode = 'append'
     state.entryIndex = null
     resetForm()
     render()
-    void api('/api/bootstrap').then((bootstrap) => {
+    try {
+      const bootstrap = await api('/api/bootstrap')
       state.bootstrap = bootstrap
       render()
-    }).catch((error) => {
+    } catch (error) {
       setNotice(`草稿已写入，但刷新条目列表失败：${error.message}`, 'err')
-    })
+    }
+}
+
+const prepareSavedChange = singleFlight(async (createDraft) => {
+  const button = document.getElementById('btn-preview')
+  try {
+    button.disabled = true
+    document.getElementById('btn-prepare').classList.add('hidden')
+    setNotice('正在保存并生成发布前预览…')
+    const payload = await createDraft()
+    if (!payload) return
+    await acceptSavedDraft(payload)
+    await preparePublish()
   } catch (error) {
     setNotice(error.message, 'err')
+    if (state.draftId) document.getElementById('btn-prepare').classList.remove('hidden')
+  } finally {
+    button.disabled = false
   }
+})
+
+function saveAndPrepare() {
+  return prepareSavedChange(async () => {
+    if (state.mode === 'edit') {
+      const title = selectedIssue()?.entries?.[state.entryIndex]?.title || '该条'
+      if (!confirm(`确定只改「${title}」？其它历史条目不会动。\n若要发新内容，请先点「追加一条」。`)) return null
+    }
+    return persistDraft()
+  })
+}
+
+function deleteAndPrepare(entryIndex) {
+  return prepareSavedChange(() => persistDraft({ mode: 'delete', entryIndex, entry: null }))
 }
 
 function headingAnchor() {
@@ -661,9 +700,13 @@ async function preparePublish() {
       body: JSON.stringify({ draftId: state.draftId, headingAnchor: headingAnchor() }),
     })
     applyJob(job)
+    document.getElementById('btn-prepare').classList.add('hidden')
     setNotice('发布前预览已就绪。请核对清单后再确认发布。准备不是发布。', 'ok')
+    return true
   } catch (error) {
     setNotice(error.message, 'err')
+    if (state.draftId) document.getElementById('btn-prepare').classList.remove('hidden')
+    return false
   }
 }
 

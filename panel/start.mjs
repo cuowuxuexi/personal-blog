@@ -1,11 +1,9 @@
 import { execSync, spawn } from 'node:child_process'
 import { REPO_ROOT, loadEnv } from './lib/paths.mjs'
 import { createServer, PORT, VITEPRESS_URL } from './server.mjs'
+import { createVitepressSupervisor } from './lib/vitepress-supervisor.mjs'
 
 loadEnv()
-
-const children = []
-let startedVite = false
 
 async function isUp(url) {
   try {
@@ -42,32 +40,38 @@ function openBrowser(url) {
 async function ensureVitepress() {
   if (await isUp(VITEPRESS_URL)) {
     console.log(`VitePress 已在运行：${VITEPRESS_URL}`)
+    previewSupervisor.startMonitoring()
     return
   }
   console.log('正在启动 VitePress 本地预览…')
-  const child = spawn('pnpm', ['docs:dev', '--host', '127.0.0.1', '--port', '5173'], {
+  const ready = await previewSupervisor.ensureRunning()
+  previewSupervisor.startMonitoring()
+  if (ready) {
+    console.log(`VitePress 已就绪：${VITEPRESS_URL}`)
+    return
+  }
+  console.warn('VitePress 启动超时，面板会继续监测并自动恢复；仍可先写草稿。')
+}
+
+function startVitepressProcess() {
+  console.log('VitePress 不可用，正在自动恢复…')
+  return spawn('pnpm', ['docs:dev', '--host', '127.0.0.1', '--port', '5173'], {
     cwd: REPO_ROOT,
     env: { ...process.env, BROWSER: 'none' },
     stdio: 'inherit',
     shell: true,
   })
-  children.push(child)
-  startedVite = true
-  const deadline = Date.now() + 30000
-  while (Date.now() < deadline) {
-    if (await isUp(VITEPRESS_URL)) {
-      console.log(`VitePress 已就绪：${VITEPRESS_URL}`)
-      return
-    }
-    await new Promise((resolve) => setTimeout(resolve, 500))
-  }
-  console.warn('VitePress 启动超时，仍可先写草稿；预览稍后再试。')
 }
 
+const previewSupervisor = createVitepressSupervisor({
+  checkHealth: () => isUp(VITEPRESS_URL),
+  startProcess: startVitepressProcess,
+  intervalMs: 5000,
+  onError: (error) => console.warn(`VitePress 自动恢复失败：${error.message}`),
+})
+
 function shutdown() {
-  for (const child of children) {
-    if (!child.killed) child.kill()
-  }
+  previewSupervisor.stop()
   process.exit(0)
 }
 
@@ -100,7 +104,7 @@ server.listen(PORT, '127.0.0.1', async () => {
   await ensureVitepress()
   if (reopenBrowser) openBrowser(panelUrl)
   else console.log('已重启。请刷新原来的发布面板窗口，不要新开一个以免冲掉草稿。')
-  if (startedVite) {
+  if (previewSupervisor.hasOwnedProcess()) {
     console.log('关闭这个窗口会同时停掉发布面板（本进程拉起的预览也会停）。')
   } else {
     console.log('关闭这个窗口会停掉发布面板；已有的 VitePress 预览会继续跑。')
