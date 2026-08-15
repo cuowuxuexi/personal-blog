@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>发布面板</title>
+  <link rel="icon" href="/favicon.ico" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <div class="app">
     <header class="top">
       <div>
-        <p class="eyebrow">误君在脑海里放烟花</p>
+        <p class="eyebrow">误君在脑海里放烟花 · PUBLISHING PANEL</p>
         <h1>发布面板</h1>
       </div>
       <p class="status" id="status">正在读取栏目…</p>
@@ -40,13 +41,13 @@
           <div class="media-grid">
             <div class="drop" data-role="image" id="drop-image">
               <strong>题图</strong>
-              <p>拖入或点击上传，自动压成 WebP</p>
+              <p>截图后点这里 Ctrl+V，也可拖入 / <button type="button" class="drop-pick">选择文件</button></p>
               <input type="file" accept="image/*" hidden />
               <div class="thumbs"></div>
             </div>
             <div class="drop" data-role="body" id="drop-body">
               <strong>正文图</strong>
-              <p>可多张，按顺序插入正文</p>
+              <p>可多张。正文里粘贴也会插入 · <button type="button" class="drop-pick">选择文件</button></p>
               <input type="file" accept="image/*" multiple hidden />
               <div class="thumbs"></div>
             </div>
@@ -114,7 +115,7 @@
               </label>
               <div class="drop" data-role="cover" id="drop-cover">
                 <strong>封面</strong>
-                <p>不传则沿用烟花封面</p>
+                <p>可粘贴。不传则沿用烟花封面 · <button type="button" class="drop-pick">选择文件</button></p>
                 <input type="file" accept="image/*" hidden />
                 <div class="thumbs"></div>
               </div>

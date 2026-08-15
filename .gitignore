@@ -14,3 +14,6 @@ research-sources.local.yml
 
 # Publishing panel local backups
 panel/.local-backups/
+
+# Agent scratch screenshots
+.cursor-shots/

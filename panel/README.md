@@ -4,6 +4,8 @@
 
 投研页、哲学、大问题等仍走 Cursor / blog-editor。
 
+界面风格遵循 `panel/DESIGN.md`（「误君墨纸」设计系统，google-labs `DESIGN.md` 格式）。改面板样式前先读它；改完可用 `npx -y -p "@google/design.md" designmd lint panel/DESIGN.md` 校验。
+
 ## 启动
 
 桌面双击「发布面板」，或在仓库根目录：

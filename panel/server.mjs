@@ -70,24 +70,35 @@ function readBody(req) {
 function mimeFor(file) {
   if (file.endsWith('.html')) return 'text/html; charset=utf-8'
   if (file.endsWith('.css')) return 'text/css; charset=utf-8'
-  if (file.endsWith('.js')) return 'text/javascript; charset=utf-8'
+  if (file.endsWith('.js') || file.endsWith('.mjs')) return 'text/javascript; charset=utf-8'
   if (file.endsWith('.svg')) return 'image/svg+xml'
   if (file.endsWith('.webp')) return 'image/webp'
   if (file.endsWith('.png')) return 'image/png'
   if (file.endsWith('.jpg') || file.endsWith('.jpeg')) return 'image/jpeg'
   if (file.endsWith('.gif')) return 'image/gif'
+  if (file.endsWith('.woff2')) return 'font/woff2'
+  if (file.endsWith('.ico')) return 'image/x-icon'
   return 'application/octet-stream'
+}
+
+function streamFile(res, abs) {
+  res.writeHead(200, { 'Content-Type': mimeFor(abs) })
+  fs.createReadStream(abs).pipe(res)
 }
 
 function serveStatic(req, res) {
   const url = new URL(req.url, 'http://127.0.0.1')
-  if (url.pathname.startsWith('/images/')) {
+  // 图片与字体复用博客的公共资源，面板排版与博客同源
+  if (url.pathname.startsWith('/images/') || url.pathname.startsWith('/fonts/')) {
     const publicRoot = path.join(REPO_ROOT, 'docs', 'public')
     const abs = path.normalize(path.join(publicRoot, url.pathname))
     if (!abs.startsWith(publicRoot) || !fs.existsSync(abs)) return send(res, 404, 'not found')
-    res.writeHead(200, { 'Content-Type': mimeFor(abs) })
-    fs.createReadStream(abs).pipe(res)
-    return
+    return streamFile(res, abs)
+  }
+  if (url.pathname === '/favicon.ico') {
+    const abs = path.join(PANEL_DIR, 'publishing-panel-fireworks.ico')
+    if (fs.existsSync(abs)) return streamFile(res, abs)
+    return send(res, 404, 'not found')
   }
   const rel = url.pathname === '/' ? '/index.html' : url.pathname
   const abs = path.normalize(path.join(PUBLIC_DIR, rel))
@@ -95,7 +106,7 @@ function serveStatic(req, res) {
   if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
     return send(res, 404, 'not found')
   }
-  send(res, 200, fs.readFileSync(abs, 'utf8'), { 'Content-Type': mimeFor(abs) })
+  return streamFile(res, abs)
 }
 
 async function handleBootstrap() {

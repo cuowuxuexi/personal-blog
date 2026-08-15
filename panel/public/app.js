@@ -1,4 +1,11 @@
 import { chooseRestoreDraft, draftHasText, shouldPersistDraft } from './draft.mjs'
+import { bodyImageUrls, removeImageMarkdown } from './media.mjs'
+import {
+  imageFilesFromClipboard,
+  namePasteFile,
+  resolvePasteRole,
+  shouldAcceptImagePaste,
+} from './paste.mjs'
 
 const state = {
   bootstrap: null,
@@ -82,8 +89,9 @@ function restoreLocalDraft(draft) {
   for (const name of DRAFT_FIELDS) {
     if (draft.fields?.[name] != null) field(name).value = draft.fields[name]
   }
-  renderThumb('drop-image', state.images.image)
-  renderThumb('drop-cover', state.images.cover)
+  renderThumbs('drop-image', state.images.image)
+  renderThumbs('drop-cover', state.images.cover)
+  renderThumbs('drop-body', bodyImageUrls(field('body').value))
 }
 
 /** 切栏目 / 切模式 / 点开别的条目前，别把没保存的正文冲掉。 */
@@ -197,8 +205,8 @@ function fillEntry(entry) {
   field('imageFit').value = entry?.imageFit || ''
   field('imageAlt').value = entry?.imageAlt || ''
   state.images.image = entry?.image || ''
-  renderThumb('drop-image', state.images.image)
-  renderThumb('drop-body', '')
+  renderThumbs('drop-image', state.images.image)
+  renderThumbs('drop-body', bodyImageUrls(entry?.body || ''))
   hideCompare()
 }
 
@@ -211,12 +219,36 @@ function resetForm() {
   field('caption').value = '烟花朵朵开，想法自然来。'
   field('description').value = ''
   state.images.cover = ''
-  renderThumb('drop-cover', '')
+  renderThumbs('drop-cover', '')
 }
 
-function renderThumb(id, url) {
-  const box = document.getElementById(id)
-  box.querySelector('.thumbs').innerHTML = url ? `<img src="${url}" alt="" />` : ''
+function escapeAttr(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+}
+
+function renderThumbs(id, urls) {
+  const list = (Array.isArray(urls) ? urls : [urls]).filter(Boolean)
+  document.getElementById(id).querySelector('.thumbs').innerHTML = list.map((url) => `
+    <figure class="thumb">
+      <img src="${escapeAttr(url)}" alt="" />
+      <button type="button" class="thumb-remove" data-url="${escapeAttr(url)}" aria-label="去掉这张图">×</button>
+    </figure>
+  `).join('')
+}
+
+function removeAttachedImage(role, url) {
+  if (role === 'body') {
+    field('body').value = removeImageMarkdown(field('body').value, url)
+    renderThumbs('drop-body', bodyImageUrls(field('body').value))
+  } else {
+    if (state.images[role] === url) state.images[role] = ''
+    renderThumbs(role === 'cover' ? 'drop-cover' : 'drop-image', state.images[role])
+  }
+  saveLocalDraft()
+  setNotice('已去掉这张图。')
 }
 
 function collectEntry() {
@@ -292,9 +324,25 @@ async function uploadFiles(files, role) {
 }
 
 function bindDrops() {
+  let lastRole = 'image'
   for (const box of document.querySelectorAll('.drop')) {
     const input = box.querySelector('input[type=file]')
-    box.addEventListener('click', () => input.click())
+    box.tabIndex = 0
+    const markTarget = () => { lastRole = box.dataset.role }
+    box.addEventListener('pointerenter', markTarget)
+    box.addEventListener('focus', markTarget)
+    box.addEventListener('click', () => box.focus())
+    box.querySelector('.drop-pick')?.addEventListener('click', (event) => {
+      event.stopPropagation()
+      input.click()
+    })
+    box.querySelector('.thumbs').addEventListener('click', (event) => {
+      const button = event.target.closest('.thumb-remove')
+      if (!button) return
+      event.preventDefault()
+      event.stopPropagation()
+      removeAttachedImage(box.dataset.role, button.dataset.url)
+    })
     box.addEventListener('dragover', (event) => {
       event.preventDefault()
       box.classList.add('over')
@@ -310,25 +358,42 @@ function bindDrops() {
       input.value = ''
     })
   }
+
+  document.addEventListener('paste', async (event) => {
+    const files = imageFilesFromClipboard(event.clipboardData).map((file) => namePasteFile(file))
+    if (!shouldAcceptImagePaste(event.clipboardData, files)) return
+    event.preventDefault()
+    const role = resolvePasteRole(event.target, lastRole)
+    const box = document.querySelector(`.drop[data-role="${role}"]`)
+    box?.classList.add('over')
+    try {
+      await handleFiles(role, files)
+    } finally {
+      box?.classList.remove('over')
+    }
+  })
 }
 
 async function handleFiles(role, fileList) {
   const images = await uploadFiles(fileList, role)
+  if (!images.length) return
   if (role === 'body') {
     const snippets = images.map((image) => `![${image.alt || field('title').value || '图片'}](${image.url})`).join('\n\n')
     field('body').value = [field('body').value.trim(), snippets].filter(Boolean).join('\n\n')
-    const thumbs = document.querySelector('#drop-body .thumbs')
-    thumbs.insertAdjacentHTML('beforeend', images.map((image) => `<img src="${image.url}" alt="" />`).join(''))
+    renderThumbs('drop-body', bodyImageUrls(field('body').value))
     saveLocalDraft()
     return
   }
   state.images[role] = images[0].url
-  renderThumb(role === 'image' ? 'drop-image' : 'drop-cover', images[0].url)
+  renderThumbs(role === 'image' ? 'drop-image' : 'drop-cover', images[0].url)
   saveLocalDraft()
 }
 
 function bindEvents() {
-  form.addEventListener('input', saveLocalDraft)
+  form.addEventListener('input', (event) => {
+    saveLocalDraft()
+    if (event.target?.name === 'body') renderThumbs('drop-body', bodyImageUrls(field('body').value))
+  })
 
   window.addEventListener('beforeunload', (event) => {
     if (!hasContent()) return
