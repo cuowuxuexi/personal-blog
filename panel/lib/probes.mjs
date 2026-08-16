@@ -31,11 +31,11 @@ function run(command, args, {
   })
 }
 
-function runPnpm(script, cwd, { env = process.env } = {}) {
+function runPnpm(args, cwd, { env = process.env } = {}) {
   if (process.platform === 'win32') {
-    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${script}`], { cwd, env })
+    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${args.join(' ')}`], { cwd, env })
   }
-  return run('pnpm', [script], { cwd, env })
+  return run('pnpm', args, { cwd, env })
 }
 
 export function createDefaultProbes({ repoRoot, productionOrigin }) {
@@ -54,7 +54,7 @@ export function createDefaultProbes({ repoRoot, productionOrigin }) {
     },
     async build({ snapshotDir, previewBase }) {
       linkDependencies(snapshotDir)
-      await runPnpm(`docs:build --base ${previewBase || '/'}`, snapshotDir, {
+      await runPnpm(['docs:build', '--base', previewBase || '/'], snapshotDir, {
         env: { ...process.env, VITEPRESS_BASE: previewBase || '/' },
       })
       return { distDir: path.join(snapshotDir, 'docs', '.vitepress', 'dist') }
