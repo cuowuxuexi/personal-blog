@@ -51,5 +51,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: "3.114.0"
+          wranglerVersion: "4.123.0"
           command: pages deploy docs/.vitepress/dist --project-name=personal-blog --branch=main
