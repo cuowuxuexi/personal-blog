@@ -24,6 +24,8 @@ export default defineConfig({
   srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],
 
   markdown: {
+    // 周记正文按「一行一句」书写，软换行渲染为 <br> 而不是合并成一段
+    breaks: true,
     math: true,
     config(md) {
       const parse = md.parse.bind(md)
