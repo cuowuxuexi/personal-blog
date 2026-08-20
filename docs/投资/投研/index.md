@@ -21,7 +21,7 @@ outline: false
     <div class="industry-row__index">01</div>
     <div class="industry-row__main">
       <strong>医药行业</strong>
-      <span>创新药、CXO 与医疗产业链的长期观察</span>
+      <span>创新药、CXO、原研仿制与支付端的长期观察</span>
     </div>
     <div class="industry-row__subjects">研究地图 · 药明康德</div>
     <span class="industry-row__arrow">→</span>

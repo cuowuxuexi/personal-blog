@@ -10,16 +10,22 @@ import WeeklyEntry from './components/WeeklyEntry.vue'
 import WeeklyEvents from './components/WeeklyEvents.vue'
 import WeeklyEventYear from './components/WeeklyEventYear.vue'
 import type { EnhanceAppContext } from 'vitepress'
+import { hrefWithSiteBase } from './href-with-base'
 import './style.css'
 
 export default {
   extends: Theme,
   Layout,
-  enhanceApp({ app }: EnhanceAppContext) {
+  enhanceApp({ app, router, siteData }: EnhanceAppContext) {
     app.component('CategoryList', CategoryList)
     app.component('LatestWeeklyRedirect', LatestWeeklyRedirect)
     app.component('WeeklyEntry', WeeklyEntry)
     app.component('WeeklyEvents', WeeklyEvents)
     app.component('WeeklyEventYear', WeeklyEventYear)
+    const originalGo = router.go.bind(router)
+    router.go = (href?: string) => {
+      if (!href) return originalGo(href)
+      return originalGo(hrefWithSiteBase(href, siteData.value.base || '/'))
+    }
   },
 }
