@@ -49,8 +49,14 @@ export function createDefaultProbes({ repoRoot, productionOrigin }) {
   }
 
   return {
-    async test({ snapshotDir }) {
-      return { ok: true, ...validateWeeklySnapshot(snapshotDir) }
+    async test({ snapshotDir, kindId, contentFiles, files } = {}) {
+      return {
+        ok: true,
+        ...validateWeeklySnapshot(snapshotDir, {
+          kindId,
+          contentFiles: contentFiles || files,
+        }),
+      }
     },
     async build({ snapshotDir, previewBase }) {
       linkDependencies(snapshotDir)
@@ -72,6 +78,29 @@ export function createDefaultProbes({ repoRoot, productionOrigin }) {
       if (!response.ok) return null
       const payload = await response.json()
       return { sha: payload.sha || null, builtAt: payload.builtAt || null }
+    },
+    async onlineAssets({ urls }) {
+      const unique = [...new Set((urls || []).filter(Boolean))]
+      const checks = await Promise.all(unique.map(async (url) => {
+        try {
+          const response = await fetch(url, {
+            cache: 'no-store',
+            signal: AbortSignal.timeout(8000),
+          })
+          await response.body?.cancel().catch(() => {})
+          const type = response.headers.get('content-type') || ''
+          const finalUrl = new URL(response.url || url)
+          return response.ok
+            && /^https?:$/.test(finalUrl.protocol)
+            && /^image\//i.test(type)
+            ? null
+            : url
+        } catch {
+          return url
+        }
+      }))
+      const missing = checks.filter(Boolean)
+      return { ok: missing.length === 0, missing }
     },
   }
 }

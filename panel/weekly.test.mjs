@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import test from 'node:test'
+import { createRepoPaths } from './lib/paths.mjs'
 import {
   appendEntry,
+  applyDraft,
+  applyIssueChrome,
   parseEntries,
   parseFrontmatter,
   replaceEntry,
@@ -11,6 +16,9 @@ import {
   listIssues,
   insertManualPost,
   insertSidebarItem,
+  themeFromTitle,
+  updateManualPost,
+  updateSidebarItem,
 } from './lib/weekly.mjs'
 
 const lifeFile = new URL('../docs/AI与生活/2026-08-12.md', import.meta.url)
@@ -107,6 +115,38 @@ test('lists numbered issues', () => {
   assert.ok(invest.some((item) => item.issue == null))
 })
 
+test('life listing stays on dated weekly files', () => {
+  const life = listIssues('life')
+  assert.equal(life.some((item) => item.title === '基础设施篇'), false)
+  assert.ok(life.every((item) => item.link.startsWith('/AI与生活/') && !item.link.includes('我的AI历程')))
+})
+
+test('empty weekly fireworks heading still accepts the first entry', () => {
+  const raw = `---
+title: 空周记
+type: weekly
+---
+
+# 空周记
+
+<div class="weekly-fireworks-section">
+
+## <img class="weekly-section-icon" src="/images/hero-fireworks.png" alt="" /> 看烟花！！！ {#kan-yanhua}
+
+</div>
+`
+  const next = appendEntry(raw, serializeEntry({
+    title: '第一条',
+    tags: ['测试'],
+    body: '空容器追加。',
+  }))
+  const entries = parseEntries(next)
+  assert.equal(entries.length, 1)
+  assert.equal(entries[0].title, '第一条')
+  assert.match(next, /\{#kan-yanhua\}/)
+  assert.match(next, /<\/WeeklyEntry>\s*\n\s*<\/div>\s*$/)
+})
+
 test('inserts posts.ts and sidebar items', () => {
   const posts = insertManualPost(fs.readFileSync(postsFile, 'utf8'), {
     title: '第002期-测试',
@@ -130,4 +170,218 @@ test('inserts posts.ts and sidebar items', () => {
   const newAt = config.indexOf("text: '第002期-测试'")
   const oldAt = config.indexOf("text: '第001期-看烟花'", yearAt)
   assert.ok(newAt > yearAt && newAt < oldAt)
+})
+
+test('themeFromTitle reads the part after 第N期-', () => {
+  assert.equal(themeFromTitle('第002期-待定'), '待定')
+  assert.equal(themeFromTitle('基础设施篇'), '')
+})
+
+test('applyIssueChrome updates title, caption and cover without touching entries', () => {
+  const raw = fs.readFileSync(lifeFile, 'utf8').replace(/\r\n/g, '\n')
+  const before = parseEntries(raw)
+  const next = applyIssueChrome(raw, {
+    title: '第001期-改过的主题',
+    caption: '新的一句说明',
+    cover: '/images/weekly/new-cover.webp',
+  })
+  const { fm } = parseFrontmatter(next)
+  assert.equal(fm.title, '第001期-改过的主题')
+  assert.match(next, /^# 第001期-改过的主题$/m)
+  assert.match(next, /<p class="weekly-theme-caption">新的一句说明<\/p>/)
+  assert.match(next, /src="\/images\/weekly\/new-cover\.webp"/)
+  assert.deepEqual(parseEntries(next).map((entry) => entry.title), before.map((entry) => entry.title))
+})
+
+const WEEKLY_CHROME = `---
+title: "第001期-看烟花"
+date: "2026-08-12"
+category: "AI与生活"
+type: weekly
+issue: 1
+description: "测试"
+pageClass: "weekly-post weekly-post--life"
+---
+
+# 第001期-看烟花
+
+<p class="weekly-theme-cover">
+  <img src="/images/hero-fireworks.png" alt="cover" />
+</p>
+
+<p class="weekly-theme-caption">旧说明</p>
+
+<div class="weekly-fireworks-section">
+
+<div class="weekly-outline-only" aria-hidden="true">
+
+### 已有一条
+
+</div>
+
+<WeeklyEntry
+  tags="测试"
+  title="已有一条"
+>
+正文
+</WeeklyEntry>
+
+</div>
+`
+
+function writeWeeklyChromeFixture(dir) {
+  const life = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+  const invest = path.join(dir, 'docs', '投资', '周记', '2026-08-13-待定.md')
+  fs.mkdirSync(path.dirname(life), { recursive: true })
+  fs.mkdirSync(path.dirname(invest), { recursive: true })
+  fs.mkdirSync(path.join(dir, 'docs', '.vitepress'), { recursive: true })
+  fs.writeFileSync(life, WEEKLY_CHROME)
+  fs.writeFileSync(invest, WEEKLY_CHROME
+    .replaceAll('AI与生活', '投资')
+    .replaceAll('weekly-post--life', 'weekly-post--invest')
+    .replaceAll('2026-08-12', '2026-08-13')
+    .replaceAll('看烟花', '待定'))
+  fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), `const manualPosts: PostItem[] = [
+  {
+    title: "第001期-待定",
+    date: "2026-08-13",
+    category: "投资",
+    type: 'weekly',
+    issue: 1,
+    link: "/投资/周记/2026-08-13-待定",
+    description: "测试",
+  },
+  {
+    title: "第001期-看烟花",
+    date: "2026-08-12",
+    category: "AI与生活",
+    type: 'weekly',
+    issue: 1,
+    link: "/AI与生活/2026-08-12",
+    description: "测试",
+  },
+]
+`)
+  fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), `export default {
+  themeConfig: {
+    sidebar: {
+      '/AI与生活/': [
+        {
+          text: '周记 · 2026年',
+          collapsed: false,
+          items: [
+            { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
+          ],
+        },
+      ],
+      '/投资/周记/': [
+        {
+          text: '2026年',
+          collapsed: false,
+          items: [
+            { text: '第001期-待定', link: '/投资/周记/2026-08-13-待定' },
+          ],
+        },
+      ],
+    },
+  },
+}
+`)
+  return createRepoPaths(dir)
+}
+
+test('editChrome updates a life issue header and leaves the entry', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-chrome-'))
+  try {
+    const paths = writeWeeklyChromeFixture(dir)
+    const result = applyDraft({
+      kindId: 'life',
+      mode: 'editChrome',
+      issueLink: '/AI与生活/2026-08-12',
+      issue: {
+        theme: '改过的主题',
+        caption: '新的一句说明',
+        cover: '/images/weekly/new-cover.webp',
+      },
+    }, paths)
+    assert.equal(result.mode, 'editChrome')
+    assert.equal(result.previewLink, '/AI与生活/2026-08-12')
+    assert.match(result.commitHint, /修订期头/)
+    const raw = fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '2026-08-12.md'), 'utf8')
+    assert.match(raw, /# 第001期-改过的主题/)
+    assert.match(raw, /新的一句说明/)
+    assert.match(raw, /new-cover\.webp/)
+    assert.equal(parseEntries(raw).length, 1)
+    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-改过的主题/)
+    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /第001期-改过的主题/)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('editChrome renames an invest issue file and URL with the new theme', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-chrome-invest-'))
+  try {
+    const paths = writeWeeklyChromeFixture(dir)
+    const result = applyDraft({
+      kindId: 'invest',
+      mode: 'editChrome',
+      issueLink: '/投资/周记/2026-08-13-待定',
+      issue: {
+        theme: '看清楚',
+        caption: '改过的投资说明',
+        cover: '/images/hero-fireworks.png',
+      },
+    }, paths)
+    assert.equal(result.previewLink, '/投资/周记/2026-08-13-看清楚')
+    assert.equal(fs.existsSync(path.join(dir, 'docs', '投资', '周记', '2026-08-13-待定.md')), false)
+    const next = fs.readFileSync(path.join(dir, 'docs', '投资', '周记', '2026-08-13-看清楚.md'), 'utf8')
+    assert.match(next, /# 第001期-看清楚/)
+    assert.match(next, /改过的投资说明/)
+    const posts = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
+    assert.match(posts, /\/投资\/周记\/2026-08-13-看清楚/)
+    assert.doesNotMatch(posts, /2026-08-13-待定/)
+    const config = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
+    assert.match(config, /\/投资\/周记\/2026-08-13-看清楚/)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('updateManualPost and updateSidebarItem rewrite title and link', () => {
+  const posts = updateManualPost(`const manualPosts: PostItem[] = [
+  {
+    title: "第002期-待定",
+    link: "/投资/周记/2026-08-17-待定",
+  },
+]
+`, {
+    oldLink: '/投资/周记/2026-08-17-待定',
+    title: '第002期-看清楚',
+    link: '/投资/周记/2026-08-17-看清楚',
+  })
+  assert.match(posts, /title: "第002期-看清楚"/)
+  assert.match(posts, /link: "\/投资\/周记\/2026-08-17-看清楚"/)
+  const config = updateSidebarItem(`export default {
+  themeConfig: {
+    sidebar: {
+      '/投资/周记/': [
+        {
+          text: '2026年',
+          items: [
+            { text: '第002期-待定', link: '/投资/周记/2026-08-17-待定' },
+          ],
+        },
+      ],
+    },
+  },
+}
+`, {
+    sidebarKey: '/投资/周记/',
+    oldLink: '/投资/周记/2026-08-17-待定',
+    title: '第002期-看清楚',
+    link: '/投资/周记/2026-08-17-看清楚',
+  })
+  assert.match(config, /text: '第002期-看清楚'/)
+  assert.match(config, /link: '\/投资\/周记\/2026-08-17-看清楚'/)
 })

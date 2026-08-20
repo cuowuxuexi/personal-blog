@@ -1,11 +1,11 @@
 ---
 name: blog-editor
 description: >-
-  Edit this personal blog quickly: add or revise weekly notes, Hermes diary
-  entries, research/philosophy pages, homepage copy, navigation, sidebars,
-  posts index, VitePress theme components, and CSS. Use when the user adds
-  blog content, edits a page, redesigns layout/styles, mentions Design Mode,
-  or invokes /blog-editor.
+  Edit this personal blog quickly: add or revise weekly notes, 我的AI历程
+  chapters, Hermes diary entries, research/philosophy pages, homepage copy,
+  navigation, sidebars, posts index, VitePress theme components, and CSS. Use
+  when the user adds blog content, edits a page, redesigns layout/styles,
+  mentions Design Mode, or invokes /blog-editor.
 ---
 
 # Blog Editor
@@ -27,7 +27,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 不替代：
 
 - 投研发布协议：`docs/agents/research-publishing.md`
-- 作者本人的周记发布：本地发布面板（`panel/`，`docs/agents/publishing-panel.md`）
+- 作者本人的周记发布，以及「我的AI历程」开新一期 / 改期头 / 既有篇章条目：本地发布面板（`panel/`，`docs/agents/publishing-panel.md`）。新增、重命名或删除**具名篇章文件**仍走本 Skill。
 - Hermes 专用协议（已停用）：`docs/agents/hermes-diary.md` 与 `docs/AI与生活/Hermes日记/README.md`
 - 领域词与 ADR：`CONTEXT.md`、`docs/adr/`
 
@@ -51,6 +51,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 
 ```text
 已定位为 AI 与生活周记：将修改文章文件、posts.ts 和 AI 侧边栏。
+已定位为我的AI历程：按期新开/改期头走发布面板；新增/重命名/删除具名篇章文件才改 Markdown、posts.ts 与侧栏。
 已定位为 Hermes 日记：只追加当天文件，不修改 posts.ts 或侧边栏。
 已定位为首页设计：将检查 index.md、首页组件与 style.css。
 ```
@@ -71,7 +72,8 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 | Mode | Trigger | Primary files | Side effects |
 | --- | --- | --- | --- |
 | `content.weekly-investment` | 投资周记新增/修改 | `docs/投资/周记/*.md` | 更新 `posts.ts` + `/投资/周记/` 侧栏；`/投资/周记/` 经 `LatestWeeklyRedirect` 进最新一期；走投资门禁 |
-| `content.weekly-life` | AI与生活周记新增/修改 | `docs/AI与生活/*.md`（非 Hermes） | 更新 `posts.ts` + `/AI与生活/` 侧栏；`/AI与生活/` 经 `LatestWeeklyRedirect` 进最新一期 |
+| `content.weekly-life` | AI与生活周记新增/修改 | `docs/AI与生活/*.md`（非 Hermes、非「我的AI历程」） | 更新 `posts.ts` + `/AI与生活/` 侧栏；`/AI与生活/` 经 `LatestWeeklyRedirect` 进最新一期 |
+| `content.journey` | 我的AI历程：新增/重命名/删除具名篇章，或在 chat 里改篇章结构 | `docs/AI与生活/我的AI历程/*.md` | 更新 `posts.ts`、`/AI与生活/我的AI历程/` 侧栏与系列页；不要加「系列入口」。封面/插图进 `/images/journey/`。**按期新开、期头与既有条目走发布面板**，不要从本 Skill 假装开一篇日期周记 |
 | `content.hermes-diary` | Hermes 日记（**已停用**，除非作者明确要求恢复） | `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` | **禁止**改 `posts.ts` / `config.mts` |
 | `content.research-*` | 行业/地图/标的 | `docs/投资/投研/**` | 更新入口、侧栏、硬编码计数/卡片；走投资门禁 |
 | `content.philosophy` | 投资哲学 | `docs/投资哲学/**` | 新增主题时更新 nav/sidebar |
@@ -101,6 +103,7 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 | --- | --- |
 | 投资周记 | `weekly-post weekly-post--invest` |
 | AI与生活周记 | `weekly-post weekly-post--life` |
+| 我的AI历程 | `weekly-post weekly-post--life` |
 | Hermes | `weekly-post weekly-post--life hermes-diary-post` |
 | 周记归档 | `weekly-archive` + 主题修饰 |
 | 行业总览 | `industry-index` |
@@ -176,6 +179,16 @@ VitePress 个人博客的统一编辑入口。目标：先做意图路由，再�
 - 用户给原始素材即可：主题、封面、主题说明、条目（标题/标签/链接/图片/原文）；由 agent 套模板、编号、索引与轻度润色
 
 大事件记录区在 AI 与生活**左侧栏**，不写进周记正文。文件：`docs/AI与生活/大事件/YYYY.md`；侧栏组名「大事件记录区」，子项「YYYY年大事件」。闭门材料不要把卡量、融资安排和不可再分发原文写进公开页。
+
+#### 我的AI历程（journey）
+
+现有三个具名篇章：`基础设施篇.md`、`工具篇.md`、`AI开支记录与优化.md`。frontmatter 为 `type: journey`，版式沿用 `weekly-post weekly-post--life` 与 `WeeklyEntry`。按期历程周记是 `YYYY-MM-DD.md`，期号与 AI与生活周记独立，封面进 `/images/journey/`。
+
+- **按期新开 / 期头 / 条目维护**：作者走发布面板。chat 里被要求改某一条时，可以改目标 Markdown；不要从本 Skill 假装开一篇日期周记。具名篇章的期头只改封面和说明；不要把「当期主题」写进 H1、`frontmatter.title`、侧栏或 `posts.ts`。
+- **具名篇章生命周期**（新增 / 重命名 / 删除篇章文件）：仍是本 Skill 的职责，需同步 `posts.ts`、`/AI与生活/我的AI历程/` 侧栏和 `index.md`。改篇章标题不改文件名。历程侧栏不要再加「系列入口」，系列页已由上方「我的AI历程」链到。
+- 封面与正文图进 `docs/public/images/journey/`，引用以 `/images/journey/` 开头；不要混进 `/images/weekly/`。
+- 具名篇章预览不加 `{#kan-yanhua}`；按期新开的版面与周记相同，但仍用 `type: journey`。
+- 目录说明：`docs/AI与生活/我的AI历程/README.md`。
 
 #### AI与生活周记润色
 

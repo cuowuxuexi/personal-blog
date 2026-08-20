@@ -2,6 +2,7 @@
 /**
  * 首页最近更新：列表即入口；视觉对齐 Features 墨纸卡 + Hero 编辑向标签。
  */
+import { withBase } from 'vitepress'
 import { recentPosts, formatDateZh } from '../../posts'
 
 const items = recentPosts(8)
@@ -30,7 +31,7 @@ function catLabel(category: string) {
 
       <ul v-if="items.length" class="home-recent__list">
         <li v-for="item in items" :key="item.link" class="home-recent__item">
-          <a class="home-recent__link" :href="item.link">
+          <a class="home-recent__link" :href="withBase(item.link)">
             <div class="home-recent__meta">
               <time class="home-recent__date" :datetime="item.date">
                 {{ formatDateZh(item.date) }}

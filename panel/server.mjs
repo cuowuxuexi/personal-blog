@@ -16,7 +16,9 @@ import {
   loadEnv,
   todayISO,
 } from './lib/paths.mjs'
+import { allowsCreate, kindCapability, publicKindCapability } from './lib/repo-paths.mjs'
 import {
+  checkWechatAssets,
   confirmPublication,
   getPublication,
   listRecoverableJobs,
@@ -24,6 +26,8 @@ import {
   retryPush,
   retryVerification,
   snapshotDist,
+  snapshotWechatPreview,
+  snapshotWechatPublic,
 } from './lib/publish-job.mjs'
 import {
   applyDraft,
@@ -33,6 +37,12 @@ import {
   nextIssueNumber,
   previewUrl,
 } from './lib/weekly.mjs'
+import {
+  isPreviewArticlePath,
+  isReleasePreviewRoot,
+  previewArticleLocation,
+  previewHeading,
+} from './lib/preview-nav.mjs'
 
 loadEnv()
 
@@ -118,6 +128,18 @@ function streamFile(res, abs) {
   fs.createReadStream(abs).pipe(res)
 }
 
+function streamPreviewHtml(res, abs, heading) {
+  if (!heading || !abs.endsWith('.html')) {
+    streamFile(res, abs)
+    return
+  }
+  const script = `<script>(function(){var a=${JSON.stringify(heading)};if(a&&!location.hash)location.replace(location.pathname+location.search+'#'+a);})();</script>`
+  let html = fs.readFileSync(abs, 'utf8')
+  html = html.includes('</head>') ? html.replace('</head>', `${script}</head>`) : `${script}${html}`
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+  res.end(html)
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, 'http://127.0.0.1')
   if (url.pathname.startsWith('/images/') || url.pathname.startsWith('/fonts/')) {
@@ -145,24 +167,65 @@ function serveReleasePreview(ctx, res, pathname) {
   const match = pathname.match(/^\/release-preview\/([^/]+)(?:\/(.*))?$/)
   if (!match) return false
   const jobId = match[1]
-  let rel = decodeURIComponent(match[2] || 'index.html')
+  let rel = decodeURIComponent(match[2] || '')
+  if (isReleasePreviewRoot(rel)) {
+    const location = previewArticleLocation(ctx.jobs.get(jobId))
+    if (location) {
+      res.writeHead(302, { Location: encodeURI(location) })
+      res.end()
+      return true
+    }
+  }
   if (!rel || rel.endsWith('/')) rel += 'index.html'
   const dist = snapshotDist(ctx, jobId)
+  const job = ctx.jobs.get(jobId)
+  const heading = isPreviewArticlePath(rel, job) ? previewHeading(job) : ''
   const abs = path.normalize(path.join(dist, rel))
   if (!isPathInside(dist, abs)) {
     send(res, 403, 'forbidden')
     return true
   }
   if (fs.existsSync(abs) && fs.statSync(abs).isFile()) {
-    streamFile(res, abs)
+    streamPreviewHtml(res, abs, heading)
     return true
   }
   const html = `${abs.replace(/\.html$/, '')}.html`
   if (fs.existsSync(html)) {
-    streamFile(res, html)
+    streamPreviewHtml(res, html, heading)
     return true
   }
   send(res, 404, 'not found')
+  return true
+}
+
+function serveWechatPreview(ctx, res, pathname) {
+  const match = pathname.match(/^\/wechat-preview\/([^/]+)\/?$/)
+  if (!match) return false
+  streamFile(res, snapshotWechatPreview(ctx, match[1]))
+  return true
+}
+
+function serveWechatAsset(ctx, res, pathname) {
+  const match = pathname.match(/^\/wechat-preview-assets\/([^/]+)\/(.*)$/)
+  if (!match) return false
+  const root = snapshotWechatPublic(ctx, match[1])
+  let rel = ''
+  try {
+    rel = decodeURIComponent(match[2] || '')
+  } catch {
+    send(res, 400, 'bad request')
+    return true
+  }
+  const abs = path.normalize(path.join(root, rel))
+  if (!isPathInside(root, abs)) {
+    send(res, 403, 'forbidden')
+    return true
+  }
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+    send(res, 404, 'not found')
+    return true
+  }
+  streamFile(res, abs)
   return true
 }
 
@@ -190,12 +253,14 @@ async function handleBootstrap(ctx) {
     models,
     tags: collectTags(ctx.paths),
     kinds: Object.values(ctx.paths.KINDS || KINDS).map((kind) => {
+      const capability = publicKindCapability(kind)
       const issues = listIssues(kind.id, ctx.paths).map(summarizeIssue)
       return {
         id: kind.id,
         label: kind.label,
         category: kind.category,
-        nextIssue: nextIssueNumber(kind.id, ctx.paths),
+        capability,
+        nextIssue: allowsCreate(kind) ? nextIssueNumber(kind.id, ctx.paths) : null,
         current: summarizeIssue(currentIssue(kind.id, ctx.paths)),
         issues,
       }
@@ -240,6 +305,13 @@ export function createServer(options = {}) {
     'GET /api/bootstrap': async () => handleBootstrap(ctx),
     'POST /api/images': async (req) => {
       const body = await readBody(req, { maxBytes: ctx.maxUploadBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const kind = (ctx.paths.KINDS || KINDS)[body.kindId]
+      if (!kind) {
+        const error = new Error('上传图片必须携带有效的栏目 kindId')
+        error.status = 400
+        throw error
+      }
+      const capability = kindCapability(kind)
       const files = Array.isArray(body.files) ? body.files : []
       if (!files.length) throw new Error('没有图片')
       const images = []
@@ -252,6 +324,8 @@ export function createServer(options = {}) {
             name: file.name,
             date: body.date || todayISO(),
             hint: file.hint || file.name,
+            assetDirectory: capability.assetDirectory,
+            repoRoot: ctx.repoRoot,
           }),
         })
       }
@@ -281,9 +355,13 @@ export function createServer(options = {}) {
     },
     'POST /api/draft': async (req) => {
       const body = await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+      const kind = (ctx.paths.KINDS || KINDS)[body.kindId]
+      if (body.mode === 'newIssue' && kind && !allowsCreate(kind)) {
+        throw new Error('当前栏目不能开新一期')
+      }
       const result = applyDraft(body, ctx.paths)
       const draftId = newId('d')
-      ctx.drafts.set(draftId, { ...result, createdAt: new Date().toISOString() })
+      ctx.drafts.set(draftId, { ...result, kindId: body.kindId || '', createdAt: new Date().toISOString() })
       return {
         ok: true,
         ...result,
@@ -332,8 +410,19 @@ export function createServer(options = {}) {
         await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
         return send(res, 200, { ok: true, ...await retryPush(ctx, jobRetryPush[1]) })
       }
+      const jobWechatAssets = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)\/check-wechat-assets$/)
+      if (req.method === 'POST' && jobWechatAssets) {
+        await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+        return send(res, 200, { ok: true, ...await checkWechatAssets(ctx, jobWechatAssets[1]) })
+      }
       if (req.method === 'GET' && url.pathname.startsWith('/release-preview/')) {
         if (serveReleasePreview(ctx, res, url.pathname)) return
+      }
+      if (req.method === 'GET' && url.pathname.startsWith('/wechat-preview/')) {
+        if (serveWechatPreview(ctx, res, url.pathname)) return
+      }
+      if (req.method === 'GET' && url.pathname.startsWith('/wechat-preview-assets/')) {
+        if (serveWechatAsset(ctx, res, url.pathname)) return
       }
       if (req.method === 'GET') return serveStatic(req, res)
       send(res, 404, { ok: false, error: 'not found' })

@@ -1,5 +1,20 @@
-import { chooseRestoreDraft, draftHasText, shouldPersistDraft } from './draft.mjs'
+import { chooseRestoreDraft, draftHasText, draftRequestBody, issueFieldsForDraft, shouldPersistDraft } from './draft.mjs'
 import { escapeHtml, escapeAttr } from './escape.mjs'
+import { jobKindId, selectRestorableJob } from './job-restore.mjs'
+import {
+  allowsCreate,
+  chipTone,
+  chromeEditorView,
+  chromeFormForMode,
+  chromeThemeFromIssue,
+  imageUploadRequestBody,
+  isNamedJourneyChapter,
+  issueBarView,
+  normalizeEditorMode,
+  previewHeadingAnchor,
+  releasePreviewHref,
+  resolveCapability,
+} from './kind-ui.mjs'
 import { bodyImageUrls, removeImageMarkdown } from './media.mjs'
 import { singleFlight } from './publish-flow.mjs'
 import {
@@ -36,8 +51,45 @@ function field(name) {
   return form.elements[name]
 }
 
+function issueChromeSnapshot(issue) {
+  const named = isNamedJourneyChapter(currentKind(), issue)
+  return JSON.stringify({
+    theme: named ? '' : chromeThemeFromIssue(issue),
+    caption: String(issue?.caption || '').trim(),
+    cover: issue?.cover || '',
+  })
+}
+
+function formChromeSnapshot() {
+  const named = isNamedJourneyChapter(currentKind(), selectedIssue())
+  return JSON.stringify({
+    theme: named ? '' : field('theme').value.trim(),
+    caption: field('caption').value.trim(),
+    cover: state.images.cover || '',
+  })
+}
+
+function supportsIssueChrome(kind) {
+  const type = resolveCapability(kind).contentType
+  return type === 'weekly' || type === 'journey'
+}
+
+function chromeDirty() {
+  const kind = currentKind()
+  if (!kind || !supportsIssueChrome(kind)) return false
+  if (state.mode === 'newIssue') return Boolean(field('theme').value.trim())
+  const issue = selectedIssue()
+  if (!issue) return false
+  return formChromeSnapshot() !== issueChromeSnapshot(issue)
+}
+
 function hasContent() {
-  return Boolean(field('title').value.trim() || field('body').value.trim())
+  return Boolean(
+    field('title').value.trim()
+    || field('body').value.trim()
+    || (state.mode === 'newIssue' && field('theme').value.trim())
+    || (state.mode !== 'newIssue' && chromeDirty()),
+  )
 }
 
 function snapshotDraft() {
@@ -45,6 +97,7 @@ function snapshotDraft() {
   for (const name of DRAFT_FIELDS) fields[name] = field(name).value
   return {
     kind: state.kind,
+    kindId: state.kind,
     mode: state.mode,
     issueLink: state.issueLink,
     entryIndex: state.entryIndex,
@@ -85,10 +138,11 @@ function loadLocalDraft() {
 }
 
 function restoreLocalDraft(draft) {
-  state.kind = draft.kind || state.kind
+  state.kind = draft.kindId || draft.kind || state.kind
   state.issueLink = draft.issueLink || state.issueLink
-  // 恢复草稿只带回文字，一律当作追加，避免误改已有条目把整期覆盖掉
-  state.mode = 'append'
+  // 已有条目仍按追加恢复，避免误覆盖；新期草稿则回到新期编辑界面。
+  const restoredMode = draft.mode === 'newIssue' && draft.fields?.theme?.trim() ? 'newIssue' : 'append'
+  state.mode = normalizeEditorMode(restoredMode, currentKind())
   state.entryIndex = null
   state.images = { image: '', cover: '', ...(draft.images || {}) }
   for (const name of DRAFT_FIELDS) {
@@ -131,47 +185,116 @@ function selectedIssue() {
   return kind.issues.find((item) => item.link === state.issueLink) || kind.current
 }
 
-function writeHint() {
+function editorView() {
   const issue = selectedIssue()
-  if (state.mode === 'newIssue') return '这次会开一篇新的周记，不会改已有期数。'
-  if (state.mode === 'edit') {
-    const title = issue?.entries?.[state.entryIndex]?.title || '该条'
-    return `这次会改已有条目「${title}」，其它条目不动。`
+  return issueBarView({
+    kind: currentKind(),
+    mode: state.mode,
+    issue,
+    theme: field('theme').value.trim(),
+    issueDate: field('issueDate').value,
+    today: state.bootstrap.today,
+    entryTitle: issue?.entries?.[state.entryIndex]?.title || '',
+  })
+}
+
+function syncKindSurface() {
+  const kind = currentKind()
+  state.mode = normalizeEditorMode(state.mode, kind)
+  const root = document.querySelector('.app')
+  if (root) {
+    root.dataset.kind = kind?.id || ''
+    root.dataset.contentType = resolveCapability(kind).contentType
   }
-  return issue
-    ? `这次会追加到「${issue.title}」末尾，已有 ${issue.entryCount} 条不会动。`
-    : '没有当期周记，请先开新一期。'
 }
 
 function renderKinds() {
   document.getElementById('kinds').innerHTML = state.bootstrap.kinds.map((kind) => (
-    `<button type="button" class="chip ${kind.id === state.kind ? 'active' : ''}" data-kind="${escapeAttr(kind.id)}">${escapeHtml(kind.label)}</button>`
+    `<button type="button" class="chip ${kind.id === state.kind ? 'active' : ''}" data-kind="${escapeAttr(kind.id)}" data-tone="${escapeAttr(chipTone(kind))}">${escapeHtml(kind.label)}</button>`
   )).join('')
 }
 
 function renderIssueBar() {
+  syncKindSurface()
   const kind = currentKind()
   const issue = selectedIssue()
-  const options = kind.issues
-    .filter((item) => item.issue != null)
+  const view = editorView()
+  const options = view.selectorIssues
     .map((item) => `<option value="${escapeAttr(item.link)}" ${item.link === (issue?.link || '') ? 'selected' : ''}>${escapeHtml(item.title)}</option>`)
     .join('')
+  const selector = view.showSelector
+    ? `<label class="issue-select-field">
+        <span>${escapeHtml(view.selectorLabel)}</span>
+        <select id="issue-select" aria-label="${escapeAttr(view.selectorLabel)}">${options}</select>
+      </label>`
+    : ''
+  const createChip = view.showCreate
+    ? `<button type="button" class="chip ${state.mode === 'newIssue' ? 'active' : ''}" data-mode="newIssue">开新一期</button>`
+    : ''
   document.getElementById('issue-bar').innerHTML = `
-    <h2>${issue ? escapeHtml(issue.title) : '还没有编号周记'}</h2>
-    <p class="issue-meta">${issue ? `${escapeHtml(issue.date)} · ${issue.entryCount} 条` : '先开新一期'}</p>
-    <p class="write-hint">${escapeHtml(writeHint())}</p>
+    <h2 id="issue-heading">${escapeHtml(view.heading)}</h2>
+    <p class="issue-meta" id="issue-heading-meta">${escapeHtml(view.meta)}</p>
+    <p class="write-hint">${escapeHtml(view.hint)}</p>
     <div class="modes">
       <button type="button" class="chip ${state.mode === 'append' ? 'active' : ''}" data-mode="append">追加一条</button>
-      <button type="button" class="chip ${state.mode === 'newIssue' ? 'active' : ''}" data-mode="newIssue">开新一期</button>
-      ${kind.issues.some((item) => item.issue != null) ? `<select id="issue-select">${options}</select>` : ''}
+      ${createChip}
+      ${selector}
     </div>
   `
-  document.getElementById('issue-fields').classList.toggle('hidden', state.mode !== 'newIssue')
+  document.getElementById('issue-fields').classList.toggle('hidden', !view.showIssueFields)
+}
+
+function renderIssueChrome(view) {
+  if (!view.showChromeFields) return ''
+  const chrome = chromeEditorView({
+    kind: currentKind(),
+    mode: state.mode,
+    issue: selectedIssue(),
+  })
+  const theme = field('theme').value
+  const caption = field('caption').value
+  const themeField = chrome.showThemeField
+    ? `<label class="issue-theme-field" for="issue-theme-input">
+        <span>${escapeHtml(chrome.themeLabel)}</span>
+        <input id="issue-theme-input" value="${escapeAttr(theme)}" placeholder="例如：待定" autocomplete="off" />
+        <small>${escapeHtml(chrome.themeHint)}</small>
+      </label>`
+    : ''
+  const captionHint = chrome.captionHint
+    ? `<small>${escapeHtml(chrome.captionHint)}</small>`
+    : ''
+  return `
+    <div class="issue-chrome">
+      ${themeField}
+      <label class="issue-theme-field" for="issue-caption-input">
+        <span>主题说明</span>
+        <input id="issue-caption-input" value="${escapeAttr(caption)}" placeholder="烟花朵朵开，想法自然来。" autocomplete="off" />
+        ${captionHint}
+      </label>
+      <div class="drop issue-cover-drop" data-role="cover" id="drop-cover">
+        <strong>封面</strong>
+        <p>可粘贴 · <button type="button" class="drop-pick">选择文件</button></p>
+        <input type="file" accept="image/*" hidden />
+        <div class="thumbs"></div>
+      </div>
+    </div>
+  `
 }
 
 function renderEntries() {
   const issue = selectedIssue()
   const entries = issue?.entries || []
+  const view = editorView()
+  if (view.showIssueFields) {
+    document.getElementById('entries').innerHTML = `
+      ${renderIssueChrome(view)}
+      <h3>新期首条内容</h3>
+      <p class="issue-meta">在右侧填写这一期的第一条内容。</p>
+    `
+    bindDropBox(document.getElementById('drop-cover'))
+    renderThumbs('drop-cover', state.images.cover)
+    return
+  }
   const list = entries.map((entry) => `
     <div class="entry-row">
       <button type="button" class="entry-btn ${state.mode === 'edit' && state.entryIndex === entry.index ? 'active' : ''}" data-index="${entry.index}">
@@ -182,10 +305,13 @@ function renderEntries() {
     </div>
   `).join('')
   document.getElementById('entries').innerHTML = `
-    <h3>当期条目 · 点开可改</h3>
-    ${list || '<p class="issue-meta">还没有条目</p>'}
+    <h3>${escapeHtml(view.entriesHeading)}</h3>
+    ${renderIssueChrome(view)}
+    ${list || `<p class="issue-meta">${escapeHtml(view.emptyEntries)}</p>`}
     <button type="button" class="ghost" id="btn-new-entry">写新的一条</button>
   `
+  bindDropBox(document.getElementById('drop-cover'))
+  renderThumbs('drop-cover', state.images.cover)
 }
 
 function renderTags() {
@@ -218,22 +344,42 @@ function fillEntry(entry) {
   hideCompare()
 }
 
+function fillIssueChrome(issue) {
+  const kind = currentKind()
+  if (!issue || !kind || !supportsIssueChrome(kind)) {
+    field('theme').value = ''
+    field('caption').value = ''
+    state.images.cover = ''
+    return
+  }
+  field('theme').value = chromeThemeFromIssue(issue)
+  field('caption').value = issue.caption || ''
+  state.images.cover = issue.cover || ''
+}
+
 function resetForm() {
   state.mode = state.mode === 'newIssue' ? 'newIssue' : 'append'
   state.entryIndex = null
   fillEntry({ date: state.bootstrap.today })
-  field('theme').value = ''
-  field('issueDate').value = state.bootstrap.today
-  field('caption').value = '烟花朵朵开，想法自然来。'
-  field('description').value = ''
-  state.images.cover = ''
-  renderThumbs('drop-cover', '')
+  const chrome = chromeFormForMode(state.mode, { today: state.bootstrap.today })
+  if (chrome) {
+    field('theme').value = chrome.theme
+    field('issueDate').value = chrome.issueDate
+    field('caption').value = chrome.caption
+    field('description').value = chrome.description
+    state.images.cover = chrome.cover
+  } else {
+    fillIssueChrome(selectedIssue())
+  }
+  renderThumbs('drop-cover', state.images.cover)
 }
 
 
 function renderThumbs(id, urls) {
+  const root = document.getElementById(id)
+  if (!root) return
   const list = (Array.isArray(urls) ? urls : [urls]).filter(Boolean)
-  document.getElementById(id).querySelector('.thumbs').innerHTML = list.map((url) => `
+  root.querySelector('.thumbs').innerHTML = list.map((url) => `
     <figure class="thumb">
       <img src="${escapeAttr(url)}" alt="" />
       <button type="button" class="thumb-remove" data-url="${escapeAttr(url)}" aria-label="去掉这张图">×</button>
@@ -311,7 +457,8 @@ async function uploadFiles(files, role) {
   setNotice('正在处理图片…')
   const payload = await api('/api/images', {
     method: 'POST',
-    body: JSON.stringify({
+    body: JSON.stringify(imageUploadRequestBody({
+      kindId: state.kind,
       date: field('issueDate').value || field('date').value || state.bootstrap.today,
       files: await Promise.all([...files].map(async (file) => ({
         name: file.name,
@@ -319,53 +466,59 @@ async function uploadFiles(files, role) {
         hint: field('title').value || file.name,
         data: await fileToBase64(file),
       }))),
-    }),
+    })),
   })
   setNotice(`已保存 ${payload.images.length} 张图`, 'ok')
   return payload.images
 }
 
+let lastDropRole = 'image'
+
+function bindDropBox(box) {
+  if (!box || box.dataset.bound === '1') return
+  const input = box.querySelector('input[type=file]')
+  if (!input) return
+  box.dataset.bound = '1'
+  box.tabIndex = 0
+  const markTarget = () => { lastDropRole = box.dataset.role }
+  box.addEventListener('pointerenter', markTarget)
+  box.addEventListener('focus', markTarget)
+  box.addEventListener('click', () => box.focus())
+  box.querySelector('.drop-pick')?.addEventListener('click', (event) => {
+    event.stopPropagation()
+    input.click()
+  })
+  box.querySelector('.thumbs')?.addEventListener('click', (event) => {
+    const button = event.target.closest('.thumb-remove')
+    if (!button) return
+    event.preventDefault()
+    event.stopPropagation()
+    removeAttachedImage(box.dataset.role, button.dataset.url)
+  })
+  box.addEventListener('dragover', (event) => {
+    event.preventDefault()
+    box.classList.add('over')
+  })
+  box.addEventListener('dragleave', () => box.classList.remove('over'))
+  box.addEventListener('drop', async (event) => {
+    event.preventDefault()
+    box.classList.remove('over')
+    await handleFiles(box.dataset.role, event.dataTransfer.files)
+  })
+  input.addEventListener('change', async () => {
+    await handleFiles(box.dataset.role, input.files)
+    input.value = ''
+  })
+}
+
 function bindDrops() {
-  let lastRole = 'image'
-  for (const box of document.querySelectorAll('.drop')) {
-    const input = box.querySelector('input[type=file]')
-    box.tabIndex = 0
-    const markTarget = () => { lastRole = box.dataset.role }
-    box.addEventListener('pointerenter', markTarget)
-    box.addEventListener('focus', markTarget)
-    box.addEventListener('click', () => box.focus())
-    box.querySelector('.drop-pick')?.addEventListener('click', (event) => {
-      event.stopPropagation()
-      input.click()
-    })
-    box.querySelector('.thumbs').addEventListener('click', (event) => {
-      const button = event.target.closest('.thumb-remove')
-      if (!button) return
-      event.preventDefault()
-      event.stopPropagation()
-      removeAttachedImage(box.dataset.role, button.dataset.url)
-    })
-    box.addEventListener('dragover', (event) => {
-      event.preventDefault()
-      box.classList.add('over')
-    })
-    box.addEventListener('dragleave', () => box.classList.remove('over'))
-    box.addEventListener('drop', async (event) => {
-      event.preventDefault()
-      box.classList.remove('over')
-      await handleFiles(box.dataset.role, event.dataTransfer.files)
-    })
-    input.addEventListener('change', async () => {
-      await handleFiles(box.dataset.role, input.files)
-      input.value = ''
-    })
-  }
+  for (const box of document.querySelectorAll('.drop')) bindDropBox(box)
 
   document.addEventListener('paste', async (event) => {
     const files = imageFilesFromClipboard(event.clipboardData).map((file) => namePasteFile(file))
     if (!shouldAcceptImagePaste(event.clipboardData, files)) return
     event.preventDefault()
-    const role = resolvePasteRole(event.target, lastRole)
+    const role = resolvePasteRole(event.target, lastDropRole)
     const box = document.querySelector(`.drop[data-role="${role}"]`)
     box?.classList.add('over')
     try {
@@ -395,6 +548,9 @@ function bindEvents() {
   form.addEventListener('input', (event) => {
     saveLocalDraft()
     if (event.target?.name === 'body') renderThumbs('drop-body', bodyImageUrls(field('body').value))
+    if (state.mode === 'newIssue' && event.target?.name === 'issueDate') {
+      document.getElementById('issue-heading-meta').textContent = `${event.target.value || state.bootstrap.today} · 新一期`
+    }
   })
 
   window.addEventListener('beforeunload', (event) => {
@@ -412,14 +568,18 @@ function bindEvents() {
     state.mode = 'append'
     state.issueLink = currentKind().current?.link || ''
     resetForm()
+    restoreJobForKind(kind)
     render()
   })
 
   document.getElementById('issue-bar').addEventListener('click', (event) => {
     const mode = event.target.dataset.mode
     if (!mode || mode === state.mode) return
+    if (mode === 'newIssue' && !allowsCreate(currentKind())) return
+    if (!confirmDiscard()) return
     state.mode = mode
     state.entryIndex = null
+    resetForm()
     saveLocalDraft()
     render()
   })
@@ -435,6 +595,7 @@ function bindEvents() {
     state.mode = 'append'
     state.entryIndex = null
     resetForm()
+    restoreJobForKind(state.kind)
     render()
   })
 
@@ -465,6 +626,24 @@ function bindEvents() {
     fillEntry(entry)
     saveLocalDraft()
     render()
+  })
+
+  document.getElementById('entries').addEventListener('input', (event) => {
+    if (event.target.id === 'issue-caption-input') {
+      field('caption').value = event.target.value
+      saveLocalDraft()
+      return
+    }
+    if (event.target.id !== 'issue-theme-input') return
+    field('theme').value = event.target.value
+    const theme = event.target.value.trim()
+    const issue = selectedIssue()
+    const number = state.mode === 'newIssue' ? currentKind().nextIssue : issue?.issue
+    const heading = document.getElementById('issue-heading')
+    if (number != null) {
+      heading.textContent = `第${String(number).padStart(3, '0')}期${theme ? `-${theme}` : ''}`
+    }
+    saveLocalDraft()
   })
 
   document.getElementById('btn-discard-draft').addEventListener('click', () => {
@@ -542,25 +721,35 @@ function bindEvents() {
   document.getElementById('btn-publish').addEventListener('click', confirmPublish)
   document.getElementById('btn-retry-verify').addEventListener('click', retryVerify)
   document.getElementById('btn-retry-push').addEventListener('click', retryPushJob)
+  document.getElementById('btn-check-wechat-assets').addEventListener('click', checkWechatAssets)
 }
 
 async function persistDraft({ mode = state.mode, entryIndex = state.entryIndex, entry = collectEntry() } = {}) {
+  const kind = currentKind()
+  const resolvedMode = normalizeEditorMode(mode, kind)
+  if (mode === 'newIssue' && !allowsCreate(kind)) {
+    throw new Error('当前栏目不能开新一期。')
+  }
   return api('/api/draft', {
       method: 'POST',
-      body: JSON.stringify({
+      body: JSON.stringify(draftRequestBody({
         kindId: state.kind,
-        mode,
+        mode: resolvedMode,
         issueLink: state.issueLink,
         entryIndex,
         entry,
-        issue: {
-          theme: field('theme').value.trim(),
+        issue: issueFieldsForDraft({
+          mode: resolvedMode,
+          chromeDirty: chromeDirty(),
+          theme: isNamedJourneyChapter(kind, selectedIssue()) && resolvedMode !== 'newIssue'
+            ? ''
+            : field('theme').value.trim(),
           date: field('issueDate').value,
           caption: field('caption').value.trim(),
           description: field('description').value.trim(),
           cover: state.images.cover,
-        },
-      }),
+        }),
+      })),
     })
 }
 
@@ -568,7 +757,10 @@ async function acceptSavedDraft(payload) {
     state.draftId = payload.draftId
     state.job = null
     clearLocalDraft()
-    const action = payload.mode === 'edit' ? '修改' : payload.mode === 'delete' ? '删除' : payload.mode === 'newIssue' ? '开新期' : '追加'
+    const action = payload.mode === 'edit' ? '修改'
+      : payload.mode === 'delete' ? '删除'
+        : payload.mode === 'newIssue' ? '开新期'
+          : payload.mode === 'editChrome' ? '改期头' : '追加'
     setNotice(`已${action} ${payload.files.join('、')}，正在生成发布前预览…`, 'ok')
     if (payload.previewLink) state.issueLink = payload.previewLink
     if (state.mode === 'newIssue') state.mode = 'append'
@@ -604,6 +796,20 @@ const prepareSavedChange = singleFlight(async (createDraft) => {
 
 function saveAndPrepare() {
   return prepareSavedChange(async () => {
+    const entry = collectEntry()
+    const contentType = resolveCapability(currentKind()).contentType
+    if ((contentType === 'weekly' || contentType === 'journey') && state.mode !== 'newIssue' && !entry.title && !entry.body) {
+      const namedChapter = isNamedJourneyChapter(currentKind(), selectedIssue())
+      if (!namedChapter && !field('theme').value.trim()) {
+        setNotice('当期主题不能为空。', 'err')
+        return null
+      }
+      if (namedChapter && !chromeDirty()) {
+        setNotice('封面或说明没有改动。', 'err')
+        return null
+      }
+      return persistDraft({ mode: 'editChrome', entry: null })
+    }
     if (state.mode === 'edit') {
       const title = selectedIssue()?.entries?.[state.entryIndex]?.title || '该条'
       if (!confirm(`确定只改「${title}」？其它历史条目不会动。\n若要发新内容，请先点「追加一条」。`)) return null
@@ -617,7 +823,29 @@ function deleteAndPrepare(entryIndex) {
 }
 
 function headingAnchor() {
-  return 'kan-yanhua'
+  return previewHeadingAnchor(currentKind())
+}
+
+function restoreJobForKind(kind) {
+  const active = selectRestorableJob(state.bootstrap.activeJobs, {
+    kindId: kind,
+    issueLink: selectedIssue()?.link || state.issueLink,
+  })
+  if (active) {
+    state.draftId = active.draftId
+    applyJob(active)
+    const canPrepare = (active.retryActions || []).includes('prepare')
+    document.getElementById('btn-prepare').classList.toggle('hidden', !canPrepare)
+    setNotice(
+      active.failureReason || `已恢复发布任务 ${active.jobId}（${active.state}）。`,
+      active.state === 'Failed' ? 'err' : 'ok',
+    )
+    return
+  }
+  state.draftId = ''
+  state.job = null
+  document.getElementById('btn-prepare').classList.add('hidden')
+  renderJob()
 }
 
 function applyJob(job) {
@@ -649,7 +877,15 @@ function stopJobPoll() {
 }
 
 function renderJob() {
+  const issueLink = selectedIssue()?.link || state.issueLink
   const job = state.job
+    && jobKindId(state.job) === state.kind
+    && (
+      state.job.articleUrl === issueLink
+      || (!state.job.articleUrl && String(state.job.releasePreviewUrl || '').includes(issueLink))
+    )
+    ? state.job
+    : null
   const box = document.getElementById('publish-job')
   const publishBtn = document.getElementById('btn-publish')
   if (!job) {
@@ -671,7 +907,24 @@ function renderJob() {
     : '工作树里没有额外未纳入的改动。'
   const preview = document.getElementById('btn-release-preview')
   preview.classList.toggle('hidden', !job.releasePreviewUrl)
-  preview.href = job.releasePreviewUrl || '#'
+  preview.href = releasePreviewHref(job.releasePreviewUrl || '', currentKind(), job) || '#'
+  const wechat = job.wechatPreview || {}
+  const wechatPreview = document.getElementById('btn-wechat-preview')
+  wechatPreview.classList.toggle('hidden', !wechat.url)
+  wechatPreview.href = wechat.url || '#'
+  const wechatStatus = document.getElementById('wechat-status')
+  const missing = wechat.missingAssets || []
+  const wechatMessages = {
+    NotGenerated: '公众号预览尚未生成。',
+    CheckingAssets: '正在检查公众号图片是否已经上线…',
+    WaitingForOnlineAssets: `公众号预览已生成；${missing.length ? `还有 ${missing.length} 张图片未上线，` : ''}暂不能复制。`,
+    AssetsOnline: '公众号预览已生成，所有图片已在线，可以复制。',
+    ProductionVerified: '博客生产版本已校验，公众号全文可以复制。',
+  }
+  wechatStatus.textContent = wechatMessages[wechat.status] || ''
+  wechatStatus.className = `wechat-status ${wechat.copyAllowed ? 'is-ready' : (wechat.url ? 'is-waiting' : '')}`
+  const checkWechat = document.getElementById('btn-check-wechat-assets')
+  checkWechat.classList.toggle('hidden', !wechat.url || wechat.status === 'CheckingAssets')
   const online = document.getElementById('btn-verified-online')
   online.classList.toggle('hidden', job.state !== 'Published' || !job.verifiedUrl)
   online.href = job.verifiedUrl || '#'
@@ -760,6 +1013,19 @@ async function retryVerify() {
   }
 }
 
+async function checkWechatAssets() {
+  if (!state.job?.jobId) return
+  try {
+    setNotice('正在重新检查公众号图片…')
+    const job = await api(`/api/publish/jobs/${state.job.jobId}/check-wechat-assets`, { method: 'POST', body: '{}' })
+    applyJob(job)
+    const ready = job.wechatPreview?.copyAllowed
+    setNotice(ready ? '公众号图片均已上线，可以复制全文。' : '仍有公众号图片尚未上线。', ready ? 'ok' : 'err')
+  } catch (error) {
+    setNotice(error.message, 'err')
+  }
+}
+
 function render() {
   renderKinds()
   renderIssueBar()
@@ -796,15 +1062,7 @@ async function main() {
     saveLocalDraft()
     setNotice(`已恢复上次没保存的草稿（${draft.savedAt?.slice(0, 16).replace('T', ' ')}）。不想要就点「清空草稿」。`, 'ok')
   }
-  const active = (state.bootstrap.activeJobs || []).find((job) => (
-    ['PreviewReady', 'Pushed', 'Deploying', 'VerifyingProduction'].includes(job.state)
-    || (job.retryActions || []).some((action) => action === 'retry-verify' || action === 'retry-push')
-  ))
-  if (active) {
-    state.draftId = active.draftId
-    applyJob(active)
-    setNotice(`已恢复发布任务 ${active.jobId}（${active.state}）。`, 'ok')
-  }
+  restoreJobForKind(state.kind)
   render()
 }
 

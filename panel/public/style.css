@@ -176,14 +176,17 @@ h1 {
   color: var(--paper);
 }
 
-/* 栏目 chip 激活：博客同款栏目色（投资蓝 / 生活绿） */
-#kinds .chip[data-kind="invest"].active {
+/* 栏目 chip 激活：博客同款栏目色（投资蓝 / 生活绿；历程沿用生活绿） */
+#kinds .chip[data-kind="invest"].active,
+#kinds .chip[data-tone="invest"].active {
   background: color-mix(in srgb, var(--invest) 10%, var(--card));
   border-color: color-mix(in srgb, var(--invest) 45%, transparent);
   color: var(--invest);
 }
 
-#kinds .chip[data-kind="life"].active {
+#kinds .chip[data-kind="life"].active,
+#kinds .chip[data-kind="journey"].active,
+#kinds .chip[data-tone="life"].active {
   background: color-mix(in srgb, var(--life) 10%, var(--card));
   border-color: color-mix(in srgb, var(--life) 45%, transparent);
   color: var(--life);
@@ -229,6 +232,8 @@ h1 {
 
 #issue-select {
   width: auto;
+  min-width: 0;
+  max-width: min(360px, 100%);
   padding: 5px 10px;
   border: 1px solid var(--line);
   border-radius: var(--r-xs);
@@ -236,6 +241,22 @@ h1 {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--ink);
+}
+
+.issue-select-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.issue-select-field span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  white-space: nowrap;
 }
 
 /* ---------- 双栏布局 ---------- */
@@ -251,6 +272,52 @@ h1 {
 
 .entries { padding: 16px; }
 .editor { padding: 24px; }
+
+.issue-theme-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: -2px 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.issue-theme-field span,
+.issue-theme-field small {
+  font-family: var(--mono);
+  color: var(--ink-2);
+}
+
+.issue-theme-field span {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.issue-theme-field input {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.issue-theme-field small {
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+
+.issue-chrome {
+  margin: 0 0 12px;
+}
+
+.issue-cover-drop {
+  margin: 0 0 12px;
+  padding: 10px;
+}
+
+.issue-cover-drop strong {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+}
 
 /* 条目索引：校样目录，细线分行 */
 .entries h3 {
@@ -603,12 +670,16 @@ button:focus-visible {
 }
 
 .job-preview-label,
-.job-excluded {
+.job-excluded,
+.wechat-status {
   margin: 0 0 8px;
   font-family: var(--mono);
   font-size: 12px;
   color: var(--ink-2);
 }
+
+.wechat-status.is-ready { color: var(--life); }
+.wechat-status.is-waiting { color: var(--seal); }
 
 .job-manifest {
   margin: 0 0 10px;
@@ -648,6 +719,12 @@ a.ghost {
   .row { flex-direction: column; gap: 0; }
   .polish-head { flex-direction: column; align-items: stretch; }
   .polish-head .field { min-width: 0; }
+  .issue-select-field,
+  .issue-select-field #issue-select,
+  #issue-select {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

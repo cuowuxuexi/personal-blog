@@ -8,7 +8,7 @@ import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
  * 误君在脑海里放烟花 — VitePress 站点配置
  * 侧栏按板块分路径、按日期倒序。
  * - 周记 / 投研：新增后同步 posts.ts（手写）与下方 sidebar
- * - AI 历程：docs/AI与生活/我的AI历程/（系列入口 + 两个独立篇章页）
+ * - AI 历程：docs/AI与生活/我的AI历程/（三个独立篇章页 + 按期周记，侧栏「周记 · YYYY年」）
  * - Hermes 日记：只需新增 docs/AI与生活/Hermes日记/YYYY-MM-DD.md；协作本路径仍自动扫描
  */
 const hermesDiaryNav = hermesSidebarItems(loadHermesDiaryPostsFromFs())
@@ -117,6 +117,7 @@ export default defineConfig({
                 { text: '地图总览', link: '/投资/投研/医药/研究地图/' },
                 { text: '创新药研发全流程', link: '/投资/投研/医药/研究地图/创新药研发全流程/' },
                 { text: 'CXO 与 CRDMO', link: '/投资/投研/医药/研究地图/CXO与CRDMO/' },
+                { text: '原研、仿制与支付端', link: '/投资/投研/医药/研究地图/原研仿制与支付端/' },
               ],
             },
             {
@@ -220,6 +221,7 @@ export default defineConfig({
           text: '2026年',
           collapsed: false,
           items: [
+            { text: '第002期-待定', link: '/投资/周记/2026-08-17-待定' },
             { text: '第001期-看烟花', link: '/投资/周记/2026-08-13-看烟花' },
             { text: '写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
           ],
@@ -241,7 +243,7 @@ export default defineConfig({
           items: [
             { text: '最新周记', link: '/AI与生活/' },
             {
-              text: '我的AI历程：基础设施与工具使用',
+              text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
             },
           ],
@@ -250,6 +252,7 @@ export default defineConfig({
           text: '周记 · 2026年',
           collapsed: false,
           items: [
+            { text: '第002期-AI的消费主义与token焦虑', link: '/AI与生活/2026-08-17' },
             { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
           ],
         },
@@ -261,11 +264,12 @@ export default defineConfig({
           ],
         },
         {
-          text: '我的AI历程：基础设施与工具使用',
+          text: '我的AI历程',
           collapsed: false,
           items: [
             { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
             { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
+            { text: 'AI开支记录与优化', link: '/AI与生活/我的AI历程/AI开支记录与优化' },
           ],
         },
       ],
@@ -275,18 +279,18 @@ export default defineConfig({
           items: [
             { text: '最新周记', link: '/AI与生活/' },
             {
-              text: '我的AI历程：基础设施与工具使用',
+              text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
             },
           ],
         },
         {
-          text: '我的AI历程：基础设施与工具使用',
+          text: '我的AI历程',
           collapsed: false,
           items: [
-            { text: '系列入口', link: '/AI与生活/我的AI历程/' },
             { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
             { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
+            { text: 'AI开支记录与优化', link: '/AI与生活/我的AI历程/AI开支记录与优化' },
           ],
         },
       ],
@@ -296,7 +300,7 @@ export default defineConfig({
           items: [
             { text: '最新周记', link: '/AI与生活/' },
             {
-              text: '我的AI历程：基础设施与工具使用',
+              text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
             },
           ],

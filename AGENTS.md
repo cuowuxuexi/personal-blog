@@ -12,6 +12,8 @@ Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `
 
 Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.
 
+Shared project memory (Claude / Codex / OpenCode): `.agents/memory/MEMORY.md`. Put project facts there, not in host-private memory.
+
 ### Blog editor
 
 Project skill for adding or revising public blog content, page design, theme styles, navigation, sidebars, posts index, or public assets.
@@ -23,7 +25,7 @@ Project skill for adding or revising public blog content, page design, theme sty
 - 投资周记固定模板：skill 内 `content.weekly-investment` + `.agents/skills/blog-editor/templates/weekly-invest.md`；版面与生活周记同一套，走投资门禁
 - Platform discovery wrappers only: `.cursor/skills/blog-editor/`, `.claude/skills/blog-editor/`
 - Do not auto commit, push, or deploy.
-- The author may publish weekly notes through the local **publishing panel** (`panel/`, `pnpm panel`). See `docs/agents/publishing-panel.md`.
+- The author may publish weekly notes, dated 我的AI历程 issues, and existing journey chapter entries through the local **publishing panel** (`panel/`, `pnpm panel`). See `docs/agents/publishing-panel.md`.
 
 ### Research publishing
 

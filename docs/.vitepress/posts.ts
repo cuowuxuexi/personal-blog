@@ -26,6 +26,24 @@ export interface PostItem {
 /** 手写登记：周记 / 投研等。Hermes 日记不要写在这里。 */
 const manualPosts: PostItem[] = [
   {
+    title: "第002期-待定",
+    date: "2026-08-17",
+    category: "投资",
+    type: 'weekly',
+    issue: 2,
+    link: "/投资/周记/2026-08-17-待定",
+    description: "周日就说了中央汇金退出前十大股东行列。",
+  },
+  {
+    title: "第002期-AI的消费主义与token焦虑",
+    date: "2026-08-17",
+    category: "AI与生活",
+    type: 'weekly',
+    issue: 2,
+    link: "/AI与生活/2026-08-17",
+    description: "AI的消费主义与token焦虑",
+  },
+  {
     title: '第001期-看烟花',
     date: '2026-08-13',
     category: '投资',
@@ -50,6 +68,14 @@ const manualPosts: PostItem[] = [
     issue: 1,
     link: '/AI与生活/2026-08-12',
     description: 'Cursor Ultra、Grok 4.6 与 DeepSeek 4 Pro 上线、蛋白粉涨价、/ljg-classic 读古文，以及 Trae 产品随记。',
+  },
+  {
+    title: 'AI开支记录与优化',
+    date: '2026-08-18',
+    category: 'AI与生活',
+    type: 'journey',
+    link: '/AI与生活/我的AI历程/AI开支记录与优化',
+    description: '我的 AI 历程 · AI开支记录与优化：实际在付的服务、用途、状态与取舍。',
   },
   {
     title: '基础设施篇',

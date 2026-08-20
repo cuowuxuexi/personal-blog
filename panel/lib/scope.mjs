@@ -6,35 +6,117 @@ export const ALLOWED_PREFIXES = [
   'docs/.vitepress/config.mts',
 ]
 
+const JOURNEY_ALLOWED_PREFIXES = [
+  'docs/AI与生活/我的AI历程/',
+  'docs/public/images/journey/',
+]
+
 const BLOCKED_PREFIXES = [
   'docs/投资/投研/',
   'docs/投资哲学/',
   'docs/大问题/',
   'docs/AI与生活/Hermes日记/',
+  'docs/AI与生活/大事件/',
   'docs/.vitepress/theme/',
   'panel/',
+]
+
+const JOURNEY_BLOCKED_NAMES = new Set(['index.md', 'readme.md'])
+const JOURNEY_META_FILES = new Set([
+  'docs/.vitepress/posts.ts',
+  'docs/.vitepress/config.mts',
+])
+const WEEKLY_EXCLUDED_PREFIXES = [
+  'docs/AI与生活/我的AI历程/',
 ]
 
 export function posixPath(file) {
   return String(file).replace(/\\/g, '/')
 }
 
-export function isAllowedPublishPath(file) {
-  const rel = posixPath(file)
-  if (rel.includes('..')) return false
-  if (BLOCKED_PREFIXES.some((prefix) => rel === prefix || rel.startsWith(prefix))) return false
-  return ALLOWED_PREFIXES.some((prefix) => rel === prefix || rel.startsWith(prefix))
+function matchesPrefix(rel, prefixes) {
+  return prefixes.some((prefix) => rel === prefix || rel.startsWith(prefix))
 }
 
-export function assertPublishable(files) {
+export function publishScopeOf(kindId, capability) {
+  if (capability?.publishScope) return capability.publishScope
+  return String(kindId) === 'journey' ? 'journey' : 'weekly'
+}
+
+function journeyChapterName(rel) {
+  const prefix = 'docs/AI与生活/我的AI历程/'
+  if (!rel.startsWith(prefix) || !rel.endsWith('.md')) return ''
+  const name = rel.slice(prefix.length)
+  if (!name || name.includes('/')) return ''
+  return name
+}
+
+export function isJourneyChapterPath(file) {
+  const name = journeyChapterName(posixPath(file))
+  if (!name) return false
+  return !JOURNEY_BLOCKED_NAMES.has(name.toLowerCase())
+}
+
+export function isJourneyImagePath(file) {
+  const rel = posixPath(file)
+  return rel.startsWith('docs/public/images/journey/') && rel !== 'docs/public/images/journey/'
+}
+
+export function isJourneyMetaPath(file) {
+  return JOURNEY_META_FILES.has(posixPath(file))
+}
+
+export function dirtyJourneyMetaPaths(statusRows = []) {
+  return [...new Set(
+    statusRows
+      .map((row) => posixPath(row?.path))
+      .filter((rel) => rel && isJourneyMetaPath(rel)),
+  )]
+}
+
+function resolveScope(options = {}) {
+  if (options.scope) return options.scope
+  return publishScopeOf(options.kindId, options.capability)
+}
+
+export function isAllowedPublishPath(file, options = {}) {
+  const rel = posixPath(file)
+  if (rel.includes('..')) return false
+  if (matchesPrefix(rel, BLOCKED_PREFIXES)) return false
+  const scope = resolveScope(options)
+  if (scope === 'journey') {
+    if (isJourneyChapterPath(rel)) return true
+    if (isJourneyImagePath(rel) && matchesPrefix(rel, JOURNEY_ALLOWED_PREFIXES)) return true
+    if (JOURNEY_META_FILES.has(rel)) return true
+    return false
+  }
+  if (matchesPrefix(rel, WEEKLY_EXCLUDED_PREFIXES)) return false
+  return matchesPrefix(rel, ALLOWED_PREFIXES)
+}
+
+export function assertPublishable(files, options = {}) {
   const normalized = [...new Set(files.map(posixPath).filter(Boolean))]
-  const blocked = normalized.filter((file) => !isAllowedPublishPath(file))
+  const scope = resolveScope(options)
+  const check = { ...options, scope }
+  const blocked = normalized.filter((file) => !isAllowedPublishPath(file, check))
   if (blocked.length) {
     const err = new Error(`超出发布面板范围：${blocked.join('、')}`)
     err.status = 422
     throw err
   }
-  const allowed = normalized.filter(isAllowedPublishPath)
-  if (!allowed.length) throw new Error('没有可发布的周记文件')
+  const allowed = normalized.filter((file) => isAllowedPublishPath(file, check))
+  if (!allowed.length) {
+    const err = new Error('没有可发布的文件')
+    err.status = 422
+    throw err
+  }
+  if (scope === 'journey') {
+    const chapters = allowed.filter(isJourneyChapterPath)
+    if (chapters.length !== 1) {
+      const err = new Error('journey 发布任务需要恰好一篇正文')
+      err.status = 422
+      throw err
+    }
+  }
   return allowed
 }

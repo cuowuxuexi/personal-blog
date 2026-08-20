@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { withBase } from 'vitepress'
 import {
   formatIssue,
   postsByCategory,
@@ -22,7 +23,7 @@ const catClass = computed(() =>
   <div class="cat-list" :class="catClass">
     <ul v-if="items.length" class="cat-list__ul">
       <li v-for="item in items" :key="item.link" class="cat-list__item">
-        <a class="cat-list__link" :href="item.link">
+        <a class="cat-list__link" :href="withBase(item.link)">
           <div class="cat-list__meta">
             <span v-if="item.issue" class="cat-list__issue">{{ formatIssue(item.issue) }}</span>
             <time class="cat-list__date" :datetime="item.date">{{ item.date }}</time>

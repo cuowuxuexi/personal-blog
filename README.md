@@ -15,7 +15,7 @@ pnpm install
 # 本地开发
 pnpm docs:dev
 
-# 发布面板（投资周记 / AI与生活周记，无需打开 Cursor）
+# 发布面板（两类周记 + 我的AI历程，无需打开 Cursor）
 pnpm panel
 pnpm panel:shortcut   # 首次：在桌面创建快捷方式
 
@@ -59,7 +59,7 @@ personal-blog/
   RESEARCH-FRONTEND.md       # 投研前端分阶段计划
   AGENTS.md                  # Agent 技能入口
   research-sources.local.yaml  # 本地回源索引（gitignore，不进仓库）
-  panel/                   # 发布面板（本地周记更新，不进站点构建）
+  panel/                   # 发布面板（两类周记 + 我的AI历程，不进站点构建）
   docs/
     index.md                 # 首页（hero 插画 + features + 最近更新）
     关于.md
@@ -97,15 +97,15 @@ personal-blog/
 分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。  
 Phase 2 版面/内容设计交接（Cursor）：`docs/agents/handoff-phase2-research-ui.md`。
 
-## 发布面板（周记）
+## 发布面板（两类周记 + 我的AI历程）
 
-投资周记和 AI与生活周记的日常更新走本地**发布面板**：选栏目、填标题/正文/图/链接，可选 AI 润色，预览真实页面后确认发布。
+投资周记、AI与生活周记，以及「我的AI历程」的按期新开与既有篇章更新，走本地**发布面板**：选栏目、填标题/正文/图/链接，可选 AI 润色，同时预览博客页面与公众号排版；生产版本校验成功，或单独检查确认引用图片均已在线后，可一键复制公众号富文本。历程可以像周记一样开新一期并设置封面；具名篇章文件的新增、重命名或删除仍走 Cursor。
 
 ```bash
 pnpm panel
 ```
 
-桌面快捷方式：`pnpm panel:shortcut`。clipro 配置放根目录 `.env`（见 `.env.example`）。协议：`docs/agents/publishing-panel.md`。投研页等其它栏目仍用 Cursor。
+桌面快捷方式：`pnpm panel:shortcut`。clipro 配置放根目录 `.env`（见 `.env.example`）。协议：`docs/agents/publishing-panel.md`。投研页、投资哲学和大问题等仍在维护的其它栏目走 Cursor / blog-editor；Hermes 日记已于 2026-08-14 停用，仅保留历史页面。
 
 ## 如何新增文章
 
@@ -164,4 +164,4 @@ description: 一句话摘要（首页与板块列表展示）
 - 勿拷贝第三方周刊正文、封面或品牌资产。  
 - 勿将密钥写入仓库。  
 
-最后更新：2026-08-14
+最后更新：2026-08-18

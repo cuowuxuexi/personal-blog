@@ -22,7 +22,7 @@ This repository is a personal blog. Recording matters more than polished exhibit
 | **Current understanding** | The author's present interpretation. It may be incomplete, provisional, or later revised. |
 | **Open questions** | Explicit unresolved problems that define the next research direction. |
 | **Origin kind** | How a blog page was formed relative to private research: `command` (mainly from private research), `blog` (mainly from writing/thinking on the blog), or `mixed`. |
-| **Publishing panel (发布面板)** | The local, non-coding publishing tool for weekly notes (investment + AI/life). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note. Research pages are outside its scope. |
+| **Publishing panel (发布面板)** | The local, non-coding publishing tool for two weekly kinds (investment + AI/life) and 我的AI历程 (`type: journey`). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note, dated journey issue, or chapter instance. The panel can open a new dated journey issue (theme, cover, caption) and edit existing chapter headers; it does not create, rename, or delete named chapter files. Research pages are outside its scope. |
 
 ## Authority boundaries
 
@@ -42,14 +42,14 @@ This repository is a personal blog. Recording matters more than polished exhibit
 
 ## Publication model
 
-All weekly notes and research content require two human gates:
+All weekly notes, journey chapters, and research content require two human gates:
 
 1. Discuss page goal, scope, and structure before drafting.
 2. Review local draft/preview before any push or deploy.
 
 One approval applies only to that content instance. There is no auto-sync and no auto-publish.
 
-The gates constrain **agent-mediated** drafting and publishing. When the author personally drafts and publishes a weekly note through the local publishing panel, the author's own preview-and-confirm action satisfies both gates for that weekly note instance. Research pages (`docs/投资/投研/`) are outside panel scope and keep the full agent-mediated gate process.
+The gates constrain **agent-mediated** drafting and publishing. When the author personally drafts and publishes a weekly note, a dated 我的AI历程 issue, or an existing journey chapter through the local publishing panel, the author's own preview-and-confirm action satisfies both gates for that content instance. Research pages (`docs/投资/投研/`) are outside panel scope and keep the full agent-mediated gate process. Creating, renaming, or deleting a named journey chapter file is not a panel action; it stays with blog-editor and still needs the two gates.
 
 ## Public research page states
 
@@ -109,4 +109,4 @@ The first three-page split is experimental and may change after preview and use.
 | publication gate | auto deploy, silent publish |
 | publishing panel / 发布面板 | 微博后台, CMS, 云端编辑器 |
 
-最后更新：2026-08-14
+最后更新：2026-08-18

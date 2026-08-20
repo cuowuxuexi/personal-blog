@@ -24,7 +24,7 @@
 - 投研内容的事实与研究结论以私有投研指挥系统为准；博客是**投研前端**，按自身认知与表达逻辑整理公开发布内容。
 - 私有绝对路径、本地来源索引和原件冻结副本不进入公开站点内容。
 - 本地 Agent 通过 `research-sources.local.yaml`（gitignored）回源；协议见 `docs/agents/research-publishing.md`。
-- 所有周记与投研内容都需要人工讨论和发布批准，不做自动同步、自动生成或自动部署。
+- 所有周记、我的AI历程篇章与投研内容都需要人工讨论和发布批准，不做自动同步、自动生成或自动部署。
 
 ## 历史来源
 
@@ -54,7 +54,7 @@ pnpm docs:preview
 | `RESEARCH-FRONTEND.md` | 投研前端分阶段计划 |
 | `docs/agents/research-publishing.md` | Agent 回源与发布协议 |
 | `docs/adr/0001-research-authority-and-publication-boundary.md` | 架构决策 |
-| `panel/` | 发布面板：本地更新投资 / AI与生活周记 |
+| `panel/` | 发布面板：本地更新两类周记 + 我的AI历程（按期新开与既有篇章） |
 | `docs/agents/publishing-panel.md` | 发布面板与 agent 的分工 |
 
 更完整的站点约定见 `README.md`。

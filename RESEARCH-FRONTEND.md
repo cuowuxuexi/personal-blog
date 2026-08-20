@@ -72,7 +72,8 @@ docs/投资/投研/医药/
 ├─ 研究地图/
 │  ├─ index.md
 │  ├─ 创新药研发全流程/index.md
-│  └─ CXO与CRDMO/index.md
+│  ├─ CXO与CRDMO/index.md
+│  └─ 原研仿制与支付端/index.md
 └─ 药明康德/index.md
 ```
 
@@ -84,6 +85,7 @@ Routes:
 | 研究地图总览 | `/投资/投研/医药/研究地图/` |
 | 创新药研发全流程 | `/投资/投研/医药/研究地图/创新药研发全流程/` |
 | CXO 与 CRDMO | `/投资/投研/医药/研究地图/CXO与CRDMO/` |
+| 原研、仿制与支付端 | `/投资/投研/医药/研究地图/原研仿制与支付端/` |
 | 药明康德档案 | `/投资/投研/医药/药明康德/` |
 
 ### Sidebar IA (local experiment)
@@ -116,6 +118,7 @@ File layout under `docs/投资/投研/医药/` may still use folders for URLs; p
 | --- | --- | --- |
 | 创新药研发全流程 | stages from disease problem to commercialization | company conclusions |
 | CXO 与 CRDMO | role boundaries + why CRDMO is more than pure manufacturing | valuation / holdings |
+| 原研、仿制与支付端 | originator vs generic vs innovative; VBP vs NRDL | company pipelines / holdings |
 | 药明康德主页 | why study, current stage, learning path, open questions | full company report, target price |
 
 Shared recognition fields on research pages:

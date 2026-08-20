@@ -1,15 +1,16 @@
-# Hermes日记 — 操作说明（作者 / Hermes）
+# Hermes日记 — 历史操作说明（作者 / Hermes）
 
 > **已停用（2026-08-14）**：不再新写。已发布页面保留。周记请走发布面板或 blog-editor。
 
-「AI与生活」下的**按天协作本**：记录想法、规划、与 Hermes 探讨后值得留下的内容。  
-**az / huizhang / shizun 三 profile 共用同一目录、同一 git 仓库。**
+这里保存「AI与生活」下已发布的 Hermes 按天协作本及其历史协议。**当前不再创建新日文件，也不再追加条目。**
 
 公开页：`/AI与生活/Hermes日记/`（本 README 不进站点）。
 
 ---
 
-## 一句话流程
+## 历史流程（已停用）
+
+以下流程只解释既有页面如何形成，停用期间不要执行：
 
 ```text
 git pull → 打开/创建当天 YYYY-MM-DD.md → 末尾追加一条 → commit → push main → 自动上站
@@ -20,7 +21,7 @@ git pull → 打开/创建当天 YYYY-MM-DD.md → 末尾追加一条 → commit
 
 ---
 
-## 路径
+## 历史路径
 
 | 环境 | 路径 |
 | --- | --- |
@@ -28,20 +29,20 @@ git pull → 打开/创建当天 YYYY-MM-DD.md → 末尾追加一条 → commit
 | laptop 共享 clone（目标） | `/data/项目/personal-blog/docs/AI与生活/Hermes日记/` |
 | Windows | `D:\项目\personal-blog\docs\AI与生活\Hermes日记\` |
 
-三 agent 必须写**同一份** clone，不要各 clone 一份。
+启用期间三 profile 共用同一份 clone；这些路径不构成当前写入授权。
 
 ---
 
-## 文件规则
+## 历史文件规则
 
 | 规则 | 说明 |
 | --- | --- |
 | 一天一个文件 | `YYYY-MM-DD.md`（优先）；同日多主题才用 `YYYY-MM-DD-摘要.md` |
-| 新的一天 | 若文件不存在，按下方「空日模板」创建 |
+| 新的一天 | 已停用；不要创建 |
 | 索引 | **不要**改 `posts.ts` / `config.mts`；构建会扫描本目录自动进列表与侧栏 |
 | 勿改 | `README.md`（本协议）、`index.md`（除非改总览文案且有人授权） |
 
-### 空日模板
+### 历史空日模板（已停用）
 
 ```markdown
 ---
@@ -61,10 +62,9 @@ pageClass: weekly-post weekly-post--life hermes-diary-post
 
 ---
 
-## 条目格式（每条必有编号 + 时间）
+## 历史条目格式
 
-在**当天文件末尾追加**，不要重排、不要改别人已有条。  
-当天内编号从 `#1` 递增；新的一天重新从 `#1` 起。
+既有文件使用以下格式；停用期间不要继续追加。
 
 ```markdown
 ## #3 · 15:05 · 规划
@@ -83,7 +83,9 @@ pageClass: weekly-post weekly-post--life hermes-diary-post
 
 ---
 
-## 三 agent 并发
+## 历史并发流程（已停用）
+
+以下步骤不再执行：
 
 1. 写前：`git pull --rebase`（或封装脚本 pull）
 2. 只 **append** 新条
@@ -92,20 +94,20 @@ pageClass: weekly-post weekly-post--life hermes-diary-post
 
 ---
 
-## 允许 / 禁止写入
+## 历史写入范围（已停用）
 
-| 允许 | 禁止（默认） |
+| 启用期间曾允许 | 始终禁止（默认） |
 | --- | --- |
 | `docs/AI与生活/Hermes日记/YYYY-MM-DD*.md` | `docs/投资/**` |
-| 新建当天文件（按模板） | 其它 `docs/**` 文章与主题 |
+| 新建当天文件（现已停用） | 其它 `docs/**` 文章与主题 |
 | | `docs/.vitepress/**`、`.github/**`、package 配置 |
 | | 生产 Nginx / 服务器上的 `dist` |
 
-Commit 时 **只 add 日记路径**。若使用 `blog-diary-push` 一类脚本，会做路径白名单校验。
+上述提交约定只用于理解历史；停用期间不要为 Hermes 日记执行 commit / push。
 
 ---
 
-## Git 约定
+## 历史 Git 约定（已停用）
 
 | 项 | 建议 |
 | --- | --- |
@@ -122,7 +124,7 @@ Commit 时 **只 add 日记路径**。若使用 `blog-diary-push` 一类脚本�
 | --- | --- | --- |
 | 形态 | 按天、按条随时加 | 用「周」容器呈现值得留下的内容（不强制每周一篇） |
 | 谁写 | 人 + 三 Hermes | 主要为你整理成文 |
-| 上站 | 默认 push 即上 | 同样可 push；内容通常更成篇 |
+| 当前状态 | 已停用，仅保留历史页面 | 继续通过发布面板维护 |
 
 ---
 
@@ -134,4 +136,4 @@ Commit 时 **只 add 日记路径**。若使用 `blog-diary-push` 一类脚本�
 | `YYYY-MM-DD.md` | 按天正文 |
 | `README.md` | 本协议（不进站） |
 
-最后更新：2026-08-11
+最后更新：2026-08-18

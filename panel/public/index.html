@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div class="app">
+  <div class="app" data-kind="life" data-content-type="weekly">
     <header class="top">
       <div>
         <p class="eyebrow">误君在脑海里放烟花 · PUBLISHING PANEL</p>
@@ -95,30 +95,18 @@
               </label>
             </div>
             <div class="issue-only hidden" id="issue-fields">
+              <input name="theme" type="hidden" />
+              <input name="caption" type="hidden" />
               <div class="row">
-                <label class="field grow">
-                  <span>新期主题</span>
-                  <input name="theme" placeholder="看烟花" />
-                </label>
                 <label class="field">
                   <span>新期日期</span>
                   <input name="issueDate" type="date" />
                 </label>
               </div>
               <label class="field">
-                <span>主题说明</span>
-                <input name="caption" placeholder="烟花朵朵开，想法自然来。" />
-              </label>
-              <label class="field">
                 <span>一句话摘要</span>
                 <input name="description" placeholder="首页列表用" />
               </label>
-              <div class="drop" data-role="cover" id="drop-cover">
-                <strong>封面</strong>
-                <p>可粘贴。不传则沿用烟花封面 · <button type="button" class="drop-pick">选择文件</button></p>
-                <input type="file" accept="image/*" hidden />
-                <div class="thumbs"></div>
-              </div>
             </div>
           </details>
 
@@ -174,11 +162,14 @@
             <ul class="job-manifest" id="job-manifest"></ul>
             <p class="job-excluded" id="job-excluded"></p>
             <div class="actions job-actions">
-              <a class="ghost hidden" id="btn-release-preview" target="_blank" rel="noreferrer">发布前预览</a>
+              <a class="ghost hidden" id="btn-release-preview" target="_blank" rel="noreferrer">博客发布前预览</a>
+              <a class="ghost hidden" id="btn-wechat-preview" target="_blank" rel="noreferrer">公众号预览</a>
               <a class="ghost hidden" id="btn-verified-online" target="_blank" rel="noreferrer">已校验的线上页</a>
+              <button type="button" class="ghost hidden" id="btn-check-wechat-assets">重新检查公众号图片</button>
               <button type="button" class="ghost hidden" id="btn-retry-push">重试推送</button>
               <button type="button" class="ghost hidden" id="btn-retry-verify">重新校验生产</button>
             </div>
+            <p class="wechat-status" id="wechat-status"></p>
             <pre class="job-summary" id="job-summary"></pre>
           </section>
           <p class="notice" id="notice"></p>

@@ -2,7 +2,7 @@
 
 > **已停用（2026-08-14）**：不再新写 Hermes 日记。已发布页面保留。除非作者明确要求恢复，否则不要创建新的日记天文件。
 
-Shared day-log under the public blog for ideas, plans, and notes worth keeping after discussion with Hermes.
+Historical protocol for the former shared public day-log. It does not authorize new diary files or publishing actions while the protocol remains retired.
 
 ## Authority
 
@@ -10,32 +10,21 @@ Shared day-log under the public blog for ideas, plans, and notes worth keeping a
 - Site source: this repository
 - Default publish: push `main` → Cloudflare Pages (no separate draft server)
 
-## Who may write
+## Historical shape
 
-Profiles **az**, **huizhang**, and **shizun** share one clone and one diary directory.
+- Profiles **az**, **huizhang**, and **shizun** shared one clone and one diary directory.
+- Entries used one `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` file per calendar day.
+- The build scanned the diary directory, so `posts.ts` and `config.mts` were not hand-edited for diary days.
 
-## Write scope
+## Current rule
 
-- **Allowed:** `docs/AI与生活/Hermes日记/YYYY-MM-DD.md` (create day file from template if missing; append entries only)
-- **Forbidden by default:** `docs/投资/**`, other site content, `docs/.vitepress/**`, CI, secrets
-
-Do **not** edit `posts.ts` or `config.mts` for new diary days — the build scans the diary folder.
-
-## Entry shape
-
-- One file per calendar day
-- Append `## #N · HH:mm · <类型>` with optional `**agent**: az|huizhang|shizun`
-- Numbering restarts at `#1` each day
-
-## Git loop
-
-1. `git pull --rebase`
-2. Append entry (or create day file)
-3. Stage only diary paths → commit → `git push origin main`
-4. On conflict: pull --rebase once more; if still failing, stop and report
+- Do not create or append diary entries.
+- Do not run the former pull/commit/push loop for Hermes diary content.
+- Preserve published pages unless the author explicitly asks to revise or remove them.
+- If the author explicitly reopens the protocol, review the historical repository state and define a new publication contract before writing.
 
 ## Not research publishing
 
 Investment research still uses `docs/agents/research-publishing.md` and human gates. This diary protocol does **not** authorize research auto-publish.
 
-最后更新：2026-08-11
+最后更新：2026-08-18

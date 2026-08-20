@@ -7,6 +7,8 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { createRepoPaths } from './lib/paths.mjs'
+import { validateWeeklySnapshot } from './lib/content-validation.mjs'
+import { assertPublishable, dirtyJourneyMetaPaths } from './lib/scope.mjs'
 import { createServer } from './server.mjs'
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -88,9 +90,61 @@ const CONFIG_MTS = `export default {
           ],
         },
       ],
+      '/AI与生活/我的AI历程/': [
+        {
+          text: 'AI与生活',
+          items: [
+            { text: '最新周记', link: '/AI与生活/' },
+          ],
+        },
+        {
+          text: '我的AI历程',
+          collapsed: false,
+          items: [
+            { text: '系列入口', link: '/AI与生活/我的AI历程/' },
+            { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
+          ],
+        },
+      ],
     },
   },
 }
+`
+
+const JOURNEY_MD = `---
+title: 基础设施篇
+date: 2026-08-12
+category: AI与生活
+type: journey
+description: 测试篇章
+pageClass: weekly-post weekly-post--life
+---
+
+# 基础设施篇
+
+<div class="weekly-fireworks-section">
+
+<div class="weekly-outline-only" aria-hidden="true">
+
+### 已有一条
+
+</div>
+
+<WeeklyEntry
+  tags="测试"
+  title="已有一条"
+>
+篇章正文
+</WeeklyEntry>
+
+</div>
+`
+
+const JOURNEY_INDEX_MD = `---
+title: 我的AI历程
+---
+
+# 我的AI历程
 `
 
 function git(dir, args) {
@@ -106,9 +160,17 @@ function initRepo(dir) {
   fs.mkdirSync(path.dirname(image), { recursive: true })
   fs.mkdirSync(path.join(dir, 'docs', '.vitepress'), { recursive: true })
   fs.mkdirSync(path.join(dir, 'docs', '投资', '投研'), { recursive: true })
+  const journeyDir = path.join(dir, 'docs', 'AI与生活', '我的AI历程')
+  fs.mkdirSync(journeyDir, { recursive: true })
   fs.writeFileSync(life, LIFE_MD)
   fs.writeFileSync(invest, INVEST_MD)
   fs.writeFileSync(image, 'webp')
+  fs.writeFileSync(path.join(dir, 'docs', 'public', 'images', 'weekly', '2026-08-13-01-test.webp'), 'webp')
+  fs.writeFileSync(path.join(journeyDir, '基础设施篇.md'), JOURNEY_MD)
+  fs.writeFileSync(path.join(journeyDir, '工具篇.md'), JOURNEY_MD.replaceAll('基础设施篇', '工具篇'))
+  fs.writeFileSync(path.join(journeyDir, 'AI开支记录与优化.md'), JOURNEY_MD.replaceAll('基础设施篇', 'AI开支记录与优化'))
+  fs.writeFileSync(path.join(journeyDir, 'index.md'), JOURNEY_INDEX_MD)
+  fs.writeFileSync(path.join(journeyDir, 'README.md'), '# readme\n')
   fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), POSTS_TS)
   fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), CONFIG_MTS)
   fs.writeFileSync(path.join(dir, 'README.md'), 'fixture\n')
@@ -127,7 +189,8 @@ function makeProbes(overrides = {}) {
   let n = 0
   let pushN = 0
   return {
-    async test() {
+    async test(args) {
+      if (typeof overrides.test === 'function') return overrides.test(args)
       if (overrides.failTest) throw new Error('测试失败：fake')
       return { ok: true }
     },
@@ -157,6 +220,10 @@ function makeProbes(overrides = {}) {
       n += 1
       if (overrides.productionVersion) return overrides.productionVersion({ sha, n })
       return { sha, builtAt: '2026-08-15T00:00:00.000Z' }
+    },
+    async onlineAssets({ urls }) {
+      if (overrides.onlineAssets) return overrides.onlineAssets({ urls })
+      return { ok: true, missing: [] }
     },
   }
 }
@@ -217,6 +284,22 @@ async function get(url, pathname) {
   return { status: response.status, payload: await response.json() }
 }
 
+function rawGet(port, pathname) {
+  return new Promise((resolve, reject) => {
+    const req = http.request({ host: '127.0.0.1', port, path: pathname }, (res) => {
+      const chunks = []
+      res.on('data', (chunk) => { chunks.push(chunk) })
+      res.on('end', () => resolve({
+        status: res.statusCode,
+        body: Buffer.concat(chunks),
+        contentType: res.headers['content-type'] || '',
+      }))
+    })
+    req.on('error', reject)
+    req.end()
+  })
+}
+
 const appendBody = {
   kindId: 'life',
   mode: 'append',
@@ -247,18 +330,127 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.ok(prepared.payload.confirmationToken)
     assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-12.md')))
     assert.equal(prepared.payload.manifest.filter((item) => item.path.includes('2026-08-12-01-test.webp')).length, 1)
+    assert.equal(prepared.payload.wechatPreview.status, 'AssetsOnline')
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+    assert.match(prepared.payload.wechatPreview.url, new RegExp(`/wechat-preview/${prepared.payload.jobId}/`))
     const preview = await fetch(`${url}${prepared.payload.releasePreviewUrl}`)
     assert.ok(preview.status === 200 || preview.status === 404)
+    const wechatPreview = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
+    assert.equal(wechatPreview.status, 200)
+    assert.match(await wechatPreview.text(), /第一条/)
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
     })
     assert.equal(confirmed.status, 200)
     assert.equal(confirmed.payload.state, 'Published')
+    assert.equal(confirmed.payload.wechatPreview.status, 'ProductionVerified')
+    assert.equal(confirmed.payload.wechatPreview.copyAllowed, true)
     assert.ok(confirmed.payload.commitSha)
     assert.equal(confirmed.payload.verifiedUrl, `https://blog.example.test/AI与生活/2026-08-12#kan-yanhua`)
     assert.ok(git(dir, ['log', '-1', '--format=%H']))
     assert.match(git(dir, ['log', '-1', '--name-only']), /2026-08-12\.md/)
+  })
+})
+
+test('wechat copy stays locked until missing production images are rechecked online', async () => {
+  let checks = 0
+  await withPanel({
+    probes: {
+      onlineAssets: ({ urls }) => {
+        checks += 1
+        return checks === 1
+          ? { ok: false, missing: [urls[0]] }
+          : { ok: true, missing: [] }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.payload.wechatPreview.status, 'WaitingForOnlineAssets')
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
+    assert.equal(prepared.payload.wechatPreview.missingAssets.length, 1)
+    const checked = await post(url, `/api/publish/jobs/${prepared.payload.jobId}/check-wechat-assets`, {})
+    assert.equal(checked.payload.wechatPreview.status, 'AssetsOnline')
+    assert.equal(checked.payload.wechatPreview.copyAllowed, true)
+  })
+})
+
+test('production SHA does not bypass a failed external image check', async () => {
+  let checks = 0
+  await withPanel({
+    probes: {
+      onlineAssets: ({ urls }) => {
+        checks += 1
+        const external = urls.find((url) => url.startsWith('https://cdn.example.test/'))
+        if (checks === 1) return { ok: true, missing: [] }
+        return { ok: false, missing: external ? [external] : [] }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', {
+      ...appendBody,
+      entry: {
+        ...appendBody.entry,
+        body: '外部图片 ![图](https://cdn.example.test/chart.webp)',
+      },
+    })
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+    const confirmed = await post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    assert.equal(confirmed.payload.state, 'Published')
+    assert.equal(confirmed.payload.wechatPreview.status, 'WaitingForOnlineAssets')
+    assert.equal(confirmed.payload.wechatPreview.copyAllowed, false)
+    assert.deepEqual(confirmed.payload.wechatPreview.missingAssets, [
+      'https://cdn.example.test/chart.webp',
+    ])
+  })
+})
+
+test('wechat preview is rendered from the isolated snapshot and artifacts stay out of manifest', async () => {
+  await withPanel({}, async ({ url, dir, ctx }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+    fs.appendFileSync(weekly, '\n工作区后续漂移，不应进入已准备的公众号快照\n')
+    const response = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
+    const html = await response.text()
+    assert.match(html, /新的一条/)
+    assert.doesNotMatch(html, /工作区后续漂移/)
+    assert.equal(prepared.payload.manifest.some((item) => item.path.includes('.panel-wechat')), false)
+    const job = ctx.jobs.get(prepared.payload.jobId)
+    assert.ok(fs.existsSync(job.wechatPreviewFile))
+  })
+})
+
+test('wechat preview asset route rejects malformed encoding and traversal variants', async () => {
+  await withPanel({}, async ({ url, port }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const jobId = prepared.payload.jobId
+    const image = await rawGet(port, `/wechat-preview-assets/${jobId}/images/weekly/2026-08-12-01-test.webp`)
+    assert.equal(image.status, 200)
+    assert.equal(image.body.toString('utf8'), 'webp')
+
+    for (const malformed of ['%', '%E0%A4%A']) {
+      const response = await rawGet(port, `/wechat-preview-assets/${jobId}/${malformed}`)
+      assert.ok(response.status === 400 || response.status === 404)
+      assert.doesNotMatch(response.body.toString('utf8'), /URI malformed|fixture/)
+    }
+
+    for (const traversal of [
+      '%2e%2e%2fREADME.md',
+      '%2e%2e%5cREADME.md',
+      'images%2f..%2f..%2fREADME.md',
+      'images%5c..%5c..%5cREADME.md',
+    ]) {
+      const response = await rawGet(port, `/wechat-preview-assets/${jobId}/${traversal}`)
+      assert.ok([400, 403, 404].includes(response.status))
+      assert.doesNotMatch(response.body.toString('utf8'), /fixture/)
+    }
   })
 })
 
@@ -361,6 +553,33 @@ test('new issue writes article, posts index and sidebar together', async () => {
   })
 })
 
+test('new issue uses a YAML-safe text summary when the body starts with an image', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const draft = await post(url, '/api/draft', {
+      kindId: 'life',
+      mode: 'newIssue',
+      entry: {
+        title: '图片开篇',
+        body: '![题图](/images/weekly/2026-08-12-01-test.webp)',
+      },
+      issue: { theme: '图片开篇测试', date: '2026-08-16' },
+    })
+    assert.equal(draft.status, 200)
+
+    const weekly = fs.readFileSync(
+      path.join(dir, 'docs', 'AI与生活', '2026-08-16.md'),
+      'utf8',
+    )
+    assert.match(weekly, /^description: "图片开篇测试"$/m)
+    assert.doesNotMatch(weekly, /^description: !\[/m)
+
+    const prepared = await post(url, '/api/publish/prepare', {
+      draftId: draft.payload.draftId,
+    })
+    assert.equal(prepared.payload.state, 'PreviewReady')
+  })
+})
+
 test('deleting an existing entry creates a publishable draft without touching other entries', async () => {
   await withPanel({}, async ({ url, dir }) => {
     const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
@@ -413,12 +632,53 @@ test('missing sidebar key fails before any new-issue file is written', async () 
   })
 })
 
+test('weekly scope rejects a mixed life draft that includes a journey chapter', () => {
+  assert.throws(
+    () => assertPublishable(
+      ['docs/AI与生活/2026-08-12.md', 'docs/AI与生活/我的AI历程/基础设施篇.md'],
+      { kindId: 'life', capability: { publishScope: 'weekly' } },
+    ),
+    (error) => error.status === 422 && /范围/.test(error.message) && /我的AI历程/.test(error.message),
+  )
+})
+
+test('dirtyJourneyMetaPaths only picks posts.ts and config.mts', () => {
+  assert.deepEqual(
+    dirtyJourneyMetaPaths([
+      { path: 'docs/.vitepress/posts.ts' },
+      { path: 'docs/.vitepress/config.mts' },
+      { path: 'docs/AI与生活/2026-08-17.md' },
+      { path: 'dirty.txt' },
+    ]),
+    ['docs/.vitepress/posts.ts', 'docs/.vitepress/config.mts'],
+  )
+})
+
+test('journey newIssue may publish one body together with posts.ts and config.mts', () => {
+  assert.deepEqual(
+    assertPublishable(
+      [
+        'docs/AI与生活/我的AI历程/2026-08-18.md',
+        'docs/.vitepress/posts.ts',
+        'docs/.vitepress/config.mts',
+      ],
+      { kindId: 'journey', capability: { publishScope: 'journey' } },
+    ),
+    [
+      'docs/AI与生活/我的AI历程/2026-08-18.md',
+      'docs/.vitepress/posts.ts',
+      'docs/.vitepress/config.mts',
+    ],
+  )
+})
+
 test('theme and research paths cannot enter the weekly manifest', async () => {
   await withPanel({}, async ({ url, ctx }) => {
     ctx.drafts.set('d_bad', {
       files: ['docs/.vitepress/theme/foo.js', 'docs/投资/投研/secret.md'],
       previewLink: '/x',
       commitHint: 'nope',
+      kindId: 'life',
     })
     const prepared = await post(url, '/api/publish/prepare', { draftId: 'd_bad' })
     assert.ok(prepared.status >= 400)
@@ -502,13 +762,27 @@ test('release preview rejects encoded Windows traversal into a sibling directory
   })
 })
 
-test('build failure produces no commit or push', async () => {
-  await withPanel({ probes: { failBuild: true } }, async ({ url, dir }) => {
+test('build failure removes generated WeChat preview from the failed job', async () => {
+  await withPanel({ probes: { failBuild: true } }, async ({ url, port, dir, ctx }) => {
     const draft = await post(url, '/api/draft', appendBody)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
     assert.equal(prepared.status, 422)
     assert.match(prepared.payload.error, /构建失败/)
     assert.equal(git(dir, ['rev-list', '--count', 'HEAD']), '1')
+
+    const [job] = ctx.jobs.values()
+    assert.equal(job.state, 'Failed')
+    assert.equal(job.wechatPreviewFile, '')
+    assert.equal(job.wechatPreviewUrl, '')
+    assert.deepEqual(job.wechatAssetUrls, [])
+    assert.equal(fs.existsSync(path.join(job.snapshotDir, '.panel-wechat')), false)
+
+    const failed = await get(url, `/api/publish/jobs/${job.id}`)
+    assert.equal(failed.payload.wechatPreview.url, '')
+    assert.equal(failed.payload.wechatPreview.status, 'NotGenerated')
+    assert.equal(failed.payload.wechatPreview.copyAllowed, false)
+    const preview = await rawGet(port, `/wechat-preview/${job.id}/`)
+    assert.equal(preview.status, 404)
   })
 })
 
@@ -613,7 +887,7 @@ test('production SHA can match after a retryable wait', async () => {
   })
 })
 
-test('panel restart recovers the existing job', async () => {
+test('panel restart restores WeChat preview, image serving, and copy gate', async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-pub-'))
   initRepo(dir)
   const dataDir = path.join(dir, '.panel-data')
@@ -639,6 +913,39 @@ test('panel restart recovers the existing job', async () => {
     assert.ok(recovered)
     assert.equal(recovered.state, 'PreviewReady')
     assert.ok(recovered.confirmationToken)
+    assert.equal(recovered.wechatPreview.url, prepared.payload.wechatPreview.url)
+    assert.equal(recovered.wechatPreview.status, 'AssetsOnline')
+    assert.equal(recovered.wechatPreview.copyAllowed, true)
+    assert.ok(recovered.wechatPreview.checkedAt)
+
+    const preview = await rawGet(listen2.port, recovered.wechatPreview.url)
+    assert.equal(preview.status, 200)
+    assert.match(preview.body.toString('utf8'), /第一条/)
+    const image = await rawGet(
+      listen2.port,
+      `/wechat-preview-assets/${recovered.jobId}/images/weekly/2026-08-12-01-test.webp`,
+    )
+    assert.equal(image.status, 200)
+    assert.equal(image.body.toString('utf8'), 'webp')
+
+    const persisted = await get(listen2.url, `/api/publish/jobs/${recovered.jobId}`)
+    assert.equal(persisted.payload.wechatPreview.status, 'AssetsOnline')
+    assert.equal(persisted.payload.wechatPreview.copyAllowed, true)
+
+    const job = second.panelContext.jobs.get(recovered.jobId)
+    fs.rmSync(job.wechatPreviewFile, { force: true })
+    const missingPreview = await rawGet(listen2.port, recovered.wechatPreview.url)
+    assert.equal(missingPreview.status, 404)
+    assert.match(missingPreview.contentType, /application\/json/)
+    assert.match(missingPreview.body.toString('utf8'), /还没有公众号预览/)
+
+    fs.rmSync(path.join(job.snapshotDir, 'docs', 'public', 'images', 'weekly', '2026-08-12-01-test.webp'), { force: true })
+    const missingImage = await rawGet(
+      listen2.port,
+      `/wechat-preview-assets/${recovered.jobId}/images/weekly/2026-08-12-01-test.webp`,
+    )
+    assert.equal(missingImage.status, 404)
+    assert.equal(missingImage.body.toString('utf8'), 'not found')
   } finally {
     await listen2.close()
     fs.rmSync(dir, { recursive: true, force: true })
@@ -725,6 +1032,27 @@ test('push failure keeps the local commit and can retry push', async () => {
   })
 })
 
+test('release preview site root redirects to the article preview', async () => {
+  await withPanel({}, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', {
+      draftId: draft.payload.draftId,
+      headingAnchor: 'kan-yanhua',
+    })
+    assert.equal(prepared.status, 200)
+    const jobId = prepared.payload.jobId
+    const root = await fetch(`${url}/release-preview/${jobId}/`, { redirect: 'manual' })
+    assert.equal(root.status, 302)
+    assert.equal(
+      decodeURI(root.headers.get('location') || ''),
+      `/release-preview/${jobId}/AI与生活/2026-08-12#kan-yanhua`,
+    )
+    const article = await fetch(`${url}${prepared.payload.releasePreviewUrl}`, { redirect: 'manual' })
+    assert.notEqual(article.status, 302)
+    assert.match(prepared.payload.releasePreviewUrl, /#kan-yanhua$/)
+  })
+})
+
 test('restart after a committed-but-unpushed job allows retry-push', async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-pub-'))
   initRepo(dir)
@@ -770,4 +1098,459 @@ test('restart after a committed-but-unpushed job allows retry-push', async () =>
     await listen2.close()
     fs.rmSync(dir, { recursive: true, force: true })
   }
+})
+
+test('bootstrap exposes journey capability and the next issue number', async () => {
+  await withPanel({}, async ({ url }) => {
+    const boot = await get(url, '/api/bootstrap')
+    assert.equal(boot.status, 200)
+    const journey = boot.payload.kinds.find((kind) => kind.id === 'journey')
+    const life = boot.payload.kinds.find((kind) => kind.id === 'life')
+    assert.ok(journey)
+    assert.equal(journey.nextIssue, 1)
+    assert.equal(journey.current?.title, '基础设施篇')
+    assert.equal(journey.current?.issue, null)
+    assert.ok(journey.issues.every((item) => item.issue == null))
+    assert.deepEqual(journey.issues.map((item) => item.title), [
+      '基础设施篇',
+      '工具篇',
+      'AI开支记录与优化',
+    ])
+    assert.equal(journey.capability.contentType, 'journey')
+    assert.equal(journey.capability.allowCreate, true)
+    assert.equal(journey.capability.selectorLabel, '期数与篇章')
+    assert.equal(journey.capability.headingAnchor, '')
+    assert.equal(journey.capability.assetDirectory, 'docs/public/images/journey')
+    assert.equal(journey.capability.assetUrlPrefix, '/images/journey/')
+    assert.equal(journey.capability.wechatTheme, 'life')
+    assert.equal(journey.capability.publishScope, 'journey')
+    assert.equal(life.capability.contentType, 'weekly')
+    assert.equal(life.capability.allowCreate, true)
+    assert.equal(typeof life.nextIssue, 'number')
+  })
+})
+
+test('journey newIssue writes a dated issue at /api/draft', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const infraBefore = fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '基础设施篇.md'), 'utf8')
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'newIssue',
+      entry: { title: '开篇', body: '历程第一期' },
+      issue: { theme: '底座', date: '2026-08-18', caption: '一句说明' },
+    })
+    assert.equal(draft.status, 200)
+    assert.equal(draft.payload.previewLink, '/AI与生活/我的AI历程/2026-08-18')
+    assert.match(draft.payload.commitHint, /^journey: 第001期-底座$/)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '2026-08-18.md')), true)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '新篇章.md')), false)
+    assert.equal(fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '基础设施篇.md'), 'utf8'), infraBefore)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+    const manifestPaths = prepared.payload.manifest.map((item) => item.path)
+    assert.ok(manifestPaths.some((item) => item.endsWith('2026-08-18.md')))
+    assert.ok(manifestPaths.some((item) => item.endsWith('posts.ts')))
+    assert.ok(manifestPaths.some((item) => item.endsWith('config.mts')))
+    assert.equal(manifestPaths.filter((item) => item.includes('我的AI历程/') && item.endsWith('.md')).length, 1)
+  })
+})
+
+test('journey prepare includes already-dirty posts.ts and config.mts', async () => {
+  let snapshotConfig = ''
+  await withPanel({
+    probes: {
+      assertSnapshot(snapshotDir) {
+        snapshotConfig = fs.readFileSync(path.join(snapshotDir, 'docs', '.vitepress', 'config.mts'), 'utf8')
+      },
+    },
+  }, async ({ url, dir }) => {
+    const postsFile = path.join(dir, 'docs', '.vitepress', 'posts.ts')
+    const configFile = path.join(dir, 'docs', '.vitepress', 'config.mts')
+    fs.writeFileSync(postsFile, `${fs.readFileSync(postsFile, 'utf8').replace(/\s*$/, '')}\n  // dirty weekly nav\n`)
+    fs.writeFileSync(
+      configFile,
+      fs.readFileSync(configFile, 'utf8').replace('系列入口', 'AI开支记录与优化'),
+    )
+    fs.writeFileSync(path.join(dir, 'dirty.txt'), 'leave me\n')
+
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: { title: '带上导航', body: '清单应吃到已脏的侧栏', tags: '测试' },
+    })
+    assert.equal(draft.status, 200)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 200)
+    const manifestPaths = prepared.payload.manifest.map((item) => item.path)
+    assert.ok(manifestPaths.includes('docs/AI与生活/我的AI历程/基础设施篇.md'))
+    assert.ok(manifestPaths.includes('docs/.vitepress/posts.ts'))
+    assert.ok(manifestPaths.includes('docs/.vitepress/config.mts'))
+    assert.equal(manifestPaths.some((item) => item === 'dirty.txt' || item.endsWith('2026-08-17.md')), false)
+    assert.equal(prepared.payload.excluded.some((item) => item.path === 'docs/.vitepress/config.mts'), false)
+    assert.match(snapshotConfig, /AI开支记录与优化/)
+    assert.doesNotMatch(snapshotConfig, /系列入口/)
+  })
+})
+
+test('journey append uses journey commit hint and does not touch weekly files', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const weeklyBefore = fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '2026-08-12.md'), 'utf8')
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: { title: '新服务', body: '用途与判断', tags: '开支' },
+    })
+    assert.equal(draft.status, 200)
+    assert.match(draft.payload.commitHint, /^journey: 基础设施篇 追加「新服务」$/)
+    assert.doesNotMatch(draft.payload.commitHint, /weekly:/)
+    const chapter = fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '基础设施篇.md'), 'utf8')
+    assert.match(chapter, /新服务/)
+    assert.equal(fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '2026-08-12.md'), 'utf8'), weeklyBefore)
+  })
+})
+
+const TINY_PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+
+test('images API requires kindId and ignores a client-supplied directory', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const missing = await post(url, '/api/images', {
+      files: [{ name: 'x.png', data: TINY_PNG, hint: 'no-kind' }],
+    })
+    assert.equal(missing.status, 400)
+    assert.match(missing.payload.error, /kindId/)
+
+    const uploaded = await post(url, '/api/images', {
+      kindId: 'journey',
+      date: '2026-08-18',
+      assetDirectory: 'docs/public/images/weekly',
+      directory: 'docs/public/images/evil',
+      files: [{ name: 'cover.png', role: 'body', hint: 'spend', data: TINY_PNG }],
+    })
+    assert.equal(uploaded.status, 200)
+    assert.equal(uploaded.payload.images.length, 1)
+    assert.match(uploaded.payload.images[0].url, /^\/images\/journey\/2026-08-18-\d{2}-spend\.webp$/)
+    assert.match(uploaded.payload.images[0].rel, /^docs\/public\/images\/journey\//)
+    assert.equal(fs.existsSync(path.join(dir, uploaded.payload.images[0].rel)), true)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'public', 'images', 'weekly', uploaded.payload.images[0].fileName)), false)
+
+    const weekly = await post(url, '/api/images', {
+      kindId: 'life',
+      date: '2026-08-18',
+      files: [{ name: 'weekly.png', hint: 'weekly', data: TINY_PNG }],
+    })
+    assert.equal(weekly.status, 200)
+    assert.match(weekly.payload.images[0].url, /^\/images\/weekly\/2026-08-18-\d{2}-weekly\.webp$/)
+  })
+})
+
+test('journey image upload enters manifest, wechat preview and production asset gate', async () => {
+  let snapshotImage = ''
+  let seenAssetUrls = []
+  await withPanel({
+    probes: {
+      assertSnapshot(snapshotDir) {
+        snapshotImage = snapshotDir
+      },
+      onlineAssets({ urls }) {
+        seenAssetUrls = urls
+        return { ok: true, missing: [] }
+      },
+    },
+  }, async ({ url, port, dir }) => {
+    const uploaded = await post(url, '/api/images', {
+      kindId: 'journey',
+      date: '2026-08-18',
+      files: [{ name: 'gpu.png', hint: 'gpu', data: TINY_PNG }],
+    })
+    assert.equal(uploaded.status, 200)
+    const image = uploaded.payload.images[0]
+    assert.match(image.url, /^\/images\/journey\//)
+
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: {
+        title: '显卡账',
+        body: `用途说明 ![图](${image.url})`,
+        tags: '开支',
+      },
+    })
+    assert.equal(draft.status, 200)
+    assert.match(draft.payload.commitHint, /^journey:/)
+
+    const prepared = await post(url, '/api/publish/prepare', {
+      draftId: draft.payload.draftId,
+      headingAnchor: 'kan-yanhua',
+    })
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+    assert.equal(prepared.payload.kindId, 'journey')
+    assert.equal(prepared.payload.headingAnchor, '')
+    assert.doesNotMatch(prepared.payload.releasePreviewUrl, /#kan-yanhua/)
+    assert.match(prepared.payload.releasePreviewUrl, /\/AI与生活\/我的AI历程\/基础设施篇$/)
+
+    const manifestPaths = prepared.payload.manifest.map((item) => item.path)
+    const chapterPaths = manifestPaths.filter((item) => item.startsWith('docs/AI与生活/我的AI历程/'))
+    assert.deepEqual(chapterPaths, ['docs/AI与生活/我的AI历程/基础设施篇.md'])
+    assert.equal(manifestPaths.filter((item) => item.endsWith('.md')).length, 1)
+    assert.ok(manifestPaths.includes(image.rel))
+    assert.equal(manifestPaths.some((item) => item.endsWith('posts.ts') || item.endsWith('config.mts')), false)
+    assert.equal(manifestPaths.some((item) => item.includes('/images/weekly/')), false)
+    assert.equal(manifestPaths.some((item) => item.includes('.panel-wechat')), false)
+
+    assert.equal(fs.existsSync(path.join(snapshotImage, image.rel)), true)
+    assert.match(
+      fs.readFileSync(path.join(snapshotImage, 'docs', 'AI与生活', '我的AI历程', '基础设施篇.md'), 'utf8'),
+      /显卡账/,
+    )
+
+    const wechatPreview = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
+    assert.equal(wechatPreview.status, 200)
+    const html = await wechatPreview.text()
+    assert.match(html, /显卡账/)
+    assert.match(html, new RegExp(`/wechat-preview-assets/${prepared.payload.jobId}${image.url.replace(/\//g, '\\/')}`))
+    assert.match(html, /#0d7a5f/)
+
+    const asset = await rawGet(port, `/wechat-preview-assets/${prepared.payload.jobId}${image.url}`)
+    assert.equal(asset.status, 200)
+    assert.ok(asset.body.length > 0)
+
+    assert.ok(seenAssetUrls.some((item) => item.endsWith(image.url)))
+    assert.equal(prepared.payload.wechatPreview.status, 'AssetsOnline')
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+
+    const confirmed = await post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    assert.equal(confirmed.status, 200)
+    assert.equal(confirmed.payload.state, 'Published')
+    assert.equal(confirmed.payload.wechatPreview.status, 'ProductionVerified')
+    assert.equal(confirmed.payload.verifiedUrl, 'https://blog.example.test/AI与生活/我的AI历程/基础设施篇')
+    const committed = git(dir, ['-c', 'core.quotepath=false', 'log', '-1', '--name-only'])
+    assert.match(git(dir, ['log', '-1', '--format=%s']), /^journey:/)
+    assert.match(committed, /基础设施篇\.md/)
+    assert.match(committed, /images\/journey\//)
+    assert.doesNotMatch(committed, /posts\.ts|config\.mts/)
+  })
+})
+
+test('prepare rejects a life draft that mixes in a journey chapter', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    ctx.drafts.set('d_life_mixed', {
+      files: ['docs/AI与生活/2026-08-12.md', 'docs/AI与生活/我的AI历程/基础设施篇.md'],
+      previewLink: '/AI与生活/2026-08-12',
+      commitHint: 'weekly: 混入历程',
+      kindId: 'life',
+    })
+    const prepared = await post(url, '/api/publish/prepare', { draftId: 'd_life_mixed' })
+    assert.equal(prepared.status, 422)
+    assert.match(prepared.payload.error, /范围/)
+    assert.match(prepared.payload.error, /我的AI历程/)
+  })
+})
+
+test('prepare rejects an invest draft that mixes in a journey chapter', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    ctx.drafts.set('d_invest_mixed', {
+      files: ['docs/投资/周记/2026-08-13-看烟花.md', 'docs/AI与生活/我的AI历程/基础设施篇.md'],
+      previewLink: '/投资/周记/2026-08-13-看烟花',
+      commitHint: 'weekly: 混入历程',
+      kindId: 'invest',
+    })
+    const prepared = await post(url, '/api/publish/prepare', { draftId: 'd_invest_mixed' })
+    assert.equal(prepared.status, 422)
+    assert.match(prepared.payload.error, /范围/)
+    assert.match(prepared.payload.error, /我的AI历程/)
+  })
+})
+
+test('journey prepare rejects a missing referenced journey image', async () => {
+  await withPanel({
+    probes: {
+      async test({ snapshotDir, kindId, contentFiles }) {
+        return { ok: true, ...validateWeeklySnapshot(snapshotDir, { kindId, contentFiles }) }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: {
+        title: '断图',
+        body: '![图](/images/journey/missing.webp)',
+        tags: '测试',
+      },
+    })
+    assert.equal(draft.status, 200)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 422)
+    assert.match(prepared.payload.error, /缺少图片.*missing\.webp/)
+    assert.notEqual(prepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('life prepare ignores an unrelated journey chapter with a missing image', async () => {
+  await withPanel({
+    probes: {
+      async test({ snapshotDir, kindId, contentFiles }) {
+        return { ok: true, ...validateWeeklySnapshot(snapshotDir, { kindId, contentFiles }) }
+      },
+    },
+  }, async ({ url, dir }) => {
+    const broken = path.join(dir, 'docs', 'AI与生活', '我的AI历程', '工具篇.md')
+    fs.writeFileSync(broken, [
+      '---',
+      'type: journey',
+      '---',
+      '',
+      '![图](/images/journey/missing.webp)',
+      '',
+    ].join('\n'))
+    git(dir, ['add', 'docs/AI与生活/我的AI历程/工具篇.md'])
+    git(dir, ['commit', '-m', 'fixture: broken unrelated journey'])
+    const draft = await post(url, '/api/draft', {
+      kindId: 'life',
+      mode: 'append',
+      issueLink: '/AI与生活/2026-08-12',
+      entry: {
+        title: '周记条目',
+        body: '正常周记正文',
+        tags: '测试',
+      },
+    })
+    assert.equal(draft.status, 200)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('journey prepare ignores another chapter with a missing image', async () => {
+  await withPanel({
+    probes: {
+      async test({ snapshotDir, kindId, contentFiles }) {
+        return { ok: true, ...validateWeeklySnapshot(snapshotDir, { kindId, contentFiles }) }
+      },
+    },
+  }, async ({ url, dir }) => {
+    const images = path.join(dir, 'docs', 'public', 'images', 'journey')
+    fs.mkdirSync(images, { recursive: true })
+    fs.writeFileSync(path.join(images, 'cover.webp'), 'webp')
+    fs.writeFileSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '工具篇.md'), [
+      '---',
+      'type: journey',
+      '---',
+      '',
+      '![图](/images/journey/missing.webp)',
+      '',
+    ].join('\n'))
+    git(dir, ['add', 'docs/AI与生活/我的AI历程/工具篇.md'])
+    git(dir, ['commit', '-m', 'fixture: broken other journey'])
+    const draft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: {
+        title: '正常服务',
+        body: '![图](/images/journey/cover.webp)',
+        tags: '测试',
+      },
+    })
+    assert.equal(draft.status, 200)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('journey publish rejects index, readme, other AI dirs, research, theme and panel files', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    const forbidden = [
+      ['docs/AI与生活/我的AI历程/index.md'],
+      ['docs/AI与生活/我的AI历程/README.md'],
+      ['docs/AI与生活/我的AI历程/基础设施篇.md', 'docs/AI与生活/我的AI历程/工具篇.md'],
+      ['docs/AI与生活/大事件/2026.md'],
+      ['docs/AI与生活/Hermes日记/2026-08-12.md'],
+      ['docs/投资/投研/secret.md'],
+      ['docs/.vitepress/theme/foo.js'],
+      ['panel/server.mjs'],
+    ]
+    for (const [index, files] of forbidden.entries()) {
+      const draftId = `d_journey_bad_${index}`
+      ctx.drafts.set(draftId, {
+        files,
+        previewLink: '/AI与生活/我的AI历程/基础设施篇',
+        commitHint: 'journey: 不应发布',
+        kindId: 'journey',
+      })
+      const prepared = await post(url, '/api/publish/prepare', { draftId })
+      assert.ok(prepared.status >= 400, files.join(','))
+      assert.match(prepared.payload.error, /范围|恰好一篇正文|一篇正文/)
+    }
+  })
+})
+
+test('prepare rejects an explicit unknown kindId', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    assert.equal(draft.status, 200)
+    const stored = ctx.drafts.get(draft.payload.draftId)
+    stored.kindId = 'evil'
+    ctx.drafts.set(draft.payload.draftId, stored)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 422)
+    assert.match(prepared.payload.error, /未知栏目：evil/)
+    assert.notEqual(prepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('prepare infers a registered life or journey kind when kindId is missing', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    const lifeDraft = await post(url, '/api/draft', appendBody)
+    assert.equal(lifeDraft.status, 200)
+    const lifeStored = ctx.drafts.get(lifeDraft.payload.draftId)
+    delete lifeStored.kindId
+    ctx.drafts.set(lifeDraft.payload.draftId, lifeStored)
+    const lifePrepared = await post(url, '/api/publish/prepare', { draftId: lifeDraft.payload.draftId })
+    assert.equal(lifePrepared.status, 200)
+    assert.equal(lifePrepared.payload.state, 'PreviewReady')
+    assert.equal(lifePrepared.payload.kindId, 'life')
+
+    const journeyDraft = await post(url, '/api/draft', {
+      kindId: 'journey',
+      mode: 'append',
+      issueLink: '/AI与生活/我的AI历程/基础设施篇',
+      entry: { title: '推断栏目', body: '缺失 kind 仍可按 URL 发布', tags: '测试' },
+    })
+    assert.equal(journeyDraft.status, 200)
+    const journeyStored = ctx.drafts.get(journeyDraft.payload.draftId)
+    journeyStored.kindId = ''
+    ctx.drafts.set(journeyDraft.payload.draftId, journeyStored)
+    const journeyPrepared = await post(url, '/api/publish/prepare', { draftId: journeyDraft.payload.draftId })
+    assert.equal(journeyPrepared.status, 200)
+    assert.equal(journeyPrepared.payload.state, 'PreviewReady')
+    assert.equal(journeyPrepared.payload.kindId, 'journey')
+  })
+})
+
+test('prepare rejects when kindId is missing and the URL cannot be recognized', async () => {
+  await withPanel({}, async ({ url, ctx }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    assert.equal(draft.status, 200)
+    const stored = ctx.drafts.get(draft.payload.draftId)
+    stored.kindId = ''
+    stored.previewLink = '/unknown/path'
+    stored.articleUrl = '/also-unknown'
+    ctx.drafts.set(draft.payload.draftId, stored)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 422)
+    assert.match(prepared.payload.error, /无法识别发布栏目/)
+    assert.notEqual(prepared.payload.state, 'PreviewReady')
+  })
 })
