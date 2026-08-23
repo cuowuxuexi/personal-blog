@@ -20,8 +20,8 @@ Private research command
 Local source index (gitignored)
   = agent-only page → command/material mapping
   = research-sources.local.yaml
-  = source_root = D:/投资系统
-  = relative paths use registry basis: 指挥部/...
+  = resolves the private source root and registry-relative materials locally
+  = private absolute paths never enter tracked project docs
 
 Blog research frontend
   = curated public learning path, research maps, subject archives

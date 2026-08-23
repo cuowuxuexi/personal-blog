@@ -4,7 +4,7 @@
 
 | 文件 | 说明 |
 |------|------|
-| [腾讯云备案与博客接入-Cursor操作说明.md](./腾讯云备案与博客接入-Cursor操作说明.md) | 国内机备案 + 静态站接入，逐步操作清单 |
-| [hermes-diary-laptop.md](./hermes-diary-laptop.md) | laptop 上三 Hermes 共享写日记 + git push 清单 |
+| [腾讯云备案与博客接入-Cursor操作说明.md](./腾讯云备案与博客接入-Cursor操作说明.md) | 国内站 `cuowo.cn` 现役事实、日常上传、公安等审 |
+| [hermes-diary-laptop.md](./hermes-diary-laptop.md) | 已停用的 Hermes laptop 集成架构摘要；不含机器专属路径或执行步骤 |
 
-最后更新：2026-08-11
+最后更新：2026-08-22

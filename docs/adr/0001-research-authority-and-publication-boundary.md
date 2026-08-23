@@ -3,6 +3,7 @@
 - Status: Accepted
 - Date: 2026-08-10
 - Related: #1, #2
+- Superseded in part by: ADR 0003 (Decision 7 only)
 
 ## Context
 

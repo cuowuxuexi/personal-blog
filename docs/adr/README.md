@@ -4,7 +4,9 @@ Short decisions that shape this repository's durable boundaries.
 
 | ADR | Title | Status |
 | --- | --- | --- |
-| [0001](./0001-research-authority-and-publication-boundary.md) | Research authority and publication boundary | Accepted |
+| [0001](./0001-research-authority-and-publication-boundary.md) | Research authority and publication boundary | Accepted; Decision 7 superseded by ADR 0003 |
+| [0002](./0002-content-authority-and-build-time-projections.md) | Content authority and build-time projections | Accepted |
+| [0003](./0003-account-details-are-author-controlled.md) | Account details are author-controlled | Accepted |
 
 ## Conventions
 
@@ -13,4 +15,4 @@ Short decisions that shape this repository's durable boundaries.
 - Do not put private absolute paths in ADRs
 - Experimental content structures stay in specs/issues until Phase 3 review promotes them
 
-最后更新：2026-08-10
+最后更新：2026-08-22

@@ -23,13 +23,7 @@ git pull → 打开/创建当天 YYYY-MM-DD.md → 末尾追加一条 → commit
 
 ## 历史路径
 
-| 环境 | 路径 |
-| --- | --- |
-| 仓库内（相对） | `docs/AI与生活/Hermes日记/` |
-| laptop 共享 clone（目标） | `/data/项目/personal-blog/docs/AI与生活/Hermes日记/` |
-| Windows | `D:\项目\personal-blog\docs\AI与生活\Hermes日记\` |
-
-启用期间三 profile 共用同一份 clone；这些路径不构成当前写入授权。
+仓库相对路径：`docs/AI与生活/Hermes日记/`。历史环境各自从仓库根解析该路径；本说明不记录本机绝对路径，也不构成当前写入授权。
 
 ---
 
@@ -136,4 +130,4 @@ pageClass: weekly-post weekly-post--life hermes-diary-post
 | `YYYY-MM-DD.md` | 按天正文 |
 | `README.md` | 本协议（不进站） |
 
-最后更新：2026-08-18
+最后更新：2026-08-22

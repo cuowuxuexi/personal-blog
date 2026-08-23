@@ -106,7 +106,7 @@ After human selection and curation, normal candidates include:
 - public primary-source citations and metadata
 - important revision history that helps readers track changed understanding
 
-## What stays private by default
+## What remains non-public
 
 - private absolute paths
 - source manifests and freeze packages
@@ -115,9 +115,12 @@ After human selection and curation, normal candidates include:
 - workpapers and unfinished agent returns
 - independent-review originals and full adjudication chains
 - cognition revision originals
-- holdings, costs, orders, account size, trade logs
 - non-redistributable PDFs/HTML/data copies
 - migration/audit internals
+- drafting, polishing, Prompt, Agent coordination, deduplication, page-assembly, and other editorial-process narration
+- private research-system states, task tickets, or workflow transitions restated as public copy
+
+Holdings, costs, orders, account size, and trade logs may be published at the author's discretion; agents do not screen them out by default. Credentials, private keys, personal secrets, and the materials listed above remain non-public.
 
 Important originals are frozen privately first. Public upload of source copies requires human approval and redistributability. Otherwise public pages keep title/publisher/date/URL/citation only.
 

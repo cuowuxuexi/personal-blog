@@ -1,6 +1,6 @@
 # Handoff: Phase 2 research UI / content design (Cursor)
 
-This file is an agent/operator handoff. It is under `docs/agents/` and is excluded from the public VitePress site via `srcExclude`.
+This file is a historical one-time agent/operator handoff. It is not a current operating contract; use `CONTEXT.md`, ADRs, and `docs/agents/research-publishing.md` for current rules. It is under `docs/agents/` and excluded from the public VitePress site via `srcExclude`.
 
 ## Copy-paste prompt for Cursor
 
@@ -55,19 +55,17 @@ pnpm docs:dev
 - 私有投研指挥系统 = 研究事实权威；博客 = 呈现与学习路径权威
 - 所有投资周记/投研内容都需要两道人工门：讨论结构 → 本地实现/预览 → 明确批准后才能 push/deploy
 - 本轮默认：只做本地设计与内容打磨，不要 push / deploy / 发布
-- 不要把 D:\投资系统\... 或本机绝对路径写进 docs 公开正文
+- 不要把本机绝对路径写进 tracked docs 或公开正文
 - 不要自动同步指挥部
 - 不要引入图数据库/通用知识图谱引擎
-- 不要写买卖建议、目标价、持仓信息
+- 不要编造买卖建议、目标价或研究结论；账户信息是否公开由作者决定（见 ADR 0003）
 - docs/agents/** 与 docs/adr/** 已被 srcExclude，不要为了“方便预览”再公开它们
 
 ## 本地回源（如需加深内容）
-- 本机文件 research-sources.local.yaml（gitignored）
-- source_root = D:/投资系统
-- 相对路径以 指挥部/... 为基准（与 00_项目登记表.json 一致）
-- command_id = CMD-000003（药明康德）
+- 先读本机 gitignored 的 `research-sources.local.yaml`
+- `command_id = CMD-000003`（药明康德）
 - 主要材料：知识图谱 00/01/02/03/04
-- 若索引缺失：从 D:/投资系统/指挥部/00_项目登记表.json 重新定位，不要编造研究结论
+- 若本地索引缺失，停止并请作者恢复来源映射；不要猜测私有路径或编造研究结论
 
 ## 你的任务范围
 优先做版面与内容设计，而不是扩成完整公司尽调：

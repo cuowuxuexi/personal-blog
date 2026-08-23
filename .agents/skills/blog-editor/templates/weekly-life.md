@@ -1,7 +1,7 @@
 # AI 与生活周记模板
 
 input: 用户提供的主题、封面、主题说明、条目素材（标题 / 标签 / 链接 / 图片 / 原文）  
-output: `docs/AI与生活/YYYY-MM-DD.md` + `posts.ts` + `/AI与生活/` 侧栏  
+output: `docs/AI与生活/YYYY-MM-DD.md`（索引由构建期投影）
 position: blog-editor 的 AI 与生活周记固定骨架；非公开站点内容
 
 参考实例：`docs/AI与生活/2026-08-12.md`  
@@ -14,7 +14,7 @@ position: blog-editor 的 AI 与生活周记固定骨架；非公开站点内容
 3. 栏目下每增加一条内容，就增加一组「隐藏 `###` + `<WeeklyEntry>`」。条目里的长文按普通文章写标题，不必改层级。
 4. 无外链就删 `link-href`；无副标题就删 `subtitle`；无主图就删 `image`；无徽标就删 `badge-image` / `badge-alt`。`link-href` 始终挂主标题。副标题默认纯文本；只有用户明确要求时才加 `subtitle-href`。标签由主题显示在标题下方，不要改到右侧。
 5. `issue` = 同分类最高期数 + 1（投资与生活各自从 001 起算；开篇约定页不算期数）；`date` 默认当天；文件名默认 `YYYY-MM-DD.md`。标题为 `第NNN期-主题`。「展开 / 收起」右侧显示创建日期。
-6. 同步 `docs/.vitepress/posts.ts` 与 `docs/.vitepress/config.mts` 对应年份侧栏。
+6. 写好 Markdown 即可；`posts` 与生活周记年份侧栏由投影生成，不要手改 `posts.ts` / `config.mts`。
 7. 轻度校正错别字、标点、名称大小写与不顺语句；保留观点、即时语气与 `💡`。
 8. 正文连续插图：每张图单独成段（中间空一行）。图间距由主题 CSS 处理，不必手工加空行装饰或 HTML。
 
@@ -122,6 +122,6 @@ pageClass: weekly-post weekly-post--life
 - [ ] 可选字段按需省略，无空 props
 - [ ] 图片在 `docs/public/images/weekly/`，路径以 `/images/weekly/` 开头
 - [ ] 连续插图各自单独成段（空一行分隔），依赖主题图间距
-- [ ] `posts.ts` 与 AI 侧栏已同步
+- [ ] frontmatter / 文件名正确；构建后投影可见新期（勿手改 posts.ts / 受管侧栏）
 - [ ] 错别字/名称/语句已轻度校正，观点未改
 - [ ] `pnpm docs:build` 通过
