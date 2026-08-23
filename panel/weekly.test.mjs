@@ -147,8 +147,18 @@ type: weekly
   assert.match(next, /<\/WeeklyEntry>\s*\n\s*<\/div>\s*$/)
 })
 
-test('inserts posts.ts and sidebar items', () => {
-  const posts = insertManualPost(fs.readFileSync(postsFile, 'utf8'), {
+test('inserts posts.ts and sidebar items (legacy surgery helpers, unused by applyDraft)', () => {
+  const posts = insertManualPost(`const manualPosts: PostItem[] = [
+  {
+    title: "第001期-看烟花",
+    date: "2026-08-12",
+    category: "AI与生活",
+    type: 'weekly',
+    issue: 1,
+    link: "/AI与生活/2026-08-12",
+  },
+]
+`, {
     title: '第002期-测试',
     date: '2026-08-14',
     category: 'AI与生活',
@@ -159,7 +169,23 @@ test('inserts posts.ts and sidebar items', () => {
   assert.match(posts, /title: "第002期-测试"/)
   assert.ok(posts.indexOf('第002期-测试') < posts.indexOf('第001期-看烟花'))
 
-  const config = insertSidebarItem(fs.readFileSync(configFile, 'utf8'), {
+  const config = insertSidebarItem(`export default {
+  themeConfig: {
+    sidebar: {
+      '/AI与生活/': [
+        { text: 'AI与生活', items: [] },
+        {
+          text: '周记 · 2026年',
+          collapsed: false,
+          items: [
+            { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
+          ],
+        },
+      ],
+    },
+  },
+}
+`, {
     sidebarKey: '/AI与生活/',
     yearText: '周记 · 2026年',
     title: '第002期-测试',

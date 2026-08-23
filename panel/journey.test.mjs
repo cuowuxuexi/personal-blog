@@ -160,14 +160,20 @@ test('journey capability is explicit and allows create', () => {
   assert.equal(allowsCreate(paths.KINDS.life), true)
 })
 
-test('lists three journey chapters and starts issue numbers at 1', () => {
+test('lists four journey chapters and starts issue numbers at 1', () => {
   const chapters = listIssues('journey')
-  assert.deepEqual(chapters.map((item) => item.title), ['基础设施篇', '工具篇', 'AI开支记录与优化'])
-  assert.deepEqual(chapters.map((item) => item.link), [
+  assert.deepEqual(new Set(chapters.map((item) => item.title)), new Set([
+    '基础设施篇',
+    '工具篇',
+    'cli篇',
+    'AI开支记录与优化',
+  ]))
+  assert.deepEqual(new Set(chapters.map((item) => item.link)), new Set([
     '/AI与生活/我的AI历程/基础设施篇',
     '/AI与生活/我的AI历程/工具篇',
+    '/AI与生活/我的AI历程/cli篇',
     '/AI与生活/我的AI历程/AI开支记录与优化',
-  ])
+  ]))
   assert.ok(chapters.every((item) => item.issue == null))
   assert.ok(chapters.every((item) => item.kind === 'journey'))
   assert.ok(chapters.every((item) => item.rel.startsWith('docs/AI与生活/我的AI历程/')))
