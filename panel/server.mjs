@@ -129,13 +129,18 @@ function streamFile(res, abs) {
 }
 
 function streamPreviewHtml(res, abs, heading) {
-  if (!heading || !abs.endsWith('.html')) {
+  if (!abs.endsWith('.html')) {
     streamFile(res, abs)
     return
   }
-  const script = `<script>(function(){var a=${JSON.stringify(heading)};if(a&&!location.hash)location.replace(location.pathname+location.search+'#'+a);})();</script>`
+  // 周记发布快照不带主题 CSS；预览跳 #kan-yanhua 时用 scroll-padding 避开固定顶栏。
+  const pad = '<style>html{scroll-padding-top:134px}</style>'
+  const script = heading
+    ? `<script>(function(){var a=${JSON.stringify(heading)};if(a&&!location.hash)location.replace(location.pathname+location.search+'#'+a);})();</script>`
+    : ''
+  const inject = `${pad}${script}`
   let html = fs.readFileSync(abs, 'utf8')
-  html = html.includes('</head>') ? html.replace('</head>', `${script}</head>`) : `${script}${html}`
+  html = html.includes('</head>') ? html.replace('</head>', `${inject}</head>`) : `${inject}${html}`
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
   res.end(html)
 }
@@ -432,7 +437,7 @@ export function createServer(options = {}) {
   })
   server.requestTimeout = ctx.bodyTimeoutMs + 1000
   server.headersTimeout = ctx.bodyTimeoutMs + 1000
-  server.timeout = Math.max(ctx.verifyTimeoutMs + 30000, 300000)
+  server.timeout = Math.max(ctx.verifyTimeoutMs + 420000, 600000)
   server.panelContext = ctx
   return server
 }

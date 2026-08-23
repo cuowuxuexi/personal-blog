@@ -4,7 +4,13 @@ import http from 'node:http'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
-import { createDefaultProbes } from './lib/probes.mjs'
+import {
+  createDefaultProbes,
+  mergeRootSsrIntoPreviewDist,
+  validateBuiltPreview,
+} from './lib/probes.mjs'
+import { createPanelContext } from './lib/context.mjs'
+import { DEFAULT_PRODUCTION_ORIGIN } from './lib/guonei.mjs'
 
 function writePackage(dir, scripts, marker) {
   fs.writeFileSync(path.join(dir, 'package.json'), `${JSON.stringify({
@@ -26,6 +32,150 @@ function listen(server) {
     server.on('error', reject)
   })
 }
+
+test('non-root preview keeps preview assets but replaces broken SSR app with root-build markup', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-preview-merge-'))
+  const rootDistDir = path.join(root, 'root-dist')
+  const previewDistDir = path.join(root, 'preview-dist')
+  const relative = path.join('AI与生活', '2026-08-17.html')
+  const rootFile = path.join(rootDistDir, relative)
+  const previewFile = path.join(previewDistDir, relative)
+  fs.mkdirSync(path.dirname(rootFile), { recursive: true })
+  fs.mkdirSync(path.dirname(previewFile), { recursive: true })
+  fs.writeFileSync(rootFile, [
+    '<head><link href="/assets/root.css"></head>',
+    '<body><div id="app"><a href="/AI与生活/"><img src="/images/cover.webp"><h2 id="kan-yanhua">正文</h2></a></div>',
+    '    <script>window.__VP_HASH_MAP__={root:true}</script></body>',
+  ].join('\n'))
+  fs.writeFileSync(previewFile, [
+    '<head><link href="/release-preview/j_test/assets/preview.css"></head>',
+    '<body><div id="app"><div class="NotFound">404</div></div>',
+    '    <script>window.__VP_HASH_MAP__={preview:true}</script></body>',
+  ].join('\n'))
+  try {
+    mergeRootSsrIntoPreviewDist({
+      rootDistDir,
+      previewDistDir,
+      previewBase: '/release-preview/j_test/',
+    })
+    const html = fs.readFileSync(previewFile, 'utf8')
+    assert.match(html, /preview\.css/)
+    assert.match(html, /__VP_HASH_MAP__=\{preview:true\}/)
+    assert.match(html, /href="\/release-preview\/j_test\/AI与生活\/"/)
+    assert.match(html, /src="\/release-preview\/j_test\/images\/cover\.webp"/)
+    assert.match(html, /id="kan-yanhua"/)
+    assert.doesNotMatch(html, /NotFound/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('SSR merge skips standalone public HTML that is copied into both dists', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-preview-standalone-'))
+  const rootDistDir = path.join(root, 'root-dist')
+  const previewDistDir = path.join(root, 'preview-dist')
+  const pageRel = path.join('AI与生活', '2026-08-17.html')
+  const standaloneRel = path.join('journey-guides', 'pi-shortcuts', 'index.html')
+  const siblingRel = path.join('journey-guides', 'pi-shortcuts.html')
+  const standalone = [
+    '<!DOCTYPE html><html><head><title>Pi</title></head>',
+    '<body><main>独立图解</main></body></html>',
+  ].join('\n')
+  for (const distDir of [rootDistDir, previewDistDir]) {
+    const pageFile = path.join(distDir, pageRel)
+    fs.mkdirSync(path.dirname(pageFile), { recursive: true })
+    fs.mkdirSync(path.dirname(path.join(distDir, standaloneRel)), { recursive: true })
+    fs.writeFileSync(pageFile, [
+      '<head><link href="/assets/root.css"></head>',
+      '<body><div id="app"><h2 id="kan-yanhua">正文</h2></div>',
+      '    <script>window.__VP_HASH_MAP__={ok:true}</script></body>',
+    ].join('\n'))
+    fs.writeFileSync(path.join(distDir, standaloneRel), standalone)
+    fs.writeFileSync(path.join(distDir, siblingRel), standalone)
+  }
+  fs.writeFileSync(path.join(previewDistDir, pageRel), [
+    '<head><link href="/release-preview/j_test/assets/preview.css"></head>',
+    '<body><div id="app"><div class="NotFound">404</div></div>',
+    '    <script>window.__VP_HASH_MAP__={preview:true}</script></body>',
+  ].join('\n'))
+  try {
+    mergeRootSsrIntoPreviewDist({
+      rootDistDir,
+      previewDistDir,
+      previewBase: '/release-preview/j_test/',
+    })
+    assert.match(fs.readFileSync(path.join(previewDistDir, pageRel), 'utf8'), /id="kan-yanhua"/)
+    assert.equal(fs.readFileSync(path.join(previewDistDir, standaloneRel), 'utf8'), standalone)
+    assert.equal(fs.readFileSync(path.join(previewDistDir, siblingRel), 'utf8'), standalone)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('SSR merge reports a repo-relative path when a VitePress page is half-formed', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-preview-shell-'))
+  const rootDistDir = path.join(root, 'root-dist')
+  const previewDistDir = path.join(root, 'preview-dist')
+  const relative = path.join('AI与生活', '2026-08-17.html')
+  const rootFile = path.join(rootDistDir, relative)
+  const previewFile = path.join(previewDistDir, relative)
+  fs.mkdirSync(path.dirname(rootFile), { recursive: true })
+  fs.mkdirSync(path.dirname(previewFile), { recursive: true })
+  fs.writeFileSync(rootFile, '<body><div id="app">正文</div></body>')
+  fs.writeFileSync(previewFile, [
+    '<body><div id="app">预览</div>',
+    '    <script>window.__VP_HASH_MAP__={preview:true}</script></body>',
+  ].join('\n'))
+  try {
+    assert.throws(
+      () => mergeRootSsrIntoPreviewDist({
+        rootDistDir,
+        previewDistDir,
+        previewBase: '/release-preview/j_test/',
+      }),
+      /无法识别 VitePress HTML 壳：AI与生活\/2026-08-17\.html/,
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('built preview validation rejects SSR 404 output and missing anchors', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-preview-output-'))
+  const pageDir = path.join(root, 'AI与生活')
+  const pageFile = path.join(pageDir, '2026-08-17.html')
+  fs.mkdirSync(pageDir, { recursive: true })
+  try {
+    fs.writeFileSync(pageFile, '<div class="NotFound">404</div>')
+    assert.throws(
+      () => validateBuiltPreview({
+        distDir: root,
+        previewPath: '/AI与生活/2026-08-17',
+        headingAnchor: 'kan-yanhua',
+      }),
+      /错误渲染为 404/,
+    )
+
+    fs.writeFileSync(pageFile, '<main><h2 id="other">正文</h2></main>')
+    assert.throws(
+      () => validateBuiltPreview({
+        distDir: root,
+        previewPath: '/AI与生活/2026-08-17',
+        headingAnchor: 'kan-yanhua',
+      }),
+      /缺少目标锚点/,
+    )
+
+    fs.writeFileSync(pageFile, '<main><h2 id="kan-yanhua">正文</h2></main>')
+    assert.doesNotThrow(() => validateBuiltPreview({
+      distDir: root,
+      previewPath: '/AI与生活/2026-08-17',
+      headingAnchor: '#kan-yanhua',
+    }))
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
 
 test('default online asset probe reports mixed success and failures', async () => {
   const server = http.createServer((req, res) => {
@@ -129,11 +279,17 @@ test('default probes validate content and build the checked-out snapshot without
 const fs = require('node:fs')
 fs.mkdirSync('docs/.vitepress/dist', { recursive: true })
 fs.writeFileSync('snapshot-build-ran', process.env.VITEPRESS_BASE || 'missing')
+fs.writeFileSync('snapshot-build-args', JSON.stringify(process.argv.slice(2)))
 `)
   const expectedPackage = fs.readFileSync(path.join(snapshotDir, 'package.json'), 'utf8')
   const probes = createDefaultProbes({ repoRoot, productionOrigin: '' })
 
   try {
+    fs.mkdirSync(path.join(snapshotDir, 'docs', '.vitepress'), { recursive: true })
+    fs.writeFileSync(
+      path.join(snapshotDir, 'docs', '.vitepress', 'config.mts'),
+      "import { defineConfig } from 'vitepress'\nexport default defineConfig({\n  title: 'fixture',\n})\n",
+    )
     fs.mkdirSync(path.join(snapshotDir, 'docs', 'AI与生活'), { recursive: true })
     fs.mkdirSync(path.join(snapshotDir, 'docs', 'AI与生活', '我的AI历程'), { recursive: true })
     fs.writeFileSync(path.join(snapshotDir, 'docs', 'AI与生活', '2026-08-12.md'), '<WeeklyEntry title="唯一">\n\n正文\n\n</WeeklyEntry>\n')
@@ -156,6 +312,15 @@ fs.writeFileSync('snapshot-build-ran', process.env.VITEPRESS_BASE || 'missing')
     assert.equal(
       fs.readFileSync(path.join(snapshotDir, 'snapshot-build-ran'), 'utf8'),
       '/release-preview/j_test/',
+    )
+    assert.equal(
+      fs.readFileSync(path.join(snapshotDir, 'snapshot-build-args'), 'utf8'),
+      '[]',
+      'preview base must come from VITEPRESS_BASE, not unsupported VitePress CLI arguments',
+    )
+    assert.match(
+      fs.readFileSync(path.join(snapshotDir, 'docs', '.vitepress', 'config.mts'), 'utf8'),
+      /base: process\.env\.VITEPRESS_BASE \|\| '\/'/,
     )
     assert.equal(fs.existsSync(path.join(snapshotDir, 'repo-test-ran')), false)
     assert.equal(fs.existsSync(path.join(snapshotDir, 'repo-build-ran')), false)
@@ -254,6 +419,70 @@ test('default probes accept a journey task when another chapter is missing an im
       contentFiles: ['docs/AI与生活/我的AI历程/基础设施篇.md'],
     })
     assert.equal(result.ok, true)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('panel context defaults production origin to cuowo.cn', () => {
+  const previous = process.env.PANEL_PRODUCTION_ORIGIN
+  delete process.env.PANEL_PRODUCTION_ORIGIN
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-ctx-'))
+  try {
+    const ctx = createPanelContext({
+      repoRoot: dataDir,
+      dataDir,
+    })
+    assert.equal(ctx.productionOrigin, DEFAULT_PRODUCTION_ORIGIN)
+  } finally {
+    if (previous == null) delete process.env.PANEL_PRODUCTION_ORIGIN
+    else process.env.PANEL_PRODUCTION_ORIGIN = previous
+    fs.rmSync(dataDir, { recursive: true, force: true })
+  }
+})
+
+test('default deploy probe builds production dist then scp/ssh', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-probes-deploy-'))
+  const snapshotDir = path.join(root, 'snapshot')
+  const key = path.join(root, 'id_ed25519_servers')
+  const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+  fs.mkdirSync(liveDist, { recursive: true })
+  fs.writeFileSync(path.join(liveDist, 'index.html'), 'preview')
+  fs.writeFileSync(key, 'fake')
+  const calls = []
+  const probes = createDefaultProbes({
+    repoRoot: path.join(root, 'repo'),
+    productionOrigin: 'https://cuowo.cn',
+    guonei: {
+      host: '100.88.115.43',
+      user: 'root',
+      identityFile: key,
+      siteDir: '/var/www/blog',
+      remoteTar: '/tmp/blog-dist.tar',
+      enabled: true,
+    },
+    run: async (command, args, options = {}) => {
+      calls.push({ command, args, cwd: options.cwd })
+      if (command === 'tar') fs.writeFileSync(path.join(options.cwd, 'blog-dist.tar'), 'archive')
+    },
+  })
+  probes.build = async ({ previewBase }) => {
+    assert.equal(previewBase, '/')
+    fs.writeFileSync(path.join(liveDist, 'index.html'), 'production')
+    return { distDir: liveDist }
+  }
+  try {
+    const result = await probes.deploy({ snapshotDir, sha: 'deadbeef' })
+    assert.equal(result.ok, true)
+    assert.equal(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), 'preview')
+    assert.equal(calls[0].command, 'tar')
+    assert.equal(calls[1].command, 'scp')
+    assert.equal(calls[2].command, 'ssh')
+    const meta = JSON.parse(fs.readFileSync(
+      path.join(snapshotDir, '.panel-production-dist', 'build.json'),
+      'utf8',
+    ))
+    assert.equal(meta.sha, 'deadbeef')
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }

@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { getContentKind } from '../../content-catalog/index.mjs'
 import { writeTargetsAtomic } from './atomic-write.mjs'
 import { defaultPaths, issueTitle, padIssue } from './paths.mjs'
 import { allowsCreate, kindCapability } from './repo-paths.mjs'
@@ -396,10 +397,10 @@ function listWeeklyIssues(kind) {
 
 /**
  * 我的AI历程：有期号的日期周记在前，其后是长期篇章。
- * 篇章顺序与系列页一致：基础设施篇 → 工具篇 → AI开支记录与优化。
+ * 长期篇章顺序由 content-catalog typed IA 统一拥有。
  * index.md / README.md 因没有 type: journey 被自然排除。
  */
-const JOURNEY_CHAPTER_ORDER = ['基础设施篇.md', '工具篇.md', 'AI开支记录与优化.md']
+const journeyChapterOrder = getContentKind('journey').namedChapterOrder || []
 
 function listJourneyDocuments(kind) {
   if (!fs.existsSync(kind.dir)) return []
@@ -419,8 +420,8 @@ function listJourneyDocuments(kind) {
     if (a.issue != null && b.issue != null && a.issue !== b.issue) return b.issue - a.issue
     if (a.issue != null && b.issue == null) return -1
     if (a.issue == null && b.issue != null) return 1
-    const ai = JOURNEY_CHAPTER_ORDER.indexOf(a.name)
-    const bi = JOURNEY_CHAPTER_ORDER.indexOf(b.name)
+    const ai = journeyChapterOrder.indexOf(a.name)
+    const bi = journeyChapterOrder.indexOf(b.name)
     if (ai >= 0 && bi >= 0) return ai - bi
     if (ai >= 0) return -1
     if (bi >= 0) return 1
@@ -479,6 +480,7 @@ function jsString(value) {
 }
 
 export function insertManualPost(source, post) {
+  // Legacy string surgery retained for unit tests; applyDraft no longer calls this (Wave D).
   const marker = 'const manualPosts: PostItem[] = ['
   const idx = source.indexOf(marker)
   if (idx < 0) throw new Error('posts.ts 里找不到 manualPosts')
@@ -789,28 +791,9 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       coverAlt: issue?.coverAlt,
       entry,
     })
-    const posts = insertManualPost(readUtf8(resolved.POSTS_TS), {
-      title: issueTitle(number, theme),
-      date,
-      category: kind.category,
-      type: capability.contentType === 'journey' ? 'journey' : 'weekly',
-      issue: number,
-      link,
-      description,
-    })
-    const year = date.slice(0, 4)
-    const config = insertSidebarItem(readUtf8(resolved.CONFIG_MTS), {
-      sidebarKey: kind.sidebarKey,
-      yearText: kind.yearText(year),
-      title: issueTitle(number, theme),
-      link,
-    })
-    targets = [
-      { abs, content: markdown },
-      { abs: resolved.POSTS_TS, content: posts },
-      { abs: resolved.CONFIG_MTS, content: config },
-    ]
-    files.push(path.posix.join(kind.relDir, fileName), 'docs/.vitepress/posts.ts', 'docs/.vitepress/config.mts')
+    // Wave D：索引由构建期投影派生；applyDraft 只写目标 Markdown。
+    targets = [{ abs, content: markdown }]
+    files.push(path.posix.join(kind.relDir, fileName))
     previewLink = link
     title = issueTitle(number, theme)
     commitHint = `${capability.contentType === 'journey' ? 'journey' : 'weekly'}: 第${padIssue(number)}期-${theme}`
@@ -872,38 +855,7 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       files.push(target.rel)
       staleAbs = target.file
     }
-    if (chrome.changedMeta) {
-      let config = updateSidebarItem(readUtf8(resolved.CONFIG_MTS), {
-        sidebarKey: kind.sidebarKey,
-        oldLink: target.link,
-        title: chrome.title,
-        link: chrome.link,
-      })
-      if (kind.id === 'journey') {
-        try {
-          config = updateSidebarItem(config, {
-            sidebarKey: '/AI与生活/',
-            oldLink: target.link,
-            title: chrome.title,
-            link: chrome.link,
-          })
-        } catch {
-          // 历程条目也可能只登记在历程侧栏
-        }
-      }
-      targets.push(
-        {
-          abs: resolved.POSTS_TS,
-          content: updateManualPost(readUtf8(resolved.POSTS_TS), {
-            oldLink: target.link,
-            title: chrome.title,
-            link: chrome.link,
-          }),
-        },
-        { abs: resolved.CONFIG_MTS, content: config },
-      )
-      files.push('docs/.vitepress/posts.ts', 'docs/.vitepress/config.mts')
-    }
+    // Wave D：改期头/重命名只写 Markdown；posts/config 与生活侧栏双写已停用。
     previewLink = chrome.link
     title = chrome.title
     const changedTitle = mode === 'delete' ? currentEntries[Number(entryIndex)]?.title : entry?.title

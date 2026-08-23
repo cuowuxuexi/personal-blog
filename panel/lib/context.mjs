@@ -2,6 +2,7 @@ import path from 'node:path'
 import { PANEL_DIR, REPO_ROOT, createRepoPaths } from './paths.mjs'
 import { createJsonStore } from './json-store.mjs'
 import { createDefaultProbes } from './probes.mjs'
+import { DEFAULT_PRODUCTION_ORIGIN } from './guonei.mjs'
 
 export function createPanelContext(options = {}) {
   const repoRoot = options.repoRoot || REPO_ROOT
@@ -9,7 +10,7 @@ export function createPanelContext(options = {}) {
   const dataDir = options.dataDir || path.join(PANEL_DIR, '.local-backups')
   const productionOrigin = options.productionOrigin
     || process.env.PANEL_PRODUCTION_ORIGIN
-    || 'https://blog.cuowo.win'
+    || DEFAULT_PRODUCTION_ORIGIN
   return {
     repoRoot,
     paths,

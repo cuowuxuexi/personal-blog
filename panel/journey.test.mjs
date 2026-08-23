@@ -14,6 +14,8 @@ import {
   parseEntries,
   serializeEntry,
 } from './lib/weekly.mjs'
+import { getContentKind } from '../content-catalog/index.mjs'
+import { projectManagedPostsFromFs } from '../content-catalog/project-fs.mjs'
 
 const JOURNEY_WITH_ENTRY = `---
 title: 基础设施篇
@@ -160,20 +162,13 @@ test('journey capability is explicit and allows create', () => {
   assert.equal(allowsCreate(paths.KINDS.life), true)
 })
 
-test('lists four journey chapters and starts issue numbers at 1', () => {
+test('lists journey chapters in content-catalog typed IA order and starts issue numbers at 1', () => {
   const chapters = listIssues('journey')
-  assert.deepEqual(new Set(chapters.map((item) => item.title)), new Set([
-    '基础设施篇',
-    '工具篇',
-    'cli篇',
-    'AI开支记录与优化',
-  ]))
-  assert.deepEqual(new Set(chapters.map((item) => item.link)), new Set([
-    '/AI与生活/我的AI历程/基础设施篇',
-    '/AI与生活/我的AI历程/工具篇',
-    '/AI与生活/我的AI历程/cli篇',
-    '/AI与生活/我的AI历程/AI开支记录与优化',
-  ]))
+  const expectedNames = getContentKind('journey').namedChapterOrder
+  assert.deepEqual(chapters.map((item) => item.name), expectedNames)
+  assert.deepEqual(chapters.map((item) => item.link), expectedNames.map(
+    (name) => `/AI与生活/我的AI历程/${name.replace(/\.md$/i, '')}`,
+  ))
   assert.ok(chapters.every((item) => item.issue == null))
   assert.ok(chapters.every((item) => item.kind === 'journey'))
   assert.ok(chapters.every((item) => item.rel.startsWith('docs/AI与生活/我的AI历程/')))
@@ -252,7 +247,7 @@ test('journey applyDraft appends, edits and deletes only the target chapter', ()
     assert.equal(parseEntries(fs.readFileSync(infra, 'utf8')).length, 1)
     assert.doesNotMatch(fs.readFileSync(infra, 'utf8'), /修订后的判断/)
     assert.equal(fs.readFileSync(tools, 'utf8'), toolsBefore)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /基础设施篇/)
+    assert.ok(!deleted.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
   })
 })
 
@@ -338,9 +333,14 @@ test('journey newIssue writes a dated issue; missing issueLink still rejected', 
     assert.match(raw, /一句说明/)
     assert.match(raw, /开篇/)
     assert.match(raw, /weekly-theme-cover/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-底座/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /周记 · 2026年/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /第001期-底座/)
+    assert.deepEqual(
+      created.files.filter((f) => f.endsWith('.ts') || f.endsWith('.mts')),
+      [],
+    )
+    assert.doesNotMatch(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-底座/)
+    assert.doesNotMatch(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /第001期-底座/)
+    const projected = projectManagedPostsFromFs(dir)
+    assert.ok(projected.some((p) => p.link === '/AI与生活/我的AI历程/2026-08-18' && p.title === '第001期-底座'))
     assert.equal(fs.readFileSync(infra, 'utf8'), infraBefore)
     assert.throws(
       () => applyDraft({
@@ -376,12 +376,15 @@ test('journey editChrome updates a named chapter header without renaming the fil
     assert.match(raw, /改过的历程说明/)
     assert.match(raw, /new-cover\.webp/)
     assert.equal(parseEntries(raw).length, 1)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /基础设施篇/)
+    assert.deepEqual(
+      result.files.filter((f) => f.endsWith('.ts') || f.endsWith('.mts')),
+      [],
+    )
+    const postsBefore = `基础设施篇`
+    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), new RegExp(postsBefore))
     assert.doesNotMatch(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /底座修订/)
     const config = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
-    assert.match(config, /基础设施篇/)
     assert.doesNotMatch(config, /底座修订/)
-    assert.equal(config.includes("link: '/AI与生活/我的AI历程/基础设施篇'"), true)
   })
 })
 
@@ -423,7 +426,8 @@ test('journey editChrome on a dated issue keeps the date-only path', () => {
     const raw = fs.readFileSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '2026-08-18.md'), 'utf8')
     assert.match(raw, /# 第001期-看清楚/)
     assert.match(raw, /新说明/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-看清楚/)
+    assert.doesNotMatch(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-看清楚/)
+    assert.ok(!result.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
   })
 })
 

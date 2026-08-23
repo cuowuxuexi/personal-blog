@@ -919,7 +919,7 @@ function renderJob() {
     CheckingAssets: '正在检查公众号图片是否已经上线…',
     WaitingForOnlineAssets: `公众号预览已生成；${missing.length ? `还有 ${missing.length} 张图片未上线，` : ''}暂不能复制。`,
     AssetsOnline: '公众号预览已生成，所有图片已在线，可以复制。',
-    ProductionVerified: '博客生产版本已校验，公众号全文可以复制。',
+    ProductionVerified: '国内站已校验，公众号全文可以复制。',
   }
   wechatStatus.textContent = wechatMessages[wechat.status] || ''
   wechatStatus.className = `wechat-status ${wechat.copyAllowed ? 'is-ready' : (wechat.url ? 'is-waiting' : '')}`
@@ -968,9 +968,9 @@ async function confirmPublish() {
     setNotice('请先准备发布并查看发布前预览。', 'err')
     return
   }
-  if (!confirm('确认发布这一份快照？只有生产域名切到该提交后才会显示发布完成。')) return
+  if (!confirm('确认发布这一份快照？会推送到 Git，并把生产构建上传到 cuowo.cn。只有国内站对上该提交后才算发布完成。')) return
   try {
-    setNotice('正在提交并推送精确快照…')
+    setNotice('正在提交、推送并上传国内站…')
     const job = await api('/api/publish/confirm', {
       method: 'POST',
       body: JSON.stringify({
@@ -980,7 +980,7 @@ async function confirmPublish() {
     })
     applyJob(job)
     if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
-    else if (job.commitSha) setNotice(`已推送 ${job.commitSha}，正在校验生产域名…`, 'ok')
+    else if (job.commitSha) setNotice(`已推送 ${job.commitSha}，正在上传并校验国内站…`, 'ok')
     else setNotice(job.failureReason || job.state, 'err')
   } catch (error) {
     setNotice(error.message, 'err')
@@ -1004,7 +1004,7 @@ async function retryPushJob() {
 async function retryVerify() {
   if (!state.job?.jobId) return
   try {
-    setNotice('正在重新校验生产域名…')
+    setNotice('正在重新上传并校验国内站…')
     const job = await api(`/api/publish/jobs/${state.job.jobId}/retry-verify`, { method: 'POST', body: '{}' })
     applyJob(job)
     setNotice(job.state === 'Published' ? `发布完成。${job.verifiedUrl || ''}` : (job.failureReason || job.state), job.state === 'Published' ? 'ok' : 'err')
@@ -1037,7 +1037,11 @@ function render() {
   const stale = !state.bootstrap.polishTimeoutMs || state.bootstrap.polishTimeoutMs < 120000
     ? ' · 旧进程，请重启面板'
     : ''
-  document.getElementById('status').textContent = `${ready}${stale}`
+  const originHost = String(state.bootstrap.productionOrigin || '')
+    .replace(/^https?:\/\//, '')
+    .replace(/\/$/, '')
+  const target = originHost ? `发布目标 ${originHost} · ` : ''
+  document.getElementById('status').textContent = `${target}${ready}${stale}`
 }
 
 async function main() {

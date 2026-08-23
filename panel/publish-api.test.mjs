@@ -188,19 +188,29 @@ function initRepo(dir) {
 function makeProbes(overrides = {}) {
   let n = 0
   let pushN = 0
+  let deployN = 0
   return {
     async test(args) {
       if (typeof overrides.test === 'function') return overrides.test(args)
       if (overrides.failTest) throw new Error('测试失败：fake')
       return { ok: true }
     },
-    async build({ snapshotDir, previewBase }) {
+    async build({ snapshotDir, previewBase, previewPath, headingAnchor }) {
       if (overrides.failBuild) throw new Error('构建失败：vitepress exploded')
       if (overrides.assertSnapshot) overrides.assertSnapshot(snapshotDir)
       if (overrides.assertPreviewBase) overrides.assertPreviewBase(previewBase)
+      if (overrides.assertPreviewTarget) overrides.assertPreviewTarget({ previewPath, headingAnchor })
       const distDir = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
-      fs.mkdirSync(path.join(distDir, 'AI与生活'), { recursive: true })
-      fs.writeFileSync(path.join(distDir, 'index.html'), '<html>ok</html>')
+      const relativeUrl = decodeURIComponent(String(previewPath || '').replace(/^\/+/, ''))
+      const relativeHtml = !relativeUrl || relativeUrl.endsWith('/')
+        ? `${relativeUrl}index.html`
+        : `${relativeUrl}.html`
+      const htmlFile = path.join(distDir, relativeHtml)
+      fs.mkdirSync(path.dirname(htmlFile), { recursive: true })
+      fs.writeFileSync(
+        htmlFile,
+        `<html><main><h2 id="${headingAnchor || 'preview'}">ok</h2></main></html>`,
+      )
       return { distDir }
     },
     async push({ git: gitApi }) {
@@ -211,6 +221,15 @@ function makeProbes(overrides = {}) {
       }
       if (overrides.delayPushMs) await new Promise((resolve) => setTimeout(resolve, overrides.delayPushMs))
       await gitApi.push()
+    },
+    async deploy(args) {
+      deployN += 1
+      if (overrides.failDeploy) throw new Error('国内上传失败：fake')
+      if (typeof overrides.failDeployUntil === 'number' && deployN <= overrides.failDeployUntil) {
+        throw new Error('国内上传失败：fake')
+      }
+      if (typeof overrides.deploy === 'function') return overrides.deploy({ ...args, n: deployN })
+      return { ok: true }
     },
     async deployStatus({ sha }) {
       if (overrides.deployStatus) return overrides.deployStatus({ sha, n: n + 1 })
@@ -307,12 +326,64 @@ const appendBody = {
   entry: { title: '新的一条', body: '追加正文 ![图](/images/weekly/2026-08-12-01-test.webp)', tags: '测试' },
 }
 
+test('confirm uploads to guonei before production SHA verification', async () => {
+  const seen = []
+  await withPanel({
+    probes: {
+      deploy(args) {
+        seen.push(args)
+        return { ok: true }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const confirmed = await post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    assert.equal(confirmed.status, 200)
+    assert.equal(confirmed.payload.state, 'Published')
+    assert.equal(seen.length, 1)
+    assert.equal(seen[0].sha, confirmed.payload.commitSha)
+    assert.ok(seen[0].snapshotDir)
+    assert.equal(seen[0].origin, 'https://blog.example.test')
+  })
+})
+
+test('domestic upload failure can retry verify without pushing again', async () => {
+  await withPanel({ probes: { failDeployUntil: 1 } }, async ({ url, dir }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const first = await post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    assert.equal(first.status, 409)
+    assert.match(first.payload.error, /国内上传失败/)
+    const failed = await get(url, `/api/publish/jobs/${prepared.payload.jobId}`)
+    assert.equal(failed.payload.state, 'Failed')
+    assert.ok(failed.payload.commitSha)
+    assert.ok(failed.payload.retryActions.includes('retry-verify'))
+    assert.equal(git(dir, ['rev-list', '--count', 'origin/main']), '2')
+    const retried = await post(url, `/api/publish/jobs/${prepared.payload.jobId}/retry-verify`, {})
+    assert.equal(retried.status, 200)
+    assert.equal(retried.payload.state, 'Published')
+    assert.equal(retried.payload.commitSha, failed.payload.commitSha)
+    assert.equal(git(dir, ['rev-list', '--count', 'origin/main']), '2')
+  })
+})
+
 test('prepare, preview, confirm, push and production verification succeed', async () => {
   let expectedPreviewBase = ''
+  let expectedPreviewTarget = null
   await withPanel({
     probes: {
       assertPreviewBase(previewBase) {
         expectedPreviewBase = previewBase
+      },
+      assertPreviewTarget(target) {
+        expectedPreviewTarget = target
       },
     },
   }, async ({ url, dir }) => {
@@ -327,6 +398,10 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.equal(prepared.status, 200)
     assert.equal(prepared.payload.state, 'PreviewReady')
     assert.equal(expectedPreviewBase, `/release-preview/${prepared.payload.jobId}/`)
+    assert.deepEqual(expectedPreviewTarget, {
+      previewPath: '/AI与生活/2026-08-12',
+      headingAnchor: 'kan-yanhua',
+    })
     assert.ok(prepared.payload.confirmationToken)
     assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-12.md')))
     assert.equal(prepared.payload.manifest.filter((item) => item.path.includes('2026-08-12-01-test.webp')).length, 1)
@@ -334,7 +409,8 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
     assert.match(prepared.payload.wechatPreview.url, new RegExp(`/wechat-preview/${prepared.payload.jobId}/`))
     const preview = await fetch(`${url}${prepared.payload.releasePreviewUrl}`)
-    assert.ok(preview.status === 200 || preview.status === 404)
+    assert.equal(preview.status, 200)
+    assert.match(await preview.text(), /id="kan-yanhua"/)
     const wechatPreview = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
     assert.equal(wechatPreview.status, 200)
     assert.match(await wechatPreview.text(), /第一条/)
@@ -530,8 +606,10 @@ test('hash drift invalidates confirmation', async () => {
   })
 })
 
-test('new issue writes article, posts index and sidebar together', async () => {
+test('new issue writes article only; projection owns posts/sidebar', async () => {
   await withPanel({}, async ({ url, dir }) => {
+    const postsBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
+    const configBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
     const draft = await post(url, '/api/draft', {
       kindId: 'life',
       mode: 'newIssue',
@@ -540,11 +618,12 @@ test('new issue writes article, posts index and sidebar together', async () => {
     })
     assert.equal(draft.status, 200)
     assert.ok(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-16.md')))
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /2026-08-16/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /第002期-测试期/)
+    assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), postsBefore)
+    assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), configBefore)
+    assert.ok(!draft.payload.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('posts.ts')))
-    assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('config.mts')))
+    assert.equal(prepared.payload.manifest.some((item) => item.path.endsWith('posts.ts')), false)
+    assert.equal(prepared.payload.manifest.some((item) => item.path.endsWith('config.mts')), false)
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
@@ -617,18 +696,19 @@ test('repeating the same append is rejected before another entry is written', as
   })
 })
 
-test('missing sidebar key fails before any new-issue file is written', async () => {
+test('new issue still writes markdown when sidebar shell is empty', async () => {
   await withPanel({}, async ({ url, dir }) => {
     fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'export default { themeConfig: { sidebar: {} } }\n')
+    const postsBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
     const draft = await post(url, '/api/draft', {
       kindId: 'life',
       mode: 'newIssue',
       entry: { title: '开篇', body: '新期正文' },
-      issue: { theme: '失败期', date: '2026-08-17' },
+      issue: { theme: '空壳期', date: '2026-08-17' },
     })
-    assert.ok(draft.status >= 400)
-    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-17.md')), false)
-    assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8').includes('2026-08-17'), false)
+    assert.equal(draft.status, 200)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-17.md')), true)
+    assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), postsBefore)
   })
 })
 
@@ -642,7 +722,7 @@ test('weekly scope rejects a mixed life draft that includes a journey chapter', 
   )
 })
 
-test('dirtyJourneyMetaPaths only picks posts.ts and config.mts', () => {
+test('dirtyJourneyMetaPaths is empty after Wave D de-triple-write', () => {
   assert.deepEqual(
     dirtyJourneyMetaPaths([
       { path: 'docs/.vitepress/posts.ts' },
@@ -650,13 +730,20 @@ test('dirtyJourneyMetaPaths only picks posts.ts and config.mts', () => {
       { path: 'docs/AI与生活/2026-08-17.md' },
       { path: 'dirty.txt' },
     ]),
-    ['docs/.vitepress/posts.ts', 'docs/.vitepress/config.mts'],
+    [],
   )
 })
 
-test('journey newIssue may publish one body together with posts.ts and config.mts', () => {
+test('journey newIssue publishable set is the body only', () => {
   assert.deepEqual(
     assertPublishable(
+      ['docs/AI与生活/我的AI历程/2026-08-18.md'],
+      { kindId: 'journey', capability: { publishScope: 'journey' } },
+    ),
+    ['docs/AI与生活/我的AI历程/2026-08-18.md'],
+  )
+  assert.throws(
+    () => assertPublishable(
       [
         'docs/AI与生活/我的AI历程/2026-08-18.md',
         'docs/.vitepress/posts.ts',
@@ -664,11 +751,7 @@ test('journey newIssue may publish one body together with posts.ts and config.mt
       ],
       { kindId: 'journey', capability: { publishScope: 'journey' } },
     ),
-    [
-      'docs/AI与生活/我的AI历程/2026-08-18.md',
-      'docs/.vitepress/posts.ts',
-      'docs/.vitepress/config.mts',
-    ],
+    (error) => error.status === 422 && /范围/.test(error.message),
   )
 })
 
@@ -1150,27 +1233,22 @@ test('journey newIssue writes a dated issue at /api/draft', async () => {
     assert.equal(prepared.payload.state, 'PreviewReady')
     const manifestPaths = prepared.payload.manifest.map((item) => item.path)
     assert.ok(manifestPaths.some((item) => item.endsWith('2026-08-18.md')))
-    assert.ok(manifestPaths.some((item) => item.endsWith('posts.ts')))
-    assert.ok(manifestPaths.some((item) => item.endsWith('config.mts')))
+    assert.equal(manifestPaths.some((item) => item.endsWith('posts.ts')), false)
+    assert.equal(manifestPaths.some((item) => item.endsWith('config.mts')), false)
     assert.equal(manifestPaths.filter((item) => item.includes('我的AI历程/') && item.endsWith('.md')).length, 1)
   })
 })
 
-test('journey prepare includes already-dirty posts.ts and config.mts', async () => {
-  let snapshotConfig = ''
-  await withPanel({
-    probes: {
-      assertSnapshot(snapshotDir) {
-        snapshotConfig = fs.readFileSync(path.join(snapshotDir, 'docs', '.vitepress', 'config.mts'), 'utf8')
-      },
-    },
-  }, async ({ url, dir }) => {
+test('journey prepare excludes already-dirty posts.ts and config.mts', async () => {
+  await withPanel({}, async ({ url, dir }) => {
     const postsFile = path.join(dir, 'docs', '.vitepress', 'posts.ts')
     const configFile = path.join(dir, 'docs', '.vitepress', 'config.mts')
-    fs.writeFileSync(postsFile, `${fs.readFileSync(postsFile, 'utf8').replace(/\s*$/, '')}\n  // dirty weekly nav\n`)
+    const postsBefore = fs.readFileSync(postsFile, 'utf8')
+    const configBefore = fs.readFileSync(configFile, 'utf8')
+    fs.writeFileSync(postsFile, `${postsBefore.replace(/\s*$/, '')}\n  // dirty weekly nav\n`)
     fs.writeFileSync(
       configFile,
-      fs.readFileSync(configFile, 'utf8').replace('系列入口', 'AI开支记录与优化'),
+      configBefore.replace('系列入口', 'AI开支记录与优化'),
     )
     fs.writeFileSync(path.join(dir, 'dirty.txt'), 'leave me\n')
 
@@ -1178,19 +1256,18 @@ test('journey prepare includes already-dirty posts.ts and config.mts', async () 
       kindId: 'journey',
       mode: 'append',
       issueLink: '/AI与生活/我的AI历程/基础设施篇',
-      entry: { title: '带上导航', body: '清单应吃到已脏的侧栏', tags: '测试' },
+      entry: { title: '带上导航', body: '清单不应再吃导航索引', tags: '测试' },
     })
     assert.equal(draft.status, 200)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
     assert.equal(prepared.status, 200)
     const manifestPaths = prepared.payload.manifest.map((item) => item.path)
     assert.ok(manifestPaths.includes('docs/AI与生活/我的AI历程/基础设施篇.md'))
-    assert.ok(manifestPaths.includes('docs/.vitepress/posts.ts'))
-    assert.ok(manifestPaths.includes('docs/.vitepress/config.mts'))
+    assert.equal(manifestPaths.includes('docs/.vitepress/posts.ts'), false)
+    assert.equal(manifestPaths.includes('docs/.vitepress/config.mts'), false)
     assert.equal(manifestPaths.some((item) => item === 'dirty.txt' || item.endsWith('2026-08-17.md')), false)
-    assert.equal(prepared.payload.excluded.some((item) => item.path === 'docs/.vitepress/config.mts'), false)
-    assert.match(snapshotConfig, /AI开支记录与优化/)
-    assert.doesNotMatch(snapshotConfig, /系列入口/)
+    assert.ok(prepared.payload.excluded.some((item) => item.path === 'docs/.vitepress/config.mts'))
+    assert.ok(prepared.payload.excluded.some((item) => item.path === 'docs/.vitepress/posts.ts'))
   })
 })
 
@@ -1234,6 +1311,7 @@ test('images API requires kindId and ignores a client-supplied directory', async
     assert.match(uploaded.payload.images[0].url, /^\/images\/journey\/2026-08-18-\d{2}-spend\.webp$/)
     assert.match(uploaded.payload.images[0].rel, /^docs\/public\/images\/journey\//)
     assert.equal(fs.existsSync(path.join(dir, uploaded.payload.images[0].rel)), true)
+    assert.equal(fs.existsSync(path.join(dir, uploaded.payload.images[0].rel.replace(/\.webp$/i, '.jpg'))), true)
     assert.equal(fs.existsSync(path.join(dir, 'docs', 'public', 'images', 'weekly', uploaded.payload.images[0].fileName)), false)
 
     const weekly = await post(url, '/api/images', {
@@ -1298,6 +1376,7 @@ test('journey image upload enters manifest, wechat preview and production asset 
     assert.deepEqual(chapterPaths, ['docs/AI与生活/我的AI历程/基础设施篇.md'])
     assert.equal(manifestPaths.filter((item) => item.endsWith('.md')).length, 1)
     assert.ok(manifestPaths.includes(image.rel))
+    assert.ok(manifestPaths.includes(image.rel.replace(/\.webp$/i, '.jpg')))
     assert.equal(manifestPaths.some((item) => item.endsWith('posts.ts') || item.endsWith('config.mts')), false)
     assert.equal(manifestPaths.some((item) => item.includes('/images/weekly/')), false)
     assert.equal(manifestPaths.some((item) => item.includes('.panel-wechat')), false)

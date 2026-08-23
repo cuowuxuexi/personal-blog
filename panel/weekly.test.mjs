@@ -338,8 +338,11 @@ test('editChrome updates a life issue header and leaves the entry', () => {
     assert.match(raw, /新的一句说明/)
     assert.match(raw, /new-cover\.webp/)
     assert.equal(parseEntries(raw).length, 1)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), /第001期-改过的主题/)
-    assert.match(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), /第001期-改过的主题/)
+    const postsSnap = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
+    const configSnap = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
+    assert.doesNotMatch(postsSnap, /第001期-改过的主题/)
+    assert.doesNotMatch(configSnap, /第001期-改过的主题/)
+    assert.ok(!result.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
   } finally {
     fs.rmSync(dir, { recursive: true, force: true })
   }
@@ -365,16 +368,17 @@ test('editChrome renames an invest issue file and URL with the new theme', () =>
     assert.match(next, /# 第001期-看清楚/)
     assert.match(next, /改过的投资说明/)
     const posts = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
-    assert.match(posts, /\/投资\/周记\/2026-08-13-看清楚/)
-    assert.doesNotMatch(posts, /2026-08-13-待定/)
+    assert.doesNotMatch(posts, /\/投资\/周记\/2026-08-13-看清楚/)
+    assert.match(posts, /2026-08-13-待定/)
     const config = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
-    assert.match(config, /\/投资\/周记\/2026-08-13-看清楚/)
+    assert.doesNotMatch(config, /\/投资\/周记\/2026-08-13-看清楚/)
+    assert.ok(!result.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
   } finally {
     fs.rmSync(dir, { recursive: true, force: true })
   }
 })
 
-test('updateManualPost and updateSidebarItem rewrite title and link', () => {
+test('updateManualPost and updateSidebarItem rewrite title and link (legacy helpers)', () => {
   const posts = updateManualPost(`const manualPosts: PostItem[] = [
   {
     title: "第002期-待定",

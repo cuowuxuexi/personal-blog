@@ -2,8 +2,6 @@ export const ALLOWED_PREFIXES = [
   'docs/AI与生活/',
   'docs/投资/周记/',
   'docs/public/images/weekly/',
-  'docs/.vitepress/posts.ts',
-  'docs/.vitepress/config.mts',
 ]
 
 const JOURNEY_ALLOWED_PREFIXES = [
@@ -17,15 +15,13 @@ const BLOCKED_PREFIXES = [
   'docs/大问题/',
   'docs/AI与生活/Hermes日记/',
   'docs/AI与生活/大事件/',
-  'docs/.vitepress/theme/',
+  'docs/.vitepress/',
   'panel/',
 ]
 
 const JOURNEY_BLOCKED_NAMES = new Set(['index.md', 'readme.md'])
-const JOURNEY_META_FILES = new Set([
-  'docs/.vitepress/posts.ts',
-  'docs/.vitepress/config.mts',
-])
+/** @deprecated Wave D：面板不再发布 posts/config；保留空集兼容旧调用。 */
+const JOURNEY_META_FILES = new Set()
 const WEEKLY_EXCLUDED_PREFIXES = [
   'docs/AI与生活/我的AI历程/',
 ]
@@ -66,12 +62,10 @@ export function isJourneyMetaPath(file) {
   return JOURNEY_META_FILES.has(posixPath(file))
 }
 
+/** Wave D：不再把 posts.ts / config.mts 并入 journey 发布清单。 */
 export function dirtyJourneyMetaPaths(statusRows = []) {
-  return [...new Set(
-    statusRows
-      .map((row) => posixPath(row?.path))
-      .filter((rel) => rel && isJourneyMetaPath(rel)),
-  )]
+  void statusRows
+  return []
 }
 
 function resolveScope(options = {}) {
@@ -87,7 +81,6 @@ export function isAllowedPublishPath(file, options = {}) {
   if (scope === 'journey') {
     if (isJourneyChapterPath(rel)) return true
     if (isJourneyImagePath(rel) && matchesPrefix(rel, JOURNEY_ALLOWED_PREFIXES)) return true
-    if (JOURNEY_META_FILES.has(rel)) return true
     return false
   }
   if (matchesPrefix(rel, WEEKLY_EXCLUDED_PREFIXES)) return false
