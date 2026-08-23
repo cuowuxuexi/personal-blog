@@ -11,37 +11,37 @@ outline: [2, 3]
   <div>
     <p>RESEARCH MAP 02 / 研究地图</p>
     <h1>CXO 与 CRDMO</h1>
-    <span>学习中 · 截至 2026-08-20 · 因研究药明康德而建立</span>
+    <span>学习中 · 信息截至 2026-08-20</span>
   </div>
   <dl>
     <div><dt>问题</dt><dd>客户买的是哪一段活、哪一种厂？</dd></div>
-    <div><dt>阶段</dt><dd>学习中</dd></div>
-    <div><dt>建立</dt><dd>2026-08-10</dd></div>
-    <div><dt>修订</dt><dd>2026-08-20</dd></div>
+    <div><dt>状态</dt><dd>学习中</dd></div>
+    <div><dt>范围</dt><dd>R/D/M 与制造能力栈</dd></div>
+    <div><dt>边界</dt><dd>非标准行业分类</dd></div>
   </dl>
 </section>
 
 <div class="research-note"><strong>阅读方法</strong><span>R/D/M 是本文用于理解外包服务的工作性速记，尤其贴近 CRDMO 的制造开发语境，不是全行业统一、法定的生命周期分类。公司竞争仍要同时回答“哪类能力栈 × 哪一段服务”。</span></div>
 
 <section class="research-section" aria-labelledby="q">
-  <header class="research-section-head"><div><p>QUESTION / 这页要回答什么</p><h2 id="q">这页要回答什么</h2></div></header>
+  <header class="research-section-head"><div><p>QUESTION / 核心问题</p><h2 id="q">外包角色与服务边界</h2></div></header>
   <p>CRO、CMO、CDMO、CRDMO 分别是什么？它们在创新药流程中的位置有何不同？CRDMO 为什么常常被说成“不只是代工厂”？</p>
 </section>
 
 <section class="research-section" aria-labelledby="stage">
-  <header class="research-section-head"><div><p>STAGE / 当前研究阶段</p><h2 id="stage">当前研究阶段</h2></div><span>学习中</span></header>
+  <header class="research-section-head"><div><p>BOUNDARY / 当前认识边界</p><h2 id="stage">当前认识边界</h2></div><span>学习中</span></header>
   <div class="map-stage-card">
     <article><span>01</span><strong>已确认基础</strong><p>缩写含义、R/D/M 速记与角色边界</p></article>
     <article><span>02</span><strong>当前理解</strong><p>更早进入、技术连续、后端放量与项目池</p></article>
     <article><span>03</span><strong>未解决</strong><p>单位经济与转化率口径</p></article>
-    <article><span>04</span><strong>下一步</strong><p>挂回药明康德的业务位置</p></article>
+    <article><span>04</span><strong>公司适用边界</strong><p>实际业务、收入与竞争位置仍需公司披露验证</p></article>
   </div>
 </section>
 
 <section class="research-section" aria-labelledby="relation">
   <header class="research-section-head"><div><p>RELATION / 关系地图</p><h2 id="relation">先认缩写，再映射到 R/D/M</h2></div></header>
   <div class="relation-map">
-    <div class="relation-map__root"><strong>CXO</strong><p>医药外包服务行业总称。下面按“研究 / 开发 / 生产”能力边界拆分，而不是按公司品牌拆分。</p></div>
+    <div class="relation-map__root"><strong>CXO</strong><p>医药外包服务行业总称，可按“研究 / 开发 / 生产”能力边界拆分，而不是按公司品牌拆分。</p></div>
     <div class="relation-map__grid">
       <div class="relation-map__item"><strong>CRO</strong><p>Contract Research Organization。偏研究：发现、临床前、临床研究等。</p></div>
       <div class="relation-map__item"><strong>CMO</strong><p>Contract Manufacturing Organization。偏生产：按既定工艺代工制造。</p></div>
@@ -79,7 +79,7 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="modalities">
   <header class="research-section-head"><div><p>CAPABILITY STACKS / 制造能力栈</p><h2 id="modalities">常见能力栈会重叠，不能只分三个互斥盒子</h2></div></header>
-  <p>下面只列帮助入门的典型制造语境。ADC 本身连接生物与化学能力；多肽、寡核苷酸等合成新分子也不能简单塞进经典小分子或抗体工厂。</p>
+  <p>典型制造语境包括化学合成、生物制造和偶联等能力。ADC 本身连接生物与化学能力；多肽、寡核苷酸等合成新分子也不能简单塞进经典小分子或抗体工厂。</p>
   <p class="graph-scroll-hint">移动端可横向滑动查看完整表格。</p>
 
   <div class="modality-matrix" role="group" aria-label="常见药物制造能力栈与公司边界参照">
@@ -148,13 +148,13 @@ outline: [2, 3]
 </section>
 
 <section class="research-section" aria-labelledby="company-handoff">
-  <header class="research-section-head"><div><p>COMPANY / 挂回公司</p><h2 id="company-handoff">研究 CXO 公司时同时使用两组工作坐标</h2></div></header>
+  <header class="research-section-head"><div><p>COMPANY / 公司分析</p><h2 id="company-handoff">分析 CXO 公司的两组坐标</h2></div></header>
   <div class="knowledge-coordinate">
     <div><small>服务坐标</small><strong>研究 / 工艺制造开发 / 生产</strong><p>客户具体购买什么工作？公司的披露口径怎样映射到本文速记？</p></div>
     <b>×</b>
     <div><small>能力栈坐标</small><strong>化学合成 / 生物制造 / 偶联及其他新分子</strong><p>公司使用哪些技术、工厂和质量体系？真正的可比公司是谁？</p></div>
   </div>
-  <a class="knowledge-company-link" href="/投资/投研/医药/药明康德/#company-map"><span>药明康德</span><strong>进入待验证的公司工作坐标 →</strong></a>
+  <a class="knowledge-company-link" href="/投资/投研/医药/药明康德/#company-map"><span>药明康德</span><strong>查看公司位置与待核验证据 →</strong></a>
 </section>
 
 <section class="research-section" aria-labelledby="open">
@@ -165,23 +165,12 @@ outline: [2, 3]
   </div>
 </section>
 
-<section class="research-section" aria-labelledby="next">
-  <header class="research-section-head"><div><p>NEXT / 后续研究方向</p><h2 id="next">后续研究方向</h2></div></header>
-  <ul>
-    <li>把 CRDMO 能力映射回 <a href="/投资/投研/医药/研究地图/创新药研发全流程/">创新药全流程</a> 的具体阶段。</li>
-    <li>进入 <a href="/投资/投研/医药/药明康德/">药明康德档案</a>：先问业务结构与服务边界，不急着谈估值。</li>
-    <li>竞争格局上，小分子、生物药、ADC 是否应分开理解，已先挂在本页能力栈；公司级归属仍待披露核实。</li>
-  </ul>
-</section>
-
 <section class="research-section" aria-labelledby="rev">
   <header class="research-section-head"><div><p>REVISIONS / 重要修订</p><h2 id="rev">重要修订</h2></div></header>
   <table class="revision-table"><thead><tr><th>日期</th><th>修订</th><th>原因</th></tr></thead><tbody>
-    <tr><td>2026-08-10</td><td>建立初版缩写关系与 CRDMO 商业直觉</td><td>为理解药明康德建立前置基础</td></tr>
     <tr><td>2026-08-20</td><td>改为 R/D/M 横轴与药物类型纵轴</td><td>把缩写、三套厂与竞争边界放进同一坐标系</td></tr>
     <tr><td>2026-08-20</td><td>把外包原因、项目风险和支付传导连接起来</td><td>纠正“CXO 赌药”“集采直接打 M”“规模大必然自建”</td></tr>
-    <tr><td>2026-08-20</td><td>补回 CXO 总称、英文全称与 A–D 商业直觉</td><td>原版讲法嵌回关系地图和商业模式节点</td></tr>
   </tbody></table>
 </section>
 
-<div class="research-note"><strong>证据状态</strong><span>本页目前是待公开一手来源逐项核验的教学模型，不是标准行业分类。公司竞争与财务判断必须回源公司披露、监管文件和可复查材料。</span></div>
+<div class="research-note"><strong>证据边界</strong><span>R/D/M 是用于理解服务边界的工作性框架，不是标准行业分类；公司竞争与财务判断必须回到公司披露、监管文件和可复查材料。</span></div>

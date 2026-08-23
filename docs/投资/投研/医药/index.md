@@ -9,7 +9,7 @@ outline: false
 <section class="industry-masthead">
   <p>INDUSTRY 01 / 医药</p>
   <h1>医药行业</h1>
-  <p>从行业知识图谱进入药物、研发、制造、外包与支付关系；再把这些节点挂回具体公司，区分行业常识与公司证据。</p>
+  <p>围绕药物、研发、制造、外包与支付建立行业关系图，并据此理解不同公司的业务位置与证据边界。</p>
 </section>
 
 <section class="research-section" aria-labelledby="medical-paths">
@@ -25,7 +25,7 @@ outline: false
 <section class="subject-directory" aria-labelledby="medical-maps">
   <header class="research-section-head">
     <div><p>KNOWLEDGE GRAPH / 知识图谱</p><h2 id="medical-maps">医药知识图谱</h2></div>
-    <span>学习中 · 3 张节点详图</span>
+    <span>3 张节点详图</span>
   </header>
 
   <a class="subject-row" href="/投资/投研/医药/研究地图/">
@@ -39,12 +39,12 @@ outline: false
 <section class="subject-directory" aria-labelledby="medical-subjects" style="margin-top:2rem;">
   <header class="research-section-head">
     <div><p>SUBJECTS / 标的</p><h2 id="medical-subjects">跟踪标的</h2></div>
-    <span>公司证据待补</span>
+    <span>1 个标的档案</span>
   </header>
 
   <a class="subject-row" href="/投资/投研/医药/药明康德/">
     <div><span class="subject-row__ticker">603259.SH / 2359.HK</span><strong>药明康德</strong></div>
-    <p>待验证工作坐标：化学与合成分子相关服务 × R/D/M；收入、能力、客户与竞争位置仍待公司级验证。</p>
+    <p>从化学与合成分子相关服务 × R/D/M 切入，继续核验收入、能力、客户与竞争位置。</p>
     <span class="subject-row__status">学习中</span>
     <span class="subject-row__arrow">→</span>
   </a>

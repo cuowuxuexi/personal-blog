@@ -11,38 +11,38 @@ outline: [2, 3]
   <div>
     <p>RESEARCH MAP 01 / 研究地图</p>
     <h1>创新药研发全流程</h1>
-    <span>学习中 · 截至 2026-08-20 · 因研究药明康德而建立</span>
+    <span>学习中 · 信息截至 2026-08-20</span>
   </div>
   <dl>
     <div><dt>问题</dt><dd>药好不好与药怎么造，怎样同时推进？</dd></div>
-    <div><dt>阶段</dt><dd>学习中</dd></div>
-    <div><dt>建立</dt><dd>2026-08-10</dd></div>
-    <div><dt>修订</dt><dd>2026-08-20</dd></div>
+    <div><dt>状态</dt><dd>学习中</dd></div>
+    <div><dt>范围</dt><dd>典型路径与关键概念</dd></div>
+    <div><dt>边界</dt><dd>不提供统一失败率与成本口径</dd></div>
   </dl>
 </section>
 
 <div class="research-note">
-  <strong>核心修订</strong>
+  <strong>核心关系</strong>
   <span>常规路径也不是“研究做到三期，再开始开发和生产”，而是研发验证线与 CMC / 制造线并行推进。合并分期、加速审批等例外需要在具体项目中另查。</span>
 </div>
 
 <section class="research-section" aria-labelledby="q">
   <header class="research-section-head">
-    <div><p>QUESTION / 这页要回答什么</p><h2 id="q">这页要回答什么</h2></div>
+    <div><p>QUESTION / 核心问题</p><h2 id="q">研发流程的核心问题</h2></div>
   </header>
   <p>一款创新药从“疾病问题”到“商业化生产”，大致经历哪些阶段？每个阶段解决什么问题？哪些地方最容易失败、最需要外部能力介入？</p>
 </section>
 
 <section class="research-section" aria-labelledby="stage">
   <header class="research-section-head">
-    <div><p>STAGE / 当前研究阶段</p><h2 id="stage">当前研究阶段</h2></div>
+    <div><p>BOUNDARY / 当前认识边界</p><h2 id="stage">当前认识边界</h2></div>
     <span>学习中</span>
   </header>
   <div class="map-stage-card">
     <article><span>01</span><strong>已确认基础</strong><p>主流程阶段名称与目标；研发验证线与 CMC / 制造线并行</p></article>
     <article><span>02</span><strong>当前理解</strong><p>前半段找对东西，后半段证明有效且能稳定生产</p></article>
     <article><span>03</span><strong>未解决</strong><p>各阶段真实失败率、耗时与成本结构</p></article>
-    <article><span>04</span><strong>下一步</strong><p>按阶段标出外包角色，并补不同药物类型的 CMC 差异</p></article>
+    <article><span>04</span><strong>适用边界</strong><p>不同药物类型的 CMC 路径和外包需求需要分别核验</p></article>
   </div>
 </section>
 
@@ -106,9 +106,9 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="process">
   <header class="research-section-head">
-    <div><p>PROCESS / 流程地图</p><h2 id="process">按时间顺序走一遍</h2></div>
+    <div><p>PROCESS / 流程地图</p><h2 id="process">典型研发阶段</h2></div>
   </header>
-  <p class="process-map-lead">下面按时间顺序走一遍。先看正规说法，再看<strong>大白话</strong>：这一步到底在干什么、为什么不能跳。双线图说明两条线如何并行；这一节说明每一步自己在回答什么。</p>
+  <p class="process-map-lead">典型流程可以按时间顺序理解；每一步都在回答不同的科学、临床、监管或制造问题。</p>
   <div class="process-map">
     <div class="process-map__step"><span>01</span><div>
       <strong>疾病问题 / 未满足需求</strong>
@@ -166,12 +166,12 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="discovery">
   <header class="research-section-head"><div><p>DISCOVERY / 发现</p><h2 id="discovery">从疾病问题到候选药物</h2></div></header>
-  <p>对应<a href="#process">流程地图</a> 01–03。这一段要先找对东西：病人缺什么、开关是不是真的、哪个分子值得认真往下做。逐步大白话见上方流程地图。</p>
+  <p>药物发现阶段要先找对东西：病人缺什么、靶点是否成立、哪个分子值得认真往下做。</p>
 </section>
 
 <section class="research-section" aria-labelledby="preclinical">
   <header class="research-section-head"><div><p>PRECLINICAL / 临床前</p><h2 id="preclinical">不是只看“会不会害人”</h2></div></header>
-  <p>对应<a href="#process">流程地图</a> 04。临床前的目标是证明“值得申请在人身上试”。它不是证明药已经有效，更不是批准上市。</p>
+  <p>临床前的目标是证明“值得申请在人身上试”。它不是证明药已经有效，更不是批准上市。</p>
   <div class="knowledge-route-grid knowledge-route-grid--three">
     <article><span>药理</span><h3>有没有效</h3><p>在细胞或动物模型中观察是否产生预期作用。</p></article>
     <article><span>毒理</span><h3>毒不毒</h3><p>识别可能的安全风险和可承受范围。</p></article>
@@ -181,7 +181,7 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="clinical">
   <header class="research-section-head"><div><p>CLINICAL / 人体证据</p><h2 id="clinical">I、II、III 期各回答什么</h2></div></header>
-  <p>对应<a href="#process">流程地图</a> 06–08。典型常规路径常按 I → II → III 推进，但合并分期、加速审批等例外需要在具体项目中另查。</p>
+  <p>典型常规路径常按 I → II → III 推进，但具体路径可能因适应症、项目设计和监管机制而变化。</p>
   <div class="knowledge-route-grid knowledge-route-grid--three">
     <article><span>PHASE I</span><h3>安全与剂量</h3><p>人能不能承受，大致应该用多少。重点不是正式证明疗效。</p></article>
     <article><span>PHASE II</span><h3>疗效信号</h3><p>开始认真回答有没有效果、哪些人可能更受益。很多项目在这里失败。</p></article>
@@ -193,8 +193,8 @@ outline: [2, 3]
   <header class="research-section-head"><div><p>GATES / 监管关口</p><h2 id="regulatory-gates">IND 与 NDA / BLA 不是同一扇门</h2></div></header>
   <div class="relation-map">
     <div class="relation-map__grid">
-      <div class="relation-map__item"><strong>IND：申请进入人体试验</strong><p>对应<a href="#process">流程地图</a> 05。过了代表可以开始临床，不代表药有效，也不代表可以销售。申报资料已经包含制造和质量信息。</p></div>
-      <div class="relation-map__item"><strong>NDA / BLA：申请上市</strong><p>对应<a href="#process">流程地图</a> 09。小分子常见 NDA，生物药常见 BLA。监管同时审临床证据与 CMC / 生产体系。</p></div>
+      <div class="relation-map__item"><strong>IND：申请进入人体试验</strong><p>通过后代表可以开始临床，不代表药有效，也不代表可以销售。申报资料已经包含制造和质量信息。</p></div>
+      <div class="relation-map__item"><strong>NDA / BLA：申请上市</strong><p>小分子常见 NDA，生物药常见 BLA。监管同时审临床证据与 CMC / 生产体系。</p></div>
     </div>
   </div>
 </section>
@@ -216,44 +216,35 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="approval">
   <header class="research-section-head"><div><p>APPROVAL / 上市申请</p><h2 id="approval">药有效，也必须能稳定生产</h2></div></header>
-  <p>对应<a href="#process">流程地图</a> 09。NDA / BLA 不是只交临床结果。监管还要确认工艺、质量标准、生产设施和批次一致性。工厂与 CMC 体系不成立，药再好也不能稳定上市。</p>
+  <p>NDA / BLA 不是只交临床结果。监管还要确认工艺、质量标准、生产设施和批次一致性。工厂与 CMC 体系不成立，药再好也不能稳定上市。</p>
 </section>
 
 <section class="research-section" aria-labelledby="commercial">
   <header class="research-section-head"><div><p>COMMERCIAL / 商业化</p><h2 id="commercial">获批改变的是订单规模，不是生产供货的定义</h2></div></header>
-  <p>对应<a href="#process">流程地图</a> 10。临床样品和商业大货都属于生产供货。区别主要在规模、持续时间和监管要求。项目成功后，后端订单往往更大、更长；这是 CXO 可能获得的后续结果，不代表它在前端和客户共同赌药成败。</p>
+  <p>临床样品和商业大货都属于生产供货。区别主要在规模、持续时间和监管要求。项目成功后，后端订单往往更大、更长；这是 CXO 可能获得的后续结果，不代表它在前端和客户共同赌药成败。</p>
 </section>
 
 <section class="research-section" aria-labelledby="understanding">
   <header class="research-section-head"><div><p>UNDERSTANDING / 我的当前理解</p><h2 id="understanding">我的当前理解</h2></div></header>
   <p>目前我把这条链路理解成两段：前半段是“科学上找对东西”，后半段是“证明它在人身上有效且能稳定生产”。越往后，资金、时间、失败代价越高；这也是为什么外包服务（尤其开发与制造能力）会变得重要。</p>
-  <p>我还没有把每个阶段的真实失败率、平均耗时和成本结构钉死。现在只建立“阶段地图”，方便后面往药明康德的业务位置上挂问题。</p>
+  <p>各阶段的真实失败率、平均耗时和成本结构尚无统一可靠口径，本页不提供确定数值。</p>
 </section>
 
 <section class="research-section" aria-labelledby="handoff">
-  <header class="research-section-head"><div><p>HANDOFF / 向外连接</p><h2 id="handoff">这张图怎样连接其他节点</h2></div></header>
+  <header class="research-section-head"><div><p>RELATED / 相关主题</p><h2 id="handoff">相关行业节点与公司问题</h2></div></header>
   <div class="learning-path">
     <a href="/投资/投研/医药/研究地图/CXO与CRDMO/#roles"><span>RDM</span><div><strong>谁替药企做这些工作？</strong><p>把研发与制造节点映射到 CRO、CDMO、CRDMO。</p></div><span>→</span></a>
     <a href="/投资/投研/医药/研究地图/原研仿制与支付端/#lifecycle"><span>SALE</span><div><strong>药获批以后怎样进入卖药与支付链？</strong><p>进入原研、仿制、专利和支付端节点。</p></div><span>→</span></a>
-    <a href="/投资/投研/医药/药明康德/#company-map"><span>WUXI</span><div><strong>药明康德挂在哪些节点？</strong><p>公司档案只保留公司映射和待验证问题。</p></div><span>→</span></a>
+    <a href="/投资/投研/医药/药明康德/#company-map"><span>WUXI</span><div><strong>药明康德覆盖哪些环节？</strong><p>结合公司披露核验服务范围、能力与经营证据。</p></div><span>→</span></a>
   </div>
 </section>
 
 <section class="research-section" aria-labelledby="open">
-  <header class="research-section-head"><div><p>OPEN / 尚未解决</p><h2 id="open">下一步需要证据的问题</h2></div></header>
+  <header class="research-section-head"><div><p>OPEN / 尚未解决</p><h2 id="open">仍需证据的问题</h2></div></header>
   <div class="known-unknown">
     <article><h3>当前学习模型</h3><ul><li>典型常规流程及 I / II / III 期的主要目标</li><li>IND 与 NDA / BLA 在美国监管语境中的关口差异</li><li>研发验证线与 CMC / 制造线并行</li><li>API / CMC / GMP，以及工艺开发与临床供货为何在临床前就开始；R/D/M 服务速记见 CXO 页</li></ul></article>
     <article><h3>仍待补充</h3><ul><li>各阶段失败率、耗时和成本的可靠口径</li><li>不同药物类型在 CMC 与放大中的差异</li><li>哪些阶段最依赖 CRO，哪些更依赖 CDMO / CRDMO</li><li>中国与海外监管路径如何影响外包需求</li></ul></article>
   </div>
-</section>
-
-<section class="research-section" aria-labelledby="next">
-  <header class="research-section-head"><div><p>NEXT / 后续研究方向</p><h2 id="next">后续研究方向</h2></div></header>
-  <ul>
-    <li>CMC / API 小地图已经挂在本页制造节点；下一步补不同药物类型在放大、杂质和分析上的差异。</li>
-    <li>把每个阶段可能的外包角色标注上去，再连到 <a href="/投资/投研/医药/研究地图/CXO与CRDMO/">CXO 与 CRDMO</a>。</li>
-    <li>回到 <a href="/投资/投研/医药/药明康德/">药明康德档案</a>，问：药明主要承接哪些环节？</li>
-  </ul>
 </section>
 
 <section class="research-section" aria-labelledby="rev">
@@ -261,12 +252,10 @@ outline: [2, 3]
   <table class="revision-table">
     <thead><tr><th>日期</th><th>修订</th><th>原因</th></tr></thead>
     <tbody>
-      <tr><td>2026-08-10</td><td>建立初版流程地图</td><td>为理解 CRDMO 与药明康德建立前置基础</td></tr>
-      <tr><td>2026-08-11</td><td>总览图改为上下两张路径图谱</td><td>拆成上半程（到临床前）与下半程（IND 到上市 + CMC 线），便于分段理解</td></tr>
       <tr><td>2026-08-20</td><td>由单线流程改为研发验证线与 CMC / 制造线并行</td><td>纠正“三期结束才出现 D/M”</td></tr>
-      <tr><td>2026-08-20</td><td>把 IND、NDA/BLA、API、CMC、GMP 归入对应节点，并补回 10 步大白话</td><td>七问答案不再作为重复附录；原版讲法保留在流程地图和各节点下</td></tr>
+      <tr><td>2026-08-20</td><td>区分 IND、NDA/BLA、API、CMC 与 GMP 所在环节</td><td>避免把监管关口、物质实体和质量体系混为一类</td></tr>
     </tbody>
   </table>
 </section>
 
-<div class="research-note"><strong>证据状态</strong><span>本页目前是待公开一手来源逐项核验的教学模型。监管名词、分期例外、关键数据和公司判断如进入正式研究，需要回到相应监管文件、公司披露与可复查材料。</span></div>
+<div class="research-note"><strong>证据边界</strong><span>本页提供概念与典型流程框架；具体监管路径、分期例外、关键数据和公司判断仍需以相应监管文件、公司披露与可复查材料为准。</span></div>

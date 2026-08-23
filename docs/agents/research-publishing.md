@@ -80,6 +80,7 @@ Before writing or substantially rewriting research/weekly content, confirm with 
 - proposed structure
 - whether this is experimental or durable
 - which private materials will be consulted
+- what the reader should learn about the research object, distinct from how the page will be drafted or assembled
 
 Do not start body drafting until Gate 1 is clear for that content instance.
 
@@ -88,6 +89,8 @@ Do not start body drafting until Gate 1 is clear for that content instance.
 After local draft and preview:
 
 - human reviews content and presentation
+- confirm the public body contains no drafting, Prompt, Agent, migration, deduplication, page-assembly, or internal research-system narration
+- confirm revision sections record changed understanding rather than layout or editing history
 - human explicitly approves push/deploy
 - one approval applies only to that content instance
 
@@ -131,6 +134,8 @@ Public research pages should make these easy to find:
 - next research directions
 - related research maps / subject archives
 - important revisions
+
+These fields describe the research object and the author's evidence or judgment boundary. They must not become a public task board for how the page will be edited next. “Next research directions” means facts, mechanisms, or hypotheses that still need investigation; it does not mean adding cards, moving sections, preserving an old layout, or linking one page into another.
 
 Public maturity language:
 

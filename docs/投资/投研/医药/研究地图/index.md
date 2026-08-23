@@ -10,19 +10,18 @@ outline: [2, 3]
 <section class="industry-masthead">
   <p>KNOWLEDGE GRAPH / 医药知识图谱</p>
   <h1>医药知识图谱</h1>
-  <p>这里不再收一份重复的七问答案，而是把药物身份、研发验证、CMC 与制造、外包角色、支付传导和公司研究连成一张可复用的关系图。</p>
+  <p>这张图谱把药物身份、研发验证、CMC 与制造、外包角色、支付传导和公司研究连成一组可复用的关系。</p>
 </section>
 
 <div class="research-note">
   <strong>当前边界</strong>
-  <span>这是学习中的行业图谱。节点关系用于组织问题，不等于已经完成公开证据核验；公司收入、竞争优势和投资判断仍需单独取证。</span>
+  <span>节点关系用于组织行业问题，不等于已经完成公司层面的证据核验；公司收入、竞争优势和投资判断仍需单独取证。</span>
 </div>
 
 <section class="research-section" aria-labelledby="original-maps">
   <header class="research-section-head">
-    <div><p>ORIGINAL MAPS / 原版路径图谱</p><h2 id="original-maps">先看这两张图</h2></div>
+    <div><p>PATH MAPS / 创新药路径图谱</p><h2 id="original-maps">创新药研发路径图谱</h2></div>
   </header>
-  <p>这两张是 2026-08-10 建立的创新药路径图谱，仍是本页主图。下面的节点卡片只用来跳转，不替代原图。</p>
   <figure class="research-figure"><img src="/images/research/innov-drug-rd-path-upper.png" alt="创新药研发路径图谱（上）：从疾病问题到候选药物与临床前研究" width="1448" height="1086" loading="lazy" /><figcaption>上半程：从疾病问题出发，找到值得推进的候选药物，并完成进入临床前研究的准备。</figcaption></figure>
   <figure class="research-figure"><img src="/images/research/innov-drug-rd-path-lower.png" alt="创新药研发路径图谱（下）：从 IND 到上市，以及 CMC / 制造线如何贯穿全程" width="1448" height="1086" loading="lazy" /><figcaption>下半程：完成临床验证与监管审批，并依靠 CMC 与制造体系把药真正推向市场。</figcaption></figure>
 </section>
@@ -30,7 +29,6 @@ outline: [2, 3]
 <section class="research-section" aria-labelledby="topology">
   <header class="research-section-head">
     <div><p>TOPOLOGY / 总体拓扑</p><h2 id="topology">六组节点如何连接</h2></div>
-    <span>更新于 2026-08-20</span>
   </header>
 
   <div class="knowledge-graph" aria-label="医药行业知识图谱总览">
@@ -84,8 +82,8 @@ outline: [2, 3]
     <div class="knowledge-graph__lane">
       <div class="knowledge-graph__label"><span>06</span><strong>公司映射</strong></div>
       <div class="knowledge-flow">
-        <a class="knowledge-node knowledge-node--company" href="/投资/投研/医药/药明康德/#company-map"><small>CXO 公司</small><strong>药明康德</strong><span>先建立待验证工作坐标，再用公司披露定位平台与能力</span></a>
-        <span class="knowledge-node knowledge-node--future"><small>卖药公司</small><strong>恒瑞医药 / 百济神州</strong><span>以后挂到药物、管线与支付节点</span></span>
+        <a class="knowledge-node knowledge-node--company" href="/投资/投研/医药/药明康德/#company-map"><small>CXO 公司</small><strong>药明康德</strong><span>以公司披露定位服务平台、能力与经营证据</span></a>
+        <span class="knowledge-node knowledge-node--future"><small>卖药公司</small><strong>恒瑞医药 / 百济神州</strong><span>同时定位药物身份、管线阶段与支付暴露</span></span>
       </div>
     </div>
   </div>
@@ -113,9 +111,9 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="check">
   <header class="research-section-head">
-    <div><p>CHECK / 七问验收索引</p><h2 id="check">七问不再另抄一套答案</h2></div>
+    <div><p>CHECK / 关键问题索引</p><h2 id="check">七个关键问题</h2></div>
   </header>
-  <p>每一问都指向它真正归属的知识节点。能顺着关系讲清楚，才算过关。</p>
+  <p>每一问都对应其归属的知识节点，可以沿关系继续查看相关概念和公司问题。</p>
   <ol class="knowledge-checklist">
     <li><a href="/投资/投研/医药/研究地图/创新药研发全流程/#clinical">从靶点到上市；I 期和 II 期各回答什么？</a></li>
     <li><a href="/投资/投研/医药/研究地图/创新药研发全流程/#regulatory-gates">IND 和 NDA / BLA 差在哪？</a></li>
@@ -129,10 +127,10 @@ outline: [2, 3]
 
 <section class="research-section" aria-labelledby="revisions">
   <header class="research-section-head">
-    <div><p>REVISIONS / 认知修订</p><h2 id="revisions">2026-08-20 修订了哪些关系</h2></div>
+    <div><p>CLARIFICATIONS / 易混关系</p><h2 id="revisions">五组容易混淆的关系</h2></div>
   </header>
   <table class="revision-table">
-    <thead><tr><th>原来的错误连接</th><th>现在的关系</th><th>归属节点</th></tr></thead>
+    <thead><tr><th>常见误解</th><th>更准确的理解</th><th>相关节点</th></tr></thead>
     <tbody>
       <tr><td>R 只到找分子，或 R 贯穿整条线</td><td>本文用 R 概括研究服务，用 D/M 速记工艺制造开发与生产；它不是统一行业本体</td><td><a href="/投资/投研/医药/研究地图/CXO与CRDMO/#roles">服务模型速记</a></td></tr>
       <tr><td>三期结束后才开始 D/M</td><td>临床前已开始工艺开发；临床样品已经是 M</td><td><a href="/投资/投研/医药/研究地图/创新药研发全流程/#parallel">双线并行</a></td></tr>
@@ -146,7 +144,6 @@ outline: [2, 3]
 <section class="research-section" aria-labelledby="maps">
   <header class="research-section-head">
     <div><p>MAPS / 节点详图</p><h2 id="maps">三张节点详图</h2></div>
-    <span>实验结构</span>
   </header>
   <div class="learning-path">
     <a href="/投资/投研/医药/研究地图/创新药研发全流程/"><span>01</span><div><strong>创新药研发全流程</strong><p>研发验证线与 CMC / 制造线如何并行</p></div><span>→</span></a>
@@ -157,5 +154,5 @@ outline: [2, 3]
 
 <div class="research-note">
   <strong>来源说明</strong>
-  <span>本图谱整理自行业地基讲义和既有教学知识图谱，目前仍是待公开一手来源逐项核验的学习结构，不替代公司披露、监管文件与正式研究证据。</span>
+  <span>本图谱用于组织行业问题和概念关系，不替代公司披露、监管文件与正式研究证据。</span>
 </div>

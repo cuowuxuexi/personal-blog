@@ -11,17 +11,17 @@ outline: [2, 3]
   <div>
     <p>RESEARCH MAP 03 / 研究地图</p>
     <h1>原研、仿制与支付端</h1>
-    <span>学习中 · 截至 2026-08-20 · 为后续研究卖药公司做准备</span>
+    <span>信息截至 2026-08-20</span>
   </div>
   <dl>
     <div><dt>问题</dt><dd>药的身份怎样连接专利、替代与支付？</dd></div>
-    <div><dt>阶段</dt><dd>学习中</dd></div>
-    <div><dt>建立</dt><dd>2026-08-20</dd></div>
+    <div><dt>状态</dt><dd>学习中</dd></div>
+    <div><dt>范围</dt><dd>药物身份、生命周期与支付传导</dd></div>
     <div><dt>边界</dt><dd>不写公司管线、收入与估值</dd></div>
   </dl>
 </section>
 
-<div class="research-note"><strong>核心修订</strong><span>创新药、原研药、仿制药不是一条简单的“三阶段改名”。它们分别描述创新属性、来源身份和参照关系，需要与药物类型、生命周期分开看。</span></div>
+<div class="research-note"><strong>核心区分</strong><span>创新药、原研药、仿制药不是一条简单的“三阶段改名”。它们分别描述创新属性、来源身份和参照关系，需要与药物类型、生命周期分开看。</span></div>
 
 <section class="research-section" aria-labelledby="identity">
   <header class="research-section-head"><div><p>IDENTITY / 身份维度</p><h2 id="identity">先问的是哪一个维度</h2></div></header>
@@ -38,7 +38,6 @@ outline: [2, 3]
 <section class="research-section" aria-labelledby="lifecycle">
   <header class="research-section-head"><div><p>LIFECYCLE / 生命周期</p><h2 id="lifecycle">同一只原研药不会在专利到期后“变成仿制药”</h2></div></header>
 
-  <p class="graph-scroll-hint">移动端按箭头向下阅读；较窄桌面可横向滑动。</p>
   <div class="knowledge-chain" role="group" aria-label="创新者产品从研发到保护减弱和替代竞争的典型生命周期">
     <span><small>研发阶段</small><strong>创新药项目</strong></span><i aria-hidden="true">→</i>
     <span><small>获批上市</small><strong>原研 / 创新者产品</strong></span><i aria-hidden="true">→</i>
@@ -119,7 +118,7 @@ outline: [2, 3]
 <section class="research-section" aria-labelledby="open">
   <header class="research-section-head"><div><p>OPEN / 学习模型与待补证</p><h2 id="open">当前学习模型与仍待补证</h2></div></header>
   <div class="known-unknown">
-    <article><h3>当前学习模型</h3><ul><li>创新属性、原研来源、参比指定和仿制关系需要分维度理解</li><li>原研产品在保护到期后仍可继续销售，替代产品在旁边进入</li><li>医保谈判与集采通常先作用在卖药公司的产品价单</li><li>传到 CXO 需要经过研发预算、管线与生产安排</li></ul></article>
+    <article><h3>当前框架</h3><ul><li>创新属性、原研来源、参比指定和仿制关系需要分维度理解</li><li>原研产品在保护到期后仍可继续销售，替代产品在旁边进入</li><li>医保谈判与集采通常先作用在卖药公司的产品价单</li><li>传到 CXO 需要经过研发预算、管线与生产安排</li></ul></article>
     <article><h3>仍待补证</h3><ul><li>中国药品注册分类与“创新药”口径的精确边界</li><li>具体集采批次、医保谈判降幅与支付标准</li><li>化学仿制药和生物类似药的公司级竞争差异</li><li>恒瑞、百济等公司的具体产品、专利和支付暴露</li></ul></article>
   </div>
 </section>
@@ -127,10 +126,9 @@ outline: [2, 3]
 <section class="research-section" aria-labelledby="rev">
   <header class="research-section-head"><div><p>REVISIONS / 重要修订</p><h2 id="rev">重要修订</h2></div></header>
   <table class="revision-table"><thead><tr><th>日期</th><th>修订</th><th>原因</th></tr></thead><tbody>
-    <tr><td>2026-08-20</td><td>建立药物身份、生命周期和支付端地图</td><td>为后续研究卖药公司准备行业地基</td></tr>
     <tr><td>2026-08-20</td><td>把创新、原研、仿制从单一时间顺序拆为多个维度</td><td>避免把原研药误写成专利到期后“变成仿制药”</td></tr>
     <tr><td>2026-08-20</td><td>画出支付政策 → 卖药公司 → 预算 / 管线 → CXO 的间接传导</td><td>纠正“集采直接打 CXO 的 M 段”</td></tr>
   </tbody></table>
 </section>
 
-<div class="research-note"><strong>证据状态</strong><span>本页目前是待公开一手来源逐项核验的教学地图，不是政策规则全书。进入具体公司或公开发布前，需要补监管文件、参比制剂目录、专利信息、医保目录和公司披露。</span></div>
+<div class="research-note"><strong>证据边界</strong><span>本页提供概念与传导框架，不是政策规则全书；具体公司分析需要结合监管文件、参比制剂目录、专利信息、医保目录和公司披露。</span></div>
