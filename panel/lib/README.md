@@ -1,0 +1,48 @@
+# panel/lib
+
+发布面板后端能力层。`server.mjs` 负责 HTTP 装配，本目录拥有内容变更、发布任务、外部系统 adapter、校验与持久化。
+
+## 文件索引
+
+| 文件 | 说明 |
+| --- | --- |
+| `context.mjs` | 创建面板运行上下文，装配路径、store、probes 与 supervisor |
+| `repo-paths.mjs` | 栏目 `KINDS`、capability 和仓库路径的后端权威；KINDS 由 adapter 组装 |
+| `content-kind-adapter.mjs` | 面板 `life` / `invest` / `journey` → `content-catalog` 的窄 adapter；UI copy 留在本层 |
+| `paths.mjs` | 默认仓路径、环境变量、日期/期号辅助与兼容导出 |
+| `weekly.mjs` | 周记/历程解析、条目/期头变更与原子写盘（Wave D：只写 Markdown；posts/config 字符串手术已停用） |
+| `atomic-write.mjs` | 多目标原子写入与失败回滚 |
+| `images.mjs` | 按栏目压缩并保存周记/历程图片；WebP 旁写出公众号用的 JPEG 伴生文件 |
+| `content-validation.mjs` | 发布快照的重复条目、图片与基本结构校验 |
+| `publish.mjs` | 从正文收集实际引用的发布图片 |
+| `scope.mjs` | 发布文件白名单、黑名单与 journey 清单约束 |
+| `publish-job.mjs` | 发布状态机：快照、构建、commit、push、国内部署与生产校验 |
+| `probes.mjs` | Git、job-scoped preview base、根 SSR 合并、目标页/锚点校验、push、部署与生产 HTTP 等默认外部 adapter |
+| `git.mjs` | Git 命令封装 |
+| `guonei.mjs` | 国内站构建元数据、打包、SSH 上传与目录原子替换 |
+| `wechat.mjs` | 公众号预览 HTML 与剪贴板 payload 生成 |
+| `preview-nav.mjs` | 发布预览文章位置与 hash 导航 |
+| `vitepress-supervisor.mjs` | 本地 VitePress 预览进程保活 |
+| `polish.mjs` | clipro 模型发现与条目润色 |
+| `form-draft.mjs` | 服务端表单草稿备份读写 |
+| `json-store.mjs` | JSON 文件持久化 store |
+| `hash.mjs` | 哈希、ID 与确认 token |
+| `redact.mjs` | 日志/错误信息脱敏 |
+
+## Behavioral warnings
+
+- `POST /api/draft` 当前调用 `applyDraft()`，会立即原子写工作区，并非纯内存草稿。
+- `confirmPublication()` 在同一请求中完成 commit、push、国内部署与生产校验。
+- `getPublication()` 在部分状态会推进生产校验，因此当前 job GET 不是纯查询；模块化计划 Phase 5 会显式拆分。
+- `weekly.mjs` 和 `publish-job.mjs` 是当前最宽的两个模块；改它们前先从 `PROJECT.md` 选择「内容目录 / 信息架构」「发布面板」或「发布部署」能力。
+- job 级 release preview 必须保留双构建：先生成根路径 SSR，再生成 `/release-preview/<jobId>/` base 的客户端资源，并把根 SSR app 区合入后者。它规避 Windows + VitePress 非根 base 可能生成 `NotFound` SSR 壳的问题；不要在缺少目标页、锚点和资源前缀回归测试时简化为单次构建。合并时跳过 `public/` 拷进 dist 的独立 HTML（没有 VitePress app 壳），不要把它们当成 SSR 页。
+
+## Tests
+
+测试固定放在 `panel/*.test.mjs`，因为 `pnpm test:panel` 的 glob 不扫描本目录。定向运行时从仓库根使用 `node --test panel/<name>.test.mjs`。
+
+## 子目录
+
+无。
+
+最后更新：2026-08-24

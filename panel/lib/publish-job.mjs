@@ -3,9 +3,10 @@ import path from 'node:path'
 import { newId, newToken, sha256File, sha256Text } from './hash.mjs'
 import { createGit } from './git.mjs'
 import { redact } from './redact.mjs'
-import { assertPublishable, dirtyJourneyMetaPaths, isAllowedPublishPath, isJourneyChapterPath, isJourneyMetaPath, posixPath, publishScopeOf } from './scope.mjs'
+import { assertPublishable, isAllowedPublishPath, isJourneyChapterPath, posixPath, publishScopeOf } from './scope.mjs'
 import { collectReferencedImages } from './publish.mjs'
-import { renderWechatPreview } from './wechat.mjs'
+import { materializeWechatJpegCompanions } from './images.mjs'
+import { buildWechatPreviewDocument, embedWechatClipboardImages, renderWechatPreview } from './wechat.mjs'
 import { kindIdFromArticleUrl, withPreviewHash } from './preview-nav.mjs'
 import { parseFrontmatter } from './weekly.mjs'
 
@@ -172,15 +173,17 @@ async function buildManifest(ctx, git, draft, statusRows, headFiles) {
     repoRoot,
     assetDirectoryForKind(ctx, kindId),
   ).map(posixPath)
+  const jpegCompanions = (await materializeWechatJpegCompanions(referenced, repoRoot)).map(posixPath)
   const files = assertPublishable([
     ...draft.files,
     ...referenced,
+    ...jpegCompanions,
   ], options)
   const unique = options.scope === 'journey'
     ? [...new Set([
-      ...files.filter((file) => isJourneyChapterPath(file) || isJourneyMetaPath(file)),
+      ...files.filter((file) => isJourneyChapterPath(file)),
       ...referenced,
-      ...dirtyJourneyMetaPaths(statusRows),
+      ...jpegCompanions,
     ])]
     : [...new Set(files)]
   const manifest = []
@@ -329,6 +332,7 @@ export async function preparePublication(ctx, { draftId, headingAnchor = '' }) {
     baseSha: '',
     commitSha: null,
     pushed: false,
+    deployed: false,
     verifiedUrl: null,
     failureReason: null,
     retryActions: [],
@@ -360,10 +364,22 @@ export async function preparePublication(ctx, { draftId, headingAnchor = '' }) {
       productionOrigin: ctx.productionOrigin,
       jobId: job.id,
     })
+    const clipboard = await embedWechatClipboardImages(wechat.articleHtml, {
+      snapshotDir,
+      jobId: job.id,
+    })
+    const wechatHtml = buildWechatPreviewDocument({
+      articleHtml: wechat.articleHtml,
+      title: wechat.title,
+      description: wechat.description,
+      accent: wechat.accent,
+      jobId: job.id,
+      clipboard,
+    })
     const wechatDir = path.join(snapshotDir, '.panel-wechat')
     fs.mkdirSync(wechatDir, { recursive: true })
     job.wechatPreviewFile = path.join(wechatDir, 'index.html')
-    fs.writeFileSync(job.wechatPreviewFile, wechat.html, 'utf8')
+    fs.writeFileSync(job.wechatPreviewFile, wechatHtml, 'utf8')
     job.wechatPreviewUrl = `/wechat-preview/${job.id}/`
     job.wechatAssetUrls = wechat.assetUrls
     job.wechatExternalAssetUrls = wechat.externalAssetUrls
@@ -386,6 +402,8 @@ export async function preparePublication(ctx, { draftId, headingAnchor = '' }) {
       snapshotDir,
       repoRoot: ctx.repoRoot,
       previewBase,
+      previewPath: draft.previewLink,
+      headingAnchor: job.headingAnchor,
     })
     job.distDir = built.distDir
     writePreviewBuildMeta(job.distDir, job.id)
@@ -442,6 +460,9 @@ async function commitSnapshot(ctx, job, git) {
   if (cachedSet.size !== expected.size || [...expected].some((file) => !cachedSet.has(file))) {
     fail('暂存 diff 与发布清单不一致，已中止', 409)
   }
+  if (!expected.size) {
+    fail('这次没有可提交的文件改动。正文和图片已与 main 一致时，确认发布不会生成空提交。', 409)
+  }
   job.commitSha = await git.commit(job.commitMessage)
 }
 
@@ -467,8 +488,23 @@ export async function verifyProduction(ctx, job) {
   }
   if (job.verifying) return job
   job.verifying = true
-  const started = Date.now()
   try {
+    if (!job.deployed) {
+      job.state = 'Deploying'
+      job.failureReason = null
+      saveJob(ctx, job)
+      if (typeof ctx.probes.deploy === 'function') {
+        await ctx.probes.deploy({
+          snapshotDir: job.snapshotDir,
+          repoRoot: ctx.repoRoot,
+          sha: job.commitSha,
+          origin: ctx.productionOrigin,
+        })
+      }
+      job.deployed = true
+      saveJob(ctx, job)
+    }
+    const started = Date.now()
     while (Date.now() - started < ctx.verifyTimeoutMs) {
       const deploy = await ctx.probes.deployStatus({ sha: job.commitSha })
       if (deploy?.state === 'cancelled' || deploy?.state === 'superseded') {
@@ -508,14 +544,14 @@ export async function verifyProduction(ctx, job) {
       }
       if (version?.sha && version.sha !== job.commitSha && deploy?.state === 'superseded') {
         job.state = 'Superseded'
-        job.failureReason = '生产域名已切到另一个提交'
+        job.failureReason = '国内站已切到另一个提交'
         job.retryActions = ['prepare']
         return saveJob(ctx, job)
       }
       await new Promise((resolve) => setTimeout(resolve, ctx.pollIntervalMs))
     }
     job.state = 'Failed'
-    job.failureReason = '生产校验超时，域名尚未返回目标提交'
+    job.failureReason = '国内站校验超时，尚未返回目标提交'
     job.retryActions = ['retry-verify']
     return saveJob(ctx, job)
   } finally {
@@ -624,6 +660,7 @@ export async function retryVerification(ctx, jobId) {
   if (job.state === 'Published') return publicJob(job)
   if (!wasPushed(job)) fail('还没有推送到远端，请先重试推送', 409)
   job.state = 'Pushed'
+  job.deployed = false
   job.failureReason = null
   job.retryActions = []
   saveJob(ctx, job)

@@ -2,14 +2,23 @@ import MarkdownIt from 'markdown-it'
 import { normalizeDisplayMath } from '../../docs/.vitepress/normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from '../../docs/.vitepress/normalize-weekly-headings.mjs'
 import { parseChrome, parseEntries, parseFrontmatter } from './weekly.mjs'
+import { resolveWechatLocalAsset, toWechatJpegDataUri } from './images.mjs'
 
 const DEFAULT_COVER = '/images/hero-fireworks.png'
 const DEFAULT_COVER_ALT = '机械之手指向夜空烟花'
 const DEFAULT_CAPTION = '烟花朵朵开，想法自然来。'
 const DEFAULT_SECTION_TITLE = '看烟花！！！'
-const BODY_COLOR = '#3c3c43'
-const MUTED_COLOR = '#6e6e78'
-const ORANGE = '#e66700'
+const INK_COLOR = '#1a1a18'
+const BODY_COLOR = '#4a4a45'
+const MUTED_COLOR = '#8a8a82'
+const LINK_COLOR = '#607fa6'
+const CODE_COLOR = '#007aaa'
+const DIVIDER = 'rgba(120,120,112,0.18)'
+const TITLE_RULE = '#e7e7eb'
+const PAPER_TINT = 'rgba(26,26,24,0.02)'
+const SANS = "'Noto Sans SC','PingFang SC','Microsoft YaHei',-apple-system,sans-serif"
+const SERIF = "'Noto Serif SC','Songti SC','STSong',Georgia,serif"
+const MONO = "'JetBrains Mono','SF Mono',Menlo,Consolas,monospace"
 
 const THEMES = {
   life: '#0d7a5f',
@@ -17,25 +26,25 @@ const THEMES = {
 }
 
 const STYLES = {
-  article: "margin:0;padding:0;font-family:'SourceHanSerifCN','Noto Serif SC','Songti SC','STSong','SimSun',serif;font-size:16px;line-height:28px;color:#3c3c43;background-color:transparent;",
-  paragraph: 'margin:14px 0;font-size:16px;line-height:28px;color:#3c3c43;',
-  h1: 'margin:22px 0 12px;font-size:24px;line-height:34px;font-weight:600;color:#3c3c43;',
-  h2: 'margin:22px 0 12px;font-size:22px;line-height:32px;font-weight:600;color:#3c3c43;',
-  h3: 'margin:20px 0 10px;font-size:20px;line-height:30px;font-weight:600;color:#3c3c43;',
-  h4: 'margin:18px 0 8px;font-size:18px;line-height:28px;font-weight:600;color:#3c3c43;',
-  h5: 'margin:16px 0 8px;font-size:17px;line-height:27px;font-weight:600;color:#3c3c43;',
-  h6: 'margin:16px 0 8px;font-size:16px;line-height:26px;font-weight:600;color:#3c3c43;',
-  ul: 'margin:14px 0;padding:0 0 0 24px;color:#3c3c43;',
-  ol: 'margin:14px 0;padding:0 0 0 24px;color:#3c3c43;',
-  li: 'margin:6px 0;font-size:16px;line-height:28px;color:#3c3c43;',
-  blockquote: 'margin:18px 0;padding:10px 16px;border-left:4px solid #d7d7dc;background-color:#f7f7f8;color:#5b5b64;',
-  code: "padding:2px 6px;border-radius:4px;background-color:#f1f1f3;font-family:Consolas,'Courier New',monospace;font-size:14px;line-height:22px;color:#476582;word-break:break-word;",
-  pre: "margin:18px 0;padding:14px 16px;border-radius:4px;background-color:#f6f6f7;overflow-x:auto;white-space:pre-wrap;word-break:break-word;font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:22px;color:#3c3c43;",
-  table: 'width:100%;margin:18px 0;border-collapse:collapse;border-spacing:0;font-size:14px;line-height:22px;color:#3c3c43;',
-  th: 'padding:8px 10px;border:1px solid #dcdde1;background-color:#f3f3f5;font-weight:600;text-align:left;',
-  td: 'padding:8px 10px;border:1px solid #dcdde1;text-align:left;vertical-align:top;',
-  image: 'display:block;max-width:480px;width:100%;height:auto;margin:20px auto;border:0;border-radius:3px;',
-  hr: 'height:1px;margin:26px 0;border:0;background-color:#dcdde1;',
+  article: `margin:0;padding:8px 0 0;font-family:${SANS};font-size:15px;line-height:1.9;color:${BODY_COLOR};background:${PAPER_TINT};`,
+  paragraph: `margin:0 0 14px;font-family:${SANS};font-size:15px;line-height:1.9;color:${BODY_COLOR};word-break:break-word;overflow-wrap:break-word;`,
+  h1: `margin:22px 0 12px;font-family:${SERIF};font-size:22px;line-height:1.4;font-weight:700;color:${INK_COLOR};`,
+  h2: `margin:22px 0 12px;font-family:${SERIF};font-size:22px;line-height:1.4;font-weight:700;color:${INK_COLOR};`,
+  h3: `margin:20px 0 10px;font-family:${SERIF};font-size:20px;line-height:1.4;font-weight:700;color:${INK_COLOR};`,
+  h4: `margin:18px 0 8px;font-family:${SANS};font-size:17px;line-height:1.5;font-weight:600;color:${INK_COLOR};`,
+  h5: `margin:16px 0 8px;font-family:${SANS};font-size:16px;line-height:1.5;font-weight:600;color:${INK_COLOR};`,
+  h6: `margin:16px 0 8px;font-family:${SANS};font-size:15px;line-height:1.5;font-weight:600;color:${INK_COLOR};`,
+  ul: `margin:0 0 14px;padding:0 0 0 1.4em;list-style-type:circle;color:${BODY_COLOR};`,
+  ol: `margin:0 0 14px;padding:0 0 0 1.4em;color:${BODY_COLOR};`,
+  li: `margin:0 0 6px;font-size:15px;line-height:1.9;color:${BODY_COLOR};`,
+  blockquote: 'margin:0 0 14px;padding:0 0 0 10px;border-left:3px solid #dbdbdb;color:#5b5b64;',
+  code: `font-family:${MONO};font-size:13.5px;color:${CODE_COLOR};background:rgba(26,26,24,0.06);padding:1px 5px;border-radius:3px;word-break:break-all;`,
+  pre: `margin:0 0 14px;padding:14px 16px;border-radius:3px;background:rgba(26,26,24,0.06);overflow-x:auto;white-space:pre-wrap;word-break:break-word;font-family:${MONO};font-size:13px;line-height:1.7;color:${BODY_COLOR};`,
+  table: `width:100%;margin:0 0 14px;border-collapse:collapse;border-spacing:0;font-size:14px;line-height:1.6;color:${BODY_COLOR};`,
+  th: `padding:8px 10px;border:1px solid ${TITLE_RULE};background-color:#f3f3f5;font-weight:600;text-align:left;`,
+  td: `padding:8px 10px;border:1px solid ${TITLE_RULE};text-align:left;vertical-align:top;`,
+  image: 'display:block;max-width:100%;width:100%;height:auto;margin:0 0 14px;border:0;',
+  hr: `height:0;margin:20px 0;border:0;border-top:1px solid ${DIVIDER};`,
 }
 
 function escapeHtml(value) {
@@ -93,6 +102,16 @@ const THEME_BY_KIND = {
 
 function normalizeKind(kind) {
   return THEME_BY_KIND[String(kind)] || 'life'
+}
+
+function kickerLabel(kind) {
+  return String(kind) === 'journey' ? '历程随记' : '本周随记'
+}
+
+function hexToRgba(hex, alpha) {
+  const n = String(hex || '').replace('#', '')
+  if (!/^[0-9a-fA-F]{6}$/.test(n)) return `rgba(13,122,95,${alpha})`
+  return `rgba(${Number.parseInt(n.slice(0, 2), 16)},${Number.parseInt(n.slice(2, 4), 16)},${Number.parseInt(n.slice(4, 6), 16)},${alpha})`
 }
 
 function formatDate(value) {
@@ -238,6 +257,10 @@ function markdownRenderer({ accent, imageContext }) {
     const tag = tokens[index].tag
     return `<${tag} style="${STYLES[tag] || STYLES.h6}">`
   }
+  md.renderer.rules.strong_open = () => `<strong style="color:${INK_COLOR};font-weight:600;">`
+  md.renderer.rules.strong_close = () => '</strong>'
+  md.renderer.rules.em_open = () => '<em style="font-style:italic;">'
+  md.renderer.rules.em_close = () => '</em>'
   md.renderer.rules.code_inline = (tokens, index) => (
     `<code style="${STYLES.code}">${escapeHtml(tokens[index].content)}</code>`
   )
@@ -250,7 +273,7 @@ function markdownRenderer({ accent, imageContext }) {
   md.renderer.rules.link_open = (tokens, index) => {
     const href = safeHref(tokens[index].attrGet('href'))
     if (!href) return '<span>'
-    return `<a href="${escapeHtml(href)}" style="color:${accent};text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;word-break:break-word;">`
+    return `<a href="${escapeHtml(href)}" style="color:${LINK_COLOR};text-decoration:none;word-break:break-word;">`
   }
   md.renderer.rules.link_close = (tokens, index, options, env) => {
     const opening = tokens.slice(0, index).reverse().find((token) => token.type === 'link_open' || token.type === 'link_close')
@@ -276,8 +299,9 @@ function markdownRenderer({ accent, imageContext }) {
 
 function renderTags(tags, accent) {
   if (!Array.isArray(tags) || !tags.length) return ''
+  const border = hexToRgba(accent, 0.28)
   const items = tags.map((tag) => (
-    `<span style="display:inline-block;margin:0 6px 6px 0;padding:2px 8px;border:1px solid ${accent};border-radius:999px;font-size:12px;line-height:18px;color:${accent};">${escapeHtml(tag)}</span>`
+    `<span style="display:inline-block;margin:0 8px 8px 0;padding:1px 8px;border:1px solid ${border};border-radius:3px;font-family:${MONO};font-size:12px;line-height:18px;color:${accent};">${escapeHtml(tag)}</span>`
   )).join('')
   return `<p style="margin:0 0 12px;font-size:0;">${items}</p>`
 }
@@ -302,7 +326,7 @@ function renderEntry(entry, issueDate, index, count, accent, renderMarkdown, ima
     decoded.image,
     decoded.imageAlt || decoded.title,
     imageContext,
-    `display:block;width:100%;border:0;border-radius:3px;${decoded.imageFit === 'cover' ? 'height:400px;max-height:50vh;object-fit:cover;object-position:center;' : 'height:auto;'}`,
+    `display:block;max-width:100%;width:100%;border:0;${decoded.imageFit === 'cover' ? 'height:400px;max-height:50vh;object-fit:cover;object-position:center;' : 'height:auto;'}`,
   )
   const badge = renderImage(
     decoded.badgeImage,
@@ -311,24 +335,24 @@ function renderEntry(entry, issueDate, index, count, accent, renderMarkdown, ima
     'display:inline-block;max-width:100%;height:18px;width:auto;vertical-align:middle;border:0;margin:0;',
   )
   const date = formatDate(decoded.date || issueDate)
-  const separator = index < count - 1 ? 'border-bottom:1px solid #dcdde1;' : ''
+  const separator = index < count - 1 ? `border-bottom:1px solid ${DIVIDER};` : ''
   return [
-    `<section style="margin:40px 0 0;padding:0 0 32px;${separator}">`,
-    `<h3 style="margin:0 0 6px;font-size:30px;line-height:40px;font-weight:600;color:${ORANGE};">${escapeHtml(decoded.title)}</h3>`,
+    `<section style="max-width:640px;margin:0 auto;padding:28px 16px 8px;${separator}">`,
+    `<h3 style="margin:0 0 10px;font-family:${SERIF};font-size:22px;font-weight:700;line-height:1.4;color:${accent};">${escapeHtml(decoded.title)}</h3>`,
     link
-      ? `<p style="margin:0 0 12px;font-size:13px;line-height:21px;word-break:break-all;">${renderLink(link, `${decoded.linkHref} ↗`, ORANGE, "font-family:Consolas,'Courier New',monospace;")}</p>`
+      ? `<p style="margin:0 0 10px;font-size:13px;line-height:21px;word-break:break-all;">${renderLink(link, `${decoded.linkHref} ↗`, LINK_COLOR, `font-family:${MONO};`)}</p>`
       : '',
     renderTags(decoded.tags, accent),
     badge ? `<p style="margin:0 0 12px;padding:0;">${badge}</p>` : '',
     decoded.subtitle
-      ? `<p style="margin:0 0 ${subtitleLink ? '4px' : '14px'};font-size:15px;line-height:24px;color:${MUTED_COLOR};">${escapeHtml(decoded.subtitle)}</p>`
+      ? `<p style="margin:0 0 ${subtitleLink ? '4px' : '14px'};font-family:${SANS};font-size:15px;line-height:1.9;color:${MUTED_COLOR};">${escapeHtml(decoded.subtitle)}</p>`
       : '',
     subtitleLink
-      ? `<p style="margin:0 0 14px;font-size:13px;line-height:21px;word-break:break-all;">${renderLink(subtitleLink, `${decoded.subtitleHref} ↗`, ORANGE, "font-family:Consolas,'Courier New',monospace;")}</p>`
+      ? `<p style="margin:0 0 14px;font-size:13px;line-height:21px;word-break:break-all;">${renderLink(subtitleLink, `${decoded.subtitleHref} ↗`, LINK_COLOR, `font-family:${MONO};`)}</p>`
       : '',
     headerImage ? `<p style="margin:0 0 14px;padding:0;">${headerImage}</p>` : '',
     renderMarkdown(entry.body),
-    date ? `<p style="margin:12px 0 0;font-size:14px;line-height:22px;color:${MUTED_COLOR};">${escapeHtml(date)}</p>` : '',
+    date ? `<p style="margin:16px 0 0;font-family:${SANS};font-size:13px;line-height:1.7;color:${MUTED_COLOR};">${escapeHtml(date)}</p>` : '',
     '</section>',
   ].filter(Boolean).join('\n')
 }
@@ -356,11 +380,38 @@ export function buildWechatClipboardPayload(articleHtml, plainText = '') {
   return { html, text: String(plainText ?? '') }
 }
 
-function renderPage({ articleHtml, title, description, accent, jobId }) {
+export async function embedWechatClipboardImages(articleHtml, options = {}) {
+  const payload = buildWechatClipboardPayload(articleHtml, stripHtml(articleHtml))
+  const images = payload.html.match(/<img\b[^>]*>/gi) || []
+  let html = payload.html
+  for (const image of images) {
+    const src = /\ssrc=(["'])(.*?)\1/i.exec(image)?.[2] || ''
+    const abs = resolveWechatLocalAsset(src, options)
+    if (!abs) continue
+    const dataUri = await toWechatJpegDataUri(abs)
+    if (!dataUri) continue
+    const next = image.replace(/\ssrc=(["'])(.*?)\1/i, ` src="${dataUri}"`)
+    html = html.replace(image, next)
+  }
+  return { html, text: payload.text }
+}
+
+export function buildWechatPreviewDocument({
+  articleHtml,
+  title,
+  description,
+  accent,
+  jobId,
+  clipboard,
+}) {
+  return renderPage({ articleHtml, title, description, accent, jobId, clipboard })
+}
+
+function renderPage({ articleHtml, title, description, accent, jobId, clipboard }) {
   const jobJson = safeJson(String(jobId ?? ''))
-  const clipboard = buildWechatClipboardPayload(articleHtml, stripHtml(articleHtml))
-  const clipboardHtmlJson = safeJson(clipboard.html)
-  const clipboardTextJson = safeJson(clipboard.text)
+  const resolved = clipboard || buildWechatClipboardPayload(articleHtml, stripHtml(articleHtml))
+  const clipboardHtmlJson = safeJson(resolved.html)
+  const clipboardTextJson = safeJson(resolved.text)
   return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -368,7 +419,7 @@ function renderPage({ articleHtml, title, description, accent, jobId }) {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${escapeHtml(`公众号版 · ${title}`)}</title>
 <style>
-body{margin:0;background:#eceef1}.toolbar{position:sticky;top:0;z-index:9;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 20px;background:#fff;border-bottom:1px solid #d8dadd;font:13px/1.6 system-ui,"Microsoft YaHei",sans-serif;color:#555}.toolbar button{padding:8px 18px;border:0;border-radius:6px;background:${accent};color:#fff;font-size:14px;font-weight:600;cursor:pointer}.toolbar button:disabled{cursor:not-allowed;opacity:.45}.paper{max-width:677px;margin:28px auto 48px;padding:32px 22px;background:#fff;box-shadow:0 2px 18px rgba(0,0,0,.06)}
+body{margin:0;background:#ededed}.toolbar{position:sticky;top:0;z-index:9;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px 20px;background:#fff;border-bottom:1px solid #d8dadd;font:13px/1.6 system-ui,"Microsoft YaHei",sans-serif;color:#555}.toolbar button{padding:8px 18px;border:0;border-radius:6px;background:${accent};color:#fff;font-size:14px;font-weight:600;cursor:pointer}.toolbar button:disabled{cursor:not-allowed;opacity:.45}.paper{max-width:780px;margin:0 auto 48px;padding:20px 16px 36px;background:#fff}
 </style>
 </head>
 <body>
@@ -469,7 +520,7 @@ export function renderWechatPreview({ source, kind = 'life', productionOrigin = 
     section.image,
     '',
     imageContext,
-    'display:inline-block;height:34px;width:auto;vertical-align:-6px;margin:0 8px 0 0;border:0;',
+    'display:inline-block;height:22px;width:auto;vertical-align:-4px;margin:0 8px 0 0;border:0;',
   )
   const renderMarkdown = markdownRenderer({ accent, imageContext })
   const entryHtml = entries.map((entry, index) => (
@@ -477,15 +528,17 @@ export function renderWechatPreview({ source, kind = 'life', productionOrigin = 
   )).join('\n')
   const articleHtml = [
     `<section id="article" data-theme-accent="${accent}" style="${STYLES.article}">`,
-    `<h1 style="margin:0 0 16px;font-size:30px;line-height:42px;font-weight:600;color:${BODY_COLOR};letter-spacing:-0.5px;">${escapeHtml(title)}</h1>`,
-    cover ? `<p style="margin:0 0 12px;padding:0;">${cover}</p>` : '',
-    `<p style="margin:0 0 8px;font-size:15px;line-height:26px;color:${MUTED_COLOR};">${escapeHtml(stripHtml(chrome.caption) || DEFAULT_CAPTION)}</p>`,
-    preamble ? renderMarkdown(preamble) : '',
-    '<section style="margin:36px 0 0;padding:24px 0 0;border-top:1px solid #dcdde1;">',
-    `<h2 style="margin:0;font-size:24px;line-height:34px;font-weight:600;color:${BODY_COLOR};">${sectionIcon}${escapeHtml(section.title)}</h2>`,
+    `<h1 style="margin:0 0 14px;padding:0 16px 10px;border-bottom:1px solid ${TITLE_RULE};font-family:${SANS};font-size:22px;line-height:1.4;font-weight:400;color:${INK_COLOR};">${escapeHtml(title)}</h1>`,
+    cover ? `<p style="margin:0 0 12px;padding:0 16px;">${cover}</p>` : '',
+    `<p style="margin:0 0 8px;padding:0 16px;font-family:${SANS};font-size:15px;line-height:1.9;color:${MUTED_COLOR};">${escapeHtml(stripHtml(chrome.caption) || DEFAULT_CAPTION)}</p>`,
+    preamble ? `<section style="max-width:640px;margin:0 auto;padding:12px 16px 0;">${renderMarkdown(preamble)}</section>` : '',
+    '<section style="max-width:640px;margin:0 auto;padding:24px 16px 8px;">',
+    `<p style="font-family:${MONO};font-size:12px;color:${accent};letter-spacing:1px;margin:0 0 8px;">${escapeHtml(kickerLabel(kind))}</p>`,
+    `<section style="border-top:1px solid ${DIVIDER};height:0;margin:0 0 20px;"></section>`,
+    `<h2 style="margin:0;font-family:${SERIF};font-size:22px;font-weight:700;line-height:1.4;color:${INK_COLOR};">${sectionIcon}${escapeHtml(section.title)}</h2>`,
     '</section>',
     entryHtml,
-    `<p style="margin:40px 0 0;padding:20px 0 0;border-top:1px solid #dcdde1;font-size:13px;line-height:22px;color:#9a9aa2;">本文同步发布于博客${origin ? `：${escapeHtml(new URL(origin).host)}` : ''}（可点击文末「阅读原文」查看）。</p>`,
+    `<p style="max-width:640px;margin:28px auto 0;padding:20px 16px 8px;border-top:1px solid ${DIVIDER};font-size:13px;line-height:1.7;color:#9a9aa2;">本文同步发布于博客${origin ? `：${escapeHtml(new URL(origin).host)}` : ''}（可点击文末「阅读原文」查看）。</p>`,
     '</section>',
   ].filter(Boolean).join('\n')
 
@@ -496,5 +549,6 @@ export function renderWechatPreview({ source, kind = 'life', productionOrigin = 
     externalAssetUrls,
     title,
     description,
+    accent,
   }
 }

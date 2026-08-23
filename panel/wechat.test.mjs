@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
 import test from 'node:test'
-import { buildWechatClipboardPayload, renderWechatPreview } from './lib/wechat.mjs'
+import sharp from 'sharp'
+import { buildWechatClipboardPayload, embedWechatClipboardImages, renderWechatPreview } from './lib/wechat.mjs'
 import { serializeEntry } from './lib/weekly.mjs'
 
 function weeklySource({
@@ -88,7 +92,12 @@ test('renders life theme, links, image pairs, markdown, formulas, and date fallb
   assert.equal(result.title, '第007期-测试周记')
   assert.equal(result.description, '一段安全的摘要。')
   assert.match(result.articleHtml, /#0d7a5f/)
-  assert.match(result.articleHtml, /#e66700/)
+  assert.match(result.articleHtml, /#607fa6/)
+  assert.match(result.articleHtml, /本周随记/)
+  assert.match(result.articleHtml, /Noto Sans SC/)
+  assert.match(result.articleHtml, /Noto Serif SC/)
+  assert.match(result.articleHtml, /JetBrains Mono/)
+  assert.doesNotMatch(result.articleHtml, /#e66700/)
   assert.match(result.articleHtml, />标题 &amp; &lt;危险&gt;<\/h3>/)
   assert.match(result.articleHtml, />https:\/\/example\.com\/main\?a=1&amp;b=2 ↗<\/a>/)
   assert.match(result.articleHtml, />副标题<\/p>/)
@@ -140,6 +149,7 @@ test('renders investment accent and preserves a legacy disclaimer before the fir
   })
 
   assert.match(result.articleHtml, /#2949a4/)
+  assert.match(result.articleHtml, /本周随记/)
   assert.match(result.articleHtml, /src="\/wechat-preview-assets\/invest-job\/images\/hero-fireworks\.png"/)
   assert.match(result.articleHtml, /烟花朵朵开，想法自然来。/)
   assert.match(result.articleHtml, /<blockquote[^>]*>[\s\S]*非投资建议[\s\S]*不构成任何投资建议[\s\S]*风险自负[\s\S]*<\/blockquote>/)
@@ -183,6 +193,34 @@ test('applies an actual crop style for cover entry images', () => {
   })
 
   assert.match(result.articleHtml, /height:400px;max-height:50vh;object-fit:cover;object-position:center;/)
+})
+
+test('embeds local snapshot images as JPEG data URIs in the clipboard payload', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'wechat-embed-'))
+  const images = path.join(root, 'docs', 'public', 'images')
+  const weekly = path.join(images, 'weekly')
+  fs.mkdirSync(weekly, { recursive: true })
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64')
+  fs.writeFileSync(path.join(weekly, 'cover.webp'), await sharp(png).webp().toBuffer())
+  fs.writeFileSync(path.join(images, 'hero-fireworks.png'), png)
+  fs.writeFileSync(path.join(images, 'section.png'), png)
+
+  const result = renderWechatPreview({
+    source: weeklySource({
+      chrome: false,
+      entry: `<WeeklyEntry title="WebP" image="/images/weekly/cover.webp">\n\n正文。\n\n</WeeklyEntry>`,
+    }),
+    kind: 'life',
+    productionOrigin: 'https://blog.example.com',
+    jobId: 'webp-job',
+  })
+  const clipboard = await embedWechatClipboardImages(result.articleHtml, {
+    snapshotDir: root,
+    jobId: 'webp-job',
+  })
+  assert.match(clipboard.html, /src="data:image\/jpeg;base64,/)
+  assert.doesNotMatch(clipboard.html, /wechat-preview-assets|\.webp/)
+  assert.match(result.articleHtml, /data-online-src="https:\/\/blog\.example\.com\/images\/weekly\/cover\.webp"/)
 })
 
 test('builds clipboard HTML with production image src and no data-online-src', () => {
@@ -287,6 +325,8 @@ test('journey uses the life theme and keeps journey image assets', () => {
   })
 
   assert.match(result.articleHtml, /#0d7a5f/)
+  assert.match(result.articleHtml, /历程随记/)
+  assert.doesNotMatch(result.articleHtml, /本周随记/)
   assert.doesNotMatch(result.articleHtml, /#2949a4/)
   assert.match(result.articleHtml, /src="\/wechat-preview-assets\/journey-job\/images\/journey\/cover\.png"/)
   assert.match(result.articleHtml, /data-online-src="https:\/\/blog\.example\.com\/images\/journey\/body\.png"/)
