@@ -1048,6 +1048,21 @@
   font-weight: 600;
 }
 
+.VPFooter .copyright a,
+.site-beian a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.site-beian {
+  margin: 0;
+  padding: 16px 24px 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+
 #app {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -3158,6 +3173,20 @@
   line-height: 26px;
 }
 
+.weekly-post .standalone-html__open {
+  margin: 0 0 8px;
+}
+
+.weekly-post .journey-html-embed {
+  display: block;
+  width: 100%;
+  height: min(86vh, 1400px);
+  margin: 12px 0 28px;
+  border: 1px solid var(--weekly-divider, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
+  background: #111;
+}
+
 .weekly-post .weekly-events {
   margin: 16px 0 0;
   border-top: 1px solid var(--weekly-divider);
@@ -3239,6 +3268,13 @@
   margin-top: 36px;
   padding-top: 24px;
   border-top: 1px solid var(--weekly-divider);
+}
+
+/* 发布预览会跳到 #kan-yanhua；给固定顶栏留出滚动边距，避免条目标题被切掉。 */
+.weekly-post .vp-doc h1,
+.weekly-post .vp-doc h2,
+.weekly-post .weekly-entry {
+  scroll-margin-top: calc(var(--vp-nav-height, 64px) + 48px);
 }
 
 /* 「>> + 手指烟花图 + 看烟花」分区标题 */
@@ -3391,7 +3427,12 @@
 }
 
 .weekly-post .weekly-entry__media {
-  margin: 0 0 14px;
+  margin: 0 0 20px;
+}
+
+/* 头图后若正文仍以插图开头，按连续插图拉开，避免两张整页截图贴死。 */
+.weekly-post .weekly-entry__media + .weekly-entry__body > p:first-child:has(img) {
+  margin-top: 28px;
 }
 
 /* 条目头图：默认完整显示截图；照片封面才用 cover 裁切 */

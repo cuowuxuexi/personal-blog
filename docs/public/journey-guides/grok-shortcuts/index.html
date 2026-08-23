@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/journey-guides/grok-shortcuts/" />
+  <title>Grok Build 快捷命令 · 图解</title>
+  <style>
+    :root {
+      --bg: #07080a;
+      --paper: #111418;
+      --ink: #f3f6fb;
+      --muted: #9aa6b5;
+      --cyan: #4de2ff;
+      --silver: #d7dee8;
+      --coral: #ff6b6b;
+      --line: rgba(243, 246, 251, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      line-height: 1.25;
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    .hero { text-align: center; padding: 12px 0 8px; }
+    .hero img, .shot {
+      width: 100%;
+      border-radius: 28px;
+      display: block;
+      border: 1px solid var(--line);
+      background: #050607;
+    }
+    .kicker {
+      display: inline-block;
+      margin: 22px 0 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(77, 226, 255, 0.12);
+      color: var(--cyan);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    h1, h2 { font-weight: 800; letter-spacing: -0.03em; }
+    h1 { font-size: clamp(40px, 8vw, 84px); margin-bottom: 10px; }
+    h2 { font-size: clamp(32px, 6vw, 56px); margin: 8px 0 10px; }
+    .sub {
+      color: var(--muted);
+      font-size: clamp(18px, 2.4vw, 26px);
+      max-width: 18em;
+      margin: 0 auto;
+    }
+
+    section { margin-top: 72px; }
+    .center { text-align: center; }
+
+    .trio, .row3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .card, .cmd, .keycap-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+    }
+    .card { padding: 28px 20px 24px; text-align: center; }
+    .big-sym {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 12px;
+      color: var(--cyan);
+    }
+    .card h3 { font-size: 28px; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 18px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .cmd { padding: 22px 18px 18px; min-height: 132px; }
+    .cmd code {
+      display: block;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .cmd span { color: var(--ink); font-size: 22px; font-weight: 700; }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .keycap-card { padding: 22px 18px 20px; }
+    kbd {
+      display: inline-block;
+      min-width: 2.1em;
+      padding: 10px 12px;
+      margin: 0 4px 10px 0;
+      border-radius: 14px;
+      background: #1b222b;
+      border: 3px solid #3a4654;
+      box-shadow: 0 5px 0 #2a333e;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .keycap-card p { font-size: 24px; font-weight: 800; }
+
+    .fat { padding: 28px 20px; text-align: center; }
+    .fat h3 { font-size: 36px; margin: 4px 0 8px; }
+    .fat p { color: var(--muted); font-size: 20px; }
+
+    .note {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(255, 107, 107, 0.12);
+      color: #ffc4c4;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .note.cyan {
+      background: rgba(77, 226, 255, 0.1);
+      color: #b8f4ff;
+    }
+
+    .footer { margin-top: 80px; text-align: center; }
+    .giant {
+      display: inline-block;
+      margin: 8px 8px 0 0;
+      padding: 18px 28px;
+      border-radius: 22px;
+      background: var(--cyan);
+      color: #071014;
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 900;
+    }
+    .tiny { margin-top: 18px; color: var(--muted); font-size: 15px; }
+    a { color: var(--cyan); }
+
+    @media (max-width: 800px) {
+      .trio, .row3 { grid-template-columns: 1fr; }
+      .big-sym { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <img src="grok-what-is.png" alt="Grok Build 是终端里的编码助手" />
+      <div class="kicker">30 秒看懂</div>
+      <h1>Grok Build 是什么？</h1>
+      <p class="sub">终端里的全屏聊天机器人。<br>你打字，它改代码、跑命令。</p>
+    </header>
+
+    <section class="center">
+      <h2>三种「快捷」</h2>
+      <div class="trio">
+        <article class="card">
+          <div class="big-sym">/</div>
+          <h3>斜杠命令</h3>
+          <p>输入 / 弹出菜单</p>
+        </article>
+        <article class="card">
+          <div class="big-sym">?</div>
+          <h3>命令面板</h3>
+          <p>Ctrl+P 搜一切</p>
+        </article>
+        <article class="card">
+          <div class="big-sym">@ !</div>
+          <h3>特殊开头</h3>
+          <p>找文件 / 跑命令</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="grok-slash.png" alt="输入斜杠会弹出命令菜单" />
+      <div class="kicker">第一类</div>
+      <h2>斜杠命令</h2>
+      <p class="sub">在输入框打一个 /</p>
+    </section>
+
+    <section>
+      <h2>每天都用</h2>
+      <div class="grid">
+        <div class="cmd"><code>/help</code><span>看帮助</span></div>
+        <div class="cmd"><code>/model</code><span>换模型</span></div>
+        <div class="cmd"><code>/effort</code><span>思考力度</span></div>
+        <div class="cmd"><code>/new</code><span>新开一局</span></div>
+        <div class="cmd"><code>/resume</code><span>回到旧局</span></div>
+        <div class="cmd"><code>/quit</code><span>离开 Grok</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>管这一局聊天</h2>
+      <div class="grid">
+        <div class="cmd"><code>/home</code><span>回欢迎页</span></div>
+        <div class="cmd"><code>/rename</code><span>给这局起名</span></div>
+        <div class="cmd"><code>/sessions</code><span>切换会话</span></div>
+        <div class="cmd"><code>/fork</code><span>分出另一个助手</span></div>
+        <div class="cmd"><code>/rewind</code><span>回到某句话</span></div>
+        <div class="cmd"><code>/compact</code><span>压缩旧记忆</span></div>
+        <div class="cmd"><code>/context</code><span>看还剩多少空间</span></div>
+        <div class="cmd"><code>/session-info</code><span>这局详情</span></div>
+        <div class="cmd"><code>/delete</code><span>删掉这局</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>三种干活模式</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">1</div>
+          <h3>普通</h3>
+          <p>先问再动手</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">2</div>
+          <h3>/plan</h3>
+          <p>先写计划</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">3</div>
+          <h3>/always-approve</h3>
+          <p>不再弹确认</p>
+        </article>
+      </div>
+      <p class="note cyan">按 Shift+Tab 就能在这几种模式之间轮换。</p>
+    </section>
+
+    <section>
+      <h2>带走 / 找回来</h2>
+      <div class="grid">
+        <div class="cmd"><code>/copy</code><span>复制它的回答</span></div>
+        <div class="cmd"><code>/export</code><span>导出这一局</span></div>
+        <div class="cmd"><code>/share</code><span>生成分享链接</span></div>
+        <div class="cmd"><code>/find</code><span>搜索对话</span></div>
+        <div class="cmd"><code>/transcript</code><span>完整记录</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>一边干活一边加活</h2>
+      <div class="grid">
+        <div class="cmd"><code>/btw</code><span>旁白一句，不打断</span></div>
+        <div class="cmd"><code>/queue</code><span>看排队的话</span></div>
+        <div class="cmd"><code>/tasks</code><span>后台任务</span></div>
+        <div class="cmd"><code>/loop</code><span>定时再问一遍</span></div>
+        <div class="cmd"><code>/dashboard</code><span>多会话看板</span></div>
+        <div class="cmd"><code>/deep-research</code><span>后台调研</span></div>
+        <div class="cmd"><code>/workflow</code><span>跑一套流程</span></div>
+        <div class="cmd"><code>/imagine</code><span>画一张图</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>记忆和扩展</h2>
+      <div class="grid">
+        <div class="cmd"><code>/remember</code><span>立刻记住一句</span></div>
+        <div class="cmd"><code>/memory</code><span>管理记忆</span></div>
+        <div class="cmd"><code>/flush</code><span>现在就写入记忆</span></div>
+        <div class="cmd"><code>/dream</code><span>整理旧记忆</span></div>
+        <div class="cmd"><code>/skills</code><span>技能</span></div>
+        <div class="cmd"><code>/plugins</code><span>插件</span></div>
+        <div class="cmd"><code>/hooks</code><span>钩子</span></div>
+        <div class="cmd"><code>/mcps</code><span>MCP 连接</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>账号和杂项</h2>
+      <div class="grid">
+        <div class="cmd"><code>/login</code><span>登录</span></div>
+        <div class="cmd"><code>/logout</code><span>退出账号</span></div>
+        <div class="cmd"><code>/settings</code><span>打开设置</span></div>
+        <div class="cmd"><code>/theme</code><span>换皮肤</span></div>
+        <div class="cmd"><code>/docs</code><span>内置说明书</span></div>
+        <div class="cmd"><code>/tutorial</code><span>新手教程</span></div>
+        <div class="cmd"><code>/doctor</code><span>体检终端</span></div>
+        <div class="cmd"><code>/usage</code><span>用量 / 账单</span></div>
+        <div class="cmd"><code>/privacy</code><span>隐私开关</span></div>
+        <div class="cmd"><code>/feedback</code><span>反馈</span></div>
+        <div class="cmd"><code>/release-notes</code><span>更新了什么</span></div>
+        <div class="cmd"><code>/personas</code><span>人设</span></div>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="grok-keys.png" alt="几个发光的键盘按键" />
+      <div class="kicker">第二类</div>
+      <h2>常用快捷键</h2>
+    </section>
+
+    <section>
+      <div class="keys">
+        <div class="keycap-card"><kbd>Enter</kbd><p>发送</p></div>
+        <div class="keycap-card"><kbd>Shift</kbd><kbd>Enter</kbd><p>换行</p></div>
+        <div class="keycap-card"><kbd>Tab</kbd><p>输入框 ↔ 对话</p></div>
+        <div class="keycap-card"><kbd>Esc</kbd><p>停下</p></div>
+        <div class="keycap-card"><kbd>Esc</kbd><kbd>Esc</kbd><p>清空 / 回退</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>P</kbd><p>命令面板</p></div>
+        <div class="keycap-card"><kbd>?</kbd><p>也是命令面板</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>X</kbd><p>看全部快捷键</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>M</kbd><p>多行 / 选模型</p></div>
+        <div class="keycap-card"><kbd>Shift</kbd><kbd>Tab</kbd><p>切换干活模式</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>O</kbd><p>全自动批准</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>S</kbd><p>打开旧会话</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>T</kbd><p>待办清单</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>G</kbd><p>任务面板</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>N</kbd><kbd>N</kbd><p>新开一局</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>D</kbd><p>退出（按两次）</p></div>
+        <div class="keycap-card"><kbd>Alt</kbd><kbd>V</kbd><p>Windows 贴图</p></div>
+        <div class="keycap-card"><kbd>F2</kbd><p>打开设置</p></div>
+      </div>
+      <p class="note cyan">不同终端里，个别按键会不一样。忘了就按 Ctrl+X。</p>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="grok-prefixes.png" alt="@ 找文件，! 跑命令，? 打开命令面板" />
+      <div class="kicker">第三类</div>
+      <h2>三个魔法开头</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">@</div>
+          <h3>找文件</h3>
+          <p>弹出文件搜索</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">!</div>
+          <h3>跑命令</h3>
+          <p>空输入时进 Shell</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">?</div>
+          <h3>搜一切</h3>
+          <p>打开命令面板</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="grok-queue.png" alt="Grok 还在干活时，你可以先把下一张纸条放进托盘" />
+      <div class="kicker">它还在干活时</div>
+      <h2>先把话放下</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">↵</div>
+          <h3>Enter</h3>
+          <p>排到后面</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">⌃↵</div>
+          <h3>Ctrl+Enter</h3>
+          <p>打断，立刻说</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">/btw</div>
+          <h3>旁白</h3>
+          <p>问一句，不打断</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center footer">
+      <h2>忘了就按这个</h2>
+      <div class="giant">Ctrl+X</div>
+      <div class="giant">/help</div>
+      <p class="tiny">
+        官方说明：
+        <a href="https://docs.x.ai/build/overview">docs.x.ai/build</a>
+        ·
+        <a href="https://docs.x.ai/build/modes-and-commands">斜杠命令</a>
+        ·
+        <a href="https://docs.x.ai/build/keyboard-shortcuts">快捷键</a>
+        ·
+        <a href="https://github.com/xai-org/grok-build">仓库</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

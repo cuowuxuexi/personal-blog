@@ -1,6 +1,6 @@
 ---
 title: 我的AI历程
-description: 三个独立篇章，加上按期写的历程周记。
+description: 具名篇章，加上按期写的历程周记。
 pageClass: weekly-archive weekly-archive--life
 outline: false
 ---
@@ -13,4 +13,5 @@ outline: false
 
 - [基础设施篇](/AI与生活/我的AI历程/基础设施篇) — 协作通道、发布边界、底座怎么搭
 - [工具篇](/AI与生活/我的AI历程/工具篇) — 日常真正在用的工具与取舍
+- [cli篇](/AI与生活/我的AI历程/cli篇) — 工具篇下的 Pi / Grok Build 快捷命令图解
 - [AI开支记录与优化](/AI与生活/我的AI历程/AI开支记录与优化) — 实际在付的服务、状态与优化判断

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/journey-guides/pi-shortcuts/" />
+  <title>Pi 快捷命令 · 图解</title>
+  <style>
+    :root {
+      --bg: #141210;
+      --paper: #1c1916;
+      --ink: #f4ead8;
+      --muted: #b8a894;
+      --amber: #f0a24b;
+      --coral: #ef6f5e;
+      --mint: #7dceb3;
+      --sky: #7eb6e8;
+      --line: rgba(244, 234, 216, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      line-height: 1.25;
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    .hero {
+      text-align: center;
+      padding: 12px 0 8px;
+    }
+    .hero img, .shot {
+      width: 100%;
+      border-radius: 28px;
+      display: block;
+      border: 1px solid var(--line);
+      background: #0e0c0a;
+    }
+    .kicker {
+      display: inline-block;
+      margin: 22px 0 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(240, 162, 75, 0.14);
+      color: var(--amber);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    h1, h2 {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    h1 { font-size: clamp(40px, 8vw, 84px); margin-bottom: 10px; }
+    h2 { font-size: clamp(32px, 6vw, 56px); margin: 8px 0 10px; }
+    .sub {
+      color: var(--muted);
+      font-size: clamp(18px, 2.4vw, 26px);
+      max-width: 16em;
+      margin: 0 auto;
+    }
+
+    section { margin-top: 72px; }
+    .center { text-align: center; }
+
+    .trio {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .card, .cmd, .keycap-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+    }
+    .card {
+      padding: 28px 20px 24px;
+      text-align: center;
+    }
+    .big-sym {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .card h3 { font-size: 28px; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 18px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .cmd {
+      padding: 22px 18px 18px;
+      min-height: 132px;
+    }
+    .cmd code {
+      display: block;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .cmd span { color: var(--ink); font-size: 22px; font-weight: 700; }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .keycap-card { padding: 22px 18px 20px; }
+    kbd {
+      display: inline-block;
+      min-width: 2.1em;
+      padding: 10px 12px;
+      margin: 0 4px 10px 0;
+      border-radius: 14px;
+      background: #2a241d;
+      border: 3px solid #4a3d2f;
+      box-shadow: 0 5px 0 #3a2f24;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .keycap-card p {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .row3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .fat {
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .fat .big-sym { color: var(--amber); }
+    .fat h3 { font-size: 36px; margin: 4px 0 8px; }
+    .fat p { color: var(--muted); font-size: 20px; }
+
+    .note {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(239, 111, 94, 0.12);
+      color: #ffc4bc;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+    }
+    .giant {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 18px 28px;
+      border-radius: 22px;
+      background: var(--amber);
+      color: #1a1208;
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+    }
+    .tiny {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    a { color: var(--sky); }
+
+    @media (max-width: 800px) {
+      .trio, .row3 { grid-template-columns: 1fr; }
+      .big-sym { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <img src="pi-what-is.png" alt="Pi 是终端里的聊天助手" />
+      <div class="kicker">30 秒看懂</div>
+      <h1>Pi 是什么？</h1>
+      <p class="sub">终端里的聊天机器人。<br>你打字，它帮你改代码。</p>
+    </header>
+
+    <section class="center">
+      <h2>三种「快捷」</h2>
+      <div class="trio">
+        <article class="card">
+          <div class="big-sym" style="color:var(--amber)">/</div>
+          <h3>斜杠命令</h3>
+          <p>输入 / 弹出菜单</p>
+        </article>
+        <article class="card">
+          <div class="big-sym" style="color:var(--sky)">⌨</div>
+          <h3>快捷键</h3>
+          <p>按键盘立刻做事</p>
+        </article>
+        <article class="card">
+          <div class="big-sym" style="color:var(--mint)">@ !</div>
+          <h3>特殊开头</h3>
+          <p>找文件 / 跑命令</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="pi-slash.png" alt="输入斜杠会弹出命令菜单" />
+      <div class="kicker">第一类</div>
+      <h2>斜杠命令</h2>
+      <p class="sub">在输入框打一个 /</p>
+    </section>
+
+    <section>
+      <h2>每天都用</h2>
+      <div class="grid">
+        <div class="cmd"><code>/model</code><span>换模型</span></div>
+        <div class="cmd"><code>/thinking</code><span>思考深浅</span></div>
+        <div class="cmd"><code>/settings</code><span>打开设置</span></div>
+        <div class="cmd"><code>/new</code><span>新开一局</span></div>
+        <div class="cmd"><code>/resume</code><span>回到旧局</span></div>
+        <div class="cmd"><code>/quit</code><span>离开 Pi</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>管这一局聊天</h2>
+      <div class="grid">
+        <div class="cmd"><code>/name</code><span>给这局起名</span></div>
+        <div class="cmd"><code>/session</code><span>看这局信息</span></div>
+        <div class="cmd"><code>/tree</code><span>跳回某句话</span></div>
+        <div class="cmd"><code>/fork</code><span>从旧话分叉</span></div>
+        <div class="cmd"><code>/clone</code><span>复制当前线</span></div>
+        <div class="cmd"><code>/compact</code><span>压缩旧记忆</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>带走 / 带回来</h2>
+      <div class="grid">
+        <div class="cmd"><code>/copy</code><span>复制它的回答</span></div>
+        <div class="cmd"><code>/export</code><span>导出这一局</span></div>
+        <div class="cmd"><code>/import</code><span>导入旧文件</span></div>
+        <div class="cmd"><code>/share</code><span>生成分享链接</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>账号和杂项</h2>
+      <div class="grid">
+        <div class="cmd"><code>/login</code><span>登录账号</span></div>
+        <div class="cmd"><code>/logout</code><span>退出账号</span></div>
+        <div class="cmd"><code>/trust</code><span>信任这个项目</span></div>
+        <div class="cmd"><code>/scoped-models</code><span>轮换模型名单</span></div>
+        <div class="cmd"><code>/llama</code><span>本机小模型</span></div>
+        <div class="cmd"><code>/reload</code><span>重载配置</span></div>
+        <div class="cmd"><code>/hotkeys</code><span>看全部快捷键</span></div>
+        <div class="cmd"><code>/changelog</code><span>更新了什么</span></div>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="pi-keys.png" alt="几个发光的键盘按键" />
+      <div class="kicker">第二类</div>
+      <h2>常用快捷键</h2>
+    </section>
+
+    <section>
+      <div class="keys">
+        <div class="keycap-card"><kbd>Enter</kbd><p>发送</p></div>
+        <div class="keycap-card"><kbd>Shift</kbd><kbd>Enter</kbd><p>换行</p></div>
+        <div class="keycap-card"><kbd>Tab</kbd><p>补全路径</p></div>
+        <div class="keycap-card"><kbd>Esc</kbd><p>停下</p></div>
+        <div class="keycap-card"><kbd>Esc</kbd><kbd>Esc</kbd><p>打开历史树</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>C</kbd><p>清空。再按退出</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>L</kbd><p>选模型</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>P</kbd><p>下一个模型</p></div>
+        <div class="keycap-card"><kbd>Shift</kbd><kbd>Ctrl</kbd><kbd>P</kbd><p>上一个模型</p></div>
+        <div class="keycap-card"><kbd>Shift</kbd><kbd>Tab</kbd><p>思考深浅</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>O</kbd><p>折叠工具输出</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>T</kbd><p>折叠思考过程</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>X</kbd><p>复制回答</p></div>
+        <div class="keycap-card"><kbd>Alt</kbd><kbd>V</kbd><p>Windows 贴图</p></div>
+        <div class="keycap-card"><kbd>Ctrl</kbd><kbd>G</kbd><p>用外部编辑器</p></div>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="pi-prefixes.png" alt="@ 找文件，! 跑命令，!! 悄悄跑" />
+      <div class="kicker">第三类</div>
+      <h2>三个魔法开头</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">@</div>
+          <h3>找文件</h3>
+          <p>弹出文件搜索</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">!</div>
+          <h3>跑命令</h3>
+          <p>结果给 Pi 看</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">!!</div>
+          <h3>悄悄跑</h3>
+          <p>结果不给 Pi 看</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center">
+      <img class="shot" src="pi-queue.png" alt="Pi 还在干活时，你可以先把下一张纸条放进托盘" />
+      <div class="kicker">它还在干活时</div>
+      <h2>先把话放下</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">↵</div>
+          <h3>Enter</h3>
+          <p>插一句提醒</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">⎇↵</div>
+          <h3>Alt+Enter</h3>
+          <p>排到后面</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">↑</div>
+          <h3>Alt+↑</h3>
+          <p>把话拿回来</p>
+        </article>
+      </div>
+      <p class="note">Windows Terminal 里，Alt+Enter 默认是全屏。要先改终端快捷键，Pi 才能收到。</p>
+    </section>
+
+    <section class="center footer">
+      <h2>忘了就看这个</h2>
+      <div class="giant">/hotkeys</div>
+      <p class="tiny">
+        官方说明：
+        <a href="https://pi.dev/docs/latest">pi.dev/docs</a>
+        ·
+        <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/usage.md">斜杠命令</a>
+        ·
+        <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/keybindings.md">快捷键</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

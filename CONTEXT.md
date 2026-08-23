@@ -23,6 +23,20 @@ This repository is a personal blog. Recording matters more than polished exhibit
 | **Open questions** | Explicit unresolved problems that define the next research direction. |
 | **Origin kind** | How a blog page was formed relative to private research: `command` (mainly from private research), `blog` (mainly from writing/thinking on the blog), or `mixed`. |
 | **Publishing panel (发布面板)** | The local, non-coding publishing tool for two weekly kinds (investment + AI/life) and 我的AI历程 (`type: journey`). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note, dated journey issue, or chapter instance. The panel can open a new dated journey issue (theme, cover, caption) and edit existing chapter headers; it does not create, rename, or delete named chapter files. Research pages are outside its scope. |
+| **Journey series（我的AI历程）** | An AI/life subseries containing named long-lived chapters and dated issues. It owns its chapter/issue navigation; the broader AI/life section links to the series instead of duplicating every journey item. |
+| **Standalone HTML（独立 HTML）** | A prebuilt public HTML page under `docs/public/html/` (existing Pi / Grok guides remain in `docs/public/journey-guides/`). Embed with `<StandaloneHtml>`. It is not a VitePress Markdown page. |
+| **Latest issue（最新一期）** | The newest dated issue within one recurring series. It is not the same as the most recently revised item across the site. |
+| **Recent update（最近更新）** | A public content item ordered by publication or important-revision freshness across the content types allowed in that surface. It is distinct from a series' latest issue. |
+| **Publication date（首次公开日期）** | The stable date when a content item first entered the public record, or the issue date for a dated series. |
+| **Revision date（重要修订日期）** | The date of an important revision. Typo fixes and other immaterial edits do not change it. |
+
+### Date field contract (catalog)
+
+- Frontmatter `date` is the publication / issue date and stays stable under ordinary edits.
+- Optional `revisionDate` (YYYY-MM-DD) marks an important revision; it must not be earlier than `date`. Authors or creation UIs set it explicitly — never from Git `lastUpdated`, file mtime, or routine typo fixes. Do not introduce a parallel `updated` field.
+- Recent updates sort by `revisionDate ?? date` for weekly and journey items. Hermes does not consume `revisionDate`. Research stays out of recent.
+- A series' latest issue still orders by issue `date` (and issue number where used), not by `revisionDate`.
+- Existing pages omit `revisionDate`; omission keeps prior recent/latest behavior.
 
 ## Authority boundaries
 
@@ -109,4 +123,4 @@ The first three-page split is experimental and may change after preview and use.
 | publication gate | auto deploy, silent publish |
 | publishing panel / 发布面板 | 微博后台, CMS, 云端编辑器 |
 
-最后更新：2026-08-18
+最后更新：2026-08-22

@@ -1,15 +1,21 @@
 import { defineConfig } from 'vitepress'
 import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
 import { hermesSidebarItems } from './hermes-diary'
+import {
+  investYearSidebarGroups,
+  journeySidebarGroups,
+  lifeYearSidebarGroups,
+} from './managed-sidebar-fs.mjs'
 import { normalizeDisplayMath } from './normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
+import { serveStandaloneHtmlPlugin } from './standalone-html.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
- * 侧栏按板块分路径、按日期倒序。
- * - 周记 / 投研：新增后同步 posts.ts（手写）与下方 sidebar
- * - AI 历程：docs/AI与生活/我的AI历程/（三个独立篇章页 + 按期周记，侧栏「周记 · YYYY年」）
- * - Hermes 日记：只需新增 docs/AI与生活/Hermes日记/YYYY-MM-DD.md；协作本路径仍自动扫描
+ * 侧栏：静态壳手写；周记/历程受管组由构建期投影注入（Wave B）。
+ * - 投资周记年份组、生活周记年份组、历程具名篇章+日期年份组 → managed-sidebar-fs
+ * - Wave C：生活侧栏只保留历程系列入口，不再枚举具名叶子
+ * - 面板只写 Markdown（+引用图）；受管 posts/sidebar 由投影生成
  */
 const hermesDiaryNav = hermesSidebarItems(loadHermesDiaryPostsFromFs())
 
@@ -17,11 +23,16 @@ export default defineConfig({
   lang: 'zh-CN',
   title: '误君在脑海里放烟花',
   description: '投资观察与 AI 生活随笔',
+  base: process.env.VITEPRESS_BASE || '/',
   cleanUrls: true,
   lastUpdated: true,
   // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
   // agents/adr 为仓库协议；目录 README 仅给作者/Agent，不进公开站点
   srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],
+
+  vite: {
+    plugins: [serveStandaloneHtmlPlugin()],
+  },
 
   markdown: {
     // 周记正文按「一行一句」书写，软换行渲染为 <br> 而不是合并成一段
@@ -217,15 +228,7 @@ export default defineConfig({
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
-        {
-          text: '2026年',
-          collapsed: false,
-          items: [
-            { text: '第002期-待定', link: '/投资/周记/2026-08-17-待定' },
-            { text: '第001期-看烟花', link: '/投资/周记/2026-08-13-看烟花' },
-            { text: '写在投资笔记开始之前', link: '/投资/周记/2026-08-08-写在投资笔记开始之前' },
-          ],
-        },
+        ...investYearSidebarGroups,
       ],
       '/投资/': [
         {
@@ -248,28 +251,12 @@ export default defineConfig({
             },
           ],
         },
-        {
-          text: '周记 · 2026年',
-          collapsed: false,
-          items: [
-            { text: '第002期-AI的消费主义与token焦虑', link: '/AI与生活/2026-08-17' },
-            { text: '第001期-看烟花', link: '/AI与生活/2026-08-12' },
-          ],
-        },
+        ...lifeYearSidebarGroups,
         {
           text: '大事件记录区',
           collapsed: false,
           items: [
             { text: '2026年大事件', link: '/AI与生活/大事件/2026' },
-          ],
-        },
-        {
-          text: '我的AI历程',
-          collapsed: false,
-          items: [
-            { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
-            { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
-            { text: 'AI开支记录与优化', link: '/AI与生活/我的AI历程/AI开支记录与优化' },
           ],
         },
       ],
@@ -284,15 +271,7 @@ export default defineConfig({
             },
           ],
         },
-        {
-          text: '我的AI历程',
-          collapsed: false,
-          items: [
-            { text: '基础设施篇', link: '/AI与生活/我的AI历程/基础设施篇' },
-            { text: '工具篇', link: '/AI与生活/我的AI历程/工具篇' },
-            { text: 'AI开支记录与优化', link: '/AI与生活/我的AI历程/AI开支记录与优化' },
-          ],
-        },
+        ...journeySidebarGroups,
       ],
       '/AI与生活/Hermes日记/': [
         {
@@ -343,7 +322,8 @@ export default defineConfig({
 
     footer: {
       message: '个人笔记分享 · <strong>非投资建议</strong>，据此决策风险自负',
-      copyright: '© 2026 误君在脑海里放烟花',
+      copyright:
+        '© 2026 误君在脑海里放烟花 · <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">闽ICP备2026032381号-1</a>',
     },
 
     docFooter: {

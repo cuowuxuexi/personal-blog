@@ -6,6 +6,7 @@ import PostMeta from './components/PostMeta.vue'
 import HomeHeroCta from './components/HomeHeroCta.vue'
 import HomeRecent from './components/HomeRecent.vue'
 import SiteTitleMenu from './components/SiteTitleMenu.vue'
+import SiteBeian from './components/SiteBeian.vue'
 
 const { Layout } = Theme
 const route = useRoute()
@@ -205,6 +206,9 @@ watch(
     </template>
     <template #home-features-after>
       <HomeRecent />
+    </template>
+    <template #layout-bottom>
+      <SiteBeian />
     </template>
   </Layout>
 </template>

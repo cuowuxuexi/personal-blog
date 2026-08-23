@@ -32,11 +32,12 @@ pnpm docs:preview
 
 | 入口 | URL |
 | --- | --- |
-| 生产（自定义域） | https://blog.cuowo.win/ |
+| 国内站（备案） | https://cuowo.cn/ |
+| 海外备份（自定义域） | https://blog.cuowo.win/ |
 | Cloudflare Pages | https://personal-blog-eue.pages.dev/ |
 | 源码 | https://github.com/cuowuxuexi/personal-blog |
 
-自动部署：push `main` 触发 `.github/workflows/deploy-pages.yml`。仓库需配置 Secrets：
+自动部署：push `main` 触发 `.github/workflows/deploy-pages.yml`，只更新 Pages / `blog.cuowo.win`。发布面板确认发布时会额外把同一快照的生产构建传到 guonei（`https://cuowo.cn`）。手动上传见 `ops/腾讯云备案与博客接入-Cursor操作说明.md`。仓库需配置 Secrets：
 
 - `CLOUDFLARE_API_TOKEN`（密码本 `cxks-agent-ops`）
 - `CLOUDFLARE_ACCOUNT_ID`=`4b4fb1b1a6a89a919d58bfbbf913fd3d`
@@ -48,40 +49,22 @@ pnpm docs:build
 npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
 ```
 
-## 目录结构
+## 源码导航
 
-```text
-personal-blog/
-  package.json
-  README.md
-  PROJECT.md                 # 工程权威与路径边界
-  CONTEXT.md                 # 领域词汇与投研前端边界
-  RESEARCH-FRONTEND.md       # 投研前端分阶段计划
-  AGENTS.md                  # Agent 技能入口
-  research-sources.local.yaml  # 本地回源索引（gitignore，不进仓库）
-  panel/                   # 发布面板（两类周记 + 我的AI历程，不进站点构建）
-  docs/
-    index.md                 # 首页（hero 插画 + features + 最近更新）
-    关于.md
-    投资/
-    AI与生活/
-    agents/                  # Agent 协议（非站点内容）
-    adr/                     # 架构决策
-    public/
-      fonts/               # FiraCode-VF.woff2（可选保留）
-      images/hero-fireworks.png
-    .vitepress/
-      config.mts             # nav / sidebar / search
-      posts.ts               # 文章登记表（首页与板块列表）
-      theme/
-        Layout.vue           # PostMeta + HomeRecent 插槽
-        index.ts
-        style.css
-        components/
-          PostMeta.vue
-          HomeRecent.vue
-          CategoryList.vue
-```
+| 入口 | 用途 |
+| --- | --- |
+| `PROJECT.md` | 六个能力的源码地图、依赖方向、常见任务与验证入口 |
+| `content-catalog/` | 共享 ContentKind 合同（站点 / 面板 / 验证器） |
+| `CONTEXT.md` | 领域词汇、权威边界、最新一期/最近更新等语义 |
+| `docs/adr/` | 已接受的长期架构决策 |
+| `docs/.vitepress/README.md` | VitePress 配置、内容查询、主题组件与构建插件索引 |
+| `docs/public/html/` | 先做好的独立 HTML；嵌进文章用 `<StandaloneHtml>` |
+| `panel/README.md` | 发布面板使用说明与源码入口 |
+| `panel/lib/README.md` | 发布面板后端能力索引 |
+| `panel/public/README.md` | 发布面板前端 DOM 与模块索引 |
+| `scripts/README.md` | 构建元数据、快捷方式与历史发布脚本 |
+| `.agents/skills/blog-editor/SKILL.md` | 公共内容和站点设计的 Agent 意图路由 |
+| `docs/agents/` | 发布、投研与协作协议；不进入公开站点 |
 
 ## 投研内容工作流（作者）
 
@@ -109,8 +92,9 @@ pnpm panel
 
 ## 如何新增文章
 
-1. 在对应板块目录新建 Markdown，文件名建议：`YYYY-MM-DD-标题摘要.md`。  
-2. 写好 frontmatter：
+先按 `.agents/skills/blog-editor/SKILL.md` 选择内容类型；不同内容域的 frontmatter、索引副作用和研究门禁并不相同。基础步骤：
+
+1. 在对应板块目录新建 Markdown，并按该内容类型填写 frontmatter：
 
 ```yaml
 ---
@@ -122,28 +106,25 @@ description: 一句话摘要（首页与板块列表展示）
 ---
 ```
 
-3. 正文用 `#` / `##` 组织标题；右侧「本页指引」按 h2–h4 生成大纲。  
-4. **同步登记表** `docs/.vitepress/posts.ts`（按 date 倒序插入）。  
-5. **同步侧栏** `docs/.vitepress/config.mts` → `themeConfig.sidebar`。  
-6. 投资类文章请保留「非投资建议」提示；全站页脚与「关于」页已有总声明。
+2. 正文用 `#` / `##` 组织标题；右侧「本页指引」按 h2–h4 生成大纲。
+3. 周记与「我的AI历程」只维护 Markdown/frontmatter 和引用资产；`posts.ts` 与受管 sidebar 由 `content-catalog` 在开发/构建期投影，**不要手工登记**。
+4. 投研、投资哲学和大问题等尚未接入该投影的内容，按 Skill 对应分支维护当前 hub/sidebar，并遵守各自门禁。
+5. 运行与内容类型相称的验证；周记/历程至少运行 `pnpm test:content` 和 `pnpm docs:build`。
 
-无 `cover` 时不渲染封面位（避免灰条占位）。有图时用 frontmatter `cover` 指向 `docs/public/` 下路径。
+投资类文章请保留「非投资建议」提示；全站页脚与「关于」页已有总声明。无 `cover` 时不渲染封面位；有图时用 frontmatter `cover` 指向 `docs/public/` 下路径。
 
-## 如何更新侧栏
+## 侧栏与内容目录
 
-文件：`docs/.vitepress/config.mts` → `themeConfig.sidebar`。
-
-- 投资 → `'/投资/'`  
-- AI与生活 → `'/AI与生活/'`  
-
-约定：按 `date` 倒序；年份可分组；`link` 与路由一致（无 `.md`）；**不要**跨板块串栏。
+- 周记与「我的AI历程」：由 Markdown/frontmatter + typed IA 投影，入口见 `content-catalog/`；不要为登记条目手改 `posts.ts` 或受管 sidebar。
+- 投研、投资哲学、大问题及其它未投影结构：仍以 blog-editor 对应分支列出的 live hub 与 `docs/.vitepress/config.mts` 为准。
+- 所有公开链接均不带 `.md`，且不得跨板块串栏。
 
 ## 顶栏与三栏布局
 
 | 区域 | 行为 |
 | --- | --- |
 | 顶栏搜索 | 本地搜索（「搜索文档」） |
-| 顶栏 nav | 「投资」「AI与生活」「关于」 |
+| 顶栏 nav | 「投资哲学档」「大问题」「关于」；投资与 AI与生活从首页入口进入 |
 | 左栏 | 当前板块时间序列 |
 | 中栏 | 文首元信息 + Markdown 正文 |
 | 右栏 | 本页指引（outline） |
@@ -153,10 +134,10 @@ description: 一句话摘要（首页与板块列表展示）
 ## 验收相关能力（本轮）
 
 - 双板块路径：`/投资/`、`/AI与生活/`  
-- 文章页 `PostMeta`（日期、板块标签、可选 description/cover）  
+- 普通文章页 `PostMeta`；周记、Hermes 与历程使用各自版式
 - 首页 `HomeRecent` + 板块 `CategoryList`（同源 `posts.ts`）  
 - 全量思源宋体 CN VF + FiraCode；local search、明暗模式、页脚免责  
-- 不包含：Algolia、Giscus、RSS、公网部署、CMS  
+- 不包含：Algolia、Giscus、RSS、CMS
 
 ## 许可与边界
 
@@ -164,4 +145,4 @@ description: 一句话摘要（首页与板块列表展示）
 - 勿拷贝第三方周刊正文、封面或品牌资产。  
 - 勿将密钥写入仓库。  
 
-最后更新：2026-08-18
+最后更新：2026-08-24

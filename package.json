@@ -10,7 +10,8 @@
     "docs:preview": "vitepress preview docs",
     "panel": "node panel/start.mjs",
     "panel:shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-panel-shortcut.ps1",
-    "test:panel": "node --test panel/*.test.mjs"
+    "test:panel": "node --test panel/*.test.mjs",
+    "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs"
   },
   "dependencies": {
     "markdown-it": "^15.0.0",

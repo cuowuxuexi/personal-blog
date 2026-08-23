@@ -1,50 +1,33 @@
-## Agent skills
+# Agent routing
 
-### Issue tracker
+## Choose one route
 
-Issues live in this repo's GitHub Issues (via `gh`). See `docs/agents/issue-tracker.md`.
+- Public content, page design, navigation, VitePress theme, or public assets: open `.agents/skills/blog-editor/SKILL.md` first, then open the selected row's source before any optional background docs.
+- Publishing-panel UI/code: open `panel/README.md`; read `docs/agents/publishing-panel.md` only when the task concerns author workflow or publish semantics.
+- Deployment behavior: open the deployment section of `PROJECT.md`, then the named implementation or `ops/` runbook.
+- If none of those routes match, use `PROJECT.md` as the capability/source map. Do not read `PROJECT.md`, `CONTEXT.md`, ADRs, and protocols all by default.
+- Shared project memory: `.agents/memory/MEMORY.md`; keep project facts there rather than host-private memory.
 
-### Triage labels
+## Public blog content or design
 
-Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+When adding or revising public content, homepage copy, navigation, sidebars, public assets, VitePress components, CSS, or responsive layout, follow `.agents/skills/blog-editor/SKILL.md` (`/blog-editor`). Its selected row owns further disclosure; platform wrappers under `.cursor/skills/` and `.claude/skills/` only point there.
 
-### Domain docs
+Use the publishing panel only when the author explicitly asks to work through it. Creating, renaming, or deleting a named journey chapter always remains a blog-editor task.
 
-Single-context layout (`CONTEXT.md` + `docs/adr/`). See `docs/agents/domain.md`.
+Prebuilt standalone HTML belongs in `docs/public/html/<name>/index.html` and is embedded with `<StandaloneHtml src="/html/<name>" />`. Do not create a Markdown page for it, and do not open it with a normal in-site link. The publishing panel does not upload HTML. Existing Pi / Grok guides stay at `docs/public/journey-guides/`.
 
-Shared project memory (Claude / Codex / OpenCode): `.agents/memory/MEMORY.md`. Put project facts there, not in host-private memory.
+Before drafting investment weekly notes or research content under `docs/投资/`, follow the research protocol selected by the Skill. Private research remains the research authority; this repository owns public presentation.
 
-### Blog editor
+Hermes diary is retired. Keep existing pages; create a new day only if the author explicitly reopens `docs/agents/hermes-diary.md`.
 
-Project skill for adding or revising public blog content, page design, theme styles, navigation, sidebars, posts index, or public assets.
+## Project operations
 
-- Formal skill: `.agents/skills/blog-editor/SKILL.md`
-- Explicit invoke: `/blog-editor`
-- When the user asks to add/edit blog content or page design, read and follow that skill first for intent routing and file location.
-- AI 与生活周记固定模板：skill 内 `content.weekly-life` + `.agents/skills/blog-editor/templates/weekly-life.md`
-- 投资周记固定模板：skill 内 `content.weekly-investment` + `.agents/skills/blog-editor/templates/weekly-invest.md`；版面与生活周记同一套，走投资门禁
-- Platform discovery wrappers only: `.cursor/skills/blog-editor/`, `.claude/skills/blog-editor/`
-- Do not auto commit, push, or deploy.
-- The author may publish weekly notes, dated 我的AI历程 issues, and existing journey chapter entries through the local **publishing panel** (`panel/`, `pnpm panel`). See `docs/agents/publishing-panel.md`.
+- GitHub Issues workflow: `docs/agents/issue-tracker.md`.
+- Triage vocabulary: `docs/agents/triage-labels.md`.
+- Current Agent-first modularization plan: `docs/agents/agent-first-modularization.md`.
 
-### Research publishing
+## Safety guardrails
 
-Investment research content uses the research-frontend protocol. See `docs/agents/research-publishing.md`.
-
-Before creating, restructuring, or materially updating **any** investment weekly note or research content under `docs/投资/` (including `周记/` and `投研/`):
-
-1. Read `CONTEXT.md` and `docs/agents/research-publishing.md`.
-2. Apply the two human publication gates for that content instance:
-   - discuss goal/scope/structure before drafting
-   - explicit human approval before any push/deploy
-3. When the content depends on private research, resolve origins through the local gitignored index `research-sources.local.yaml` when present, then the private research registry.
-4. Treat private research as research authority; treat this repo as site-source and public-presentation authority.
-5. Do not auto-sync, auto-publish, push, or deploy research content without explicit human approval for that content instance.
-6. Never write private absolute paths, handoff prompts, raw review files, workpapers, cognition originals, or non-redistributable source copies into public docs.
-
-### Hermes diary（已停用）
-
-2026-08-14 起不再新写 Hermes 日记。已发布页面保留；协议仅作历史说明：`docs/agents/hermes-diary.md`、`docs/AI与生活/Hermes日记/README.md`。
-
-- Do not create new diary days unless the author explicitly reopens this protocol.
-- Do not hand-edit `posts.ts` / sidebar for diary days (auto-scanned).
+- Do not commit, push, publish, deploy, or upload without explicit author intent.
+- Keep private absolute paths, credentials, workpapers, raw review files, cognition originals, and non-redistributable source copies out of public docs.
+- `push main` updates Cloudflare Pages / `blog.cuowo.win`; the publishing panel is the normal `cuowo.cn` publication path. Preserve `闽ICP备2026032381号-1`; read `ops/腾讯云备案与博客接入-Cursor操作说明.md` before changing domestic deployment or filing behavior.
