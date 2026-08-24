@@ -1,54 +1,6 @@
-const WEEKLY_FALLBACK = {
-  contentType: 'weekly',
-  allowCreate: true,
-  selectorLabel: '期数',
-  emptyHint: '没有当期周记，请先开新一期。',
-  appendHint: '这次会追加到所选期数末尾，已有条目不会动。',
-  headingAnchor: 'kan-yanhua',
-  wechatTheme: 'life',
-}
-
-const JOURNEY_FALLBACK = {
-  contentType: 'journey',
-  allowCreate: true,
-  selectorLabel: '期数与篇章',
-  emptyHint: '没有当期历程周记，请先开新一期。',
-  appendHint: '这次会追加到所选期数或篇章末尾，已有条目不会动。',
-  headingAnchor: '',
-  wechatTheme: 'life',
-}
-
-function isJourneyKind(kind, live = {}) {
-  return live.contentType === 'journey' || kind?.id === 'journey'
-}
-
-/** Live bootstrap 缺字段时按现行合同补齐。 */
+/** 开机已带齐 capability；网页不再自编周记/历程兜底表。 */
 export function resolveCapability(kind) {
-  const live = kind?.capability && typeof kind.capability === 'object' ? kind.capability : {}
-  if (isJourneyKind(kind, live)) {
-    return {
-      contentType: 'journey',
-      allowCreate: live.allowCreate !== false,
-      selectorLabel: live.selectorLabel || JOURNEY_FALLBACK.selectorLabel,
-      emptyHint: live.emptyHint || JOURNEY_FALLBACK.emptyHint,
-      appendHint: live.appendHint || JOURNEY_FALLBACK.appendHint,
-      headingAnchor: '',
-      wechatTheme: live.wechatTheme || JOURNEY_FALLBACK.wechatTheme,
-    }
-  }
-  const weekly = {
-    ...WEEKLY_FALLBACK,
-    wechatTheme: kind?.id === 'invest' ? 'invest' : WEEKLY_FALLBACK.wechatTheme,
-  }
-  return {
-    contentType: live.contentType || weekly.contentType,
-    allowCreate: live.allowCreate !== false,
-    selectorLabel: live.selectorLabel || weekly.selectorLabel,
-    emptyHint: live.emptyHint || weekly.emptyHint,
-    appendHint: live.appendHint || weekly.appendHint,
-    headingAnchor: live.headingAnchor == null ? weekly.headingAnchor : String(live.headingAnchor),
-    wechatTheme: live.wechatTheme || weekly.wechatTheme,
-  }
+  return kind?.capability && typeof kind.capability === 'object' ? kind.capability : {}
 }
 
 export function allowsCreate(kind) {

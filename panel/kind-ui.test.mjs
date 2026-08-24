@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import test from 'node:test'
+import { fileURLToPath } from 'node:url'
 import {
   allowsCreate,
   chipTone,
@@ -76,24 +78,27 @@ const journey = {
   },
 }
 
-test('journey capability follows the live contract even if bootstrap omits fields', () => {
-  const resolved = resolveCapability({ id: 'journey' })
+test('resolveCapability uses live bootstrap capability and has no web fallback table', () => {
+  const resolved = resolveCapability(journey)
   assert.equal(resolved.contentType, 'journey')
   assert.equal(resolved.allowCreate, true)
   assert.equal(resolved.selectorLabel, '期数与篇章')
   assert.equal(resolved.headingAnchor, '')
-  assert.equal(allowsCreate({ id: 'journey' }), true)
+  assert.equal(allowsCreate({ id: 'journey' }), false)
   assert.equal(allowsCreate(life), true)
   assert.equal(chipTone(journey), 'life')
   assert.equal(chipTone({ id: 'invest', capability: { ...weeklyCapability, wechatTheme: 'invest' } }), 'invest')
   assert.equal(resolveCapability({
     id: 'journey',
     capability: { contentType: 'journey', allowCreate: true, headingAnchor: 'kan-yanhua' },
-  }).headingAnchor, '')
+  }).headingAnchor, 'kan-yanhua')
   assert.equal(allowsCreate({
     id: 'journey',
     capability: { contentType: 'journey', allowCreate: true, headingAnchor: 'kan-yanhua' },
   }), true)
+  const source = fs.readFileSync(fileURLToPath(new URL('./public/kind-ui.mjs', import.meta.url)), 'utf8')
+  assert.doesNotMatch(source, /WEEKLY_FALLBACK/)
+  assert.doesNotMatch(source, /JOURNEY_FALLBACK/)
 })
 
 test('journey issue bar offers 开新一期 and still lists chapters', () => {

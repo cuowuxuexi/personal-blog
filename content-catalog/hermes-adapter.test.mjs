@@ -53,7 +53,7 @@ test('Hermes glob and fs adapters share parser/sort and ignore index/README/ille
   assert.equal(fromGlob[1].description, '排前面')
   assert.deepEqual(sortHermes(fromGlob.slice().reverse()).map((item) => item.date), ['2026-01-03', '2026-01-01'])
   assert.equal(postFromDayFile('notes', DAY_A), null)
-  assert.equal(parseFrontmatter(DAY_A).title, '晚到的一天')
+  assert.equal(parseFrontmatter(DAY_A).fm.title, '晚到的一天')
 })
 
 test('verifier Hermes scans import the production core instead of a twin parser', () => {
