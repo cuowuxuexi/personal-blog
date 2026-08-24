@@ -27,11 +27,8 @@
 
     .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
 
-    .hero {
-      text-align: center;
-      padding: 12px 0 8px;
-    }
-    .hero img, .shot {
+    .hero { text-align: center; padding: 12px 0 8px; }
+    .hero img {
       width: 100%;
       border-radius: 28px;
       display: block;
@@ -48,10 +45,7 @@
       font-weight: 700;
       letter-spacing: 0.08em;
     }
-    h1, h2 {
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
+    h1, h2 { font-weight: 800; letter-spacing: -0.03em; }
     h1 { font-size: clamp(40px, 8vw, 84px); margin-bottom: 10px; }
     h2 { font-size: clamp(32px, 6vw, 56px); margin: 8px 0 10px; }
     .sub {
@@ -64,7 +58,7 @@
     section { margin-top: 72px; }
     .center { text-align: center; }
 
-    .trio {
+    .trio, .row3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
@@ -75,10 +69,7 @@
       border: 1px solid var(--line);
       border-radius: 24px;
     }
-    .card {
-      padding: 28px 20px 24px;
-      text-align: center;
-    }
+    .card { padding: 28px 20px 24px; text-align: center; }
     .big-sym {
       font-size: 72px;
       font-weight: 800;
@@ -94,10 +85,7 @@
       gap: 14px;
       margin-top: 24px;
     }
-    .cmd {
-      padding: 22px 18px 18px;
-      min-height: 132px;
-    }
+    .cmd { padding: 22px 18px 18px; min-height: 132px; }
     .cmd code {
       display: block;
       font-family: ui-monospace, Consolas, monospace;
@@ -128,21 +116,9 @@
       font-size: 20px;
       font-weight: 800;
     }
-    .keycap-card p {
-      font-size: 24px;
-      font-weight: 800;
-    }
+    .keycap-card p { font-size: 24px; font-weight: 800; }
 
-    .row3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 24px;
-    }
-    .fat {
-      padding: 28px 20px;
-      text-align: center;
-    }
+    .fat { padding: 28px 20px; text-align: center; }
     .fat .big-sym { color: var(--amber); }
     .fat h3 { font-size: 36px; margin: 4px 0 8px; }
     .fat p { color: var(--muted); font-size: 20px; }
@@ -157,10 +133,7 @@
       font-weight: 700;
     }
 
-    .footer {
-      margin-top: 80px;
-      text-align: center;
-    }
+    .footer { margin-top: 80px; text-align: center; }
     .giant {
       display: inline-block;
       margin-top: 16px;
@@ -171,11 +144,7 @@
       font-size: clamp(28px, 5vw, 44px);
       font-weight: 900;
     }
-    .tiny {
-      margin-top: 18px;
-      color: var(--muted);
-      font-size: 15px;
-    }
+    .tiny { margin-top: 18px; color: var(--muted); font-size: 15px; }
     a { color: var(--sky); }
 
     @media (max-width: 800px) {
@@ -215,7 +184,6 @@
     </section>
 
     <section class="center">
-      <img class="shot" src="pi-slash.png" alt="输入斜杠会弹出命令菜单" />
       <div class="kicker">第一类</div>
       <h2>斜杠命令</h2>
       <p class="sub">在输入框打一个 /</p>
@@ -270,7 +238,6 @@
     </section>
 
     <section class="center">
-      <img class="shot" src="pi-keys.png" alt="几个发光的键盘按键" />
       <div class="kicker">第二类</div>
       <h2>常用快捷键</h2>
     </section>
@@ -296,7 +263,6 @@
     </section>
 
     <section class="center">
-      <img class="shot" src="pi-prefixes.png" alt="@ 找文件，! 跑命令，!! 悄悄跑" />
       <div class="kicker">第三类</div>
       <h2>三个魔法开头</h2>
       <div class="row3">
@@ -319,7 +285,6 @@
     </section>
 
     <section class="center">
-      <img class="shot" src="pi-queue.png" alt="Pi 还在干活时，你可以先把下一张纸条放进托盘" />
       <div class="kicker">它还在干活时</div>
       <h2>先把话放下</h2>
       <div class="row3">

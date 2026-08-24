@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/html/cli-hub/" />
+  <title>cli篇</title>
+  <style>
+    :root {
+      --vp-c-brand-1: #2949a4;
+      --vp-c-text-1: #213547;
+      --vp-c-text-2: #3c3c43cc;
+      --vp-c-text-3: #3c3c4399;
+      --vp-c-bg: #ffffff;
+      --vp-c-bg-soft: #f6f6f7;
+      --section-line: color-mix(in srgb, var(--vp-c-text-1) 14%, transparent);
+      --section-wash: color-mix(in srgb, var(--vp-c-brand-1) 6%, transparent);
+      --font: "SourceHanSerifCN", "Source Han Serif SC", "Noto Serif SC", "Songti SC", "PingFang SC", "Microsoft YaHei", serif;
+      --mono: "FiraCode", "Fira Code", "Cascadia Code", Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--vp-c-bg); color: var(--vp-c-text-1); }
+    body {
+      font-family: var(--font);
+      line-height: 1.6;
+    }
+    a { color: var(--vp-c-brand-1); }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    .research-breadcrumb {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.78rem;
+      color: var(--vp-c-text-3);
+    }
+    .research-breadcrumb a { color: var(--vp-c-text-2); text-decoration: none; }
+    .research-breadcrumb a:hover { color: var(--vp-c-brand-1); }
+
+    .industry-masthead {
+      padding: 1.3rem 0 1.6rem;
+      border-bottom: 1px solid var(--section-line);
+    }
+    .industry-masthead > p:first-child,
+    .research-section-head p,
+    .subject-masthead > div > p {
+      margin: 0 0 0.7rem;
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      letter-spacing: 0.14em;
+      color: var(--vp-c-brand-1);
+    }
+    .industry-masthead h1 {
+      font-size: clamp(2.5rem, 7vw, 4rem);
+      line-height: 1.08;
+      letter-spacing: 0.08em;
+      font-weight: 650;
+    }
+    .industry-masthead > p:last-child {
+      max-width: 35rem;
+      margin: 1rem 0 0;
+      color: var(--vp-c-text-2);
+    }
+
+    .research-note {
+      display: flex;
+      gap: 0.8rem;
+      margin: 1rem 0 2rem;
+      padding: 0.7rem 0.85rem;
+      border-left: 3px solid var(--vp-c-brand-1);
+      background: var(--vp-c-bg-soft);
+      font-size: 0.82rem;
+      color: var(--vp-c-text-2);
+    }
+    .research-note strong { flex: 0 0 auto; color: var(--vp-c-brand-1); }
+
+    .research-section { margin: 0 0 2.6rem; }
+    .research-section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--section-line);
+    }
+    .research-section-head h2 {
+      font-size: 1.35rem;
+      letter-spacing: 0.04em;
+      font-weight: 650;
+    }
+    .research-section-head > span {
+      padding-bottom: 0.1rem;
+      font-size: 0.75rem;
+      color: var(--vp-c-text-3);
+    }
+
+    .knowledge-route-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0 0 1.2rem;
+    }
+    .knowledge-route-grid article {
+      padding: 0.95rem 1rem;
+      border: 1px solid var(--section-line);
+      background: linear-gradient(145deg, var(--section-wash), transparent 74%);
+    }
+    .knowledge-route-grid article > span {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--vp-c-brand-1);
+    }
+    .knowledge-route-grid h3 {
+      margin: 0.35rem 0 0.45rem;
+      font-size: 0.95rem;
+    }
+    .knowledge-route-grid p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--vp-c-text-2);
+    }
+    .knowledge-route-grid a {
+      display: inline-block;
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      text-decoration: none;
+    }
+
+    .subject-directory { margin: 0 0 2.6rem; }
+    .subject-row {
+      display: grid;
+      grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 0.8rem 1rem;
+      padding: 1rem;
+      border: 1px solid var(--section-line);
+      color: inherit;
+      text-decoration: none;
+      transition: background-color 0.15s ease;
+    }
+    .subject-directory .subject-row + .subject-row { margin-top: 0.65rem; }
+    .subject-row:hover { background-color: var(--vp-c-bg-soft); }
+    .subject-row > div { display: flex; flex-direction: column; }
+    .subject-row__ticker {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--vp-c-brand-1);
+    }
+    .subject-row strong { font-weight: 650; }
+    .subject-row p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--vp-c-text-2);
+    }
+    .subject-row__status {
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--section-line);
+      font-size: 0.7rem;
+      color: var(--vp-c-text-2);
+    }
+    .subject-row__arrow { font-size: 0.85rem; color: var(--vp-c-text-3); }
+
+    .subject-masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(13rem, 0.55fr);
+      gap: 1.25rem 1.5rem;
+      align-items: start;
+      padding: 1.1rem 0 1.35rem;
+      border-bottom: 1px solid var(--section-line);
+    }
+    .subject-masthead h1 {
+      margin: 0 0 0.4rem;
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+      line-height: 1.28;
+      letter-spacing: 0.03em;
+      font-weight: 650;
+    }
+    .subject-masthead > div > span {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--vp-c-text-3);
+    }
+    .subject-masthead dl { margin: 0; border-top: 1px solid var(--section-line); }
+    .subject-masthead dl > div {
+      display: grid;
+      grid-template-columns: 4rem 1fr;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--section-line);
+      font-size: 0.78rem;
+    }
+    .subject-masthead dt { color: var(--vp-c-text-3); }
+    .subject-masthead dd { margin: 0; }
+
+    .page { display: none; }
+    .page.is-on { display: block; }
+
+    @media (max-width: 800px) {
+      .knowledge-route-grid,
+      .subject-masthead { grid-template-columns: 1fr; }
+      .subject-row { grid-template-columns: 1fr auto; }
+      .subject-row p,
+      .subject-row__status { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="page is-on" id="page-hub">
+      <nav class="research-breadcrumb">
+        <a href="#hub">我的AI历程</a><span>/</span>
+        <a href="#hub">工具篇</a><span>/</span>
+        <strong>cli篇</strong>
+      </nav>
+
+      <section class="industry-masthead">
+        <p>TOOL 01 / CLI</p>
+        <h1>cli篇</h1>
+        <p>终端里真正在用的两套助手。先判断你在用 Pi 还是 Grok Build，再进对应的命令、按键和技能。</p>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head">
+          <div>
+            <p>ENTRY / 入口</p>
+            <h2>先判断你在用哪个</h2>
+          </div>
+        </header>
+        <div class="knowledge-route-grid">
+          <article>
+            <span>PI</span>
+            <h3>轻量终端助手</h3>
+            <p>斜杠弹出菜单，键盘立刻做事，@ 找文件，! 跑命令。</p>
+            <a href="#pi">进入 Pi 路径 →</a>
+          </article>
+          <article>
+            <span>GROK BUILD</span>
+            <h3>全屏编码助手</h3>
+            <p>斜杠命令、Ctrl+P 命令面板，再加上自带技能说明书。</p>
+            <a href="#grok">进入 Grok 路径 →</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="subject-directory">
+        <header class="research-section-head">
+          <div>
+            <p>GUIDES / 图解目录</p>
+            <h2>三份说明</h2>
+          </div>
+          <span>3</span>
+        </header>
+        <a class="subject-row" href="#pi">
+          <div>
+            <span class="subject-row__ticker">PI</span>
+            <strong>Pi 快捷命令</strong>
+          </div>
+          <p>斜杠、快捷键、@ / ! / !!，以及它还在干活时怎么插话。</p>
+          <span class="subject-row__status">图解</span>
+          <span class="subject-row__arrow">→</span>
+        </a>
+        <a class="subject-row" href="#grok">
+          <div>
+            <span class="subject-row__ticker">GROK</span>
+            <strong>Grok Build 快捷命令</strong>
+          </div>
+          <p>斜杠、命令面板、三种干活模式，以及排队说话。</p>
+          <span class="subject-row__status">图解</span>
+          <span class="subject-row__arrow">→</span>
+        </a>
+        <a class="subject-row" href="#skills">
+          <div>
+            <span class="subject-row__ticker">SKILL</span>
+            <strong>Grok Build 技能</strong>
+          </div>
+          <p>说明书文件夹。打 /名字 就按那本做；有的碰到文件自己上场。</p>
+          <span class="subject-row__status">图解</span>
+          <span class="subject-row__arrow">→</span>
+        </a>
+      </section>
+    </section>
+
+    <section class="page" id="page-pi">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <strong>Pi 快捷命令</strong>
+      </nav>
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 01 / Pi</p>
+          <h1>Pi 快捷命令</h1>
+          <span>终端里的聊天机器人。你打字，它帮你改代码。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>输入框打一个 /</dd></div>
+          <div><dt>忘了</dt><dd>/hotkeys</dd></div>
+          <div><dt>范围</dt><dd>斜杠 · 快捷键 · @ ! !!</dd></div>
+          <div><dt>注意</dt><dd>Win 终端里 Alt+Enter 默认全屏</dd></div>
+        </dl>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 每天都用</p><h2>每天都用</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/model</span><strong>换模型</strong></div><p>每天都用</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/thinking</span><strong>思考深浅</strong></div><p>每天都用</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/settings</span><strong>打开设置</strong></div><p>每天都用</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/new</span><strong>新开一局</strong></div><p>每天都用</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/resume</span><strong>回到旧局</strong></div><p>每天都用</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/quit</span><strong>离开 Pi</strong></div><p>每天都用</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 这一局</p><h2>管这一局聊天</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/name</span><strong>给这局起名</strong></div><p>这一局</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/session</span><strong>看这局信息</strong></div><p>这一局</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/tree</span><strong>跳回某句话</strong></div><p>这一局</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/fork</span><strong>从旧话分叉</strong></div><p>这一局</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/clone</span><strong>复制当前线</strong></div><p>这一局</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/compact</span><strong>压缩旧记忆</strong></div><p>这一局</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 带走</p><h2>带走 / 带回来</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/copy</span><strong>复制它的回答</strong></div><p>带走</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/export</span><strong>导出这一局</strong></div><p>带走</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/import</span><strong>导入旧文件</strong></div><p>带回来</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/share</span><strong>生成分享链接</strong></div><p>带走</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 杂项</p><h2>账号和杂项</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/login</span><strong>登录账号</strong></div><p>账号</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/logout</span><strong>退出账号</strong></div><p>账号</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/trust</span><strong>信任这个项目</strong></div><p>项目</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/scoped-models</span><strong>轮换模型名单</strong></div><p>模型</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/llama</span><strong>本机小模型</strong></div><p>模型</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/reload</span><strong>重载配置</strong></div><p>配置</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/hotkeys</span><strong>看全部快捷键</strong></div><p>帮助</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/changelog</span><strong>更新了什么</strong></div><p>帮助</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>KEYS / 快捷键</p><h2>常用快捷键</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">Enter</span><strong>发送</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Shift+Enter</span><strong>换行</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Tab</span><strong>补全路径</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Esc</span><strong>停下</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Esc Esc</span><strong>打开历史树</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+C</span><strong>清空。再按退出</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+L</span><strong>选模型</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+P</span><strong>下一个模型</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Shift+Ctrl+P</span><strong>上一个模型</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Shift+Tab</span><strong>思考深浅</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+O</span><strong>折叠工具输出</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+T</span><strong>折叠思考过程</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+X</span><strong>复制回答</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Alt+V</span><strong>Windows 贴图</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+G</span><strong>用外部编辑器</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>PREFIX / 开头</p><h2>三个魔法开头</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>@</span><h3>找文件</h3><p>弹出文件搜索</p></article>
+          <article><span>!</span><h3>跑命令</h3><p>结果给 Pi 看</p></article>
+          <article><span>!!</span><h3>悄悄跑</h3><p>结果不给 Pi 看</p></article>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>QUEUE / 干活时</p><h2>先把话放下</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>ENTER</span><h3>插一句提醒</h3><p>立刻插进当前回合</p></article>
+          <article><span>ALT+ENTER</span><h3>排到后面</h3><p>Windows Terminal 默认是全屏，要先改终端快捷键</p></article>
+          <article><span>ALT+↑</span><h3>把话拿回来</h3><p>从队列里取回</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-grok">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <strong>Grok Build 快捷命令</strong>
+      </nav>
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 02 / Grok Build</p>
+          <h1>Grok Build 快捷命令</h1>
+          <span>终端里的全屏聊天机器人。你打字，它改代码、跑命令。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>/ 或 Ctrl+P</dd></div>
+          <div><dt>忘了</dt><dd>Ctrl+X · /help</dd></div>
+          <div><dt>范围</dt><dd>斜杠 · 快捷键 · @ ! ?</dd></div>
+          <div><dt>模式</dt><dd>Shift+Tab 轮换</dd></div>
+        </dl>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 每天都用</p><h2>每天都用</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/help</span><strong>看帮助</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/model</span><strong>换模型</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/effort</span><strong>思考力度</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/new</span><strong>新开一局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/resume</span><strong>回到旧局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/quit</span><strong>离开 Grok</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 这一局</p><h2>管这一局聊天</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/home</span><strong>回欢迎页</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/rename</span><strong>给这局起名</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/sessions</span><strong>切换会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/fork</span><strong>分出另一个助手</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/rewind</span><strong>回到某句话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/compact</span><strong>压缩旧记忆</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/context</span><strong>看还剩多少空间</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/session-info</span><strong>这局详情</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/delete</span><strong>删掉这局</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>MODE / 干活</p><h2>三种干活模式</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>1</span><h3>普通</h3><p>先问再动手</p></article>
+          <article><span>2</span><h3>/plan</h3><p>先写计划</p></article>
+          <article><span>3</span><h3>/always-approve</h3><p>不再弹确认</p></article>
+        </div>
+        <div class="research-note"><strong>切换</strong><span>按 Shift+Tab 就能在这几种模式之间轮换。</span></div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 带走</p><h2>带走 / 找回来</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/copy</span><strong>复制它的回答</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/export</span><strong>导出这一局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/share</span><strong>生成分享链接</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/find</span><strong>搜索对话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/transcript</span><strong>完整记录</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 加活</p><h2>一边干活一边加活</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/btw</span><strong>旁白一句，不打断</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/queue</span><strong>看排队的话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/tasks</span><strong>后台任务</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/loop</span><strong>定时再问一遍</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/dashboard</span><strong>多会话看板</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/deep-research</span><strong>后台调研</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/workflow</span><strong>跑一套流程</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/imagine</span><strong>画一张图</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 扩展</p><h2>记忆和扩展</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/remember</span><strong>立刻记住一句</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/memory</span><strong>管理记忆</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/flush</span><strong>现在就写入记忆</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/dream</span><strong>整理旧记忆</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/skills</span><strong>技能</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/plugins</span><strong>插件</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/hooks</span><strong>钩子</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/mcps</span><strong>MCP 连接</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SLASH / 杂项</p><h2>账号和杂项</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/login</span><strong>登录</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/logout</span><strong>退出账号</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/settings</span><strong>打开设置</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/theme</span><strong>换皮肤</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/docs</span><strong>内置说明书</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/tutorial</span><strong>新手教程</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/doctor</span><strong>体检终端</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/usage</span><strong>用量 / 账单</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/privacy</span><strong>隐私开关</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/feedback</span><strong>反馈</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/release-notes</span><strong>更新了什么</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/personas</span><strong>人设</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>KEYS / 快捷键</p><h2>常用快捷键</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">Enter</span><strong>发送</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Shift+Enter</span><strong>换行</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Tab</span><strong>输入框 ↔ 对话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Esc</span><strong>停下</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Esc Esc</span><strong>清空 / 回退</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+P</span><strong>命令面板</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">?</span><strong>也是命令面板</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+X</span><strong>看全部快捷键</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+M</span><strong>多行 / 选模型</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Shift+Tab</span><strong>切换干活模式</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+O</span><strong>全自动批准</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+S</span><strong>打开旧会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+T</span><strong>待办清单</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+G</span><strong>任务面板</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+N N</span><strong>新开一局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+D</span><strong>退出（按两次）</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Alt+V</span><strong>Windows 贴图</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">F2</span><strong>打开设置</strong></div></div>
+        </div>
+        <div class="research-note"><strong>终端</strong><span>不同终端里，个别按键会不一样。忘了就按 Ctrl+X。</span></div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>PREFIX / 开头</p><h2>三个魔法开头</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>@</span><h3>找文件</h3><p>弹出文件搜索</p></article>
+          <article><span>!</span><h3>跑命令</h3><p>空输入时进 Shell</p></article>
+          <article><span>?</span><h3>搜一切</h3><p>打开命令面板</p></article>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>QUEUE / 干活时</p><h2>先把话放下</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>ENTER</span><h3>排到后面</h3><p>先放下，等它做完</p></article>
+          <article><span>CTRL+ENTER</span><h3>打断，立刻说</h3><p>插到最前面</p></article>
+          <article><span>/BTW</span><h3>旁白</h3><p>问一句，不打断</p></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-skills">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <a href="#grok">Grok Build</a><span>/</span>
+        <strong>技能</strong>
+      </nav>
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 03 / Skills</p>
+          <h1>Grok Build 技能</h1>
+          <span>一本说明书文件夹。打 /名字，Grok 就按那本做。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>/ 或 /skills</dd></div>
+          <div><dt>和 /help</dt><dd>/help 是开关，技能是外挂说明书</dd></div>
+          <div><dt>和 /plan</dt><dd>/plan 管这一局；/design 另出设计文档</dd></div>
+          <div><dt>边界</dt><dd>Cursor / Pi 不会自动拿到这包</dd></div>
+        </dl>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head"><div><p>INVOKE / 打斜杠</p><h2>写方案再动手</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/design</span><strong>写出设计文档</strong></div><p>另出一份文档，再交给 /execute-plan</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/execute-plan</span><strong>按计划施工</strong></div><p>读设计文档里的 PR Plan</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/implement</span><strong>写到审过为止</strong></div><p>只能打斜杠，不会自己上场</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>INVOKE / 审</p><h2>审，然后盯着</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/review</span><strong>审本地 / 分支 / PR</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/code-review</span><strong>狠审能不能维护</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/pr-babysit</span><strong>盯 CI、评论、冲突</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>INVOKE / 接着干</p><h2>从别的工具接着干</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/resume-cursor</span><strong>接着 Cursor 那局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/resume-claude</span><strong>接着 Claude 那局</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/resume-codex</span><strong>接着 Codex 那局</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>INVOKE / 扩展</p><h2>自己做扩展</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">/create-skill</span><strong>做一本新技能</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/create-workflow</span><strong>写一套流程</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/build-with-ai</span><strong>默认接到 SpaceXAI</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/skill-design-principles</span><strong>怎么写技能</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>AUTO / 不用打斜杠</p><h2>碰到文件，它自己翻</h2></div></header>
+        <div class="subject-directory">
+          <div class="subject-row"><div><span class="subject-row__ticker">pdf</span><strong>读 / 做 PDF</strong></div><p>不进斜杠菜单</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">docx</span><strong>Word 文档</strong></div><p>不进斜杠菜单</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">pptx</span><strong>幻灯片</strong></div><p>不进斜杠菜单</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">imagine</span><strong>画图时自己翻</strong></div><p>跟内置 /imagine 不是同一件事</p></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">游戏素材</span><strong>精灵、地图、图标</strong></div><p>不进斜杠菜单</p></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>WHERE / 放哪儿</p><h2>三种来源</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>1</span><h3>自带</h3><p>Grok 安装时就有</p></article>
+          <article><span>2</span><h3>~/.grok</h3><p>家里自己装的</p></article>
+          <article><span>3</span><h3>./.grok</h3><p>这个项目里的</p></article>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const pages = {
+      hub: "page-hub",
+      pi: "page-pi",
+      grok: "page-grok",
+      skills: "page-skills",
+    };
+
+    function show(name) {
+      const id = pages[name] || pages.hub;
+      document.querySelectorAll(".page").forEach((el) => el.classList.toggle("is-on", el.id === id));
+      window.scrollTo(0, 0);
+    }
+
+    function fromHash() {
+      const key = (location.hash || "#hub").slice(1);
+      show(key);
+    }
+
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
+  </script>
+</body>
+</html>

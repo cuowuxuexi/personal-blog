@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/html/grok-skills/" />
+  <title>Grok Build 技能 · 图解</title>
+  <style>
+    :root {
+      --bg: #07080a;
+      --paper: #111418;
+      --ink: #f3f6fb;
+      --muted: #9aa6b5;
+      --cyan: #4de2ff;
+      --line: rgba(243, 246, 251, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      line-height: 1.25;
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 80px; }
+
+    .hero { text-align: center; padding: 12px 0 8px; }
+    .hero img {
+      width: 100%;
+      border-radius: 28px;
+      display: block;
+      border: 1px solid var(--line);
+      background: #050607;
+    }
+    .kicker {
+      display: inline-block;
+      margin: 22px 0 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(77, 226, 255, 0.12);
+      color: var(--cyan);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    h1, h2 { font-weight: 800; letter-spacing: -0.03em; }
+    h1 { font-size: clamp(40px, 8vw, 84px); margin-bottom: 10px; }
+    h2 { font-size: clamp(32px, 6vw, 56px); margin: 8px 0 10px; }
+    .sub {
+      color: var(--muted);
+      font-size: clamp(18px, 2.4vw, 26px);
+      max-width: 18em;
+      margin: 0 auto;
+    }
+
+    section { margin-top: 72px; }
+    .center { text-align: center; }
+
+    .trio, .row3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .card, .cmd {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+    }
+    .card { padding: 28px 20px 24px; text-align: center; }
+    .big-sym {
+      font-size: 72px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 12px;
+      color: var(--cyan);
+    }
+    .card h3 { font-size: 28px; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 18px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .cmd { padding: 22px 18px 18px; min-height: 132px; }
+    .cmd code {
+      display: block;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-bottom: 8px;
+    }
+    .cmd span { color: var(--ink); font-size: 22px; font-weight: 700; }
+
+    .fat { padding: 28px 20px; text-align: center; }
+    .fat h3 { font-size: 36px; margin: 4px 0 8px; }
+    .fat p { color: var(--muted); font-size: 20px; }
+
+    .note {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(255, 107, 107, 0.12);
+      color: #ffc4c4;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .note.cyan {
+      background: rgba(77, 226, 255, 0.1);
+      color: #b8f4ff;
+    }
+
+    .footer { margin-top: 80px; text-align: center; }
+    .giant {
+      display: inline-block;
+      margin: 8px 8px 0 0;
+      padding: 18px 28px;
+      border-radius: 22px;
+      background: var(--cyan);
+      color: #071014;
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 900;
+    }
+    .tiny { margin-top: 18px; color: var(--muted); font-size: 15px; }
+    a { color: var(--cyan); }
+
+    @media (max-width: 800px) {
+      .trio, .row3 { grid-template-columns: 1fr; }
+      .big-sym { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <img src="grok-skills-what.png" alt="Grok 坐在桌前翻一本 SKILL.md 说明书" />
+      <div class="kicker">30 秒看懂</div>
+      <h1>技能是什么？</h1>
+      <p class="sub">一本说明书文件夹。<br>打 /名字，Grok 就按那本做。</p>
+    </header>
+
+    <section class="center">
+      <h2>跟斜杠命令差在哪</h2>
+      <div class="trio">
+        <article class="card">
+          <div class="big-sym">/</div>
+          <h3>/help 那些</h3>
+          <p>Grok 自己的开关</p>
+        </article>
+        <article class="card">
+          <div class="big-sym">书</div>
+          <h3>/design 那些</h3>
+          <p>外挂的说明书</p>
+        </article>
+        <article class="card">
+          <div class="big-sym">≡</div>
+          <h3>/skills</h3>
+          <p>查看、开关技能</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="center">
+      <div class="kicker">第一类</div>
+      <h2>打斜杠就能用</h2>
+      <p class="sub">输入框打一个 /<br>可调用的技能会出来</p>
+    </section>
+
+    <section>
+      <h2>写方案再动手</h2>
+      <div class="grid">
+        <div class="cmd"><code>/design</code><span>写出设计文档</span></div>
+        <div class="cmd"><code>/execute-plan</code><span>按计划施工</span></div>
+        <div class="cmd"><code>/implement</code><span>写到审过为止</span></div>
+      </div>
+      <p class="note cyan">/plan 是这一局先写计划再改代码。/design 是另外出一份设计文档，再交给 /execute-plan。</p>
+    </section>
+
+    <section>
+      <h2>审，然后盯着</h2>
+      <div class="grid">
+        <div class="cmd"><code>/review</code><span>审本地 / 分支 / PR</span></div>
+        <div class="cmd"><code>/code-review</code><span>狠审能不能维护</span></div>
+        <div class="cmd"><code>/pr-babysit</code><span>盯 CI、评论、冲突</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>从别的工具接着干</h2>
+      <div class="grid">
+        <div class="cmd"><code>/resume-cursor</code><span>接着 Cursor 那局</span></div>
+        <div class="cmd"><code>/resume-claude</code><span>接着 Claude 那局</span></div>
+        <div class="cmd"><code>/resume-codex</code><span>接着 Codex 那局</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>自己做扩展</h2>
+      <div class="grid">
+        <div class="cmd"><code>/create-skill</code><span>做一本新技能</span></div>
+        <div class="cmd"><code>/create-workflow</code><span>写一套流程</span></div>
+        <div class="cmd"><code>/build-with-ai</code><span>默认接到 SpaceXAI</span></div>
+        <div class="cmd"><code>/skill-design-principles</code><span>怎么写技能</span></div>
+      </div>
+    </section>
+
+    <section class="center">
+      <div class="kicker">第二类</div>
+      <h2>不用打斜杠</h2>
+      <p class="sub">碰到文件，它自己翻说明书</p>
+    </section>
+
+    <section>
+      <div class="grid">
+        <div class="cmd"><code>pdf</code><span>读 / 做 PDF</span></div>
+        <div class="cmd"><code>docx</code><span>Word 文档</span></div>
+        <div class="cmd"><code>pptx</code><span>幻灯片</span></div>
+        <div class="cmd"><code>imagine</code><span>画图时自己翻</span></div>
+        <div class="cmd"><code>游戏素材</code><span>精灵、地图、图标</span></div>
+      </div>
+      <p class="note cyan">这一类不出现在斜杠菜单里。/imagine 画图是内置命令，跟这本 imagine 说明书不是同一件事。</p>
+    </section>
+
+    <section class="center">
+      <div class="kicker">放哪儿</div>
+      <h2>三种来源</h2>
+      <div class="row3">
+        <article class="card fat">
+          <div class="big-sym">1</div>
+          <h3>自带</h3>
+          <p>Grok 安装时就有</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">2</div>
+          <h3>~/.grok</h3>
+          <p>家里自己装的</p>
+        </article>
+        <article class="card fat">
+          <div class="big-sym">3</div>
+          <h3>./.grok</h3>
+          <p>这个项目里的</p>
+        </article>
+      </div>
+      <p class="note">Cursor、Pi 不会自动拿到这包。这是 Grok Build 自己的货架。</p>
+    </section>
+
+    <section class="center footer">
+      <h2>忘了就按这个</h2>
+      <div class="giant">/skills</div>
+      <div class="giant">/</div>
+      <p class="tiny">
+        官方说明：
+        <a href="https://docs.x.ai/build/features/skills-plugins-marketplaces">技能 / 插件 / 市场</a>
+        ·
+        <a href="https://docs.x.ai/build/overview">docs.x.ai/build</a>
+        ·
+        <a href="https://github.com/xai-org/grok-build">仓库</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>

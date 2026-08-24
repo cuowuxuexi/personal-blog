@@ -33,6 +33,7 @@ docs/public/html/<名字>/
 
 | 路径 | 说明 |
 | --- | --- |
-| （尚无） | 新作品从这里开始 |
+| `grok-skills/` | Grok Build 自带技能图解（旧整页，cli篇已改走 cli-hub） |
+| `cli-hub/` | cli篇目录：Pi / Grok 快捷命令与技能 |
 
-最后更新：2026-08-23
+最后更新：2026-08-24

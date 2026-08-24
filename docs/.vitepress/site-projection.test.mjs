@@ -145,6 +145,8 @@ test('standalone HTML URLs resolve to on-disk files', () => {
     '/journey-guides/pi-shortcuts',
     '/journey-guides/pi-shortcuts/',
     '/journey-guides/grok-shortcuts?x=1',
+    '/html/grok-skills',
+    '/html/cli-hub',
   ]) {
     const found = standaloneHtmlFile(url)
     assert.ok(found && fs.existsSync(found.file), url)
