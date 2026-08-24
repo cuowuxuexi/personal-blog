@@ -8,6 +8,7 @@ import CategoryList from './components/CategoryList.vue'
 import LatestWeeklyRedirect from './components/LatestWeeklyRedirect.vue'
 import WeeklyEntry from './components/WeeklyEntry.vue'
 import StandaloneHtml from './components/StandaloneHtml.vue'
+import JumpToStandalone from './components/JumpToStandalone.vue'
 import WeeklyEvents from './components/WeeklyEvents.vue'
 import WeeklyEventYear from './components/WeeklyEventYear.vue'
 import ResearchDirectory from './components/ResearchDirectory.vue'
@@ -27,6 +28,7 @@ export default {
     app.component('LatestWeeklyRedirect', LatestWeeklyRedirect)
     app.component('WeeklyEntry', WeeklyEntry)
     app.component('StandaloneHtml', StandaloneHtml)
+    app.component('JumpToStandalone', JumpToStandalone)
     app.component('WeeklyEvents', WeeklyEvents)
     app.component('WeeklyEventYear', WeeklyEventYear)
     app.component('ResearchDirectory', ResearchDirectory)

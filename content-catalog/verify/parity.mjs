@@ -101,10 +101,12 @@ function requiresIssue(kind, item) {
   return true
 }
 
-function namedChapterLinks(kind) {
-  return (kind.namedChapterOrder || []).map((name) => (
-    contentSiteLink(kind.id, { name: name.replace(/\.md$/i, '') })
-  ))
+function namedChapterLinks(kind, namedFiles) {
+  return (kind.namedChapterOrder || []).map((name) => {
+    const file = (namedFiles || []).find((item) => item.name === name)
+    if (file?.link) return file.link
+    return contentSiteLink(kind.id, { name: name.replace(/\.md$/i, '') })
+  })
 }
 
 function checkCardinality(items, failures, kindId, source, code = 'duplicate-link') {
@@ -215,7 +217,7 @@ function checkUniqueIssues(items, kind, source, failures) {
 
 function lockNamedChapters(kind, namedFiles, namedPosts, journeyChapters, indexLinks, failures) {
   const expectedNames = kind.namedChapterOrder || []
-  const expectedLinks = namedChapterLinks(kind)
+  const expectedLinks = namedChapterLinks(kind, namedFiles)
   const fileNames = namedFiles.map((item) => item.name).slice().sort()
   const expectedSorted = expectedNames.slice().sort()
   if (JSON.stringify(fileNames) !== JSON.stringify(expectedSorted)) {

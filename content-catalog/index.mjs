@@ -50,6 +50,8 @@ export {
   yearGroupTitle,
   contentFileName,
   contentSiteLink,
+  isStandalonePublicHref,
+  standalonePublicHref,
   assetRulesFor,
 } from './paths.mjs'
 

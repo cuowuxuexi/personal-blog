@@ -50,7 +50,10 @@ Markdown/frontmatter 是周记与历程的身份真源。`posts` 与受管年份
 
 具名篇章排序受 `content-catalog` `namedChapterOrder` 与系列 `index.md` 约束。要挂到另一篇章的下拉里时，同步 `namedChapterNesting`（子篇仍是同目录文件，不建子文件夹）。改名或增删前搜索全部入站链接。
 
-独立 HTML（先做好再拷进仓）放 `docs/public/html/<名字>/`，正文用 `<StandaloneHtml src="/html/<名字>" />`。不要写成普通站内链接。约定见该目录 README。已上线的 Pi / Grok 图解仍在 `docs/public/journey-guides/`。
+独立 HTML（先做好再拷进仓）放 `docs/public/html/<名字>/`。约定见该目录 README。已上线的 Pi / Grok 图解仍在 `docs/public/journey-guides/`。
+
+- 嵌进普通文章：正文用 `<StandaloneHtml src="/html/<名字>" />`。
+- 具名篇章整页就是这份 HTML：frontmatter 写 `publicHref: /html/<名字>`（只允许 `/html/` 或 `/journey-guides/`），系列 `index.md` 和侧栏投影走这个地址；正文放 `<JumpToStandalone />`，给旧 Markdown 路由跳走。不要再嵌 iframe。
 
 ## 大事件与润色
 
@@ -58,4 +61,4 @@ Markdown/frontmatter 是周记与历程的身份真源。`posts` 与受管年份
 
 用户手打内容默认轻度加工：修正错字、标点、病句和产品名称大小写；保留观点、即时语气与 `💡`。投资周记先过研究内容 Gate 1，持仓、成本和交易可按作者意愿写入。
 
-最后更新：2026-08-23
+最后更新：2026-08-24

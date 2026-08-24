@@ -10,6 +10,7 @@ import {
   isValidIsoDate,
   matchesKindPath,
   posixRel,
+  standalonePublicHref,
   yearGroupTitle,
 } from './paths.mjs'
 
@@ -52,6 +53,8 @@ function resolveSiteLink(kind, name, fm) {
     if (isDatedJourneyName(name)) {
       return contentSiteLink(kind.id, { date: fm.date || parts.date })
     }
+    const override = standalonePublicHref(fm)
+    if (override !== undefined) return override
     return contentSiteLink(kind.id, { name: stemOf(name) })
   }
   return null
@@ -234,28 +237,33 @@ export function projectYearSidebarGroups(kindId, posts) {
   })
 }
 
+function isDatedJourneyLink(link) {
+  return /\/\d{4}-\d{2}-\d{2}$/.test(String(link || ''))
+}
+
+function namedPostForFile(posts, name) {
+  const stem = stemOf(name)
+  const derived = contentSiteLink('journey', { name: stem })
+  const undated = (posts || []).filter((post) => post.type === 'journey' && !isDatedJourneyLink(post.link))
+  return undated.find((post) => post.link === derived)
+    || undated.find((post) => post.title === stem)
+    || null
+}
+
 function namedChapterPosts(posts) {
   const kind = getContentKind('journey')
   const order = kind.namedChapterOrder || []
-  const byLink = new Map()
-  for (const post of posts || []) {
-    if (post.type !== 'journey') continue
-    if (/\/\d{4}-\d{2}-\d{2}$/.test(post.link)) continue
-    byLink.set(post.link, post)
-  }
   const nest = kind.namedChapterNesting || {}
   const childNames = new Set(Object.values(nest).flat())
   const items = []
   for (const name of order) {
     if (childNames.has(name)) continue
-    const link = contentSiteLink('journey', { name: stemOf(name) })
-    const post = byLink.get(link)
+    const post = namedPostForFile(posts, name)
     if (!post) continue
     const item = { text: post.title, link: post.link }
     const nested = []
     for (const childName of nest[name] || []) {
-      const childLink = contentSiteLink('journey', { name: stemOf(childName) })
-      const child = byLink.get(childLink)
+      const child = namedPostForFile(posts, childName)
       if (!child) continue
       nested.push({ text: child.title, link: child.link })
     }

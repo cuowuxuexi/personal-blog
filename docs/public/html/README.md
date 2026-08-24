@@ -22,7 +22,7 @@ docs/public/html/<名字>/
 <StandaloneHtml src="/html/<名字>" title="说明" />
 ```
 
-「单独打开完整页」会新开标签打开这份 HTML。不要手写普通站内链接去点它：VitePress 会当成缺失文章。
+「单独打开完整页」会新开标签打开这份 HTML。侧栏或系列 index 若要直接进入完整页，在对应具名篇章 frontmatter 写 `publicHref: /html/<名字>`（主题会整页跳转）。不要把 `/html/...` 当成普通 Markdown 文章路由。
 
 ## 约定
 

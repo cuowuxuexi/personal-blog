@@ -224,6 +224,25 @@ export function contentFileName(kindOrId, parts = {}) {
   }
 }
 
+/** 具名篇章可用 publicHref 直达独立 HTML；只允许 /html/ 与 /journey-guides/。 */
+export function isStandalonePublicHref(href) {
+  const value = String(href || '').trim().replace(/\/+$/, '')
+  if (value.includes('..')) return false
+  return /^\/(html|journey-guides)\/[A-Za-z0-9][A-Za-z0-9/_-]*$/.test(value)
+}
+
+/**
+ * 未声明或空值 → undefined（沿用 Markdown 路由）。
+ * 已声明但非法 → null（失败即关）。
+ */
+export function standalonePublicHref(fm) {
+  if (fm == null || fm.publicHref == null) return undefined
+  const raw = String(fm.publicHref).trim()
+  if (raw === '') return undefined
+  const value = raw.replace(/\/+$/, '')
+  return isStandalonePublicHref(value) ? value : null
+}
+
 export function contentSiteLink(kindOrId, parts = {}) {
   const kind = typeof kindOrId === 'string' ? getContentKind(kindOrId) : kindOrId
   switch (kind.id) {

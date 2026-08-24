@@ -6,8 +6,9 @@ type: journey
 description: 我的 AI 历程 · 工具篇 / cli篇：Pi 与 Grok Build 的命令、按键和技能目录。
 pageClass: weekly-post weekly-post--life
 outline: false
+publicHref: /html/cli-hub
 ---
 
 # cli篇
 
-<StandaloneHtml src="/html/cli-hub" title="cli篇" />
+<JumpToStandalone />

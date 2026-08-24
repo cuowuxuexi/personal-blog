@@ -170,7 +170,7 @@ export function namedChapterSidebarItems(source, sidebarKey) {
 
 export function seriesIndexLinks(markdown) {
   const links = []
-  const re = /\[([^\]]+)\]\((\/AI与生活\/我的AI历程\/[^)\s]+)\)/g
+  const re = /\[([^\]]+)\]\((\/(?:AI与生活\/我的AI历程|html|journey-guides)\/[^)\s]+)\)/g
   let match
   while ((match = re.exec(markdown || ''))) {
     if (match[2] === '/AI与生活/我的AI历程/') continue

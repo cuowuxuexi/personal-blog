@@ -308,7 +308,93 @@ test('live: fs and reconstructed glob adapters agree; year/journey sidebar proje
     '/AI与生活/我的AI历程/AI开支记录与优化',
   ])
   assert.deepEqual(journeySidebar[0].items[1].items.map((i) => i.link), [
-    '/AI与生活/我的AI历程/cli篇',
+    '/html/cli-hub',
+  ])
+})
+
+test('named journey publicHref becomes post.link; invalid fails closed', () => {
+  const raw = (publicHref) => `---
+title: cli篇
+date: 2026-08-23
+category: AI与生活
+type: journey
+publicHref: ${publicHref}
+---
+`
+
+  const good = postFromManagedMarkdown({
+    kindId: 'journey',
+    relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+    raw: raw('/html/cli-hub'),
+  })
+  assert.ok(good)
+  assert.equal(good.link, '/html/cli-hub')
+
+  const trailing = postFromManagedMarkdown({
+    kindId: 'journey',
+    relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+    raw: raw('/html/cli-hub/'),
+  })
+  assert.equal(trailing?.link, '/html/cli-hub')
+
+  const journeyGuide = postFromManagedMarkdown({
+    kindId: 'journey',
+    relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+    raw: raw('/journey-guides/pi-shortcuts'),
+  })
+  assert.equal(journeyGuide?.link, '/journey-guides/pi-shortcuts')
+
+  assert.equal(postFromManagedMarkdown({
+    kindId: 'journey',
+    relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+    raw: raw('/AI与生活/我的AI历程/cli篇'),
+  }), null)
+
+  assert.equal(postFromManagedMarkdown({
+    kindId: 'journey',
+    relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+    raw: raw('/html/../cli-hub'),
+  }), null)
+})
+
+test('journey sidebar uses publicHref for nested named chapter', () => {
+  const chapter = (title, extra = '') => `---
+title: ${title}
+date: 2026-01-04
+category: AI与生活
+type: journey
+${extra}---
+`
+  const posts = managedPostsFromSources([
+    {
+      kindId: 'journey',
+      relativePath: 'docs/AI与生活/我的AI历程/基础设施篇.md',
+      raw: chapter('基础设施篇'),
+    },
+    {
+      kindId: 'journey',
+      relativePath: 'docs/AI与生活/我的AI历程/工具篇.md',
+      raw: chapter('工具篇'),
+    },
+    {
+      kindId: 'journey',
+      relativePath: 'docs/AI与生活/我的AI历程/cli篇.md',
+      raw: chapter('cli篇', 'publicHref: /html/cli-hub\n'),
+    },
+    {
+      kindId: 'journey',
+      relativePath: 'docs/AI与生活/我的AI历程/AI开支记录与优化.md',
+      raw: chapter('AI开支记录与优化'),
+    },
+  ])
+  const sidebar = projectJourneySidebar(posts)
+  assert.deepEqual(sidebar[0].items.map((item) => item.link), [
+    '/AI与生活/我的AI历程/基础设施篇',
+    '/AI与生活/我的AI历程/工具篇',
+    '/AI与生活/我的AI历程/AI开支记录与优化',
+  ])
+  assert.deepEqual(sidebar[0].items[1].items.map((item) => item.link), [
+    '/html/cli-hub',
   ])
 })
 

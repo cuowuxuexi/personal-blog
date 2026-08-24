@@ -75,7 +75,7 @@ test('Wave B sidebar fs adapter matches live managed year and journey groups', (
     '/AI与生活/我的AI历程/AI开支记录与优化',
   ])
   assert.deepEqual(journeySidebarGroups[0].items[1].items.map((i) => i.link), [
-    '/AI与生活/我的AI历程/cli篇',
+    '/html/cli-hub',
   ])
   assert.ok(journeySidebarGroups.every((g) => g.text !== '周记 · 2026年'))
 })
