@@ -1,13 +1,9 @@
-export const ALLOWED_PREFIXES = [
-  'docs/AI与生活/',
-  'docs/投资/周记/',
-  'docs/public/images/weekly/',
-]
-
-const JOURNEY_ALLOWED_PREFIXES = [
-  'docs/AI与生活/我的AI历程/',
-  'docs/public/images/journey/',
-]
+import {
+  isKindAssetFile,
+  isUnderKindContentDir,
+  listContentKinds,
+  matchesKindPath,
+} from '../../content-catalog/index.mjs'
 
 const BLOCKED_PREFIXES = [
   'docs/投资/投研/',
@@ -19,12 +15,41 @@ const BLOCKED_PREFIXES = [
   'panel/',
 ]
 
-const JOURNEY_BLOCKED_NAMES = new Set(['index.md', 'readme.md'])
 /** @deprecated Wave D：面板不再发布 posts/config；保留空集兼容旧调用。 */
 const JOURNEY_META_FILES = new Set()
-const WEEKLY_EXCLUDED_PREFIXES = [
-  'docs/AI与生活/我的AI历程/',
-]
+
+function panelKinds(postType) {
+  return listContentKinds().filter(
+    (kind) => kind.creation.surfaces.includes('panel') && kind.postType === postType,
+  )
+}
+
+function weeklyPublishKinds() {
+  return panelKinds('weekly')
+}
+
+function nestedNonWeeklyPrefixes() {
+  const weekly = weeklyPublishKinds()
+  const weeklyIds = new Set(weekly.map((kind) => kind.id))
+  const prefixes = []
+  for (const parent of weekly) {
+    for (const kind of listContentKinds()) {
+      if (weeklyIds.has(kind.id)) continue
+      if (kind.contentDir.startsWith(`${parent.contentDir}/`)) {
+        prefixes.push(`${kind.contentDir}/`)
+      }
+    }
+  }
+  return prefixes
+}
+
+export const ALLOWED_PREFIXES = [...new Set(
+  weeklyPublishKinds().flatMap((kind) => {
+    const prefixes = [`${kind.contentDir}/`]
+    if (kind.assets.directory) prefixes.push(`${kind.assets.directory}/`)
+    return prefixes
+  }),
+)]
 
 export function posixPath(file) {
   return String(file).replace(/\\/g, '/')
@@ -39,23 +64,12 @@ export function publishScopeOf(kindId, capability) {
   return String(kindId) === 'journey' ? 'journey' : 'weekly'
 }
 
-function journeyChapterName(rel) {
-  const prefix = 'docs/AI与生活/我的AI历程/'
-  if (!rel.startsWith(prefix) || !rel.endsWith('.md')) return ''
-  const name = rel.slice(prefix.length)
-  if (!name || name.includes('/')) return ''
-  return name
-}
-
 export function isJourneyChapterPath(file) {
-  const name = journeyChapterName(posixPath(file))
-  if (!name) return false
-  return !JOURNEY_BLOCKED_NAMES.has(name.toLowerCase())
+  return matchesKindPath('journey', posixPath(file))
 }
 
 export function isJourneyImagePath(file) {
-  const rel = posixPath(file)
-  return rel.startsWith('docs/public/images/journey/') && rel !== 'docs/public/images/journey/'
+  return isKindAssetFile('journey', posixPath(file))
 }
 
 export function isJourneyMetaPath(file) {
@@ -73,18 +87,27 @@ function resolveScope(options = {}) {
   return publishScopeOf(options.kindId, options.capability)
 }
 
+export function isPublicationSourcePath(rel, kindId, capability) {
+  const file = posixPath(rel)
+  if (!file.endsWith('.md')) return false
+  if (publishScopeOf(kindId, capability) === 'journey') {
+    return matchesKindPath('journey', file)
+  }
+  return weeklyPublishKinds().some((kind) => matchesKindPath(kind, file))
+}
+
 export function isAllowedPublishPath(file, options = {}) {
   const rel = posixPath(file)
   if (rel.includes('..')) return false
   if (matchesPrefix(rel, BLOCKED_PREFIXES)) return false
   const scope = resolveScope(options)
   if (scope === 'journey') {
-    if (isJourneyChapterPath(rel)) return true
-    if (isJourneyImagePath(rel) && matchesPrefix(rel, JOURNEY_ALLOWED_PREFIXES)) return true
-    return false
+    return isJourneyChapterPath(rel) || isJourneyImagePath(rel)
   }
-  if (matchesPrefix(rel, WEEKLY_EXCLUDED_PREFIXES)) return false
-  return matchesPrefix(rel, ALLOWED_PREFIXES)
+  if (matchesPrefix(rel, nestedNonWeeklyPrefixes())) return false
+  return weeklyPublishKinds().some((kind) => (
+    isUnderKindContentDir(kind, rel) || isKindAssetFile(kind, rel)
+  ))
 }
 
 export function assertPublishable(files, options = {}) {
