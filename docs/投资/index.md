@@ -35,6 +35,5 @@ outline: false
 
 <section class="invest-hub-section" aria-labelledby="tracked-subjects-title">
   <header class="invest-hub-section__head"><div><p>TRACKING / 正在建立</p><h2 id="tracked-subjects-title">投研标的</h2></div><a href="/投资/投研/">全部标的 →</a></header>
-  <a class="tracked-subject" href="/投资/投研/医药/药明康德/"><span>医药</span><strong>药明康德</strong><small>603259.SH / 2359.HK</small><em>建立档案 →</em></a>
-  <a class="tracked-subject" href="/投资/投研/互联网/腾讯/"><span>互联网</span><strong>腾讯</strong><small>0700.HK</small><em>建立档案 →</em></a>
+  <TrackedSubjectList />
 </section>

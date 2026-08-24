@@ -2,9 +2,14 @@ import { defineConfig } from 'vitepress'
 import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
 import { hermesSidebarItems } from './hermes-diary'
 import {
+  bigQuestionNavItems,
+  bigQuestionSidebarGroups,
   investYearSidebarGroups,
   journeySidebarGroups,
   lifeYearSidebarGroups,
+  philosophyNavItems,
+  philosophySidebarGroups,
+  researchIndustrySidebarGroups,
 } from './managed-sidebar-fs.mjs'
 import { normalizeDisplayMath } from './normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
@@ -12,8 +17,9 @@ import { serveStandaloneHtmlPlugin } from './standalone-html.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
- * 侧栏：静态壳手写；周记/历程受管组由构建期投影注入（Wave B）。
+ * 侧栏：静态壳手写；周记/历程/投研/哲学/大问题受管组由构建期投影注入。
  * - 投资周记年份组、生活周记年份组、历程具名篇章+日期年份组 → managed-sidebar-fs
+ * - 投研行业树、投资哲学、大问题 → managed-sidebar-fs
  * - Wave C：生活侧栏只保留历程系列入口，不再枚举具名叶子
  * - 面板只写 Markdown（+引用图）；受管 posts/sidebar 由投影生成
  */
@@ -65,20 +71,11 @@ export default defineConfig({
     nav: [
       {
         text: '投资哲学档',
-        items: [
-          { text: '总览', link: '/投资哲学/' },
-          { text: '认识与证据', link: '/投资哲学/认识与证据/' },
-          { text: '市场与价格', link: '/投资哲学/市场与价格/' },
-          { text: '企业与回报', link: '/投资哲学/企业与回报/' },
-          { text: '个人与研究边界', link: '/投资哲学/个人与研究边界/' },
-        ],
+        items: philosophyNavItems,
       },
       {
         text: '大问题的问与答',
-        items: [
-          { text: '总览', link: '/大问题/' },
-          { text: '开源与闭源', link: '/大问题/开源与闭源/' },
-        ],
+        items: bigQuestionNavItems,
       },
       { text: '关于', link: '/关于' },
     ],
@@ -86,27 +83,12 @@ export default defineConfig({
     sidebar: {
       // 站名下拉进入的独立栏目：架构类似投研 hub，彼此不互链
       '/大问题/': [
-        {
-          text: '大问题的问与答',
-          items: [
-            { text: '总览', link: '/大问题/' },
-            { text: '开源与闭源', link: '/大问题/开源与闭源/' },
-          ],
-        },
+        ...bigQuestionSidebarGroups,
       ],
       '/投资哲学/': [
-        {
-          text: '投资哲学档',
-          items: [
-            { text: '总览', link: '/投资哲学/' },
-            { text: '认识与证据', link: '/投资哲学/认识与证据/' },
-            { text: '市场与价格', link: '/投资哲学/市场与价格/' },
-            { text: '企业与回报', link: '/投资哲学/企业与回报/' },
-            { text: '个人与研究边界', link: '/投资哲学/个人与研究边界/' },
-          ],
-        },
+        ...philosophySidebarGroups,
       ],
-      // 投研侧栏：行业为一级入口（默认展开）；其下「研究地图 / 标的档案」默认收起。
+      // 投研侧栏：静态壳手写；行业树由构建期投影。
       '/投资/投研/': [
         {
           text: '投研',
@@ -116,108 +98,7 @@ export default defineConfig({
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
-        {
-          text: '医药行业',
-          collapsed: false,
-          items: [
-            { text: '行业总览', link: '/投资/投研/医药/' },
-            {
-              text: '研究地图',
-              collapsed: true,
-              items: [
-                { text: '地图总览', link: '/投资/投研/医药/研究地图/' },
-                { text: '创新药研发全流程', link: '/投资/投研/医药/研究地图/创新药研发全流程/' },
-                { text: 'CXO 与 CRDMO', link: '/投资/投研/医药/研究地图/CXO与CRDMO/' },
-                { text: '原研、仿制与支付端', link: '/投资/投研/医药/研究地图/原研仿制与支付端/' },
-              ],
-            },
-            {
-              text: '标的档案',
-              collapsed: true,
-              items: [
-                { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
-              ],
-            },
-          ],
-        },
-        {
-          text: '互联网行业',
-          collapsed: true,
-          items: [
-            { text: '行业总览', link: '/投资/投研/互联网/' },
-            {
-              text: '研究地图',
-              collapsed: true,
-              items: [
-                { text: '地图总览', link: '/投资/投研/互联网/研究地图/' },
-              ],
-            },
-            {
-              text: '标的档案',
-              collapsed: true,
-              items: [
-                { text: '腾讯', link: '/投资/投研/互联网/腾讯/' },
-              ],
-            },
-          ],
-        },
-        {
-          text: '猪肉养殖行业',
-          collapsed: true,
-          items: [
-            { text: '行业总览', link: '/投资/投研/猪肉养殖/' },
-            {
-              text: '研究地图',
-              collapsed: true,
-              items: [
-                { text: '地图总览', link: '/投资/投研/猪肉养殖/研究地图/' },
-              ],
-            },
-            {
-              text: '标的档案',
-              collapsed: true,
-              items: [],
-            },
-          ],
-        },
-        {
-          text: '白酒行业',
-          collapsed: true,
-          items: [
-            { text: '行业总览', link: '/投资/投研/白酒/' },
-            {
-              text: '研究地图',
-              collapsed: true,
-              items: [
-                { text: '地图总览', link: '/投资/投研/白酒/研究地图/' },
-              ],
-            },
-            {
-              text: '标的档案',
-              collapsed: true,
-              items: [],
-            },
-          ],
-        },
-        {
-          text: '硬件制造行业',
-          collapsed: true,
-          items: [
-            { text: '行业总览', link: '/投资/投研/硬件制造/' },
-            {
-              text: '研究地图',
-              collapsed: true,
-              items: [
-                { text: '地图总览', link: '/投资/投研/硬件制造/研究地图/' },
-              ],
-            },
-            {
-              text: '标的档案',
-              collapsed: true,
-              items: [],
-            },
-          ],
-        },
+        ...researchIndustrySidebarGroups,
       ],
       '/投资/周记/': [
         {

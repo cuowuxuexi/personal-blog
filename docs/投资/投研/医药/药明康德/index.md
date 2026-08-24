@@ -3,6 +3,10 @@ title: 药明康德
 description: 药明康德公开研究档案：行业节点映射、公司问题与学习路径
 pageClass: subject-index
 outline: [2, 3]
+order: 1
+ticker: 603259.SH / 2359.HK
+status: 学习中
+hubLead: 从化学与合成分子相关服务 × R/D/M 切入，继续核验收入、能力、客户与竞争位置。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><strong>药明康德</strong></nav>

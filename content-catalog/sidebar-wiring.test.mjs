@@ -10,6 +10,9 @@ const LIVE_SHAPED = `import {
   investYearSidebarGroups,
   journeySidebarGroups,
   lifeYearSidebarGroups,
+  researchIndustrySidebarGroups,
+  philosophySidebarGroups,
+  bigQuestionSidebarGroups,
 } from './managed-sidebar-fs.mjs'
 
 export default {
@@ -24,6 +27,16 @@ export default {
       ],
       '/AI与生活/我的AI历程/': [
         ...journeySidebarGroups,
+      ],
+      '/投资/投研/': [
+        { text: '投研', items: [] },
+        ...researchIndustrySidebarGroups,
+      ],
+      '/投资哲学/': [
+        ...philosophySidebarGroups,
+      ],
+      '/大问题/': [
+        ...bigQuestionSidebarGroups,
       ],
     },
   },

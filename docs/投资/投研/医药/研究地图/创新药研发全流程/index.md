@@ -3,6 +3,7 @@ title: 创新药研发全流程
 description: 创新药研发验证线与 CMC 制造线并行的节点地图
 pageClass: map-index
 outline: [2, 3]
+order: 1
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><strong>创新药研发全流程</strong></nav>

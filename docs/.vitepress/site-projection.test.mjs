@@ -4,9 +4,12 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import {
+  bigQuestionSidebarGroups,
   investYearSidebarGroups,
   journeySidebarGroups,
   lifeYearSidebarGroups,
+  philosophySidebarGroups,
+  researchIndustrySidebarGroups,
 } from './managed-sidebar-fs.mjs'
 import {
   postsByCategoryFromCatalog,
@@ -34,6 +37,12 @@ test('site posts.ts does not import node:fs or project-fs', () => {
 
 test('content-catalog-adapter stays free of node:fs', () => {
   const source = fs.readFileSync(path.join(HERE, 'content-catalog-adapter.mjs'), 'utf8')
+  assert.doesNotMatch(source, /from\s+['"]node:fs['"]/)
+  assert.doesNotMatch(source, /project-fs/)
+})
+
+test('structure-catalog-adapter stays free of node:fs', () => {
+  const source = fs.readFileSync(path.join(HERE, 'structure-catalog-adapter.mjs'), 'utf8')
   assert.doesNotMatch(source, /from\s+['"]node:fs['"]/)
   assert.doesNotMatch(source, /project-fs/)
 })
@@ -69,6 +78,40 @@ test('Wave B sidebar fs adapter matches live managed year and journey groups', (
     '/AI与生活/我的AI历程/cli篇',
   ])
   assert.ok(journeySidebarGroups.every((g) => g.text !== '周记 · 2026年'))
+})
+
+test('research / philosophy / big-question sidebars project from structure declaration', () => {
+  assert.deepEqual(researchIndustrySidebarGroups.map((g) => g.text), [
+    '医药行业',
+    '互联网行业',
+    '猪肉养殖行业',
+    '白酒行业',
+    '硬件制造行业',
+  ])
+  assert.equal(researchIndustrySidebarGroups[0].collapsed, false)
+  assert.deepEqual(researchIndustrySidebarGroups[0].items[1].items.map((i) => i.link), [
+    '/投资/投研/医药/研究地图/',
+    '/投资/投研/医药/研究地图/创新药研发全流程/',
+    '/投资/投研/医药/研究地图/CXO与CRDMO/',
+    '/投资/投研/医药/研究地图/原研仿制与支付端/',
+  ])
+  assert.deepEqual(researchIndustrySidebarGroups[0].items[2].items.map((i) => i.link), [
+    '/投资/投研/医药/药明康德/',
+  ])
+  assert.deepEqual(researchIndustrySidebarGroups[1].items[2].items.map((i) => i.link), [
+    '/投资/投研/互联网/腾讯/',
+  ])
+  assert.deepEqual(philosophySidebarGroups[0].items.map((i) => i.link), [
+    '/投资哲学/',
+    '/投资哲学/认识与证据/',
+    '/投资哲学/市场与价格/',
+    '/投资哲学/企业与回报/',
+    '/投资哲学/个人与研究边界/',
+  ])
+  assert.deepEqual(bigQuestionSidebarGroups[0].items.map((i) => i.link), [
+    '/大问题/',
+    '/大问题/开源与闭源/',
+  ])
 })
 
 test('siteManagedPostsFromGlob identity matches fs projection', () => {
@@ -120,12 +163,18 @@ test('config.mts Wave C + live sidebar wiring: import and three section spreads'
   assert.match(source, /\.\.\.investYearSidebarGroups/)
   assert.match(source, /\.\.\.lifeYearSidebarGroups/)
   assert.match(source, /\.\.\.journeySidebarGroups/)
+  assert.match(source, /\.\.\.researchIndustrySidebarGroups/)
+  assert.match(source, /\.\.\.philosophySidebarGroups/)
+  assert.match(source, /\.\.\.bigQuestionSidebarGroups/)
   assert.match(source, /managed-sidebar-fs\.mjs/)
   assert.match(source, /serveStandaloneHtmlPlugin/)
   assert.match(source, /link: '\/AI与生活\/我的AI历程\/'/)
   assert.doesNotMatch(source, /基础设施篇/)
   assert.doesNotMatch(source, /工具篇/)
   assert.doesNotMatch(source, /AI开支记录与优化/)
+  assert.doesNotMatch(source, /药明康德/)
+  assert.doesNotMatch(source, /开源与闭源/)
+  assert.doesNotMatch(source, /认识与证据/)
   assert.doesNotMatch(source, /text: '2026年'/)
   assert.doesNotMatch(source, /text: '周记 · 2026年'/)
 })

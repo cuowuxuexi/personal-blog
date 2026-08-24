@@ -3,6 +3,10 @@ title: 在 AI 时代，开源和闭源谁能走得更远
 description: 从大模型到应用层，追问开源与闭源各自能走多远、在什么尺度上竞争
 pageClass: subject-index
 outline: [2, 3]
+order: 1
+sidebarText: 开源与闭源
+hubIndex: 01 / OPEN VS CLOSED
+hubLead: 不限大模型：从模型层、中间层到应用层，拆开「谁走得更远」的尺度与证据。
 ---
 
 <nav class="research-breadcrumb"><a href="/大问题/">大问题的问与答</a><span>/</span><strong>开源与闭源</strong></nav>

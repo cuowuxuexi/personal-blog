@@ -3,6 +3,9 @@ title: 认识与证据
 description: 事实、陈述、前提、假设与解释如何进入研究
 pageClass: subject-index
 outline: [2, 3]
+order: 1
+hubIndex: 01 / EPISTEMOLOGY
+hubLead: 事实、陈述、前提、假设与解释如何区分；逻辑能说明什么，不能保证什么。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>认识与证据</strong></nav>

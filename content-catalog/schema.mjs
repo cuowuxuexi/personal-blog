@@ -8,11 +8,20 @@ export const CONTENT_KIND_IDS = Object.freeze([
   'journey',
   'hermes',
   'research',
+  'philosophy',
+  'big-question',
 ])
 
-export const CATEGORIES = Object.freeze(['投资', 'AI与生活'])
+export const CATEGORIES = Object.freeze(['投资', 'AI与生活', '投资哲学', '大问题'])
 
-export const POST_TYPES = Object.freeze(['weekly', 'journey', 'hermes', 'research'])
+export const POST_TYPES = Object.freeze([
+  'weekly',
+  'journey',
+  'hermes',
+  'research',
+  'philosophy',
+  'big-question',
+])
 
 export const LIFECYCLES = Object.freeze(['active', 'retired'])
 
@@ -132,6 +141,27 @@ export function assertContentKind(kind) {
       `${kind.id}.lifeSidebarEnumeratesNamedChapters 必须是布尔值`,
     )
   }
+  if (kind.hubSidebarText != null) {
+    assert(isNonEmptyString(kind.hubSidebarText), `${kind.id}.hubSidebarText 非法`)
+  }
+  if (kind.industryIndexText != null) {
+    assert(isNonEmptyString(kind.industryIndexText), `${kind.id}.industryIndexText 非法`)
+  }
+  if (kind.mapsGroupText != null) {
+    assert(isNonEmptyString(kind.mapsGroupText), `${kind.id}.mapsGroupText 非法`)
+  }
+  if (kind.mapsIndexText != null) {
+    assert(isNonEmptyString(kind.mapsIndexText), `${kind.id}.mapsIndexText 非法`)
+  }
+  if (kind.subjectsGroupText != null) {
+    assert(isNonEmptyString(kind.subjectsGroupText), `${kind.id}.subjectsGroupText 非法`)
+  }
+  if (kind.defaultIndustryCollapsed != null) {
+    assert(
+      typeof kind.defaultIndustryCollapsed === 'boolean',
+      `${kind.id}.defaultIndustryCollapsed 必须是布尔值`,
+    )
+  }
   assert(INDEXING_MODES.includes(kind.indexing), `${kind.id}.indexing 非法`)
 
   const scan = kind.scan
@@ -179,14 +209,14 @@ export function assertContentKind(kind) {
     assert(kind.openingWithoutIssueLink == null, `${kind.id} 未允许缺 issue 时不得声明 openingWithoutIssueLink`)
   }
 
-  if (kind.id === 'research') {
-    assert(kind.recentVisible === false, 'research 最近更新可见性必须为 false')
+  if (kind.id === 'research' || kind.id === 'philosophy' || kind.id === 'big-question') {
+    assert(kind.recentVisible === false, `${kind.id} 最近更新可见性必须为 false`)
   }
 }
 
 export function assertUniqueKindIds(kinds) {
   const ids = kinds.map((kind) => kind.id)
-  assert(ids.length === CONTENT_KIND_IDS.length, 'ContentKind 数量必须与声明的五类一致')
+  assert(ids.length === CONTENT_KIND_IDS.length, 'ContentKind 数量必须与声明的种类一致')
   assert(
     CONTENT_KIND_IDS.every((id, index) => ids[index] === id),
     'ContentKind 必须按声明顺序各出现一次',

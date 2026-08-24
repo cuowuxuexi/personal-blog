@@ -3,6 +3,9 @@ title: 个人与研究边界
 description: 弱者体系、风险、复盘与 AI 边界
 pageClass: subject-index
 outline: [2, 3]
+order: 4
+hubIndex: 04 / BOUNDARY
+hubLead: 弱者体系、风险与复盘、有限尽责、研究停止条件，以及 AI 不替代最终判断。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>个人与研究边界</strong></nav>

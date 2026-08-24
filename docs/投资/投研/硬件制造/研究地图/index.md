@@ -3,6 +3,8 @@ title: 研究地图
 description: 硬件制造行业可复用的产业与商业知识入口
 pageClass: map-index
 outline: false
+order: 0
+hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/硬件制造/">硬件制造行业</a><span>/</span><strong>研究地图</strong></nav>

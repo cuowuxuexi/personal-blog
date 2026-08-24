@@ -51,10 +51,10 @@ function coreSourceFiles() {
     .map((name) => path.join(HERE, name))
 }
 
-test('five kinds are unique, ordered, and field-complete', () => {
+test('declared kinds are unique, ordered, and field-complete', () => {
   const kinds = listContentKinds()
   assert.deepEqual(kinds.map((kind) => kind.id), [...CONTENT_KIND_IDS])
-  assert.equal(new Set(kinds.map((kind) => kind.id)).size, 5)
+  assert.equal(new Set(kinds.map((kind) => kind.id)).size, CONTENT_KIND_IDS.length)
   for (const kind of kinds) {
     assert.equal(getContentKind(kind.id), kind)
     for (const field of REQUIRED_KIND_FIELDS) {
@@ -72,8 +72,12 @@ test('five kinds are unique, ordered, and field-complete', () => {
 
 test('research recent updates stay invisible; other current feed kinds stay visible', () => {
   assert.equal(getContentKind('research').recentVisible, false)
+  assert.equal(getContentKind('philosophy').recentVisible, false)
+  assert.equal(getContentKind('big-question').recentVisible, false)
   assert.equal(isRecentVisible('research'), false)
   assert.ok(!recentVisibleKindIds().includes('research'))
+  assert.ok(!recentVisibleKindIds().includes('philosophy'))
+  assert.ok(!recentVisibleKindIds().includes('big-question'))
   assert.deepEqual(recentVisibleKindIds(), [
     'weekly-life',
     'weekly-investment',
@@ -182,6 +186,16 @@ test('hermes and research path rules match live scan / hub conventions', () => {
     contentSiteLink('research', { relativeFile: 'docs/投资/投研/医药/药明康德/index.md' }),
     '/投资/投研/医药/药明康德/',
   )
+
+  const philosophy = getContentKind('philosophy')
+  const bigQuestion = getContentKind('big-question')
+  assert.equal(philosophy.contentDir, 'docs/投资哲学')
+  assert.equal(philosophy.sidebarKey, '/投资哲学/')
+  assert.equal(philosophy.indexing, 'not-in-posts')
+  assert.equal(philosophy.recentVisible, false)
+  assert.equal(contentSiteLink('philosophy', { segments: ['认识与证据'] }), '/投资哲学/认识与证据/')
+  assert.equal(bigQuestion.contentDir, 'docs/大问题')
+  assert.equal(contentSiteLink('big-question', { segments: ['开源与闭源'] }), '/大问题/开源与闭源/')
 })
 
 test('path classification keeps nested life-family dirs distinct', () => {
@@ -191,6 +205,8 @@ test('path classification keeps nested life-family dirs distinct', () => {
   assert.equal(kindIdForPath('docs/AI与生活/我的AI历程/基础设施篇.md'), 'journey')
   assert.equal(kindIdForPath('docs/AI与生活/Hermes日记/2026-08-12.md'), 'hermes')
   assert.equal(kindIdForPath('docs/投资/投研/医药/药明康德/index.md'), 'research')
+  assert.equal(kindIdForPath('docs/投资哲学/认识与证据/index.md'), 'philosophy')
+  assert.equal(kindIdForPath('docs/大问题/开源与闭源/index.md'), 'big-question')
 
   assert.equal(kindIdForPath('docs/AI与生活/index.md'), null)
   assert.equal(kindIdForPath('docs/AI与生活/README.md'), null)
@@ -201,6 +217,8 @@ test('path classification keeps nested life-family dirs distinct', () => {
   assert.equal(kindIdForPath('docs/AI与生活/Hermes日记/index.md'), null)
   assert.equal(kindIdForPath('docs/AI与生活/Hermes日记/README.md'), null)
   assert.equal(kindIdForPath('docs/投资/投研/互联网/腾讯/README.md'), null)
+  assert.equal(kindIdForPath('docs/投资哲学/index.md'), 'philosophy')
+  assert.equal(kindIdForPath('docs/大问题/README.md'), null)
   assert.equal(kindIdForPath('docs/AI与生活/大事件/2026.md'), null)
   assert.equal(isManagedContentPath('docs/AI与生活/大事件/2026.md'), false)
 

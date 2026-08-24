@@ -3,6 +3,7 @@ title: CXO 与 CRDMO
 description: 用 R/D/M 与药物类型矩阵理解 CRO、CDMO、CRDMO
 pageClass: map-index
 outline: [2, 3]
+order: 2
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><strong>CXO 与 CRDMO</strong></nav>

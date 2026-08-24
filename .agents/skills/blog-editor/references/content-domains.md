@@ -16,30 +16,20 @@
 
 投研页面不强制统一章节顺序，但通常从以下读者问题中选择最小充分结构：研究对象或问题、适用范围与证据边界、核心内容、当前理解、开放问题、相关地图或标的、重要认识修订。
 
-现阶段新增既有行业下的标的需要同步：
+现阶段新增既有行业下的标的只改：
 
-1. 新标的目录的 `index.md` 与导航型 `README.md`。
-2. 所属行业 `index.md` 的跟踪标的列表。
-3. `docs/投资/投研/index.md` 的行业行与手写计数。
-4. `docs/投资/index.md` 的跟踪标的卡。
-5. `docs/.vitepress/config.mts` 的 `/投资/投研/` sidebar。
+1. 新标的目录的 `index.md`（文头声明 `pageClass: subject-index`、`order`，以及清单用的 `ticker` / `status` / `hubLead`）与导航型 `README.md`。
+2. 所属行业、投研总览、投资总览跟踪卡和 `/投资/投研/` sidebar 由内容目录构建投影；不要手改 `docs/.vitepress/config.mts`。
 
-投研默认不登记 `docs/.vitepress/posts.ts`，避免进入首页最近更新；只有作者明确改变产品语义时才讨论。新增全新行业还需创建行业 hub / 研究地图入口并接入同一 sidebar。上述发现面过多是 ADR 0002 后续 typed IA 的迁移对象，不要在单篇任务里私建第二套 registry。
+投研默认不登记 `docs/.vitepress/posts.ts`，避免进入首页最近更新；只有作者明确改变产品语义时才讨论。新增全新行业再写行业 hub / 研究地图入口，并在行业文头声明 `order`。不要另造第二套 registry。
 
 ## 投资哲学
 
-正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增、删除或改名主题时同步：
-
-- 新主题目录的 `index.md` 与 `README.md`
-- 总览卡片
-- `docs/.vitepress/config.mts` 中 nav 与 `/投资哲学/` sidebar
-- 现有主题页底部的兄弟主题链接（若该页面族继续采用手写互链）
-
-普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
+正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增主题只写主题目录的 `index.md`（`order` / `hubIndex` / `hubLead`）与 `README.md`；总览卡片、nav 与 `/投资哲学/` sidebar 由内容目录投影。现有主题页底部的兄弟主题链接若该页面族继续手写互链，才同步改那些页。普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
 
 ## 大问题
 
-主题位于 `docs/大问题/<主题>/index.md`，总览在 `docs/大问题/index.md`。新增、删除或改名主题时同步新目录 README、总览卡片，以及 `config.mts` 中 nav 与 `/大问题/` sidebar；普通正文修改不动索引，不进入 `posts.ts`。
+主题位于 `docs/大问题/<主题>/index.md`，总览在 `docs/大问题/index.md`。新增主题只写主题 `index.md`（`sidebarText` / `order` / `hubIndex` / `hubLead`）与 README；总览卡片、nav 与 `/大问题/` sidebar 由内容目录投影。普通正文修改不动索引，不进入 `posts.ts`。
 
 ## AI 大事件
 
@@ -49,4 +39,4 @@
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-08-23
+最后更新：2026-08-24

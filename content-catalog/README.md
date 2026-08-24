@@ -1,6 +1,6 @@
 # content-catalog
 
-共享 `ContentKind` 合同。站点、发布面板和内容验证器只通过本目录公共入口消费五类内容事实；不要读取内部文件或复制合同字段到调用方。
+共享 `ContentKind` 合同。站点、发布面板和内容验证器只通过本目录公共入口消费已登记种类；不要读取内部文件或复制合同字段到调用方。
 
 ## 入口
 
@@ -31,14 +31,17 @@ Hermes 不启用 `revisionDate`；research 仍不进最近更新。缺省无 `re
 | --- | --- |
 | `index.mjs` | 公共入口：种类查询、最近更新可见性、路径/资产与纯投影 API |
 | `schema.mjs` | 字段合同与完整性校验 |
-| `kinds.mjs` | 五类声明（含 typed IA：年份组、系列入口、具名篇章） |
+| `kinds.mjs` | 种类声明（周记/历程/Hermes/投研/哲学/大问题） |
 | `query.mjs` | 最近更新可见性与 posts 查询纯函数 |
 | `paths.mjs` | 路径归属、文件名、公开链接与资产规则 |
 | `frontmatter.mjs` | 扁平 frontmatter 解析（投影与 verifier 共用） |
 | `project.mjs` | 周记/历程纯投影 core（PostItem / sidebar 模型） |
+| `project-structure.mjs` | 投研/哲学/大问题树结构纯投影 |
 | `project-fs.mjs` | Node-only fs adapter；不进浏览器 bundle |
 | `catalog.test.mjs` | 模块单测 |
 | `project.test.mjs` | 投影 fixture 红绿与 live 对账 |
+| `project-structure.test.mjs` | 投研/哲学/大问题树投影 |
+| `overview.test.mjs` | 总览清单生成或对账 |
 | `hermes-adapter.test.mjs` | Hermes 生产纯适配与 verifier 共用 |
 | `parity.live.test.mjs` | live 仓 file ↔ posts ↔ sidebar 对等 |
 | `parity.fixture.test.mjs` | fixture 红绿：文件权威 → 投影/侧栏漂移、假绿路径与具名篇章锁定 |

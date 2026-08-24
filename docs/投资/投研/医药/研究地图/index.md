@@ -3,6 +3,7 @@ title: 医药知识图谱
 description: 医药行业可复用的药物、研发、制造、外包与支付关系图
 pageClass: map-index
 outline: [2, 3]
+order: 0
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><strong>医药知识图谱</strong></nav>

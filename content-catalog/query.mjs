@@ -20,6 +20,8 @@ export function kindIdForPost(post) {
   if (type === 'journey') return 'journey'
   if (type === 'hermes') return 'hermes'
   if (type === 'research') return 'research'
+  if (type === 'philosophy') return 'philosophy'
+  if (type === 'big-question') return 'big-question'
   if (type === 'weekly' && category === 'AI与生活') return 'weekly-life'
   if (type === 'weekly' && category === '投资') return 'weekly-investment'
   return null
@@ -51,7 +53,9 @@ function byDateDesc(a, b) {
  */
 export function freshnessDate(post) {
   const kindId = kindIdForPost(post)
-  if (kindId === 'hermes' || kindId === 'research') return post.date
+  if (kindId === 'hermes' || kindId === 'research' || kindId === 'philosophy' || kindId === 'big-question') {
+    return post.date
+  }
   const revision = typeof post.revisionDate === 'string' ? post.revisionDate.trim() : ''
   return revision || post.date
 }
