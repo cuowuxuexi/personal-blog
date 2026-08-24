@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { createRepoPaths } from './lib/paths.mjs'
 import { validateWeeklySnapshot } from './lib/content-validation.mjs'
 import { assertPublishable, dirtyJourneyMetaPaths } from './lib/scope.mjs'
+import { executePublication } from './lib/publish-job.mjs'
 import { createServer } from './server.mjs'
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -325,6 +326,86 @@ const appendBody = {
   issueLink: '/AI与生活/2026-08-12',
   entry: { title: '新的一条', body: '追加正文 ![图](/images/weekly/2026-08-12-01-test.webp)', tags: '测试' },
 }
+
+test('prepare does not commit or push', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const headBefore = git(dir, ['rev-parse', 'HEAD'])
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+    assert.equal(git(dir, ['rev-parse', 'HEAD']), headBefore)
+    assert.equal(git(dir, ['rev-list', '--count', 'HEAD']), '1')
+    assert.equal(git(dir, ['rev-list', '--count', 'origin/main']), '1')
+  })
+})
+
+test('job query does not upload or match domestic SHA after execute', async () => {
+  let deploys = 0
+  let versions = 0
+  await withPanel({
+    probes: {
+      deploy() {
+        deploys += 1
+        return { ok: true }
+      },
+      productionVersion({ sha }) {
+        versions += 1
+        return { sha, builtAt: '2026-08-15T00:00:00.000Z' }
+      },
+    },
+  }, async ({ url, ctx, dir }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const job = ctx.jobs.get(prepared.payload.jobId)
+    await executePublication(ctx, job)
+    assert.equal(job.state, 'Pushed')
+    assert.equal(git(dir, ['rev-list', '--count', 'origin/main']), '2')
+    assert.equal(deploys, 0)
+    assert.equal(versions, 0)
+
+    const queried = await get(url, `/api/publish/jobs/${prepared.payload.jobId}`)
+    assert.equal(queried.status, 200)
+    assert.equal(queried.payload.state, 'Pushed')
+    assert.equal(deploys, 0)
+    assert.equal(versions, 0)
+
+    const continued = await post(url, `/api/publish/jobs/${prepared.payload.jobId}/continue-verify`, {})
+    assert.equal(continued.status, 200)
+    assert.equal(continued.payload.state, 'Published')
+    assert.equal(deploys, 1)
+    assert.ok(versions >= 1)
+  })
+})
+
+test('continue-verify does not retry a finished failure', async () => {
+  let versions = 0
+  await withPanel({
+    verifyTimeoutMs: 80,
+    pollIntervalMs: 15,
+    probes: {
+      deployStatus: ({ sha }) => ({ state: 'success', sha }),
+      productionVersion: () => {
+        versions += 1
+        return { sha: 'oldsha', builtAt: '2026-08-01T00:00:00.000Z' }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const confirmed = await post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    assert.equal(confirmed.payload.state, 'Failed')
+    const afterConfirm = versions
+    const continued = await post(url, `/api/publish/jobs/${prepared.payload.jobId}/continue-verify`, {})
+    assert.equal(continued.status, 200)
+    assert.equal(continued.payload.state, 'Failed')
+    assert.ok(continued.payload.retryActions.includes('retry-verify'))
+    assert.equal(versions, afterConfirm)
+  })
+})
 
 test('confirm uploads to guonei before production SHA verification', async () => {
   const seen = []

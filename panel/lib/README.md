@@ -16,7 +16,11 @@
 | `content-validation.mjs` | 发布快照的重复条目、图片与基本结构校验 |
 | `publish.mjs` | 从正文收集实际引用的发布图片 |
 | `scope.mjs` | 发布文件白名单、黑名单与 journey 清单约束 |
-| `publish-job.mjs` | 发布状态机：快照、构建、commit、push、国内部署与生产校验 |
+| `publish-job.mjs` | 发布任务门口：确认编排、只读问进度、继续核对、重试 |
+| `publish-job-record.mjs` | 任务记录、公开 DTO、中断恢复、公众号查图与快照路径 |
+| `prepare-publication.mjs` | 准备发布：清单、隔离快照、双预览、确认令牌；不动 Git |
+| `execute-publication.mjs` | 执行发布：提交并推送，停在已推送 |
+| `production-check.mjs` | 上线核对：上传国内站并对 SHA |
 | `probes.mjs` | Git、job-scoped preview base、根 SSR 合并、目标页/锚点校验、push、部署与生产 HTTP 等默认外部 adapter |
 | `git.mjs` | Git 命令封装 |
 | `guonei.mjs` | 国内站构建元数据、打包、SSH 上传与目录原子替换 |
@@ -32,9 +36,10 @@
 ## Behavioral warnings
 
 - `POST /api/draft` 当前调用 `applyDraft()`，会立即原子写工作区，并非纯内存草稿。
-- `confirmPublication()` 在同一请求中完成 commit、push、国内部署与生产校验。
-- `getPublication()` 在部分状态会推进生产校验，因此当前 job GET 不是纯查询；模块化计划 Phase 5 会显式拆分。
-- `weekly.mjs` 和 `publish-job.mjs` 是当前最宽的两个模块；改它们前先从 `PROJECT.md` 选择「内容目录 / 信息架构」「发布面板」或「发布部署」能力。
+- `confirmPublication()` 仍一次点完：先执行发布，再上线核对。
+- `getPublication()` 只读，不上传、不对国内站 SHA。核对未结束由 `continueVerify()` 推进；面板自动发 `POST .../continue-verify`。
+- 准备 / 执行 / 上线核对分别在 `prepare-publication.mjs`、`execute-publication.mjs`、`production-check.mjs`。Git、构建、SSH 仍走现有 `probes`，不新套一层。
+- `weekly.mjs` 仍较宽；改发布阶段先进入对应深模块。
 - job 级 release preview 必须保留双构建：先生成根路径 SSR，再生成 `/release-preview/<jobId>/` base 的客户端资源，并把根 SSR app 区合入后者。它规避 Windows + VitePress 非根 base 可能生成 `NotFound` SSR 壳的问题；不要在缺少目标页、锚点和资源前缀回归测试时简化为单次构建。合并时跳过 `public/` 拷进 dist 的独立 HTML（没有 VitePress app 壳），不要把它们当成 SSR 页。
 
 ## Tests
