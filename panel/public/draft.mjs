@@ -1,3 +1,4 @@
+/** 表单草稿：还没写入文章的输入备份。清空它不删仓库文章。 */
 export function draftHasText(draft) {
   return Boolean(
     draft?.fields?.title?.trim()
@@ -58,6 +59,7 @@ export function issueFieldsForDraft({
   }
 }
 
+/** 写入文章请求体。网址仍是 POST /api/draft。 */
 export function draftRequestBody({ kindId, mode, issueLink, entryIndex, entry, issue }) {
   if (!kindId) throw new Error('persistDraft 需要显式 kindId')
   return {
