@@ -13,7 +13,7 @@ import {
 } from './managed-sidebar-fs.mjs'
 import { normalizeDisplayMath } from './normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
-import { serveStandaloneHtmlPlugin } from './standalone-html.mjs'
+import { serveStandaloneHtmlPlugin, standaloneHtmlFile } from './standalone-html.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
@@ -32,6 +32,7 @@ export default defineConfig({
   base: process.env.VITEPRESS_BASE || '/',
   cleanUrls: true,
   lastUpdated: true,
+  ignoreDeadLinks: (url) => Boolean(standaloneHtmlFile(url)),
   // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
   // agents/adr 为仓库协议；目录 README 仅给作者/Agent，不进公开站点
   srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],

@@ -170,6 +170,8 @@ test('config.mts Wave C + live sidebar wiring: import and three section spreads'
   assert.match(source, /\.\.\.bigQuestionSidebarGroups/)
   assert.match(source, /managed-sidebar-fs\.mjs/)
   assert.match(source, /serveStandaloneHtmlPlugin/)
+  assert.match(source, /ignoreDeadLinks/)
+  assert.match(source, /standaloneHtmlFile/)
   assert.match(source, /link: '\/AI与生活\/我的AI历程\/'/)
   assert.doesNotMatch(source, /基础设施篇/)
   assert.doesNotMatch(source, /工具篇/)
