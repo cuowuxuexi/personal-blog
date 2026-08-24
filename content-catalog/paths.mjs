@@ -131,6 +131,29 @@ export function matchesKindAssetPath(kindOrId, relativePath) {
   return rel === directory || rel.startsWith(`${directory}/`)
 }
 
+export function kindContentPrefix(kindOrId) {
+  const kind = typeof kindOrId === 'string' ? getContentKind(kindOrId) : kindOrId
+  return `${kind.contentDir}/`
+}
+
+export function kindAssetPrefix(kindOrId) {
+  const kind = typeof kindOrId === 'string' ? getContentKind(kindOrId) : kindOrId
+  return kind.assets.directory ? `${kind.assets.directory}/` : ''
+}
+
+export function isUnderKindContentDir(kindOrId, relativePath) {
+  const kind = typeof kindOrId === 'string' ? getContentKind(kindOrId) : kindOrId
+  const rel = posixRel(relativePath)
+  return rel === kind.contentDir || rel.startsWith(`${kind.contentDir}/`)
+}
+
+export function isKindAssetFile(kindOrId, relativePath) {
+  const prefix = kindAssetPrefix(kindOrId)
+  if (!prefix) return false
+  const rel = posixRel(relativePath)
+  return rel.startsWith(prefix) && rel !== prefix.slice(0, -1)
+}
+
 export function yearGroupTitle(kindOrId, year) {
   const kind = typeof kindOrId === 'string' ? getContentKind(kindOrId) : kindOrId
   if (!kind.yearGroupTemplate) return null

@@ -3,7 +3,9 @@ import path from 'node:path'
 import { newId, newToken, sha256File, sha256Text } from './hash.mjs'
 import { createGit } from './git.mjs'
 import { redact } from './redact.mjs'
-import { assertPublishable, isAllowedPublishPath, isJourneyChapterPath, posixPath, publishScopeOf } from './scope.mjs'
+import { assetRulesFor } from '../../content-catalog/index.mjs'
+import { catalogIdForPanelKind } from './content-kind-adapter.mjs'
+import { assertPublishable, isAllowedPublishPath, isJourneyChapterPath, isPublicationSourcePath, posixPath, publishScopeOf } from './scope.mjs'
 import { collectReferencedImages } from './publish.mjs'
 import { materializeWechatJpegCompanions } from './images.mjs'
 import { buildWechatPreviewDocument, embedWechatClipboardImages, renderWechatPreview } from './wechat.mjs'
@@ -161,7 +163,7 @@ function scopeOptions(ctx, kindId) {
 
 function assetDirectoryForKind(ctx, kindId) {
   return kindRecord(ctx, kindId)?.capability?.assetDirectory
-    || (kindId === 'journey' ? 'docs/public/images/journey' : 'docs/public/images/weekly')
+    || assetRulesFor(catalogIdForPanelKind(kindId)).directory
 }
 
 async function buildManifest(ctx, git, draft, statusRows, headFiles) {
@@ -231,18 +233,6 @@ function writePreviewBuildMeta(distDir, jobId) {
     `${JSON.stringify({ sha: null, jobId, builtAt: now() }, null, 2)}\n`,
     'utf8',
   )
-}
-
-function isPublicationSourcePath(rel, kindId) {
-  const file = posixPath(rel)
-  if (!file.endsWith('.md')) return false
-  if (kindId === 'journey' || file.startsWith('docs/AI与生活/我的AI历程/')) {
-    return kindId === 'journey'
-      && file.startsWith('docs/AI与生活/我的AI历程/')
-      && !/\/index\.md$/i.test(file)
-      && !/\/readme\.md$/i.test(file)
-  }
-  return file.startsWith('docs/AI与生活/') || file.startsWith('docs/投资/周记/')
 }
 
 function publicationSourceFile(snapshotDir, draft, kindId) {

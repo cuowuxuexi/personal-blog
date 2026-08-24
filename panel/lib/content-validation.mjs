@@ -1,17 +1,37 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { getContentKind, listContentKinds } from '../../content-catalog/index.mjs'
 import { isJourneyChapterPath, posixPath } from './scope.mjs'
 import { parseEntries, parseFrontmatter } from './weekly.mjs'
 
+function panelKinds(postType) {
+  return listContentKinds().filter(
+    (kind) => kind.creation.surfaces.includes('panel') && kind.postType === postType,
+  )
+}
+
+function uniqueAssetRules(kinds) {
+  const seen = new Set()
+  const rules = []
+  for (const kind of kinds) {
+    const { directory, urlPrefix } = kind.assets
+    if (!directory || !urlPrefix) continue
+    const key = `${directory}\0${urlPrefix}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    rules.push({ directory, urlPrefix })
+  }
+  return rules
+}
+
 function weeklyFiles(snapshotDir) {
-  const roots = [
-    path.join(snapshotDir, 'docs', 'AI与生活'),
-    path.join(snapshotDir, 'docs', '投资', '周记'),
-  ]
-  return roots.flatMap((root) => {
+  return panelKinds('weekly').flatMap((kind) => {
+    const root = path.join(snapshotDir, ...kind.contentDir.split('/'))
     if (!fs.existsSync(root)) return []
+    const include = new RegExp(kind.scan.includePattern, 'i')
+    const excluded = new Set(kind.scan.excludeBasenames.map((name) => name.toLowerCase()))
     return fs.readdirSync(root)
-      .filter((name) => /^\d{4}-\d{2}-\d{2}.*\.md$/.test(name))
+      .filter((name) => include.test(name) && !excluded.has(name.toLowerCase()))
       .map((name) => path.join(root, name))
   })
 }
@@ -52,6 +72,16 @@ function assertReferencedImages(markdown, snapshotDir, urlPrefix, assetDir, labe
   return found
 }
 
+function collectKindImages(markdown, snapshotDir, kinds, label) {
+  const images = new Set()
+  for (const { urlPrefix, directory } of uniqueAssetRules(kinds)) {
+    for (const image of assertReferencedImages(markdown, snapshotDir, urlPrefix, directory, label)) {
+      images.add(image)
+    }
+  }
+  return images
+}
+
 function entrySignature(entry) {
   return JSON.stringify({
     tags: entry.tags,
@@ -73,6 +103,7 @@ export function validateWeeklySnapshot(snapshotDir, options = {}) {
   const files = weeklyFiles(snapshotDir)
   let entryCount = 0
   const images = new Set()
+  const weeklyKinds = panelKinds('weekly')
   for (const file of files) {
     const markdown = fs.readFileSync(file, 'utf8')
     const entries = parseEntries(markdown)
@@ -85,25 +116,14 @@ export function validateWeeklySnapshot(snapshotDir, options = {}) {
       }
       seen.set(signature, entry.index)
     }
-    for (const image of assertReferencedImages(
-      markdown,
-      snapshotDir,
-      '/images/weekly/',
-      path.join('docs', 'public', 'images', 'weekly'),
-      '缺少周记图片',
-    )) {
+    for (const image of collectKindImages(markdown, snapshotDir, weeklyKinds, '缺少周记图片')) {
       images.add(image)
     }
   }
+  const journeyKind = getContentKind('journey')
   for (const file of journeyFilesForValidation(snapshotDir, options)) {
     const markdown = fs.readFileSync(file, 'utf8')
-    for (const image of assertReferencedImages(
-      markdown,
-      snapshotDir,
-      '/images/journey/',
-      path.join('docs', 'public', 'images', 'journey'),
-      '缺少图片',
-    )) {
+    for (const image of collectKindImages(markdown, snapshotDir, [journeyKind], '缺少图片')) {
       images.add(image)
     }
   }
