@@ -1,10 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { parseFrontmatter } from '../../content-catalog/frontmatter.mjs'
 import { getContentKind } from '../../content-catalog/index.mjs'
 import { writeTargetsAtomic } from './atomic-write.mjs'
 import { defaultPaths, issueTitle, padIssue } from './paths.mjs'
 import { allowsCreate, kindCapability } from './repo-paths.mjs'
 import { collectReferencedImages, collectReferencedWeeklyImages } from './publish.mjs'
+
+export { parseFrontmatter }
 
 function resolvePaths(paths) {
   return paths || defaultPaths
@@ -23,29 +26,6 @@ const PROP_TO_FIELD = {
   'badge-alt': 'badgeAlt',
   'image-fit': 'imageFit',
   date: 'date',
-}
-
-export function parseFrontmatter(raw) {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
-  if (!match) return { fm: {}, body: raw }
-  const fm = {}
-  for (const line of match[1].split(/\r?\n/)) {
-    const idx = line.indexOf(':')
-    if (idx < 0) continue
-    const key = line.slice(0, idx).trim()
-    let value = line.slice(idx + 1).trim()
-    if (value.startsWith('"') && value.endsWith('"')) {
-      try {
-        value = JSON.parse(value)
-      } catch {
-        value = value.slice(1, -1)
-      }
-    } else if (value.startsWith("'") && value.endsWith("'")) {
-      value = value.slice(1, -1)
-    }
-    fm[key] = /^\d+$/.test(value) ? Number(value) : value
-  }
-  return { fm, body: match[2] }
 }
 
 function matchBracket(source, openIndex) {

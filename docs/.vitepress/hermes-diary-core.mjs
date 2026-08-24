@@ -1,27 +1,13 @@
 /**
  * Hermes 日记纯适配：无 node:fs，可供 posts glob、Node fs 扫描与 verifier 共用。
+ * 文头只再导出目录那一份，不在这里重写拆行 / 引号 / 数字。
  */
 
-export const HERMES_LINK_PREFIX = '/AI与生活/Hermes日记/'
+import { parseFrontmatter } from '../../content-catalog/frontmatter.mjs'
 
-export function parseFrontmatter(raw) {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(String(raw || ''))
-  if (!match) return {}
-  const out = {}
-  for (const line of match[1].split(/\r?\n/)) {
-    const m = /^(\w+)\s*:\s*(.*)$/.exec(line.trim())
-    if (!m) continue
-    let v = m[2].trim()
-    if (
-      (v.startsWith('"') && v.endsWith('"'))
-      || (v.startsWith("'") && v.endsWith("'"))
-    ) {
-      v = v.slice(1, -1)
-    }
-    out[m[1]] = v
-  }
-  return out
-}
+export { parseFrontmatter }
+
+export const HERMES_LINK_PREFIX = '/AI与生活/Hermes日记/'
 
 export function isHermesIndexOrReadme(name) {
   return name === 'index.md' || String(name).toLowerCase() === 'readme.md'
@@ -30,7 +16,7 @@ export function isHermesIndexOrReadme(name) {
 export function postFromDayFile(stem, raw) {
   const dateMatch = /^(\d{4}-\d{2}-\d{2})(?:-.*)?$/.exec(stem)
   if (!dateMatch) return null
-  const fm = parseFrontmatter(raw)
+  const { fm } = parseFrontmatter(raw)
   const date = fm.date || dateMatch[1]
   const title = fm.title || stem
   const description = fm.description || undefined

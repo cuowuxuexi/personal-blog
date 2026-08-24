@@ -21,8 +21,8 @@ export interface HermesDiaryPost {
   description?: string
 }
 
-export function parseFrontmatter(raw: string): Record<string, string> {
-  return parseFrontmatterCore(raw)
+export function parseFrontmatter(raw: string): Record<string, string | number> {
+  return parseFrontmatterCore(raw).fm
 }
 
 export function postFromDayFile(
