@@ -32,7 +32,7 @@ export default defineConfig({
   base: process.env.VITEPRESS_BASE || '/',
   cleanUrls: true,
   lastUpdated: true,
-  ignoreDeadLinks: (url) => Boolean(standaloneHtmlFile(url)),
+  ignoreDeadLinks: [(url) => Boolean(standaloneHtmlFile(url))],
   // Agent/ADR docs live under docs/ for repo layout, but are not public site pages.
   // agents/adr 为仓库协议；目录 README 仅给作者/Agent，不进公开站点
   srcExclude: ['**/agents/**', '**/adr/**', '**/README.md'],
