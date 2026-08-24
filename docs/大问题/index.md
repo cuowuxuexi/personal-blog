@@ -3,6 +3,7 @@ title: 大问题的问与答
 description: 用问答整理长期反复出现的大问题
 pageClass: investment-hub
 outline: false
+order: 0
 ---
 
 <section class="invest-hub-masthead">
@@ -23,14 +24,7 @@ outline: false
     </div>
     <span>学习中</span>
   </header>
-  <section class="invest-paths" aria-label="开放问题入口">
-    <a class="invest-path" href="/大问题/开源与闭源/">
-      <span class="invest-path__index">01 / OPEN VS CLOSED</span>
-      <h2>在 AI 时代，开源和闭源谁能走得更远</h2>
-      <p>不限大模型：从模型层、中间层到应用层，拆开「谁走得更远」的尺度与证据。</p>
-      <strong>阅读本页 →</strong>
-    </a>
-  </section>
+  <HubTopicList kind="big-question" />
 </section>
 
 <section class="invest-hub-section" aria-labelledby="qa-method">

@@ -3,6 +3,9 @@ title: 市场与价格
 description: 异质参与者、反身性与价格的认知地位
 pageClass: subject-index
 outline: [2, 3]
+order: 2
+hubIndex: 02 / MARKET
+hubLead: 异质参与者、反身性、路径依赖；价格的事实地位与认知警报权。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>市场与价格</strong></nav>

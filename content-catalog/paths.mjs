@@ -2,8 +2,11 @@ import { getContentKind } from './kinds.mjs'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const WINDOWS_ILLEGAL = /[<>:"|?*\u0000]/
-const RESEARCH_DOCS_PREFIX = 'docs/投资/投研'
-const RESEARCH_SITE_PREFIX = '投资/投研'
+const TREE_KIND_PREFIXES = Object.freeze({
+  research: Object.freeze({ docs: 'docs/投资/投研', site: '投资/投研' }),
+  philosophy: Object.freeze({ docs: 'docs/投资哲学', site: '投资哲学' }),
+  'big-question': Object.freeze({ docs: 'docs/大问题', site: '大问题' }),
+})
 
 export function posixRel(value) {
   return String(value || '').replace(/\\/g, '/').replace(/^\/+/, '')
@@ -56,14 +59,39 @@ function optionalFragment(value, kindId, key) {
   return String(value)
 }
 
-function assertResearchRel(relativeFile, kindId) {
+function treePrefixes(kindId) {
+  const prefixes = TREE_KIND_PREFIXES[kindId]
+  if (!prefixes) throw new Error(`${kindId} 未声明树路径前缀`)
+  return prefixes
+}
+
+function assertTreeRel(relativeFile, kindId) {
+  const { docs, site } = treePrefixes(kindId)
   const normalized = normalizePosixPath(relativeFile)
-  const underDocs = normalized === RESEARCH_DOCS_PREFIX || normalized.startsWith(`${RESEARCH_DOCS_PREFIX}/`)
-  const underSite = normalized === RESEARCH_SITE_PREFIX || normalized.startsWith(`${RESEARCH_SITE_PREFIX}/`)
+  const underDocs = normalized === docs || normalized.startsWith(`${docs}/`)
+  const underSite = normalized === site || normalized.startsWith(`${site}/`)
   if ((!underDocs && !underSite) || normalized.split('/').includes('..')) {
-    throw new Error(`${kindId} 路径规范化后必须位于 ${RESEARCH_DOCS_PREFIX}/`)
+    throw new Error(`${kindId} 路径规范化后必须位于 ${docs}/`)
   }
   return normalized
+}
+
+function treeSiteLink(kind, parts = {}) {
+  const { docs, site } = treePrefixes(kind.id)
+  if (parts.relativeFile) {
+    let rel = assertTreeRel(parts.relativeFile, kind.id)
+    if (rel.startsWith('docs/')) rel = rel.slice('docs/'.length)
+    rel = rel.replace(/\/index\.md$/i, '/').replace(/\.md$/i, '')
+    if (!rel.startsWith(site)) {
+      throw new Error(`${kind.id} 链接必须位于 /${site}`)
+    }
+    return `/${rel.replace(/\/?$/, '/')}`
+  }
+  const segments = Array.isArray(parts.segments) ? parts.segments.filter(Boolean) : []
+  for (const segment of segments) {
+    if (!isSafePathFragment(segment)) throw new Error(`${kind.id} segments 含非法路径片段`)
+  }
+  return segments.length ? `/${site}/${segments.join('/')}/` : `/${site}/`
 }
 
 function basename(rel) {
@@ -112,7 +140,15 @@ export function matchesKindPath(kindOrId, relativePath) {
 
 export function kindIdForPath(relativePath) {
   const rel = posixRel(relativePath)
-  const ordered = ['journey', 'hermes', 'weekly-life', 'weekly-investment', 'research']
+  const ordered = [
+    'journey',
+    'hermes',
+    'weekly-life',
+    'weekly-investment',
+    'research',
+    'philosophy',
+    'big-question',
+  ]
   for (const id of ordered) {
     if (matchesKindPath(id, rel)) return id
   }
@@ -216,22 +252,10 @@ export function contentSiteLink(kindOrId, parts = {}) {
       }
       return `/AI与生活/Hermes日记/${stem}`
     }
-    case 'research': {
-      if (parts.relativeFile) {
-        let rel = assertResearchRel(parts.relativeFile, kind.id)
-        if (rel.startsWith('docs/')) rel = rel.slice('docs/'.length)
-        rel = rel.replace(/\/index\.md$/i, '/').replace(/\.md$/i, '')
-        if (!rel.startsWith(RESEARCH_SITE_PREFIX)) {
-          throw new Error('research 链接必须位于 /投资/投研')
-        }
-        return `/${rel.replace(/\/?$/, '/')}`
-      }
-      const segments = Array.isArray(parts.segments) ? parts.segments.filter(Boolean) : []
-      for (const segment of segments) {
-        if (!isSafePathFragment(segment)) throw new Error(`${kind.id} segments 含非法路径片段`)
-      }
-      return segments.length ? `/投资/投研/${segments.join('/')}/` : '/投资/投研/'
-    }
+    case 'research':
+    case 'philosophy':
+    case 'big-question':
+      return treeSiteLink(kind, parts)
     default:
       throw new Error(`${kind.id} 未声明 siteLink`)
   }

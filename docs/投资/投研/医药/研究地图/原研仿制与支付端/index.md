@@ -3,6 +3,7 @@ title: 原研、仿制与支付端
 description: 药物身份、生命周期与集采医保谈判传导关系图
 pageClass: map-index
 outline: [2, 3]
+order: 3
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><strong>原研、仿制与支付端</strong></nav>

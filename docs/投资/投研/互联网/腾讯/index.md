@@ -3,6 +3,10 @@ title: 腾讯
 description: 腾讯公开研究档案：生意主干、2026Q2 结构，以及利润与现金为何必须分开看
 pageClass: subject-index
 outline: [2, 3]
+order: 1
+ticker: 0700.HK
+status: 学习中
+hubLead: 当前处于公司生意底图阶段：先能复述入口、谁付钱、利润与现金，再进入市场逻辑。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/互联网/">互联网行业</a><span>/</span><strong>腾讯</strong></nav>

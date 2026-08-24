@@ -3,6 +3,7 @@ title: 投资哲学档
 description: 可错性、市场与研究边界的长期立场
 pageClass: investment-hub
 outline: false
+order: 0
 ---
 
 <section class="invest-hub-masthead">
@@ -35,32 +36,7 @@ outline: false
   <p>三者的关系是：世界观决定我如何认识现实，价值观决定我选择研究什么，人生观决定我为什么参与市场以及什么不能被牺牲。</p>
 </section>
 
-<section class="invest-paths philosophy-paths" aria-label="哲学主题入口">
-  <a class="invest-path" href="/投资哲学/认识与证据/">
-    <span class="invest-path__index">01 / EPISTEMOLOGY</span>
-    <h2>认识与证据</h2>
-    <p>事实、陈述、前提、假设与解释如何区分；逻辑能说明什么，不能保证什么。</p>
-    <strong>阅读本页 →</strong>
-  </a>
-  <a class="invest-path" href="/投资哲学/市场与价格/">
-    <span class="invest-path__index">02 / MARKET</span>
-    <h2>市场与价格</h2>
-    <p>异质参与者、反身性、路径依赖；价格的事实地位与认知警报权。</p>
-    <strong>阅读本页 →</strong>
-  </a>
-  <a class="invest-path" href="/投资哲学/企业与回报/">
-    <span class="invest-path__index">03 / ENTERPRISE</span>
-    <h2>企业与回报</h2>
-    <p>企业生存、经营成果、股东利益传导；企业质量、买入价格与投资回报分开判断。</p>
-    <strong>阅读本页 →</strong>
-  </a>
-  <a class="invest-path" href="/投资哲学/个人与研究边界/">
-    <span class="invest-path__index">04 / BOUNDARY</span>
-    <h2>个人与研究边界</h2>
-    <p>弱者体系、风险与复盘、有限尽责、研究停止条件，以及 AI 不替代最终判断。</p>
-    <strong>阅读本页 →</strong>
-  </a>
-</section>
+<HubTopicList kind="philosophy" />
 
 <section class="invest-hub-section" aria-labelledby="philo-boundary">
   <header class="invest-hub-section__head">

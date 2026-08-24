@@ -17,6 +17,21 @@ export const MANAGED_SIDEBAR_SPREADS = Object.freeze([
     sidebarKey: '/AI与生活/我的AI历程/',
     spread: 'journeySidebarGroups',
   },
+  {
+    kindId: 'research',
+    sidebarKey: '/投资/投研/',
+    spread: 'researchIndustrySidebarGroups',
+  },
+  {
+    kindId: 'philosophy',
+    sidebarKey: '/投资哲学/',
+    spread: 'philosophySidebarGroups',
+  },
+  {
+    kindId: 'big-question',
+    sidebarKey: '/大问题/',
+    spread: 'bigQuestionSidebarGroups',
+  },
 ])
 
 const ALL_SPREADS = MANAGED_SIDEBAR_SPREADS.map((item) => item.spread)
@@ -118,6 +133,9 @@ export function inspectManagedSidebarWiring(configSource) {
     'weekly-investment': false,
     'weekly-life': false,
     journey: false,
+    research: false,
+    philosophy: false,
+    'big-question': false,
   }
 
   if (mode === 'literal') {

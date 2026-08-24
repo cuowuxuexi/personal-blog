@@ -1,7 +1,10 @@
 ---
 title: 医药行业
+description: 创新药、CXO、原研仿制与支付端的长期观察
 pageClass: industry-index
 outline: false
+order: 1
+sidebarCollapsed: false
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><strong>医药行业</strong></nav>
@@ -25,7 +28,7 @@ outline: false
 <section class="subject-directory" aria-labelledby="medical-maps">
   <header class="research-section-head">
     <div><p>KNOWLEDGE GRAPH / 知识图谱</p><h2 id="medical-maps">医药知识图谱</h2></div>
-    <span>3 张节点详图</span>
+    <ResearchCount industry="医药" of="maps" />
   </header>
 
   <a class="subject-row" href="/投资/投研/医药/研究地图/">
@@ -36,16 +39,4 @@ outline: false
   </a>
 </section>
 
-<section class="subject-directory" aria-labelledby="medical-subjects" style="margin-top:2rem;">
-  <header class="research-section-head">
-    <div><p>SUBJECTS / 标的</p><h2 id="medical-subjects">跟踪标的</h2></div>
-    <span>1 个标的档案</span>
-  </header>
-
-  <a class="subject-row" href="/投资/投研/医药/药明康德/">
-    <div><span class="subject-row__ticker">603259.SH / 2359.HK</span><strong>药明康德</strong></div>
-    <p>从化学与合成分子相关服务 × R/D/M 切入，继续核验收入、能力、客户与竞争位置。</p>
-    <span class="subject-row__status">学习中</span>
-    <span class="subject-row__arrow">→</span>
-  </a>
-</section>
+<IndustryDirectory industry="医药" section="subjects" heading-id="medical-subjects" />

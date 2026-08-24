@@ -92,6 +92,9 @@ function configMtsLiveShaped() {
   investYearSidebarGroups,
   journeySidebarGroups,
   lifeYearSidebarGroups,
+  researchIndustrySidebarGroups,
+  philosophySidebarGroups,
+  bigQuestionSidebarGroups,
 } from './managed-sidebar-fs.mjs'
 
 export default {
@@ -119,6 +122,16 @@ export default {
           ],
         },
         ...journeySidebarGroups,
+      ],
+      '/投资/投研/': [
+        { text: '投研', items: [] },
+        ...researchIndustrySidebarGroups,
+      ],
+      '/投资哲学/': [
+        ...philosophySidebarGroups,
+      ],
+      '/大问题/': [
+        ...bigQuestionSidebarGroups,
       ],
       '/AI与生活/Hermes日记/': [
         { text: 'Hermes日记（协作本）', items: hermesDiaryNav },

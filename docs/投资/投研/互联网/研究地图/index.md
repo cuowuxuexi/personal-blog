@@ -3,6 +3,8 @@ title: 研究地图
 description: 互联网行业可复用的产业与商业知识入口
 pageClass: map-index
 outline: false
+order: 0
+hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图；腾讯底图先写在标的档案里。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/互联网/">互联网行业</a><span>/</span><strong>研究地图</strong></nav>

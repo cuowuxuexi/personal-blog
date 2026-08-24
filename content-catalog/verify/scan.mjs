@@ -70,7 +70,7 @@ function siteLinkForFile(kind, name, fm) {
     return contentSiteLink(kind.id, { name: name.replace(/\.md$/i, '') })
   }
   if (kind.id === 'hermes') return contentSiteLink(kind.id, { stem: name.replace(/\.md$/i, '') })
-  if (kind.id === 'research') {
+  if (kind.scan.mode === 'tree') {
     return contentSiteLink(kind.id, { relativeFile: `${kind.contentDir}/${name}` })
   }
   return null
