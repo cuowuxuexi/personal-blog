@@ -861,7 +861,10 @@ function startJobPoll() {
   state.pollTimer = setInterval(async () => {
     if (!state.job?.jobId) return
     try {
-      const job = await api(`/api/publish/jobs/${state.job.jobId}`)
+      const job = await api(`/api/publish/jobs/${state.job.jobId}/continue-verify`, {
+        method: 'POST',
+        body: '{}',
+      })
       applyJob(job)
       if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
       if (job.state === 'Failed' || job.state === 'Superseded') setNotice(job.failureReason || job.state, 'err')

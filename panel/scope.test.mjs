@@ -101,16 +101,22 @@ test('journey publish requires exactly one body', () => {
 })
 
 test('scope, validation and publish-job ask kinds or paths instead of copying trees', () => {
-  const scopeSrc = fs.readFileSync(path.join(HERE, 'lib', 'scope.mjs'), 'utf8')
-  const validationSrc = fs.readFileSync(path.join(HERE, 'lib', 'content-validation.mjs'), 'utf8')
-  const jobSrc = fs.readFileSync(path.join(HERE, 'lib', 'publish-job.mjs'), 'utf8')
+  const files = [
+    'scope.mjs',
+    'content-validation.mjs',
+    'publish-job.mjs',
+    'prepare-publication.mjs',
+    'execute-publication.mjs',
+    'production-check.mjs',
+    'publish-job-record.mjs',
+  ]
+  const askKinds = new Set(['scope.mjs', 'content-validation.mjs', 'prepare-publication.mjs'])
 
-  for (const [name, src] of [
-    ['scope.mjs', scopeSrc],
-    ['content-validation.mjs', validationSrc],
-    ['publish-job.mjs', jobSrc],
-  ]) {
-    assert.match(src, /content-catalog|matchesKindPath|getContentKind|listContentKinds|assetRulesFor|isPublicationSourcePath/, name)
+  for (const name of files) {
+    const src = fs.readFileSync(path.join(HERE, 'lib', name), 'utf8')
+    if (askKinds.has(name)) {
+      assert.match(src, /content-catalog|matchesKindPath|getContentKind|listContentKinds|assetRulesFor|isPublicationSourcePath/, name)
+    }
     assert.doesNotMatch(src, /docs\/投资\/周记\//, name)
     assert.doesNotMatch(src, /docs\/public\/images\/weekly/, name)
     assert.doesNotMatch(src, /docs\/public\/images\/journey/, name)

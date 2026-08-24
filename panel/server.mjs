@@ -20,6 +20,7 @@ import { allowsCreate, kindCapability, publicKindCapability } from './lib/repo-p
 import {
   checkWechatAssets,
   confirmPublication,
+  continueVerify,
   getPublication,
   listRecoverableJobs,
   preparePublication,
@@ -409,6 +410,11 @@ export function createServer(options = {}) {
       if (req.method === 'POST' && jobRetry) {
         await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
         return send(res, 200, { ok: true, ...await retryVerification(ctx, jobRetry[1]) })
+      }
+      const jobContinue = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)\/continue-verify$/)
+      if (req.method === 'POST' && jobContinue) {
+        await readBody(req, { maxBytes: ctx.maxJsonBytes, timeoutMs: ctx.bodyTimeoutMs })
+        return send(res, 200, { ok: true, ...await continueVerify(ctx, jobContinue[1]) })
       }
       const jobRetryPush = url.pathname.match(/^\/api\/publish\/jobs\/([^/]+)\/retry-push$/)
       if (req.method === 'POST' && jobRetryPush) {
