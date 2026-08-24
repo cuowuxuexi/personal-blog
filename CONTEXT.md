@@ -23,6 +23,15 @@ This repository is a personal blog. Recording matters more than polished exhibit
 | **Open questions** | Explicit unresolved problems that define the next research direction. |
 | **Origin kind** | How a blog page was formed relative to private research: `command` (mainly from private research), `blog` (mainly from writing/thinking on the blog), or `mixed`. |
 | **Publishing panel (发布面板)** | The local, non-coding publishing tool for two weekly kinds (investment + AI/life) and 我的AI历程 (`type: journey`). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note, dated journey issue, or chapter instance. The panel can open a new dated journey issue (theme, cover, caption) and edit existing chapter headers; it does not create, rename, or delete named chapter files. Research pages are outside its scope. |
+| **Prepare publication（准备发布）** | The panel step that packs an isolated snapshot, release preview, and confirmation token. It is not publishing. |
+| **Execute publication（执行发布）** | The panel step that commits and pushes the confirmed snapshot to Git. |
+| **Production check（上线核对）** | The panel step that uploads the production build to the domestic site and accepts the job only when that site’s version matches the commit. |
+| **Job query（问进度）** | A read of a publication job’s current state. It must not commit, push, upload, or advance verification. |
+| **Workspace write（写入文章）** | Applying a panel edit to Markdown already in the repository. It is not publishing. |
+| **Form draft（表单草稿）** | A local backup of unsaved panel fields. It is not the article, and clearing it must not delete repository files. |
+| **Publish scope（发布范围）** | The repository paths a publishing-panel job may include: weekly and journey bodies plus the images they actually reference. Research, philosophy, big questions, and Hermes stay out. |
+| **Issue chrome（期头）** | Page-level fields the panel may edit: theme, cover, and caption on a weekly or dated journey issue; cover and caption only on a named journey chapter. The chapter title is not a panel field. |
+| **Entry（条目）** | One titled block inside a weekly note or journey page. Distinct from issue chrome and from a form draft. |
 | **Journey series（我的AI历程）** | An AI/life subseries containing named long-lived chapters and dated issues. It owns its chapter/issue navigation; the broader AI/life section links to the series instead of duplicating every journey item. |
 | **Standalone HTML（独立 HTML）** | A prebuilt public HTML page under `docs/public/html/` (existing Pi / Grok guides remain in `docs/public/journey-guides/`). Embed with `<StandaloneHtml>`. It is not a VitePress Markdown page. |
 | **Latest issue（最新一期）** | The newest dated issue within one recurring series. It is not the same as the most recently revised item across the site. |
@@ -122,5 +131,14 @@ The first three-page split is experimental and may change after preview and use.
 | local source index | public source dump, auto-sync database |
 | publication gate | auto deploy, silent publish |
 | publishing panel / 发布面板 | 微博后台, CMS, 云端编辑器 |
+| prepare publication / 准备发布 | 发布, 确认发布 |
+| execute publication / 执行发布 | 问进度, 准备发布 |
+| production check / 上线核对 | 问进度, 自动发布 |
+| job query / 问进度 | 继续核对, 确认发布 |
+| workspace write / 写入文章 | 草稿, 表单草稿, 发布 |
+| form draft / 表单草稿 | 写入文章, 已发布稿 |
+| publish scope / 发布范围 | 投研门禁放宽, 面板什么都能发 |
+| issue chrome / 期头 | 条目, 篇章标题, 文件名 |
+| entry / 条目 | 期头, 表单草稿, 整篇文章 |
 
-最后更新：2026-08-22
+最后更新：2026-08-24
