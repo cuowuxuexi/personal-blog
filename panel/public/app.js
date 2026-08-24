@@ -772,7 +772,7 @@ async function acceptSavedDraft(payload) {
       state.bootstrap = bootstrap
       render()
     } catch (error) {
-      setNotice(`草稿已写入，但刷新条目列表失败：${error.message}`, 'err')
+      setNotice(`已写入文章，但刷新条目列表失败：${error.message}`, 'err')
     }
 }
 
@@ -781,7 +781,7 @@ const prepareSavedChange = singleFlight(async (createDraft) => {
   try {
     button.disabled = true
     document.getElementById('btn-prepare').classList.add('hidden')
-    setNotice('正在保存并生成发布前预览…')
+    setNotice('正在保存到文章并生成发布前预览…')
     const payload = await createDraft()
     if (!payload) return
     await acceptSavedDraft(payload)
@@ -943,7 +943,7 @@ function renderJob() {
 
 async function preparePublish() {
   if (!state.draftId) {
-    setNotice('请先保存草稿，再准备发布。', 'err')
+    setNotice('请先保存到文章，再准备发布。', 'err')
     return
   }
   try {

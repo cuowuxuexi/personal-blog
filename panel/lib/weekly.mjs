@@ -28,35 +28,6 @@ const PROP_TO_FIELD = {
   date: 'date',
 }
 
-function matchBracket(source, openIndex) {
-  const open = source[openIndex]
-  const close = open === '[' ? ']' : open === '{' ? '}' : null
-  if (!close) throw new Error(`not a bracket: ${open}`)
-  let depth = 0
-  let quote = ''
-  for (let i = openIndex; i < source.length; i += 1) {
-    const ch = source[i]
-    if (quote) {
-      if (ch === '\\') {
-        i += 1
-        continue
-      }
-      if (ch === quote) quote = ''
-      continue
-    }
-    if (ch === '"' || ch === "'") {
-      quote = ch
-      continue
-    }
-    if (ch === open) depth += 1
-    else if (ch === close) {
-      depth -= 1
-      if (depth === 0) return i
-    }
-  }
-  throw new Error('unbalanced brackets')
-}
-
 function findOpenTagEnd(source, start) {
   let quote = ''
   for (let i = start; i < source.length; i += 1) {
@@ -455,74 +426,9 @@ export function collectTags(paths) {
     .map(([tag, count]) => ({ tag, count }))
 }
 
-function jsString(value) {
-  return JSON.stringify(String(value))
-}
-
-export function insertManualPost(source, post) {
-  // Legacy string surgery retained for unit tests; applyDraft no longer calls this (Wave D).
-  const marker = 'const manualPosts: PostItem[] = ['
-  const idx = source.indexOf(marker)
-  if (idx < 0) throw new Error('posts.ts 里找不到 manualPosts')
-  const insertAt = idx + marker.length
-  const block = [
-    '',
-    '  {',
-    `    title: ${jsString(post.title)},`,
-    `    date: ${jsString(post.date)},`,
-    `    category: ${jsString(post.category)},`,
-    `    type: '${post.type || 'weekly'}',`,
-    `    issue: ${post.issue},`,
-    `    link: ${jsString(post.link)},`,
-    `    description: ${jsString(post.description)},`,
-    '  },',
-  ].join('\n')
-  return source.slice(0, insertAt) + block + source.slice(insertAt)
-}
-
-function escapeTs(value) {
-  return String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
-}
-
-export function insertSidebarItem(source, { sidebarKey, yearText, title, link }) {
-  const startNeedle = `'${sidebarKey}': [`
-  const start = source.indexOf(startNeedle)
-  if (start < 0) throw new Error(`config.mts 里找不到侧栏 ${sidebarKey}`)
-  const bracketStart = start + startNeedle.length - 1
-  const bracketEnd = matchBracket(source, bracketStart)
-  const section = source.slice(bracketStart, bracketEnd + 1)
-  const yearNeedle = `text: '${escapeTs(yearText)}'`
-  const yearIdx = section.indexOf(yearNeedle)
-  if (yearIdx >= 0) {
-    const itemsIdx = section.indexOf('items: [', yearIdx)
-    if (itemsIdx < 0) throw new Error(`侧栏年份 ${yearText} 没有 items`)
-    const itemsOpen = itemsIdx + 'items: ['.length - 1
-    const absItemsOpen = bracketStart + itemsIdx + 'items: ['.length - 1
-    const item = `\n            { text: '${escapeTs(title)}', link: '${escapeTs(link)}' },`
-    return source.slice(0, absItemsOpen + 1) + item + source.slice(absItemsOpen + 1)
-  }
-
-  const firstGroupEnd = matchBracket(source, source.indexOf('{', bracketStart + 1))
-  const group = [
-    '',
-    '        {',
-    `          text: '${escapeTs(yearText)}',`,
-    '          collapsed: false,',
-    '          items: [',
-    `            { text: '${escapeTs(title)}', link: '${escapeTs(link)}' },`,
-    '          ],',
-    '        },',
-  ].join('\n')
-  return source.slice(0, firstGroupEnd + 1) + ',' + group + source.slice(firstGroupEnd + 1)
-}
-
 export function themeFromTitle(title = '') {
   const match = String(title || '').match(/^第\d+期-(.+)$/)
   return match ? match[1].trim() : ''
-}
-
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 function assertSafeTheme(theme) {
@@ -530,34 +436,6 @@ function assertSafeTheme(theme) {
   if (!text) throw new Error('当期主题不能为空')
   if (/[/\\:*?"<>|#]/.test(text)) throw new Error('主题不能包含 / \\ : * ? " < > | #')
   return text
-}
-
-export function updateManualPost(source, { oldLink, title, link }) {
-  const escaped = escapeRegExp(oldLink)
-  const linkRe = new RegExp(`link:\\s*(["'])${escaped}\\1`)
-  const match = linkRe.exec(source)
-  if (!match) throw new Error(`posts.ts 里找不到 ${oldLink}`)
-  const objStart = source.lastIndexOf('{', match.index)
-  if (objStart < 0) throw new Error('posts.ts 记录格式不对')
-  const objEnd = matchBracket(source, objStart)
-  let block = source.slice(objStart, objEnd + 1)
-  if (!/title:\s*/.test(block)) throw new Error('posts.ts 记录缺少 title')
-  block = block.replace(/title:\s*(["'])(?:\\.|[^\\])*?\1/, `title: ${jsString(title)}`)
-  if (link && link !== oldLink) {
-    block = block.replace(new RegExp(`link:\\s*(["'])${escaped}\\1`), `link: ${jsString(link)}`)
-  }
-  return source.slice(0, objStart) + block + source.slice(objEnd + 1)
-}
-
-export function updateSidebarItem(source, { sidebarKey, oldLink, title, link }) {
-  const startNeedle = `'${sidebarKey}': [`
-  const start = source.indexOf(startNeedle)
-  if (start < 0) throw new Error(`config.mts 里找不到侧栏 ${sidebarKey}`)
-  const escaped = escapeRegExp(oldLink)
-  const re = new RegExp(`\\{\\s*text:\\s*'((?:\\\\'|[^'])*)'\\s*,\\s*link:\\s*'${escaped}'\\s*\\}`)
-  const section = source.slice(start)
-  if (!re.test(section)) throw new Error(`侧栏找不到 ${oldLink}`)
-  return source.slice(0, start) + section.replace(re, `{ text: '${escapeTs(title)}', link: '${escapeTs(link || oldLink)}' }`)
 }
 
 export function applyIssueChrome(raw, { title, caption, cover, coverAlt } = {}) {
@@ -728,6 +606,7 @@ function draftCommitHint(capability, mode, pageTitle, entryTitle) {
   return `${prefix}: ${pageTitle} 追加「${entryTitle}」`
 }
 
+/** 写入文章：立刻改仓库 Markdown。不是表单草稿，也不是发布。 */
 export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }, paths) {
   const resolved = resolvePaths(paths)
   const kind = resolved.KINDS[kindId]
@@ -771,7 +650,7 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       coverAlt: issue?.coverAlt,
       entry,
     })
-    // Wave D：索引由构建期投影派生；applyDraft 只写目标 Markdown。
+    // 写入文章：只写目标 Markdown；posts / 侧栏由构建期投影派生。
     targets = [{ abs, content: markdown }]
     files.push(path.posix.join(kind.relDir, fileName))
     previewLink = link
@@ -835,7 +714,7 @@ export function applyDraft({ kindId, mode, issueLink, entryIndex, entry, issue }
       files.push(target.rel)
       staleAbs = target.file
     }
-    // Wave D：改期头/重命名只写 Markdown；posts/config 与生活侧栏双写已停用。
+    // 写入文章：改期头 / 重命名只写 Markdown，不改 posts / config。
     previewLink = chrome.link
     title = chrome.title
     const changedTitle = mode === 'delete' ? currentEntries[Number(entryIndex)]?.title : entry?.title
