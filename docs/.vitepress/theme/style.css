@@ -1055,12 +1055,38 @@
   text-underline-offset: 2px;
 }
 
+.VPFooter .copyright {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.35em;
+}
+
 .site-beian {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0 0.75em;
   margin: 0;
   padding: 16px 24px 28px;
   text-align: center;
   font-size: 13px;
   color: var(--vp-c-text-2);
+}
+
+.beian-mps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.beian-mps__icon {
+  display: block;
+  width: 14px;
+  height: 16px;
+  flex: none;
 }
 
 #app {
