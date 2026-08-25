@@ -54,6 +54,55 @@ export function assertSafeGuoneiConfig(config) {
   return config
 }
 
+export const PRODUCTION_CANDIDATE_DIRNAME = '.panel-production-candidate'
+const RELEASE_PREVIEW_MARK = '/release-preview/'
+
+export function productionCandidateDir(snapshotDir) {
+  return path.join(snapshotDir, PRODUCTION_CANDIDATE_DIRNAME)
+}
+
+function htmlFilesUnder(dir) {
+  if (!fs.existsSync(dir)) return []
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) return htmlFilesUnder(full)
+    return entry.isFile() && entry.name.endsWith('.html') ? [full] : []
+  })
+}
+
+export function persistProductionCandidate({ snapshotDir, rootDistDir }) {
+  if (!snapshotDir) throw new Error('生产候选缺少 snapshotDir')
+  if (!rootDistDir || !fs.existsSync(rootDistDir)) {
+    throw new Error('生产候选缺少未 merge 的根构建')
+  }
+  const dest = productionCandidateDir(snapshotDir)
+  if (fs.existsSync(dest)) fs.rmSync(dest, { recursive: true, force: true })
+  fs.cpSync(rootDistDir, dest, { recursive: true })
+  return dest
+}
+
+export function isUsableProductionCandidate(snapshotDir) {
+  const dir = productionCandidateDir(snapshotDir)
+  try {
+    if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) return false
+    const indexFile = path.join(dir, 'index.html')
+    if (!fs.existsSync(indexFile) || !fs.statSync(indexFile).isFile()) return false
+    const html = fs.readFileSync(indexFile, 'utf8')
+    if (!html.trim()) return false
+    for (const file of htmlFilesUnder(dir)) {
+      if (fs.readFileSync(file, 'utf8').includes(RELEASE_PREVIEW_MARK)) return false
+    }
+    const metaFile = path.join(dir, 'build.json')
+    if (fs.existsSync(metaFile)) {
+      const meta = JSON.parse(fs.readFileSync(metaFile, 'utf8'))
+      if (!meta || meta.sha == null || meta.jobId) return false
+    }
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function writeProductionBuildMeta(distDir, { sha, builtAt } = {}) {
   if (!sha) throw new Error('write-build-metadata: missing sha')
   fs.mkdirSync(distDir, { recursive: true })
@@ -122,11 +171,17 @@ export async function prepareProductionDist({ snapshotDir, sha, builtAt, build }
   if (fs.existsSync(liveDist)) fs.cpSync(liveDist, previewHold, { recursive: true })
 
   try {
-    const built = await build({ snapshotDir, previewBase: '/' })
-    const distDir = built?.distDir || liveDist
-    writeProductionBuildMeta(distDir, { sha, builtAt })
-    if (fs.existsSync(productionHold)) fs.rmSync(productionHold, { recursive: true, force: true })
-    fs.cpSync(distDir, productionHold, { recursive: true })
+    if (isUsableProductionCandidate(snapshotDir)) {
+      if (fs.existsSync(productionHold)) fs.rmSync(productionHold, { recursive: true, force: true })
+      fs.cpSync(productionCandidateDir(snapshotDir), productionHold, { recursive: true })
+      writeProductionBuildMeta(productionHold, { sha, builtAt })
+    } else {
+      const built = await build({ snapshotDir, previewBase: '/' })
+      const distDir = built?.distDir || liveDist
+      writeProductionBuildMeta(distDir, { sha, builtAt })
+      if (fs.existsSync(productionHold)) fs.rmSync(productionHold, { recursive: true, force: true })
+      fs.cpSync(distDir, productionHold, { recursive: true })
+    }
   } catch (error) {
     restoreHeldDist(previewHold, liveDist)
     throw error
