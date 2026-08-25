@@ -419,6 +419,25 @@ test('uploadDist packs locally then scp/ssh with the swap script', async () => {
   }
 })
 
+test('packDistArchive removes a partial local archive when tar fails', async () => {
+  const distDir = tempDir('panel-guonei-pack-fail-')
+  fs.writeFileSync(path.join(distDir, 'index.html'), 'site')
+  try {
+    await assert.rejects(
+      () => packDistArchive(distDir, {
+        async run(_command, args, options) {
+          fs.writeFileSync(path.join(options.cwd, args[1]), 'partial archive')
+          throw new Error('tar failed')
+        },
+      }),
+      /tar failed/,
+    )
+    assert.equal(fs.existsSync(path.join(distDir, 'blog-dist.tar')), false)
+  } finally {
+    fs.rmSync(distDir, { recursive: true, force: true })
+  }
+})
+
 function writeSized(dir, relative, content) {
   const file = path.join(dir, relative)
   fs.mkdirSync(path.dirname(file), { recursive: true })
@@ -744,6 +763,12 @@ test('uploadDist records synthetic full/delta bytes and a zero-change ratio', as
 })
 
 test('uploadDist falls back to full tar when remote manifest is missing or damaged', async () => {
+  const expectedManifest = `${JSON.stringify({
+    version: 1,
+    algorithm: 'sha256',
+    sha: 'expected',
+    files: { 'index.html': sha256Text('site') },
+  })}\n`
   const cases = [
     { name: 'missing', remoteManifest: null, remoteBuild: null },
     { name: 'damaged', remoteManifest: '{bad', remoteBuild: `${JSON.stringify({ sha: 'x' })}\n` },
@@ -757,6 +782,17 @@ test('uploadDist falls back to full tar when remote manifest is missing or damag
       })}\n`,
       remoteBuild: `${JSON.stringify({ sha: 'expected' })}\n`,
       expectedBaselineSha: 'expected',
+    },
+    {
+      name: 'missing-build-sha',
+      remoteManifest: expectedManifest,
+      remoteBuild: '{}\n',
+      expectedBaselineSha: 'expected',
+    },
+    {
+      name: 'missing-expected-sha',
+      remoteManifest: expectedManifest,
+      remoteBuild: `${JSON.stringify({ sha: 'expected' })}\n`,
     },
   ]
   for (const item of cases) {

@@ -332,17 +332,22 @@ export async function packDistArchive(distDir, {
   if (typeof run !== 'function') throw new Error('打包国内站产物缺少 run')
   const archivePath = path.join(distDir, archiveName)
   if (fs.existsSync(archivePath)) fs.rmSync(archivePath, { force: true })
-  await run('tar', [
-    '-cf', archiveName,
-    '--exclude', archiveName,
-    '--exclude', 'release-preview',
-    '--exclude', '.panel-production-candidate',
-    '--exclude', '.panel-preview-dist',
-    '--exclude', '.panel-wechat',
-    '.',
-  ], { cwd: distDir })
-  if (!fs.existsSync(archivePath)) throw new Error('打包国内站产物失败')
-  return archivePath
+  try {
+    await run('tar', [
+      '-cf', archiveName,
+      '--exclude', archiveName,
+      '--exclude', 'release-preview',
+      '--exclude', '.panel-production-candidate',
+      '--exclude', '.panel-preview-dist',
+      '--exclude', '.panel-wechat',
+      '.',
+    ], { cwd: distDir })
+    if (!fs.existsSync(archivePath)) throw new Error('打包国内站产物失败')
+    return archivePath
+  } catch (error) {
+    if (fs.existsSync(archivePath)) fs.rmSync(archivePath, { force: true })
+    throw error
+  }
 }
 
 function sshOptsOf(safe) {
@@ -382,11 +387,9 @@ async function fetchRemoteBaseline({ safe, run, timeout }) {
 }
 
 function isTrustedBaseline(remote, expectedBaselineSha) {
-  if (!remote?.manifest?.sha) return false
-  if (expectedBaselineSha && remote.manifest.sha !== expectedBaselineSha) return false
-  if (remote.buildSha && remote.manifest.sha !== remote.buildSha) return false
-  if (expectedBaselineSha && remote.buildSha && remote.buildSha !== expectedBaselineSha) return false
-  return true
+  if (!remote?.manifest?.sha || !remote.buildSha || !expectedBaselineSha) return false
+  return remote.manifest.sha === remote.buildSha
+    && remote.manifest.sha === expectedBaselineSha
 }
 
 function copyRelFile(fromDir, toDir, rel) {
