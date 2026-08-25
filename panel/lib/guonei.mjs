@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
-import { sha256File } from './hash.mjs'
+import { sha256File, sha256Text } from './hash.mjs'
 
 export const DEFAULT_PRODUCTION_ORIGIN = 'https://cuowo.cn'
 export const DEFAULT_GUONEI_HOST = '100.88.115.43'
@@ -11,6 +11,7 @@ export const DEFAULT_GUONEI_REMOTE_TAR = '/tmp/blog-dist.tar'
 export const DEFAULT_IDENTITY_NAME = 'id_ed25519_servers'
 export const DIST_MANIFEST_NAME = '.panel-dist-manifest.json'
 export const DIST_ARCHIVE_NAME = 'blog-dist.tar'
+export const DEPLOY_LOCK_SUFFIX = '.deploy-lock'
 
 const SKIP_DIST_NAMES = new Set([
   DIST_ARCHIVE_NAME,
@@ -71,6 +72,30 @@ export function assertSafeDistRelPath(value) {
     throw new Error('国内站产物路径不合法')
   }
   return rel
+}
+
+export function assertSafeSha256Hex(value) {
+  const digest = String(value || '')
+  if (!/^[a-f0-9]{64}$/.test(digest)) throw new Error('国内站清单摘要不合法')
+  return digest
+}
+
+export function productionDeployLockDir(siteDir) {
+  assertSafeUnixPath(siteDir, '国内站站点目录')
+  const lockDir = `${siteDir}${DEPLOY_LOCK_SUFFIX}`
+  assertSafeUnixPath(lockDir, '国内站部署锁')
+  return lockDir
+}
+
+function withProductionDeployLock(siteDir, commands) {
+  const lockDir = productionDeployLockDir(siteDir)
+  return [`mkdir ${lockDir}`, `trap 'rmdir ${lockDir}' EXIT`, ...commands].join(' && ')
+}
+
+export function productionManifestGuardCommand({ siteDir, manifestDigest } = {}) {
+  assertSafeUnixPath(siteDir, '国内站站点目录')
+  const digest = assertSafeSha256Hex(manifestDigest)
+  return `test "$(sha256sum < ${siteDir}/${DIST_MANIFEST_NAME} | awk '{print $1}')" = '${digest}'`
 }
 
 export function assertSafeGuoneiConfig(config) {
@@ -242,7 +267,7 @@ export function productionSwapCommands({
 } = {}) {
   assertSafeUnixPath(siteDir, '国内站站点目录')
   assertSafeUnixPath(remoteTar, '国内站远程归档路径', { mustEndWithTar: true })
-  return [
+  return withProductionDeployLock(siteDir, [
     `rm -rf ${siteDir}.new ${siteDir}.old`,
     `mkdir -p ${siteDir}.new`,
     `tar -xf ${remoteTar} -C ${siteDir}.new`,
@@ -251,21 +276,24 @@ export function productionSwapCommands({
     `mv ${siteDir}.new ${siteDir}`,
     `chown -R nginx:nginx ${siteDir}`,
     `chmod -R a+rX ${siteDir}`,
-  ].join(' && ')
+  ])
 }
 
 export function productionDeltaSwapCommands({
   siteDir = DEFAULT_GUONEI_SITE_DIR,
   remoteTar = DEFAULT_GUONEI_REMOTE_TAR,
   deletions = [],
+  manifestDigest,
 } = {}) {
   assertSafeUnixPath(siteDir, '国内站站点目录')
   assertSafeUnixPath(remoteTar, '国内站远程归档路径', { mustEndWithTar: true })
+  const guard = productionManifestGuardCommand({ siteDir, manifestDigest })
   const removes = deletions.map((rel) => {
     const safeRel = assertSafeDistRelPath(rel)
     return `rm -f -- '${siteDir}.new/${safeRel}'`
   })
-  return [
+  return withProductionDeployLock(siteDir, [
+    guard,
     `rm -rf ${siteDir}.new ${siteDir}.old`,
     `if [ -d ${siteDir} ]; then cp -a ${siteDir} ${siteDir}.new; else mkdir -p ${siteDir}.new; fi`,
     `tar -xf ${remoteTar} -C ${siteDir}.new`,
@@ -275,7 +303,7 @@ export function productionDeltaSwapCommands({
     `mv ${siteDir}.new ${siteDir}`,
     `chown -R nginx:nginx ${siteDir}`,
     `chmod -R a+rX ${siteDir}`,
-  ].join(' && ')
+  ])
 }
 
 function readDistBuildSha(distDir) {
@@ -324,11 +352,19 @@ async function fetchRemoteBaseline({ safe, run, timeout }) {
   const target = sshTarget(safe)
   try {
     const listed = await run('ssh', [...opts, target, `cat ${safe.siteDir}/${DIST_MANIFEST_NAME}`], { timeout })
-    const parsed = parseRemoteManifest(listed?.stdout || '')
+    const manifestText = listed?.stdout || ''
+    const parsed = parseRemoteManifest(manifestText)
     if (!parsed.ok) return null
+    const manifestDigest = sha256Text(manifestText)
+    assertSafeSha256Hex(manifestDigest)
     const build = await run('ssh', [...opts, target, `cat ${safe.siteDir}/build.json`], { timeout })
     const meta = JSON.parse(build?.stdout || '')
-    return { manifest: parsed.manifest, buildSha: meta?.sha || null }
+    return {
+      manifest: parsed.manifest,
+      buildSha: meta?.sha || null,
+      manifestText,
+      manifestDigest,
+    }
   } catch {
     return null
   }
@@ -361,7 +397,7 @@ async function uploadFull({ distDir, safe, run, timeout }) {
   }
 }
 
-async function uploadDelta({ distDir, manifest, diff, safe, run, timeout }) {
+async function uploadDelta({ distDir, manifest, diff, safe, run, timeout, manifestDigest }) {
   for (const rel of [...diff.added, ...diff.changed, ...diff.deleted]) {
     assertSafeDistRelPath(rel)
   }
@@ -380,6 +416,7 @@ async function uploadDelta({ distDir, manifest, diff, safe, run, timeout }) {
         siteDir: safe.siteDir,
         remoteTar: safe.remoteTar,
         deletions: diff.deleted,
+        manifestDigest,
       })], { timeout })
     } finally {
       if (fs.existsSync(archivePath)) fs.rmSync(archivePath, { force: true })
@@ -415,6 +452,7 @@ export async function uploadDist({
         safe,
         run,
         timeout,
+        manifestDigest: remote.manifestDigest,
       })
       return {
         mode: 'delta',

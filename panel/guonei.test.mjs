@@ -13,6 +13,7 @@ import {
   parseRemoteManifest,
   prepareProductionDist,
   productionDeltaSwapCommands,
+  productionDeployLockDir,
   productionSwapCommands,
   readGuoneiConfig,
   uploadDist,
@@ -90,10 +91,13 @@ test('production swap is an atomic directory replace', () => {
     siteDir: '/var/www/blog',
     remoteTar: '/tmp/blog-dist.tar',
   })
+  assert.match(script, /mkdir \/var\/www\/blog\.deploy-lock/)
+  assert.match(script, /trap 'rmdir \/var\/www\/blog\.deploy-lock' EXIT/)
   assert.match(script, /rm -rf \/var\/www\/blog\.new \/var\/www\/blog\.old/)
   assert.match(script, /tar -xf \/tmp\/blog-dist\.tar -C \/var\/www\/blog\.new/)
   assert.match(script, /mv \/var\/www\/blog\.new \/var\/www\/blog/)
   assert.match(script, /chown -R nginx:nginx \/var\/www\/blog/)
+  assert.ok(script.indexOf('mkdir /var/www/blog.deploy-lock') < script.indexOf('rm -rf /var/www/blog.new'))
 })
 
 test('writeProductionBuildMeta keeps the sha/builtAt contract', () => {
@@ -379,8 +383,11 @@ function fakePackRun(calls, {
   remoteManifest,
   remoteBuild,
   failDeltaSsh = false,
+  failDigestGuard = false,
+  failLock = false,
 } = {}) {
   let deltaFailed = false
+  let digestFailed = false
   return async (command, args, options = {}) => {
     calls.push({ command, args, cwd: options.cwd })
     if (command === 'tar') {
@@ -391,15 +398,24 @@ function fakePackRun(calls, {
       fs.writeFileSync(path.join(options.cwd, archiveName), Buffer.alloc(Math.max(total, 1)))
       return { stdout: '', stderr: '' }
     }
-    if (command === 'ssh' && String(args.at(-1) || '').includes('.panel-dist-manifest.json')) {
+    const remoteScript = String(args.at(-1) || '')
+    const isRemoteApply = remoteScript.includes('&&')
+    if (command === 'ssh' && !isRemoteApply && remoteScript.includes('.panel-dist-manifest.json')) {
       if (remoteManifest == null) throw new Error('远端清单不存在')
       return { stdout: remoteManifest, stderr: '' }
     }
-    if (command === 'ssh' && String(args.at(-1) || '').includes('build.json')) {
+    if (command === 'ssh' && !isRemoteApply && remoteScript.includes('build.json')) {
       if (remoteBuild == null) throw new Error('远端 build.json 不存在')
       return { stdout: remoteBuild, stderr: '' }
     }
-    if (command === 'ssh' && failDeltaSsh && !deltaFailed && String(args.at(-1) || '').includes('cp -a')) {
+    if (command === 'ssh' && failLock && remoteScript.includes('.deploy-lock')) {
+      throw new Error('部署锁被占用')
+    }
+    if (command === 'ssh' && failDigestGuard && !digestFailed && remoteScript.includes('sha256sum')) {
+      digestFailed = true
+      throw new Error('清单基线已漂移')
+    }
+    if (command === 'ssh' && failDeltaSsh && !deltaFailed && remoteScript.includes('cp -a')) {
       deltaFailed = true
       throw new Error('增量切换失败')
     }
@@ -499,11 +515,17 @@ test('parseRemoteManifest rejects missing, damaged or untrusted baselines', () =
 })
 
 test('production delta swap copies current site then overlays and deletes before atomic replace', () => {
+  const digest = sha256Text('trusted-manifest')
   const script = productionDeltaSwapCommands({
     siteDir: '/var/www/blog',
     remoteTar: '/tmp/blog-dist.tar',
     deletions: ['old/page.html', 'AI与生活/gone.html'],
+    manifestDigest: digest,
   })
+  assert.match(script, /mkdir \/var\/www\/blog\.deploy-lock/)
+  assert.match(script, /trap 'rmdir \/var\/www\/blog\.deploy-lock' EXIT/)
+  assert.match(script, /sha256sum/)
+  assert.match(script, new RegExp(digest))
   assert.match(script, /rm -rf \/var\/www\/blog\.new \/var\/www\/blog\.old/)
   assert.match(script, /cp -a \/var\/www\/blog \/var\/www\/blog\.new/)
   assert.match(script, /tar -xf \/tmp\/blog-dist\.tar -C \/var\/www\/blog\.new/)
@@ -511,11 +533,14 @@ test('production delta swap copies current site then overlays and deletes before
   assert.match(script, /rm -f -- '\/var\/www\/blog\.new\/AI与生活\/gone\.html'/)
   assert.match(script, /mv \/var\/www\/blog\.new \/var\/www\/blog/)
   assert.match(script, /chown -R nginx:nginx \/var\/www\/blog/)
+  assert.ok(script.indexOf('mkdir /var/www/blog.deploy-lock') < script.indexOf('sha256sum'))
+  assert.ok(script.indexOf('sha256sum') < script.indexOf('cp -a'))
   assert.throws(
     () => productionDeltaSwapCommands({
       siteDir: '/var/www/blog',
       remoteTar: '/tmp/blog-dist.tar',
       deletions: ['../etc/passwd'],
+      manifestDigest: digest,
     }),
     /不合法/,
   )
@@ -574,6 +599,12 @@ test('uploadDist uses a trusted remote manifest for changed/new/deleted incremen
     assert.ok(packed.packedFiles.includes('fresh.html'))
     assert.ok(!packed.packedFiles.includes('gone.html'))
     const sshApply = calls.filter((item) => item.command === 'ssh').at(-1)
+    const expectedDigest = sha256Text(`${JSON.stringify(previous)}\n`)
+    assert.match(sshApply.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
+    assert.match(sshApply.args.at(-1), /trap 'rmdir \/var\/www\/blog\.deploy-lock' EXIT/)
+    assert.match(sshApply.args.at(-1), new RegExp(expectedDigest))
+    assert.ok(sshApply.args.at(-1).indexOf('.deploy-lock') < sshApply.args.at(-1).indexOf('sha256sum'))
+    assert.ok(sshApply.args.at(-1).indexOf('sha256sum') < sshApply.args.at(-1).indexOf('cp -a'))
     assert.match(sshApply.args.at(-1), /cp -a \/var\/www\/blog \/var\/www\/blog\.new/)
     assert.match(sshApply.args.at(-1), /gone\.html/)
     assert.equal(calls.some((item) => item.command === 'scp'), true)
@@ -731,8 +762,132 @@ test('uploadDist falls back to full atomic replace when incremental apply fails'
     assert.equal(result.mode, 'full')
     assert.ok(calls.filter((item) => item.command === 'tar').length >= 2)
     const sshApply = calls.filter((item) => item.command === 'ssh').at(-1)
+    assert.match(sshApply.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
     assert.match(sshApply.args.at(-1), /mkdir -p \/var\/www\/blog\.new/)
     assert.match(sshApply.args.at(-1), /mv \/var\/www\/blog\.new \/var\/www\/blog/)
+    assert.doesNotMatch(sshApply.args.at(-1), /cp -a/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('full and delta remote swap share one deploy lock and release it on EXIT', () => {
+  const lock = productionDeployLockDir('/var/www/blog')
+  assert.equal(lock, '/var/www/blog.deploy-lock')
+  const digest = sha256Text('same-lock')
+  const full = productionSwapCommands({
+    siteDir: '/var/www/blog',
+    remoteTar: '/tmp/blog-dist.tar',
+  })
+  const delta = productionDeltaSwapCommands({
+    siteDir: '/var/www/blog',
+    remoteTar: '/tmp/blog-dist.tar',
+    manifestDigest: digest,
+  })
+  for (const script of [full, delta]) {
+    assert.match(script, /mkdir \/var\/www\/blog\.deploy-lock/)
+    assert.match(script, /trap 'rmdir \/var\/www\/blog\.deploy-lock' EXIT/)
+    assert.ok(script.indexOf('mkdir /var/www/blog.deploy-lock') < script.indexOf("trap 'rmdir /var/www/blog.deploy-lock' EXIT"))
+    assert.doesNotMatch(script, /rm -rf \/var\/www\/blog\.deploy-lock/)
+  }
+})
+
+test('delta swap rejects an injectable manifest digest', () => {
+  assert.throws(
+    () => productionDeltaSwapCommands({
+      siteDir: '/var/www/blog',
+      remoteTar: '/tmp/blog-dist.tar',
+      manifestDigest: "abc; rm -rf /",
+    }),
+    /摘要不合法/,
+  )
+})
+
+test('uploadDist falls back to full when the locked baseline digest has drifted', async () => {
+  const root = tempDir('panel-guonei-drift-')
+  const distDir = path.join(root, 'dist')
+  const key = path.join(root, 'id_ed25519_servers')
+  writeSized(distDir, 'index.html', 'next')
+  writeProductionBuildMeta(distDir, { sha: 'nextsha', builtAt: '2026-08-25T08:00:00.000Z' })
+  fs.writeFileSync(key, 'fake')
+  const previous = {
+    version: 1,
+    algorithm: 'sha256',
+    sha: 'prevsha',
+    files: { 'index.html': sha256Text('prev'), 'build.json': sha256Text('old') },
+  }
+  const remoteManifest = `${JSON.stringify(previous)}\n`
+  const calls = []
+  try {
+    const result = await uploadDist({
+      distDir,
+      sha: 'nextsha',
+      expectedBaselineSha: 'prevsha',
+      config: {
+        host: '100.88.115.43',
+        user: 'root',
+        identityFile: key,
+        siteDir: '/var/www/blog',
+        remoteTar: '/tmp/blog-dist.tar',
+      },
+      run: fakePackRun(calls, {
+        remoteManifest,
+        remoteBuild: `${JSON.stringify({ sha: 'prevsha' })}\n`,
+        failDigestGuard: true,
+      }),
+    })
+    assert.equal(result.mode, 'full')
+    const apply = calls.filter((item) => item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock'))
+    assert.ok(apply.some((item) => String(item.args.at(-1)).includes('sha256sum')))
+    const last = apply.at(-1)
+    const deltaApply = apply.find((item) => String(item.args.at(-1)).includes('sha256sum'))
+    assert.match(deltaApply.args.at(-1), new RegExp(sha256Text(remoteManifest)))
+    assert.match(last.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
+    assert.match(last.args.at(-1), /mkdir -p \/var\/www\/blog\.new/)
+    assert.doesNotMatch(last.args.at(-1), /cp -a/)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('uploadDist fails closed when the shared deploy lock is busy', async () => {
+  const root = tempDir('panel-guonei-lock-busy-')
+  const distDir = path.join(root, 'dist')
+  const key = path.join(root, 'id_ed25519_servers')
+  writeSized(distDir, 'index.html', 'next')
+  writeProductionBuildMeta(distDir, { sha: 'nextsha', builtAt: '2026-08-25T09:00:00.000Z' })
+  fs.writeFileSync(key, 'fake')
+  const previous = {
+    version: 1,
+    algorithm: 'sha256',
+    sha: 'prevsha',
+    files: { 'index.html': sha256Text('prev'), 'build.json': sha256Text('old') },
+  }
+  const calls = []
+  try {
+    await assert.rejects(
+      () => uploadDist({
+        distDir,
+        sha: 'nextsha',
+        expectedBaselineSha: 'prevsha',
+        config: {
+          host: '100.88.115.43',
+          user: 'root',
+          identityFile: key,
+          siteDir: '/var/www/blog',
+          remoteTar: '/tmp/blog-dist.tar',
+        },
+        run: fakePackRun(calls, {
+          remoteManifest: `${JSON.stringify(previous)}\n`,
+          remoteBuild: `${JSON.stringify({ sha: 'prevsha' })}\n`,
+          failLock: true,
+        }),
+      }),
+      /部署锁被占用/,
+    )
+    const apply = calls.filter((item) => item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock'))
+    assert.ok(apply.length >= 2, 'delta then full must both take the same lock')
+    assert.ok(apply.every((item) => String(item.args.at(-1)).includes("trap 'rmdir /var/www/blog.deploy-lock' EXIT")))
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
