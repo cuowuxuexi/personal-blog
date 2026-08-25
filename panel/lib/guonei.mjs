@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import os from 'node:os'
@@ -28,6 +29,7 @@ const SKIP_DIST_SEGMENTS = new Set([
 const HOST_RE = /^[A-Za-z0-9.:-]+$/
 const USER_RE = /^[A-Za-z0-9._-]+$/
 const ABS_UNIX_RE = /^\/[A-Za-z0-9._/-]+$/
+const REMOTE_TAR_ID_RE = /^[a-f0-9]{16,32}$/
 
 export function defaultIdentityFile(env = process.env) {
   const home = env.USERPROFILE || env.HOME || os.homedir()
@@ -85,6 +87,15 @@ export function productionDeployLockDir(siteDir) {
   const lockDir = `${siteDir}${DEPLOY_LOCK_SUFFIX}`
   assertSafeUnixPath(lockDir, '国内站部署锁')
   return lockDir
+}
+
+export function uniqueRemoteTarPath(remoteTar, uniqueId) {
+  assertSafeUnixPath(remoteTar, '国内站远程归档路径', { mustEndWithTar: true })
+  const id = String(uniqueId || '')
+  if (!REMOTE_TAR_ID_RE.test(id)) throw new Error('国内站远程归档标识不合法')
+  const uniquePath = `${remoteTar.slice(0, -'.tar'.length)}-${id}.tar`
+  assertSafeUnixPath(uniquePath, '国内站远程归档路径', { mustEndWithTar: true })
+  return uniquePath
 }
 
 function withProductionDeployLock(siteDir, commands) {
@@ -386,15 +397,50 @@ function copyRelFile(fromDir, toDir, rel) {
   fs.copyFileSync(src, dest)
 }
 
-async function uploadFull({ distDir, safe, run, timeout }) {
-  const archivePath = await packDistArchive(distDir, { run })
+function remoteTarCleanupCommand(remoteTar) {
+  assertSafeUnixPath(remoteTar, '国内站远程归档路径', { mustEndWithTar: true })
+  return `rm -f ${remoteTar}`
+}
+
+async function transferAndApply({
+  archivePath,
+  safe,
+  run,
+  timeout,
+  buildApplyScript,
+}) {
+  const remoteTar = uniqueRemoteTarPath(safe.remoteTar, randomBytes(16).toString('hex'))
   const opts = sshOptsOf(safe)
+  const target = sshTarget(safe)
   try {
-    await run('scp', [...opts, archivePath, `${sshTarget(safe)}:${safe.remoteTar}`], { timeout })
-    await run('ssh', [...opts, sshTarget(safe), productionSwapCommands(safe)], { timeout })
+    try {
+      await run('scp', [...opts, archivePath, `${target}:${remoteTar}`], { timeout })
+      await run('ssh', [...opts, target, buildApplyScript(remoteTar)], { timeout })
+    } finally {
+      try {
+        await run('ssh', [...opts, target, remoteTarCleanupCommand(remoteTar)], { timeout })
+      } catch {
+        // Best-effort: only this task's unique tar, never another job's archive.
+      }
+    }
   } finally {
     if (fs.existsSync(archivePath)) fs.rmSync(archivePath, { force: true })
   }
+  return remoteTar
+}
+
+async function uploadFull({ distDir, safe, run, timeout }) {
+  const archivePath = await packDistArchive(distDir, { run })
+  await transferAndApply({
+    archivePath,
+    safe,
+    run,
+    timeout,
+    buildApplyScript: (remoteTar) => productionSwapCommands({
+      siteDir: safe.siteDir,
+      remoteTar,
+    }),
+  })
 }
 
 async function uploadDelta({ distDir, manifest, diff, safe, run, timeout, manifestDigest }) {
@@ -409,18 +455,18 @@ async function uploadDelta({ distDir, manifest, diff, safe, run, timeout, manife
     writeDistManifest(stage, manifest)
     const deltaBytes = measureDistPayloadBytes(stage)
     const archivePath = await packDistArchive(stage, { run })
-    const opts = sshOptsOf(safe)
-    try {
-      await run('scp', [...opts, archivePath, `${sshTarget(safe)}:${safe.remoteTar}`], { timeout })
-      await run('ssh', [...opts, sshTarget(safe), productionDeltaSwapCommands({
+    await transferAndApply({
+      archivePath,
+      safe,
+      run,
+      timeout,
+      buildApplyScript: (remoteTar) => productionDeltaSwapCommands({
         siteDir: safe.siteDir,
-        remoteTar: safe.remoteTar,
+        remoteTar,
         deletions: diff.deleted,
         manifestDigest,
-      })], { timeout })
-    } finally {
-      if (fs.existsSync(archivePath)) fs.rmSync(archivePath, { force: true })
-    }
+      }),
+    })
     return { deltaBytes }
   } finally {
     fs.rmSync(stage, { recursive: true, force: true })

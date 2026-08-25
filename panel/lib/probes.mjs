@@ -200,7 +200,7 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
     async push({ git }) {
       await git.push()
     },
-    async deploy({ snapshotDir, sha }) {
+    async deploy({ snapshotDir, sha, expectedBaselineSha }) {
       if (process.env.NODE_TEST_CONTEXT && !runOverride && !guonei) {
         throw new Error('测试中拒绝真实国内上传')
       }
@@ -218,6 +218,7 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
         config,
         run: runOverride || run,
         sha,
+        expectedBaselineSha,
       })
       return { ok: true, origin: productionOrigin }
     },
