@@ -2,6 +2,7 @@ import { escapeHtml } from './escape.mjs'
 import { jobKindId, selectRestorableJob } from './job-restore.mjs'
 
 const VERIFYING_STATES = ['Pushed', 'Deploying', 'VerifyingProduction']
+export const CONFIRM_PROGRESS_STATES = ['Committing', 'Pushed', 'Deploying', 'VerifyingProduction']
 
 const WECHAT_STATUS_COPY = {
   NotGenerated: '公众号预览尚未生成。',
@@ -25,9 +26,16 @@ export function publicationContinueVerify(jobId) {
   return { method: 'POST', path: `/api/publish/jobs/${jobId}/continue-verify`, body: '{}' }
 }
 
-export function pollTickRequest(job) {
-  if (!job?.jobId || !shouldAutoContinueVerify(job)) return null
+export function pollTickRequest(job, { confirmInFlight = false } = {}) {
+  if (!job?.jobId) return null
+  if (confirmInFlight) return publicationJobQuery(job.jobId)
+  if (!shouldAutoContinueVerify(job)) return null
   return publicationContinueVerify(job.jobId)
+}
+
+export function confirmProgressNotice(job) {
+  if (CONFIRM_PROGRESS_STATES.includes(job?.state)) return `发布进行中：${job.state}`
+  return '正在提交、推送并上传国内站…'
 }
 
 export function publicationPreviewLabel(job) {
@@ -87,20 +95,34 @@ export function createPublication({
     return api(request.path, { method: request.method, body: request.body })
   }
 
-  function startVerifyPoll() {
+  let pollInFlight = false
+
+  function startJobPoll(intervalMs = 2000) {
     stopPoll()
     state.pollTimer = setInterval(async () => {
-      const request = pollTickRequest(state.job)
-      if (!request) return
+      const request = pollTickRequest(state.job, { confirmInFlight: state.confirmInFlight })
+      if (!request || pollInFlight) return
+      pollInFlight = true
       try {
-        const job = await api(request.path, { method: request.method, body: request.body })
+        const job = request.method === 'GET'
+          ? await api(request.path)
+          : await api(request.path, { method: request.method, body: request.body })
         applyJob(job)
+        if (state.confirmInFlight && CONFIRM_PROGRESS_STATES.includes(job.state)) {
+          setNotice(confirmProgressNotice(job))
+        }
         if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
         if (job.state === 'Failed' || job.state === 'Superseded') setNotice(job.failureReason || job.state, 'err')
       } catch (error) {
         setNotice(error.message, 'err')
+      } finally {
+        pollInFlight = false
       }
-    }, 2000)
+    }, intervalMs)
+  }
+
+  function startVerifyPoll() {
+    startJobPoll(2000)
   }
 
   function renderJob() {
@@ -139,7 +161,8 @@ export function createPublication({
     online.href = job.verifiedUrl || '#'
     document.getElementById('btn-retry-verify').classList.toggle('hidden', !(job.retryActions || []).includes('retry-verify'))
     document.getElementById('btn-retry-push').classList.toggle('hidden', !(job.retryActions || []).includes('retry-push'))
-    publishBtn.disabled = job.state !== 'PreviewReady' && !(job.retryActions || []).includes('retry-push')
+    publishBtn.disabled = Boolean(state.confirmInFlight)
+      || (job.state !== 'PreviewReady' && !(job.retryActions || []).includes('retry-push'))
     document.getElementById('job-summary').textContent = job.summary
       ? [
         `文件：${(job.summary.files || []).join('、')}`,
@@ -153,6 +176,7 @@ export function createPublication({
   function applyJob(job) {
     state.job = job
     renderJob()
+    if (state.confirmInFlight) return
     if (shouldAutoContinueVerify(job)) startVerifyPoll()
     else stopPoll()
   }
@@ -210,22 +234,32 @@ export function createPublication({
       setNotice('请先准备发布并查看发布前预览。', 'err')
       return
     }
+    if (state.confirmInFlight) return
     if (!confirm('确认发布这一份快照？会推送到 Git，并把生产构建上传到 cuowo.cn。只有国内站对上该提交后才算发布完成。')) return
+    const { jobId, confirmationToken } = state.job
+    state.confirmInFlight = true
     try {
-      setNotice('正在提交、推送并上传国内站…')
+      setNotice(confirmProgressNotice(state.job))
+      startJobPoll(1000)
+      void queryJob(jobId).then((current) => {
+        if (!state.confirmInFlight) return
+        applyJob(current)
+        if (CONFIRM_PROGRESS_STATES.includes(current.state)) setNotice(confirmProgressNotice(current))
+      }).catch(() => {})
       const job = await api('/api/publish/confirm', {
         method: 'POST',
-        body: JSON.stringify({
-          jobId: state.job.jobId,
-          confirmationToken: state.job.confirmationToken,
-        }),
+        body: JSON.stringify({ jobId, confirmationToken }),
       })
+      state.confirmInFlight = false
       applyJob(job)
       if (job.state === 'Published') setNotice(`发布完成。${job.verifiedUrl || ''}`, 'ok')
       else if (job.commitSha) setNotice(`已推送 ${job.commitSha}，正在上传并校验国内站…`, 'ok')
       else setNotice(job.failureReason || job.state, 'err')
     } catch (error) {
       setNotice(error.message, 'err')
+    } finally {
+      state.confirmInFlight = false
+      if (!shouldAutoContinueVerify(state.job)) stopPoll()
     }
   }
 

@@ -22,6 +22,26 @@ const DRAFT_FIELDS = [
   'date', 'imageFit', 'imageAlt', 'theme', 'issueDate', 'caption', 'description',
 ]
 
+export async function runAfterDraftWrite({ refreshBootstrap, prepare }) {
+  const bootstrapRefresh = Promise.resolve()
+    .then(refreshBootstrap)
+    .then(() => null)
+    .catch((error) => error?.message || String(error))
+  const prepared = await prepare()
+  return {
+    prepared,
+    bootstrapError: await bootstrapRefresh,
+  }
+}
+
+export function noticeAfterDraftPrepare({ prepared, bootstrapError }) {
+  if (!prepared || !bootstrapError) return null
+  return {
+    text: `已写入文章，但刷新条目列表失败：${bootstrapError}`,
+    tone: 'err',
+  }
+}
+
 export function decideWorkspaceWrite({
   contentType,
   mode,
@@ -399,7 +419,7 @@ export function createEntryEditor({
     })
   }
 
-  async function acceptSavedDraft(payload) {
+  function acceptSavedDraft(payload) {
     state.draftId = payload.draftId
     publication.clearJob()
     clearFormDraft()
@@ -413,13 +433,12 @@ export function createEntryEditor({
     state.entryIndex = null
     resetForm()
     render()
-    try {
-      const bootstrap = await api('/api/bootstrap')
-      state.bootstrap = bootstrap
-      render()
-    } catch (error) {
-      setNotice(`已写入文章，但刷新条目列表失败：${error.message}`, 'err')
-    }
+  }
+
+  async function refreshBootstrapAfterSave() {
+    const bootstrap = await api('/api/bootstrap')
+    state.bootstrap = bootstrap
+    render()
   }
 
   const writeAndPreparePreview = singleFlight(async (createDraft) => {
@@ -430,8 +449,13 @@ export function createEntryEditor({
       setNotice('正在保存到文章并生成发布前预览…')
       const payload = await createDraft()
       if (!payload) return
-      await acceptSavedDraft(payload)
-      await publication.prepare()
+      acceptSavedDraft(payload)
+      const { prepared, bootstrapError } = await runAfterDraftWrite({
+        refreshBootstrap: refreshBootstrapAfterSave,
+        prepare: () => publication.prepare(),
+      })
+      const followUp = noticeAfterDraftPrepare({ prepared, bootstrapError })
+      if (followUp) setNotice(followUp.text, followUp.tone)
     } catch (error) {
       setNotice(error.message, 'err')
       if (state.draftId) publication.setPrepareRetryVisible(true)

@@ -36,8 +36,9 @@
 ## Behavioral warnings
 
 - `POST /api/draft` 当前调用 `applyDraft()`，会立即原子写工作区，并非纯内存草稿。
-- `confirmPublication()` 仍一次点完：先执行发布，再上线核对。
-- `getPublication()` 只读，不上传、不对国内站 SHA。核对未结束由 `continueVerify()` 推进；面板自动发 `POST .../continue-verify`。
+- `preparePublication()` 在线上图片 probe 完成前就返回 `PreviewReady`；公众号复制门保持锁定。检查在后台继续，经 `publish-job-record` 的 in-memory 互斥幂等继续/重试，不把 Promise 写入 job JSON。
+- `confirmPublication()` 仍一次点完：先执行发布，再上线核对。长请求期间 UI 用 `getPublication()` 展示真实阶段。
+- `getPublication()` 只读，不上传、不对国内站 SHA。核对未结束由 `continueVerify()` 推进；面板在确认请求结束后才自动发 `POST .../continue-verify`。
 - 准备 / 执行 / 上线核对分别在 `prepare-publication.mjs`、`execute-publication.mjs`、`production-check.mjs`。Git、构建、SSH 仍走现有 `probes`，不新套一层。
 - `weekly.mjs` 仍较宽；改发布阶段先进入对应深模块。
 - job 级 release preview 必须保留双构建：先生成根路径 SSR，再生成 `/release-preview/<jobId>/` base 的客户端资源，并把根 SSR app 区合入后者。它规避 Windows + VitePress 非根 base 可能生成 `NotFound` SSR 壳的问题；不要在缺少目标页、锚点和资源前缀回归测试时简化为单次构建。合并时跳过 `public/` 拷进 dist 的独立 HTML（没有 VitePress app 壳），不要把它们当成 SSR 页。
@@ -50,4 +51,4 @@
 
 无。
 
-最后更新：2026-08-24
+最后更新：2026-08-25
