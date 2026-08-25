@@ -10,7 +10,7 @@
 | `YYYY-MM-DD.md` | 按期历程周记（`type: journey`，期号独立，封面进 `/images/journey/`） |
 | `基础设施篇.md` | 独立篇章：底座、协作与发布边界 |
 | `工具篇.md` | 独立篇章：日常工具与取舍 |
-| `cli篇.md` | 工具篇下拉：公开地址 `/html/cli-hub`（`publicHref`）；旧路由跳到完整页 |
+| `cli篇.md` | 工具篇下拉：公开地址 `/html/cli-hub`（`publicHref`）；Pi / Grok / Herdr / Orca；旧路由跳到完整页 |
 | `AI开支记录与优化.md` | 独立篇章：实际在付的服务、状态与优化判断 |
 | `README.md` | 本说明（不进公开站点） |
 

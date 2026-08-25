@@ -129,8 +129,21 @@
       font-size: 0.78rem;
       text-decoration: none;
     }
+    .knowledge-route-grid .entry-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem 1.1rem;
+      margin-top: 0.7rem;
+    }
+    .knowledge-route-grid .entry-links a { margin-top: 0; }
 
     .subject-directory { margin: 0 0 2.6rem; }
+    .command-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1.4rem;
+      margin: 0;
+    }
     .subject-row {
       display: grid;
       grid-template-columns: minmax(9rem, 0.8fr) minmax(0, 1fr) auto auto;
@@ -143,6 +156,23 @@
       transition: background-color 0.15s ease;
     }
     .subject-directory .subject-row + .subject-row { margin-top: 0.65rem; }
+    .command-grid .subject-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem 0.7rem;
+      margin: 0;
+      padding: 0.34rem 0;
+      border: 0;
+      border-bottom: 1px solid var(--section-line);
+    }
+    .command-grid .subject-row + .subject-row { margin-top: 0; }
+    .command-grid .subject-row > div {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.4rem 0.65rem;
+    }
+    .command-grid .subject-row p { display: none; }
     .subject-row:hover { background-color: var(--vp-c-bg-soft); }
     .subject-row > div { display: flex; flex-direction: column; }
     .subject-row__ticker {
@@ -201,7 +231,8 @@
 
     @media (max-width: 800px) {
       .knowledge-route-grid,
-      .subject-masthead { grid-template-columns: 1fr; }
+      .subject-masthead,
+      .command-grid { grid-template-columns: 1fr; }
       .subject-row { grid-template-columns: 1fr auto; }
       .subject-row p,
       .subject-row__status { grid-column: 1; }
@@ -212,15 +243,15 @@
   <div class="wrap">
     <section class="page is-on" id="page-hub">
       <nav class="research-breadcrumb">
-        <a href="#hub">我的AI历程</a><span>/</span>
-        <a href="#hub">工具篇</a><span>/</span>
+        <a href="/AI与生活/我的AI历程/">我的AI历程</a><span>/</span>
+        <a href="/AI与生活/我的AI历程/工具篇">工具篇</a><span>/</span>
         <strong>cli篇</strong>
       </nav>
 
       <section class="industry-masthead">
         <p>TOOL 01 / CLI</p>
         <h1>cli篇</h1>
-        <p>终端里真正在用的两套助手。先判断你在用 Pi 还是 Grok Build，再进对应的命令、按键和技能。</p>
+        <p>终端里真正在用的助手，以及它们住的地方。Pi / Grok Build 是聊天机器人；Herdr / Orca 管它们的终端和 worktree。</p>
       </section>
 
       <section class="research-section">
@@ -234,53 +265,42 @@
           <article>
             <span>PI</span>
             <h3>轻量终端助手</h3>
-            <p>斜杠弹出菜单，键盘立刻做事，@ 找文件，! 跑命令。</p>
+            <p>斜杠弹出菜单，键盘立刻做事，@ 找文件，! 跑命令。技能打 /skill:名字。</p>
             <a href="#pi">进入 Pi 路径 →</a>
           </article>
           <article>
             <span>GROK BUILD</span>
             <h3>全屏编码助手</h3>
-            <p>斜杠命令、Ctrl+P 命令面板，再加上自带技能说明书。</p>
-            <a href="#grok">进入 Grok 路径 →</a>
+            <p>斜杠、命令面板、三种干活模式；技能打 /名字 按说明书做。</p>
+            <div class="entry-links">
+              <a href="#grok">快捷命令 →</a>
+              <a href="#skills">技能说明书 →</a>
+            </div>
           </article>
         </div>
       </section>
 
-      <section class="subject-directory">
+      <section class="research-section">
         <header class="research-section-head">
           <div>
-            <p>GUIDES / 图解目录</p>
-            <h2>三份说明</h2>
+            <p>RUNTIME / 住哪儿</p>
+            <h2>助手住在哪儿</h2>
           </div>
-          <span>3</span>
         </header>
-        <a class="subject-row" href="#pi">
-          <div>
-            <span class="subject-row__ticker">PI</span>
-            <strong>Pi 快捷命令</strong>
-          </div>
-          <p>斜杠、快捷键、@ / ! / !!，以及它还在干活时怎么插话。</p>
-          <span class="subject-row__status">图解</span>
-          <span class="subject-row__arrow">→</span>
-        </a>
-        <a class="subject-row" href="#grok">
-          <div>
-            <span class="subject-row__ticker">GROK</span>
-            <strong>Grok Build 快捷命令</strong>
-          </div>
-          <p>斜杠、命令面板、三种干活模式，以及排队说话。</p>
-          <span class="subject-row__status">图解</span>
-          <span class="subject-row__arrow">→</span>
-        </a>
-        <a class="subject-row" href="#skills">
-          <div>
-            <span class="subject-row__ticker">SKILL</span>
-            <strong>Grok Build 技能</strong>
-          </div>
-          <p>说明书文件夹。打 /名字 就按那本做；有的碰到文件自己上场。</p>
-          <span class="subject-row__status">图解</span>
-          <span class="subject-row__arrow">→</span>
-        </a>
+        <div class="knowledge-route-grid">
+          <article>
+            <span>HERDR</span>
+            <h3>后台终端运行时</h3>
+            <p>关盖、断网、重启，会话还在。Ctrl+B 前缀，鼠标也能点。</p>
+            <a href="#herdr">进入 Herdr 路径 →</a>
+          </article>
+          <article>
+            <span>ORCA</span>
+            <h3>多助手编排桌面</h3>
+            <p>每个助手一个 worktree。桌面里看，终端用 orca 去推。</p>
+            <a href="#orca">进入 Orca 路径 →</a>
+          </article>
+        </div>
       </section>
     </section>
 
@@ -298,14 +318,14 @@
         <dl>
           <div><dt>入口</dt><dd>输入框打一个 /</dd></div>
           <div><dt>忘了</dt><dd>/hotkeys</dd></div>
-          <div><dt>范围</dt><dd>斜杠 · 快捷键 · @ ! !!</dd></div>
+          <div><dt>范围</dt><dd>斜杠 · 快捷键 · @ ! !! · 技能</dd></div>
           <div><dt>注意</dt><dd>Win 终端里 Alt+Enter 默认全屏</dd></div>
         </dl>
       </section>
 
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 每天都用</p><h2>每天都用</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/model</span><strong>换模型</strong></div><p>每天都用</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/thinking</span><strong>思考深浅</strong></div><p>每天都用</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/settings</span><strong>打开设置</strong></div><p>每天都用</p></div>
@@ -316,7 +336,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 这一局</p><h2>管这一局聊天</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/name</span><strong>给这局起名</strong></div><p>这一局</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/session</span><strong>看这局信息</strong></div><p>这一局</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/tree</span><strong>跳回某句话</strong></div><p>这一局</p></div>
@@ -327,7 +347,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 带走</p><h2>带走 / 带回来</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/copy</span><strong>复制它的回答</strong></div><p>带走</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/export</span><strong>导出这一局</strong></div><p>带走</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/import</span><strong>导入旧文件</strong></div><p>带回来</p></div>
@@ -336,7 +356,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 杂项</p><h2>账号和杂项</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/login</span><strong>登录账号</strong></div><p>账号</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/logout</span><strong>退出账号</strong></div><p>账号</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/trust</span><strong>信任这个项目</strong></div><p>项目</p></div>
@@ -349,7 +369,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>KEYS / 快捷键</p><h2>常用快捷键</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">Enter</span><strong>发送</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">Shift+Enter</span><strong>换行</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">Tab</span><strong>补全路径</strong></div></div>
@@ -383,6 +403,19 @@
           <article><span>ALT+↑</span><h3>把话拿回来</h3><p>从队列里取回</p></article>
         </div>
       </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SKILL / 技能</p><h2>说明书，不是自带包</h2></div></header>
+        <div class="research-note"><strong>和 Grok</strong><span>Grok 那套 /design、/review 不会自动过来。Pi 只认你装的 SKILL.md，打 /skill:名字。</span></div>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">/skill:名字</span><strong>按那本说明书做</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">/reload</span><strong>重载刚装的技能</strong></div></div>
+        </div>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>1</span><h3>~/.pi/agent/skills</h3><p>家里自己装的</p></article>
+          <article><span>2</span><h3>.pi/skills</h3><p>这个项目里的</p></article>
+          <article><span>3</span><h3>.agents/skills</h3><p>和别的助手共用</p></article>
+        </div>
+      </section>
     </section>
 
     <section class="page" id="page-grok">
@@ -406,7 +439,7 @@
 
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 每天都用</p><h2>每天都用</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/help</span><strong>看帮助</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/model</span><strong>换模型</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/effort</span><strong>思考力度</strong></div></div>
@@ -417,7 +450,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 这一局</p><h2>管这一局聊天</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/home</span><strong>回欢迎页</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/rename</span><strong>给这局起名</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/sessions</span><strong>切换会话</strong></div></div>
@@ -440,7 +473,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 带走</p><h2>带走 / 找回来</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/copy</span><strong>复制它的回答</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/export</span><strong>导出这一局</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/share</span><strong>生成分享链接</strong></div></div>
@@ -450,7 +483,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 加活</p><h2>一边干活一边加活</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/btw</span><strong>旁白一句，不打断</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/queue</span><strong>看排队的话</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/tasks</span><strong>后台任务</strong></div></div>
@@ -463,7 +496,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 扩展</p><h2>记忆和扩展</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/remember</span><strong>立刻记住一句</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/memory</span><strong>管理记忆</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/flush</span><strong>现在就写入记忆</strong></div></div>
@@ -476,7 +509,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>SLASH / 杂项</p><h2>账号和杂项</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/login</span><strong>登录</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/logout</span><strong>退出账号</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/settings</span><strong>打开设置</strong></div></div>
@@ -493,7 +526,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>KEYS / 快捷键</p><h2>常用快捷键</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">Enter</span><strong>发送</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">Shift+Enter</span><strong>换行</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">Tab</span><strong>输入框 ↔ 对话</strong></div></div>
@@ -555,7 +588,7 @@
 
       <section class="research-section">
         <header class="research-section-head"><div><p>INVOKE / 打斜杠</p><h2>写方案再动手</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/design</span><strong>写出设计文档</strong></div><p>另出一份文档，再交给 /execute-plan</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/execute-plan</span><strong>按计划施工</strong></div><p>读设计文档里的 PR Plan</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/implement</span><strong>写到审过为止</strong></div><p>只能打斜杠，不会自己上场</p></div>
@@ -563,7 +596,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>INVOKE / 审</p><h2>审，然后盯着</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/review</span><strong>审本地 / 分支 / PR</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/code-review</span><strong>狠审能不能维护</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/pr-babysit</span><strong>盯 CI、评论、冲突</strong></div></div>
@@ -571,7 +604,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>INVOKE / 接着干</p><h2>从别的工具接着干</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/resume-cursor</span><strong>接着 Cursor 那局</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/resume-claude</span><strong>接着 Claude 那局</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/resume-codex</span><strong>接着 Codex 那局</strong></div></div>
@@ -579,7 +612,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>INVOKE / 扩展</p><h2>自己做扩展</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">/create-skill</span><strong>做一本新技能</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/create-workflow</span><strong>写一套流程</strong></div></div>
           <div class="subject-row"><div><span class="subject-row__ticker">/build-with-ai</span><strong>默认接到 SpaceXAI</strong></div></div>
@@ -588,7 +621,7 @@
       </section>
       <section class="research-section">
         <header class="research-section-head"><div><p>AUTO / 不用打斜杠</p><h2>碰到文件，它自己翻</h2></div></header>
-        <div class="subject-directory">
+        <div class="subject-directory command-grid">
           <div class="subject-row"><div><span class="subject-row__ticker">pdf</span><strong>读 / 做 PDF</strong></div><p>不进斜杠菜单</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">docx</span><strong>Word 文档</strong></div><p>不进斜杠菜单</p></div>
           <div class="subject-row"><div><span class="subject-row__ticker">pptx</span><strong>幻灯片</strong></div><p>不进斜杠菜单</p></div>
@@ -605,6 +638,159 @@
         </div>
       </section>
     </section>
+
+    <section class="page" id="page-herdr">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <strong>Herdr</strong>
+      </nav>
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 04 / Herdr</p>
+          <h1>Herdr</h1>
+          <span>后台终端运行时。助手住在窗格里，你关掉窗口它们还在跑。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>项目目录打 herdr</dd></div>
+          <div><dt>忘了</dt><dd>Ctrl+B ?</dd></div>
+          <div><dt>范围</dt><dd>工作区 · 窗格 · 前缀键 · CLI</dd></div>
+          <div><dt>注意</dt><dd>默认前缀是 Ctrl+B</dd></div>
+        </dl>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 每天都用</p><h2>每天都用</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr</span><strong>接上默认会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr status</span><strong>看服务还在不在</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr server stop</span><strong>停掉后台，窗格一起停</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr --skill</span><strong>打印给助手的说明书</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 会话</p><h2>会话和远程</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr session list</span><strong>有哪些会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr session attach</span><strong>接到另一个会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr --session 名字</span><strong>用或开一个命名会话</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr --remote 主机</span><strong>SSH 接到远端 Herdr</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 窗格</p><h2>助手从里面推</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr pane list</span><strong>有哪些窗格</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr pane split</span><strong>切开一格，不抢焦点</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr pane run</span><strong>在窗格里跑命令</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr pane read</span><strong>读窗格输出</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr agent wait</span><strong>等助手变成某状态</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">herdr workspace list</span><strong>有哪些工作区</strong></div></div>
+        </div>
+        <div class="research-note"><strong>环境</strong><span>只有 HERDR_ENV=1 时，助手才该去推 Herdr。不在窗格里就别装控制。</span></div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>MODEL / 三层</p><h2>工作区、标签、窗格</h2></div></header>
+        <div class="knowledge-route-grid knowledge-route-grid--three" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <article><span>1</span><h3>workspace</h3><p>一个项目一个盒子</p></article>
+          <article><span>2</span><h3>tab</h3><p>盒子里的一种布局</p></article>
+          <article><span>3</span><h3>pane</h3><p>一格真终端</p></article>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>STATE / 状态</p><h2>侧栏四个字</h2></div></header>
+        <div class="knowledge-route-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <article><span>WORKING</span><h3>正在干</h3><p>助手在跑</p></article>
+          <article><span>BLOCKED</span><h3>卡住了</h3><p>等你回答或批准</p></article>
+          <article><span>DONE</span><h3>做完没看</h3><p>还没被你看过</p></article>
+          <article><span>IDLE</span><h3>闲着</h3><p>做完了，也看过了</p></article>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>KEYS / 前缀</p><h2>先记住这几下</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B c</span><strong>新标签</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B v</span><strong>向右切开</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B -</span><strong>向下切开</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B h/j/k/l</span><strong>换窗格</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B n / p</span><strong>下 / 上一个标签</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B w</span><strong>换工作区</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B q</span><strong>脱离，后台继续跑</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B ?</span><strong>看全部按键</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">Ctrl+B [</span><strong>复制模式</strong></div></div>
+        </div>
+        <div class="research-note"><strong>鼠标</strong><span>不会前缀也行。点窗格、拖边、右键切开。选中文字就复制，不必 Ctrl+C。</span></div>
+      </section>
+    </section>
+
+    <section class="page" id="page-orca">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <strong>Orca</strong>
+      </nav>
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 05 / Orca</p>
+          <h1>Orca</h1>
+          <span>多助手编排桌面。每个助手一个 worktree，终端用 orca 去推。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>orca open</dd></div>
+          <div><dt>忘了</dt><dd>orca --help</dd></div>
+          <div><dt>范围</dt><dd>worktree · 终端 · 浏览器</dd></div>
+          <div><dt>注意</dt><dd>多数命令要桌面先开着</dd></div>
+        </dl>
+      </section>
+
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 每天都用</p><h2>每天都用</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">orca open</span><strong>打开桌面，等它就绪</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca status</span><strong>运行时还在不在</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree ps</span><strong>各棵树上谁在干活</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree current</span><strong>我现在在哪棵树</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / worktree</p><h2>一棵树一件活</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree create</span><strong>新开一棵，可带助手</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree show</span><strong>看一棵树</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree set</span><strong>改备注、状态</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree list</span><strong>列出树上的活</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca worktree rm</span><strong>从 Orca 和 git 里拿掉</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 终端</p><h2>对着一格说话</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal list</span><strong>这棵树有哪些终端</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal read</span><strong>读输出</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal send</span><strong>送一行字进去</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal wait</span><strong>等到闲下来或退出</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal create</span><strong>在这棵树里新开一格</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca terminal split</span><strong>切开当前终端</strong></div></div>
+        </div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>CLI / 浏览器</p><h2>内置浏览器</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">orca goto</span><strong>打开一个网址</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca snapshot</span><strong>抓页面，拿到 @e3</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca click</span><strong>点那个元素</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca fill</span><strong>填一格</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca screenshot</span><strong>截一张图</strong></div></div>
+        </div>
+        <div class="research-note"><strong>循环</strong><span>先 snapshot，再 click / fill，改完页面再 snapshot。旧的 @e 会过期。</span></div>
+      </section>
+      <section class="research-section">
+        <header class="research-section-head"><div><p>SKILL / 说明书</p><h2>别靠记忆</h2></div></header>
+        <div class="subject-directory command-grid">
+          <div class="subject-row"><div><span class="subject-row__ticker">orca skills get orca-cli</span><strong>打印和这版匹配的手册</strong></div></div>
+          <div class="subject-row"><div><span class="subject-row__ticker">orca skills list</span><strong>这版自带哪些技能</strong></div></div>
+        </div>
+        <div class="research-note"><strong>Linux</strong><span>桌面外的裸 orca 有时是读屏软件。那种环境用 orca-ide，不要乱撞。</span></div>
+      </section>
+    </section>
   </div>
 
   <script>
@@ -613,6 +799,8 @@
       pi: "page-pi",
       grok: "page-grok",
       skills: "page-skills",
+      herdr: "page-herdr",
+      orca: "page-orca",
     };
 
     function show(name) {
