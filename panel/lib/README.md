@@ -23,7 +23,7 @@
 | `production-check.mjs` | 上线核对：上传国内站并对 SHA |
 | `probes.mjs` | Git、job-scoped preview base、根 SSR 合并、纯根生产候选持久化、目标页/锚点校验、push、部署与生产 HTTP 等默认外部 adapter |
 | `git.mjs` | Git 命令封装 |
-| `guonei.mjs` | 国内站构建元数据、生产候选契约、打包、SSH 上传与目录原子替换 |
+| `guonei.mjs` | 国内站构建元数据、生产候选契约、SHA-256 清单增量上传、全量回退与目录原子替换 |
 | `wechat.mjs` | 公众号预览 HTML 与剪贴板 payload 生成 |
 | `preview-nav.mjs` | 发布预览文章位置与 hash 导航 |
 | `vitepress-supervisor.mjs` | 本地 VitePress 预览进程保活 |
@@ -43,6 +43,7 @@
 - `weekly.mjs` 仍较宽；改发布阶段先进入对应深模块。
 - job 级 release preview 必须保留双构建：先生成根路径 SSR，再生成 `/release-preview/<jobId>/` base 的客户端资源，并把根 SSR app 区合入后者。它规避 Windows + VitePress 非根 base 可能生成 `NotFound` SSR 壳的问题；不要在缺少目标页、锚点和资源前缀回归测试时简化为单次构建。合并时跳过 `public/` 拷进 dist 的独立 HTML（没有 VitePress app 壳），不要把它们当成 SSR 页。
 - 非根预览的第一次根构建必须在合并前原样持久化为快照内 `.panel-production-candidate`。该目录是未 merge 的纯根产物，不能带 `/release-preview/` 前缀，也不能写入预览 `build.json`。确认发布时 `prepareProductionDist` 先检查该候选：有效则只复制到 `.panel-production-dist` 并注入生产 `build.json`，跳过第三次 `docs:build`；缺失、损坏、带预览前缀或带预览 meta 时 fail-closed 回退现有根构建。生产准备后必须恢复 live `docs/.vitepress/dist` 的 release-preview 产物，绝不能把 prefixed/merged 预览上传生产。
+- 国内站上传先写快照内 `.panel-dist-manifest.json`（SHA-256 文件清单）。远端清单可读且与 `build.json` / 预期基线 SHA 一致时，只打包 changed/new。full 与 delta 远端切换共用 `${siteDir}.deploy-lock`（`mkdir` 原子占有，`trap EXIT rmdir` 释放，不交互）。delta 在持锁后、`cp -a` 前用 `sha256sum` 核对刚才读到的清单原文摘要；不一致则本次 delta 失败并回退全量。锁被占用时 full/delta 都安全失败，不并发覆盖。缺清单、解析失败、路径不安全、基线不匹配或增量准备/SSH 失败时 fail-closed 回退现有全量 tar。清单路径与摘要拒绝注入；打包排除 `release-preview/` 与 `.panel-*` 候选/预览元数据。不要求 rsync。
 
 ## Tests
 

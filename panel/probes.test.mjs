@@ -532,9 +532,9 @@ test('default deploy probe builds production dist then scp/ssh', async () => {
     const result = await probes.deploy({ snapshotDir, sha: 'deadbeef' })
     assert.equal(result.ok, true)
     assert.equal(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), 'preview')
-    assert.equal(calls[0].command, 'tar')
-    assert.equal(calls[1].command, 'scp')
-    assert.equal(calls[2].command, 'ssh')
+    assert.ok(calls.some((item) => item.command === 'tar'))
+    assert.ok(calls.some((item) => item.command === 'scp'))
+    assert.ok(calls.some((item) => item.command === 'ssh'))
     const meta = JSON.parse(fs.readFileSync(
       path.join(snapshotDir, '.panel-production-dist', 'build.json'),
       'utf8',
@@ -589,14 +589,15 @@ test('default deploy probe reuses a valid production candidate and never uploads
     assert.equal(result.ok, true)
     assert.equal(buildCalls, 0)
     assert.equal(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8').includes('preview'), true)
-    assert.equal(calls[0].command, 'tar')
-    assert.equal(calls[0].cwd, path.join(snapshotDir, '.panel-production-dist'))
+    const tar = calls.find((item) => item.command === 'tar')
+    assert.ok(tar)
+    assert.equal(tar.cwd, path.join(snapshotDir, '.panel-production-dist'))
     assert.match(
-      fs.readFileSync(path.join(calls[0].cwd, 'index.html'), 'utf8'),
+      fs.readFileSync(path.join(tar.cwd, 'index.html'), 'utf8'),
       /root-candidate/,
     )
     assert.doesNotMatch(
-      fs.readFileSync(path.join(calls[0].cwd, 'index.html'), 'utf8'),
+      fs.readFileSync(path.join(tar.cwd, 'index.html'), 'utf8'),
       /\/release-preview\//,
     )
     const meta = JSON.parse(fs.readFileSync(
