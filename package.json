@@ -5,13 +5,15 @@
   "description": "误君在脑海里放烟花 — 投资 / AI与生活 个人博客",
   "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
+    "docs:dev": "vitepress dev docs --host 127.0.0.1",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
+    "preview:ready": "node scripts/preview-ready.mjs",
+    "check:html": "node scripts/check-standalone-html.mjs",
     "panel": "node panel/start.mjs",
     "panel:shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-panel-shortcut.ps1",
     "test:panel": "node --test panel/*.test.mjs",
-    "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs"
+    "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs scripts/check-standalone-html.test.mjs"
   },
   "dependencies": {
     "markdown-it": "^15.0.0",

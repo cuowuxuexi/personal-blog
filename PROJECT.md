@@ -77,10 +77,12 @@ Agent 导航只指向以上能力，不拥有它们的产品事实。
 ```bash
 pnpm test:content
 pnpm test:panel
+pnpm check:html
+pnpm preview:ready
 pnpm docs:build
 ```
 
-内容合同与 file ↔ posts ↔ sidebar 对等用 `pnpm test:content`。面板用 `pnpm test:panel`。VitePress 标题/公式归一化用 `node --test docs/.vitepress/normalize-math.test.mjs docs/.vitepress/normalize-weekly-headings.test.mjs`。视觉修改还需检查 1440px、768px、390px。统一 `pnpm verify` 和浏览器 smoke 仍属后续阶段，落地前不得声称已存在。
+内容合同与 file ↔ posts ↔ sidebar 对等用 `pnpm test:content`（含独立 HTML 链接合同）。独立 HTML 的 href / 面包屑用 `pnpm check:html`。预览探活用 `pnpm preview:ready`（同时试 `127.0.0.1` / `localhost` / `::1`）。面板用 `pnpm test:panel`。VitePress 标题/公式归一化用 `node --test docs/.vitepress/normalize-math.test.mjs docs/.vitepress/normalize-weekly-headings.test.mjs`。视觉修改还需检查 1440px、768px、390px。统一 `pnpm verify` 和浏览器 smoke 仍属后续阶段，落地前不得声称已存在。
 
 ## 不变量
 
@@ -90,4 +92,4 @@ pnpm docs:build
 - 私有绝对路径、凭据、工作底稿和不可再分发材料不进入公开文档。
 - 当前工作区存在未提交功能修改时，结构迁移先等待该功能基线稳定，不覆盖或整理无关改动。
 
-最后更新：2026-08-24
+最后更新：2026-08-25

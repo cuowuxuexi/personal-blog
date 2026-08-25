@@ -15,9 +15,10 @@ description: >-
 ## Startup
 
 1. 用下表判定唯一 mode。
-2. 先打开该行 `Start here` 的目标源码或目标目录；这是最短路由的结束点。
+2. 先打开该行 `Start here` 的目标源码或目标目录。打开后缺陷可见即改，本步完成。用户圈选了 DOM 时，用 `class` / `id` 定位，唯一命中的源文件就是 Start here。
 3. 仅加载该行点名的 branch reference / protocol，不叠加读取 `PROJECT.md`、`CONTEXT.md`、ADR 或其它协议，除非该行或协议明确要求。
-4. 结构性任务先输出修改地图；再执行最小修改并完成该分支验证。
+4. 结构性任务先输出修改地图；再执行最小修改。
+5. 按 Verification 表只跑该任务的一条最小证据命令。命令通过（或表要求的视口已检查）则本步完成。
 
 无法唯一定位时，只问一个会改变方案的最小问题。
 
@@ -88,6 +89,8 @@ description: >-
 | Task | Minimum evidence |
 | --- | --- |
 | 公共内容或索引 | `pnpm docs:build` |
+| 独立 HTML 的 href / 面包屑 | `pnpm check:html` |
+| 预览是否可连 | `pnpm preview:ready` |
 | 组件/主题逻辑 | 相关定向测试（若有）+ `pnpm docs:build` |
 | 视觉修改 | 构建 + 1440 / 768 / 390 代表页面检查 |
 | 面板 UI/流程 | 对应 `panel/*.test.mjs` + `pnpm test:panel`；涉及站点快照再跑构建 |
@@ -102,3 +105,5 @@ description: >-
 - 历史 handoff、旧 `.planning/` 和停用协议不作为现行行为依据。
 
 只有当路径、能力边界、内容类型或编辑工作流发生变化时才更新本 Skill；普通正文和局部样式任务不要顺手改它。
+
+最后更新：2026-08-25
