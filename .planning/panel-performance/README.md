@@ -2,7 +2,7 @@
 
 本目录承接发布面板预览与国内站上传性能优化的 Herdr 协同规划、执行报告、集成报告与验收报告。产品语义仍以 `docs/agents/publishing-panel.md` 和 live `panel/` 代码为准，本目录只持有本次执行基线与证据。
 
-**状态：** SUCCEEDED。approved-v1 的 U-01/U-02/U-03 已在 `integrate/panel-performance` 验收通过并保留；尚未合回用户 `main`，未 push、发布、部署或远程上传。
+**状态：** SUCCEEDED，已于 2026-08-25 合入 `main`。尚未 push、发布、部署或远程上传。
 
 | 文件 | 说明 |
 | --- | --- |
