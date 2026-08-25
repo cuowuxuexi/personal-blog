@@ -111,8 +111,18 @@ function hasFragmentTarget(html, hash) {
 }
 
 export function resolveHref(href, baseHref, filePublicHref) {
+  return parseHref(href, baseHref, filePublicHref).resolved
+}
+
+/**
+ * Resolve against <base href> the same way the browser does.
+ * `#pi` + base `/html/cli-hub/` is `{ pathname: /html/cli-hub, hash: pi }`,
+ * not a page path `/html/cli-hub/pi`.
+ */
+export function parseHref(href, baseHref, filePublicHref) {
   const raw = String(href || '').trim()
-  if (!raw || /^(https?:|mailto:|javascript:)/i.test(raw)) return raw
+  const empty = { raw, resolved: raw, pathname: '', hash: '', hashOnly: raw.startsWith('#') }
+  if (!raw || /^(https?:|mailto:|javascript:)/i.test(raw)) return empty
   const fallback = filePublicHref
     ? filePublicHref.endsWith('/')
       ? filePublicHref
@@ -121,9 +131,15 @@ export function resolveHref(href, baseHref, filePublicHref) {
   const base = baseHref || fallback
   try {
     const url = new URL(raw, `http://site.local${base.startsWith('/') ? base : `/${base}`}`)
-    return `${url.pathname}${url.search}${url.hash}`
+    return {
+      raw,
+      resolved: `${url.pathname}${url.search}${url.hash}`,
+      pathname: decodeURIComponent(url.pathname).replace(/\/+$/, '') || '/',
+      hash: url.hash.replace(/^#/, ''),
+      hashOnly: raw.startsWith('#'),
+    }
   } catch {
-    return raw
+    return empty
   }
 }
 
@@ -165,13 +181,12 @@ export function checkHtmlSource(html, options = {}) {
 
   for (const nav of extractBreadcrumbNavs(html)) {
     for (const anchor of extractAnchors(nav)) {
-      const resolved = resolveHref(anchor.href, baseHref, filePublic)
-      const hashOnly = resolved.startsWith('#') || /^#/.test(anchor.href)
-      const pathPart = hashOnly ? '' : normalizePath(resolved)
+      const parts = parseHref(anchor.href, baseHref, filePublic)
+      const pathPart = parts.hashOnly ? '' : parts.pathname
       const allowed = catalog.titles.get(anchor.text)
       const isCurrent = currentTitles.has(anchor.text)
       if (allowed && !isCurrent) {
-        const isPageHash = hashOnly && PAGE_HASH.has(resolved.replace(/^#/, ''))
+        const isPageHash = parts.hashOnly && PAGE_HASH.has(parts.hash)
         const hitsAllowed = pathPart && allowed.has(pathPart)
         if (isPageHash || !hitsAllowed) {
           failures.push(
@@ -184,20 +199,19 @@ export function checkHtmlSource(html, options = {}) {
 
   for (const anchor of extractAnchors(html)) {
     const rawHref = String(anchor.href || '').trim()
-    const resolved = resolveHref(rawHref, baseHref, filePublic)
-    if (!resolved || /^(https?:|mailto:|javascript:)/i.test(resolved)) continue
-    if (rawHref.startsWith('#') || resolved.startsWith('#')) {
-      const hash = (rawHref.startsWith('#') ? rawHref : resolved).replace(/^#/, '')
-      if (!hash) {
-        failures.push(`${label}: empty hash href`)
-        continue
+    const parts = parseHref(rawHref, baseHref, filePublic)
+    if (!parts.resolved || /^(https?:|mailto:|javascript:)/i.test(parts.raw)) continue
+    if (parts.hash) {
+      if (!hasFragmentTarget(html, parts.hash)) {
+        failures.push(`${label}: hash #${parts.hash} has no matching id`)
       }
-      if (!hasFragmentTarget(html, hash)) {
-        failures.push(`${label}: hash #${hash} has no matching id`)
-      }
+      if (parts.hashOnly) continue
+    } else if (parts.hashOnly) {
+      failures.push(`${label}: empty hash href`)
       continue
     }
-    const pathname = normalizePath(resolved)
+    const pathname = parts.pathname
+    if (!pathname || pathname === '/') continue
     if (pathname.startsWith('/html/') || pathname.startsWith('/journey-guides/')) {
       if (!standaloneHtmlFile(pathname)) {
         failures.push(`${label}: standalone path missing on disk: ${pathname}`)

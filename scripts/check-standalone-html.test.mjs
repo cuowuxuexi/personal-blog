@@ -6,6 +6,7 @@ import {
   buildCatalogTitleLinks,
   checkHtmlSource,
   checkStandaloneHtml,
+  parseHref,
 } from './check-standalone-html.mjs'
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -81,6 +82,46 @@ test('missing same-page hash id fails', () => {
     label: 'fixture-hash',
   })
   assert.ok(failures.some((line) => line.includes('#missing')), failures.join('\n'))
+})
+
+test('base turns #pi into directory + hash, not /html/cli-hub/pi', () => {
+  const parts = parseHref('#pi', '/html/cli-hub/', '/html/cli-hub')
+  assert.equal(parts.pathname, '/html/cli-hub')
+  assert.equal(parts.hash, 'pi')
+  assert.equal(parts.hashOnly, true)
+  assert.equal(parts.resolved, '/html/cli-hub/#pi')
+})
+
+test('hash href with base still checks the fragment', () => {
+  const catalog = buildCatalogTitleLinks(REPO_ROOT)
+  const html = `<!DOCTYPE html><html><head><base href="/html/cli-hub/" /></head><body>
+    <section id="page-pi"></section>
+    <nav class="research-breadcrumb"><strong>cli篇</strong></nav>
+    <a href="#pi">Pi</a>
+    <a href="#ghost">missing</a>
+  </body></html>`
+  const failures = checkHtmlSource(html, {
+    catalog,
+    publicHref: '/html/cli-hub',
+    label: 'fixture-base-hash',
+  })
+  assert.ok(failures.some((line) => line.includes('#ghost')), failures.join('\n'))
+  assert.ok(!failures.some((line) => line.includes('#pi')), failures.join('\n'))
+})
+
+test('path plus hash still checks the fragment', () => {
+  const catalog = buildCatalogTitleLinks(REPO_ROOT)
+  const html = `<!DOCTYPE html><html><head><base href="/html/cli-hub/" /></head><body>
+    <section id="page-pi"></section>
+    <nav class="research-breadcrumb"><strong>cli篇</strong></nav>
+    <a href="/html/cli-hub/#ghost">missing</a>
+  </body></html>`
+  const failures = checkHtmlSource(html, {
+    catalog,
+    publicHref: '/html/cli-hub',
+    label: 'fixture-path-hash',
+  })
+  assert.ok(failures.some((line) => line.includes('#ghost')), failures.join('\n'))
 })
 
 test('unknown standalone path fails', () => {

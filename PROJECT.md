@@ -44,7 +44,7 @@
 | --- | --- | --- | --- |
 | 新增/修改周记、历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；周记/历程目录自动投影，其它内容域按 Skill 维护 live hub/sidebar | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
 | 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
-| 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；正文 `<StandaloneHtml src="/html/<名字>" />` | 直开 `/html/<名字>`；从文章点「单独打开」应新开完整 HTML，不是 VitePress 404 |
+| 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；正文 `<StandaloneHtml src="/html/<名字>" />` | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
 | 修改某类页面样式 | 目标页面 `pageClass` | `docs/.vitepress/theme/style.css` 对应段 | `pnpm docs:build` + 1440/768/390 检查 |
 | 修改栏目、侧栏、最近更新或最新一期 | 内容目录 / 信息架构能力 | 先读 `content-catalog/`；`posts.ts` / `config.mts` 是站点消费者，面板经 adapter 消费同一合同 | `pnpm test:content`；接线后还要 `pnpm docs:build` + 相关面板测试 |
 | 修改发布面板字段或交互 | `panel/README.md` → `panel/public/README.md` | `panel/public/index.html`、`app.js`、相关 `public/*.mjs` | 定向 `node --test panel/<feature>.test.mjs` |

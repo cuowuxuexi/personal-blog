@@ -28,6 +28,7 @@ docs/public/html/<名字>/
 
 - 不要做成 `docs/` 下的 Markdown 页。
 - 相对图片即可；开发预览会补 `<base href>`。需要的话也可以自己写绝对路径。
+- `#pi` 会被 `<base href="/html/cli-hub/">` 解析成 `/html/cli-hub/#pi`，不是 `/html/cli-hub/pi`。查链接用解析后的 hash，不要把目录页存在当成锚点存在。
 - 子目录名用英文或数字短名，不要空格。
 - 新增目录时在本 README 登记一行。
 - 面包屑祖先指向站内父页；改完跑 `pnpm check:html`。
@@ -35,6 +36,6 @@ docs/public/html/<名字>/
 | 路径 | 说明 |
 | --- | --- |
 | `grok-skills/` | Grok Build 自带技能图解（旧整页，cli篇已改走 cli-hub） |
-| `cli-hub/` | cli篇目录：Pi / Grok 快捷命令与技能 |
+| `cli-hub/` | cli篇目录：Pi / Grok / Herdr / Orca |
 
 最后更新：2026-08-25

@@ -62,7 +62,7 @@ npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
 | `panel/README.md` | 发布面板使用说明与源码入口 |
 | `panel/lib/README.md` | 发布面板后端能力索引 |
 | `panel/public/README.md` | 发布面板前端 DOM 与模块索引 |
-| `scripts/README.md` | 构建元数据、快捷方式与历史发布脚本 |
+| `scripts/README.md` | 预览探活、独立 HTML 链接合同、构建元数据、快捷方式与历史发布脚本 |
 | `.agents/skills/blog-editor/SKILL.md` | 公共内容和站点设计的 Agent 意图路由 |
 | `docs/agents/` | 发布、投研与协作协议；不进入公开站点 |
 
