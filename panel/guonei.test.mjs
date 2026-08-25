@@ -132,6 +132,155 @@ test('prepareProductionDist builds with / and restores the preview dist', async 
   }
 })
 
+function writeHtml(dir, relative, html) {
+  const file = path.join(dir, relative)
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  fs.writeFileSync(file, html)
+}
+
+function writeRootCandidate(dir, marker = 'root-candidate') {
+  writeHtml(dir, 'index.html', [
+    '<head><link href="/assets/root.css"></head>',
+    `<body><div id="app">${marker}</div>`,
+    '    <script>window.__VP_HASH_MAP__={root:true}</script></body>',
+  ].join('\n'))
+}
+
+function writePrefixedPreview(dir, marker = 'preview-base') {
+  writeHtml(dir, 'index.html', [
+    '<head><link href="/release-preview/j_test/assets/preview.css"></head>',
+    `<body><div id="app">${marker}</div>`,
+    '    <script>window.__VP_HASH_MAP__={preview:true}</script></body>',
+  ].join('\n'))
+}
+
+test('prepareProductionDist reuses a valid root candidate and only injects production meta', async () => {
+  const snapshotDir = tempDir('panel-guonei-reuse-')
+  const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+  const candidateDir = path.join(snapshotDir, '.panel-production-candidate')
+  writePrefixedPreview(liveDist)
+  writeRootCandidate(candidateDir)
+  let buildCalls = 0
+  try {
+    const productionDir = await prepareProductionDist({
+      snapshotDir,
+      sha: 'reuse-sha',
+      builtAt: '2026-08-25T01:00:00.000Z',
+      async build() {
+        buildCalls += 1
+        throw new Error('有效候选不应再跑第三次 docs:build')
+      },
+    })
+    assert.equal(buildCalls, 0)
+    assert.match(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), /preview-base/)
+    assert.match(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), /\/release-preview\//)
+    assert.match(fs.readFileSync(path.join(productionDir, 'index.html'), 'utf8'), /root-candidate/)
+    assert.doesNotMatch(fs.readFileSync(path.join(productionDir, 'index.html'), 'utf8'), /\/release-preview\//)
+    assert.deepEqual(
+      JSON.parse(fs.readFileSync(path.join(productionDir, 'build.json'), 'utf8')),
+      { sha: 'reuse-sha', builtAt: '2026-08-25T01:00:00.000Z' },
+    )
+    assert.equal(fs.existsSync(path.join(candidateDir, 'build.json')), false)
+  } finally {
+    fs.rmSync(snapshotDir, { recursive: true, force: true })
+  }
+})
+
+test('prepareProductionDist falls back to a root build when the candidate is missing', async () => {
+  const snapshotDir = tempDir('panel-guonei-missing-')
+  const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+  writePrefixedPreview(liveDist)
+  let buildCalls = 0
+  try {
+    const productionDir = await prepareProductionDist({
+      snapshotDir,
+      sha: 'fallback-sha',
+      builtAt: '2026-08-25T02:00:00.000Z',
+      async build({ previewBase }) {
+        buildCalls += 1
+        assert.equal(previewBase, '/')
+        writeRootCandidate(liveDist, 'rebuilt-root')
+        return { distDir: liveDist }
+      },
+    })
+    assert.equal(buildCalls, 1)
+    assert.match(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), /preview-base/)
+    assert.match(fs.readFileSync(path.join(productionDir, 'index.html'), 'utf8'), /rebuilt-root/)
+    assert.deepEqual(
+      JSON.parse(fs.readFileSync(path.join(productionDir, 'build.json'), 'utf8')),
+      { sha: 'fallback-sha', builtAt: '2026-08-25T02:00:00.000Z' },
+    )
+  } finally {
+    fs.rmSync(snapshotDir, { recursive: true, force: true })
+  }
+})
+
+test('prepareProductionDist falls back when the candidate is damaged or prefixed', async () => {
+  const cases = [
+    {
+      name: 'empty-index',
+      seed(candidateDir) {
+        writeHtml(candidateDir, 'index.html', '')
+      },
+    },
+    {
+      name: 'missing-index',
+      seed(candidateDir) {
+        fs.mkdirSync(candidateDir, { recursive: true })
+        fs.writeFileSync(path.join(candidateDir, 'marker.txt'), '/')
+      },
+    },
+    {
+      name: 'prefixed-preview',
+      seed(candidateDir) {
+        writePrefixedPreview(candidateDir, 'leaked-preview')
+      },
+    },
+    {
+      name: 'preview-meta',
+      seed(candidateDir) {
+        writeRootCandidate(candidateDir, 'preview-meta')
+        fs.writeFileSync(path.join(candidateDir, 'build.json'), `${JSON.stringify({
+          sha: null,
+          jobId: 'j_test',
+          builtAt: '2026-08-25T00:00:00.000Z',
+        })}\n`)
+      },
+    },
+  ]
+  for (const item of cases) {
+    const snapshotDir = tempDir(`panel-guonei-${item.name}-`)
+    const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+    const candidateDir = path.join(snapshotDir, '.panel-production-candidate')
+    writePrefixedPreview(liveDist)
+    item.seed(candidateDir)
+    let buildCalls = 0
+    try {
+      const productionDir = await prepareProductionDist({
+        snapshotDir,
+        sha: `fallback-${item.name}`,
+        builtAt: '2026-08-25T03:00:00.000Z',
+        async build({ previewBase }) {
+          buildCalls += 1
+          assert.equal(previewBase, '/')
+          writeRootCandidate(liveDist, `rebuilt-${item.name}`)
+          return { distDir: liveDist }
+        },
+      })
+      assert.equal(buildCalls, 1, item.name)
+      assert.match(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'), /preview-base/)
+      assert.match(fs.readFileSync(path.join(productionDir, 'index.html'), 'utf8'), new RegExp(`rebuilt-${item.name}`))
+      assert.doesNotMatch(fs.readFileSync(path.join(productionDir, 'index.html'), 'utf8'), /leaked-preview/)
+      assert.equal(
+        JSON.parse(fs.readFileSync(path.join(productionDir, 'build.json'), 'utf8')).sha,
+        `fallback-${item.name}`,
+      )
+    } finally {
+      fs.rmSync(snapshotDir, { recursive: true, force: true })
+    }
+  }
+})
+
 test('prepareProductionDist restores preview when production build fails', async () => {
   const snapshotDir = tempDir('panel-guonei-fail-')
   const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')

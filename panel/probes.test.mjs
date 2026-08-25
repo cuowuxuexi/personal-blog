@@ -325,6 +325,63 @@ fs.writeFileSync('snapshot-build-args', JSON.stringify(process.argv.slice(2)))
     assert.equal(fs.existsSync(path.join(snapshotDir, 'repo-test-ran')), false)
     assert.equal(fs.existsSync(path.join(snapshotDir, 'repo-build-ran')), false)
     assert.equal(built.distDir, path.join(snapshotDir, 'docs', '.vitepress', 'dist'))
+    assert.equal(
+      fs.existsSync(path.join(snapshotDir, 'docs', '.vitepress', '.preview-root-dist')),
+      false,
+      'merge scratch must not replace the snapshot production candidate',
+    )
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('non-root preview persists an unmerged root-base production candidate', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-probes-candidate-'))
+  const snapshotDir = path.join(root, 'snapshot')
+  fs.mkdirSync(snapshotDir, { recursive: true })
+  writePackage(snapshotDir, {
+    'docs:build': 'node snapshot-build.cjs',
+  }, 'candidate-package')
+  fs.writeFileSync(path.join(snapshotDir, 'snapshot-build.cjs'), `
+const fs = require('node:fs')
+const path = require('node:path')
+const dist = path.join('docs', '.vitepress', 'dist')
+fs.mkdirSync(dist, { recursive: true })
+const base = process.env.VITEPRESS_BASE || 'missing'
+fs.writeFileSync(path.join(dist, 'index.html'), [
+  '<head><link href="' + base + 'assets/app.css"></head>',
+  '<body><div id="app">' + base + '</div>',
+  '    <script>window.__VP_HASH_MAP__={base:"' + base + '"}</script></body>',
+].join('\\n'))
+fs.writeFileSync(path.join(dist, 'marker.txt'), base)
+`)
+  const probes = createDefaultProbes({ repoRoot: path.join(root, 'repo'), productionOrigin: '' })
+  try {
+    const built = await probes.build({
+      snapshotDir,
+      previewBase: '/release-preview/j_test/',
+    })
+    const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+    const candidateDir = path.join(snapshotDir, '.panel-production-candidate')
+    assert.equal(built.distDir, liveDist)
+    assert.equal(fs.readFileSync(path.join(liveDist, 'marker.txt'), 'utf8'), '/release-preview/j_test/')
+    assert.match(
+      fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8'),
+      /href="\/release-preview\/j_test\/assets\/app\.css"/,
+    )
+    assert.equal(fs.readFileSync(path.join(candidateDir, 'marker.txt'), 'utf8'), '/')
+    assert.match(
+      fs.readFileSync(path.join(candidateDir, 'index.html'), 'utf8'),
+      /href="\/assets\/app\.css"/,
+    )
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(candidateDir, 'index.html'), 'utf8'),
+      /\/release-preview\//,
+    )
+    assert.equal(
+      fs.existsSync(path.join(snapshotDir, 'docs', '.vitepress', '.preview-root-dist')),
+      false,
+    )
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -483,6 +540,71 @@ test('default deploy probe builds production dist then scp/ssh', async () => {
       'utf8',
     ))
     assert.equal(meta.sha, 'deadbeef')
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('default deploy probe reuses a valid production candidate and never uploads preview dist', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-probes-reuse-'))
+  const snapshotDir = path.join(root, 'snapshot')
+  const key = path.join(root, 'id_ed25519_servers')
+  const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+  const candidateDir = path.join(snapshotDir, '.panel-production-candidate')
+  fs.mkdirSync(liveDist, { recursive: true })
+  fs.mkdirSync(candidateDir, { recursive: true })
+  fs.writeFileSync(path.join(liveDist, 'index.html'), [
+    '<head><link href="/release-preview/j_test/assets/preview.css"></head>',
+    '<body><div id="app">preview</div></body>',
+  ].join('\n'))
+  fs.writeFileSync(path.join(candidateDir, 'index.html'), [
+    '<head><link href="/assets/root.css"></head>',
+    '<body><div id="app">root-candidate</div></body>',
+  ].join('\n'))
+  fs.writeFileSync(key, 'fake')
+  const calls = []
+  let buildCalls = 0
+  const probes = createDefaultProbes({
+    repoRoot: path.join(root, 'repo'),
+    productionOrigin: 'https://cuowo.cn',
+    guonei: {
+      host: '100.88.115.43',
+      user: 'root',
+      identityFile: key,
+      siteDir: '/var/www/blog',
+      remoteTar: '/tmp/blog-dist.tar',
+      enabled: true,
+    },
+    run: async (command, args, options = {}) => {
+      calls.push({ command, args, cwd: options.cwd })
+      if (command === 'tar') fs.writeFileSync(path.join(options.cwd, 'blog-dist.tar'), 'archive')
+    },
+  })
+  probes.build = async () => {
+    buildCalls += 1
+    throw new Error('有效候选不应再跑第三次 docs:build')
+  }
+  try {
+    const result = await probes.deploy({ snapshotDir, sha: 'cafebabe' })
+    assert.equal(result.ok, true)
+    assert.equal(buildCalls, 0)
+    assert.equal(fs.readFileSync(path.join(liveDist, 'index.html'), 'utf8').includes('preview'), true)
+    assert.equal(calls[0].command, 'tar')
+    assert.equal(calls[0].cwd, path.join(snapshotDir, '.panel-production-dist'))
+    assert.match(
+      fs.readFileSync(path.join(calls[0].cwd, 'index.html'), 'utf8'),
+      /root-candidate/,
+    )
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(calls[0].cwd, 'index.html'), 'utf8'),
+      /\/release-preview\//,
+    )
+    const meta = JSON.parse(fs.readFileSync(
+      path.join(snapshotDir, '.panel-production-dist', 'build.json'),
+      'utf8',
+    ))
+    assert.equal(meta.sha, 'cafebabe')
+    assert.ok(meta.builtAt)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
