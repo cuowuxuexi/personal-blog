@@ -304,6 +304,41 @@ async function get(url, pathname) {
   return { status: response.status, payload: await response.json() }
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function waitFor(predicate, { timeoutMs = 2000, intervalMs = 15 } = {}) {
+  const started = Date.now()
+  while (Date.now() - started < timeoutMs) {
+    const value = await predicate()
+    if (value) return value
+    await delay(intervalMs)
+  }
+  throw new Error('waitFor timed out')
+}
+
+async function waitWechatChecked(url, jobId) {
+  return waitFor(async () => {
+    const queried = await get(url, `/api/publish/jobs/${jobId}`)
+    return queried.payload.wechatPreview?.checkedAt ? queried.payload : null
+  })
+}
+
+function withUnhandledRejections() {
+  const rejections = []
+  const onUnhandled = (error) => {
+    rejections.push(error)
+  }
+  process.on('unhandledRejection', onUnhandled)
+  return {
+    rejections,
+    stop() {
+      process.off('unhandledRejection', onUnhandled)
+    },
+  }
+}
+
 function rawGet(port, pathname) {
   return new Promise((resolve, reject) => {
     const req = http.request({ host: '127.0.0.1', port, path: pathname }, (res) => {
@@ -486,8 +521,10 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.ok(prepared.payload.confirmationToken)
     assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-12.md')))
     assert.equal(prepared.payload.manifest.filter((item) => item.path.includes('2026-08-12-01-test.webp')).length, 1)
-    assert.equal(prepared.payload.wechatPreview.status, 'AssetsOnline')
-    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
+    const wechatReady = await waitWechatChecked(url, prepared.payload.jobId)
+    assert.equal(wechatReady.wechatPreview.status, 'AssetsOnline')
+    assert.equal(wechatReady.wechatPreview.copyAllowed, true)
     assert.match(prepared.payload.wechatPreview.url, new RegExp(`/wechat-preview/${prepared.payload.jobId}/`))
     const preview = await fetch(`${url}${prepared.payload.releasePreviewUrl}`)
     assert.equal(preview.status, 200)
@@ -524,12 +561,135 @@ test('wechat copy stays locked until missing production images are rechecked onl
   }, async ({ url }) => {
     const draft = await post(url, '/api/draft', appendBody)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    assert.equal(prepared.payload.wechatPreview.status, 'WaitingForOnlineAssets')
+    assert.equal(prepared.payload.state, 'PreviewReady')
     assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
-    assert.equal(prepared.payload.wechatPreview.missingAssets.length, 1)
+    const first = await waitWechatChecked(url, prepared.payload.jobId)
+    assert.equal(first.wechatPreview.status, 'WaitingForOnlineAssets')
+    assert.equal(first.wechatPreview.copyAllowed, false)
+    assert.equal(first.wechatPreview.missingAssets.length, 1)
     const checked = await post(url, `/api/publish/jobs/${prepared.payload.jobId}/check-wechat-assets`, {})
     assert.equal(checked.payload.wechatPreview.status, 'AssetsOnline')
     assert.equal(checked.payload.wechatPreview.copyAllowed, true)
+  })
+})
+
+test('prepare returns PreviewReady before online image probe finishes and keeps copy locked', async () => {
+  let probeStarted
+  const started = new Promise((resolve) => {
+    probeStarted = resolve
+  })
+  await withPanel({
+    probes: {
+      onlineAssets: async () => {
+        probeStarted()
+        await delay(1200)
+        return { ok: true, missing: [] }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const preparePromise = post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    await started
+    const began = Date.now()
+    const prepared = await preparePromise
+    assert.ok(Date.now() - began < 400, 'prepare blocked on onlineAssets')
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.state, 'PreviewReady')
+    assert.ok(prepared.payload.confirmationToken)
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
+    assert.ok(['WaitingForOnlineAssets', 'CheckingAssets'].includes(prepared.payload.wechatPreview.status))
+
+    const mid = await get(url, `/api/publish/jobs/${prepared.payload.jobId}`)
+    assert.equal(mid.payload.state, 'PreviewReady')
+    assert.equal(mid.payload.wechatPreview.copyAllowed, false)
+    assert.equal(mid.payload.confirmationToken, prepared.payload.confirmationToken)
+
+    const settled = await waitWechatChecked(url, prepared.payload.jobId)
+    assert.equal(settled.state, 'PreviewReady')
+    assert.equal(settled.wechatPreview.status, 'AssetsOnline')
+    assert.equal(settled.wechatPreview.copyAllowed, true)
+    assert.equal(settled.confirmationToken, prepared.payload.confirmationToken)
+  })
+})
+
+test('overlapping wechat asset checks share one probe and do not leak rejection', async () => {
+  let calls = 0
+  let releaseProbe
+  const probeHold = new Promise((resolve) => {
+    releaseProbe = () => resolve({ ok: true, missing: [] })
+  })
+  const watcher = withUnhandledRejections()
+  try {
+    await withPanel({
+      probes: {
+        onlineAssets: async () => {
+          calls += 1
+          return probeHold
+        },
+      },
+    }, async ({ url }) => {
+      const draft = await post(url, '/api/draft', appendBody)
+      const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+      const first = post(url, `/api/publish/jobs/${prepared.payload.jobId}/check-wechat-assets`, {})
+      const second = post(url, `/api/publish/jobs/${prepared.payload.jobId}/check-wechat-assets`, {})
+      try {
+        await delay(40)
+        assert.equal(calls, 1)
+      } finally {
+        releaseProbe()
+      }
+      const [a, b] = await Promise.all([first, second])
+      assert.equal(a.status, 200)
+      assert.equal(b.status, 200)
+      assert.equal(a.payload.wechatPreview.status, 'AssetsOnline')
+      assert.equal(b.payload.wechatPreview.status, 'AssetsOnline')
+      assert.equal(a.payload.confirmationToken, prepared.payload.confirmationToken)
+      assert.equal(calls, 1)
+    })
+  } finally {
+    watcher.stop()
+  }
+  assert.deepEqual(watcher.rejections, [])
+})
+
+test('GET job during confirm shows real stages and does not start another deploy', async () => {
+  let releaseDeploy
+  const holdDeploy = new Promise((resolve) => {
+    releaseDeploy = resolve
+  })
+  let deploys = 0
+  await withPanel({
+    probes: {
+      async deploy() {
+        deploys += 1
+        await holdDeploy
+        return { ok: true }
+      },
+    },
+  }, async ({ url }) => {
+    const draft = await post(url, '/api/draft', appendBody)
+    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+    const confirmPromise = post(url, '/api/publish/confirm', {
+      jobId: prepared.payload.jobId,
+      confirmationToken: prepared.payload.confirmationToken,
+    })
+    try {
+      const seen = await waitFor(async () => {
+        const queried = await get(url, `/api/publish/jobs/${prepared.payload.jobId}`)
+        return ['Committing', 'Pushed', 'Deploying', 'VerifyingProduction'].includes(queried.payload.state)
+          ? queried.payload
+          : null
+      })
+      assert.ok(['Committing', 'Pushed', 'Deploying', 'VerifyingProduction'].includes(seen.state))
+      assert.equal(seen.confirmationToken, undefined)
+      assert.equal(deploys, 1)
+    } finally {
+      releaseDeploy()
+    }
+    const confirmed = await confirmPromise
+    assert.equal(confirmed.status, 200)
+    assert.equal(confirmed.payload.state, 'Published')
+    assert.equal(deploys, 1)
   })
 })
 
@@ -553,7 +713,9 @@ test('production SHA does not bypass a failed external image check', async () =>
       },
     })
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+    assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
+    const firstCheck = await waitWechatChecked(url, prepared.payload.jobId)
+    assert.equal(firstCheck.wechatPreview.copyAllowed, true)
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
@@ -1068,6 +1230,8 @@ test('panel restart restores WeChat preview, image serving, and copy gate', asyn
   const listen1 = await listen(first)
   const draft = await post(listen1.url, '/api/draft', appendBody)
   const prepared = await post(listen1.url, '/api/publish/prepare', { draftId: draft.payload.draftId })
+  const wechatReady = await waitWechatChecked(listen1.url, prepared.payload.jobId)
+  assert.equal(wechatReady.wechatPreview.status, 'AssetsOnline')
   await listen1.close()
   const second = createServer(options)
   const listen2 = await listen(second)
@@ -1479,9 +1643,10 @@ test('journey image upload enters manifest, wechat preview and production asset 
     assert.equal(asset.status, 200)
     assert.ok(asset.body.length > 0)
 
+    const wechatReady = await waitWechatChecked(url, prepared.payload.jobId)
     assert.ok(seenAssetUrls.some((item) => item.endsWith(image.url)))
-    assert.equal(prepared.payload.wechatPreview.status, 'AssetsOnline')
-    assert.equal(prepared.payload.wechatPreview.copyAllowed, true)
+    assert.equal(wechatReady.wechatPreview.status, 'AssetsOnline')
+    assert.equal(wechatReady.wechatPreview.copyAllowed, true)
 
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,

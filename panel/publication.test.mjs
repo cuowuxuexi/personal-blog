@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  confirmProgressNotice,
   pollTickRequest,
   publicationContinueVerify,
   publicationJobQuery,
@@ -31,6 +32,25 @@ test('核对未结束才自动发继续核对，不问进度', () => {
   assert.equal(pollTickRequest({ jobId: 'j1', state: 'PreviewReady' }), null)
   assert.equal(pollTickRequest({ jobId: 'j1', state: 'Failed' }), null)
   assert.equal(pollTickRequest({ state: 'Pushed' }), null)
+})
+
+test('确认长请求期间问进度只读，不发继续核对', () => {
+  for (const state of ['Committing', 'Pushed', 'Deploying', 'VerifyingProduction']) {
+    const request = pollTickRequest({ jobId: 'j1', state }, { confirmInFlight: true })
+    assert.deepEqual(request, publicationJobQuery('j1'))
+    assert.equal(request.method, 'GET')
+  }
+  assert.deepEqual(
+    pollTickRequest({ jobId: 'j1', state: 'Pushed' }, { confirmInFlight: false }),
+    publicationContinueVerify('j1'),
+  )
+})
+
+test('确认进行中的提示跟真实阶段', () => {
+  assert.match(confirmProgressNotice({ state: 'Committing' }), /Committing/)
+  assert.match(confirmProgressNotice({ state: 'Pushed' }), /Pushed/)
+  assert.match(confirmProgressNotice({ state: 'Deploying' }), /Deploying/)
+  assert.match(confirmProgressNotice({ state: 'VerifyingProduction' }), /VerifyingProduction/)
 })
 
 test('确认按钮旁边的预览提示住在走发布', () => {

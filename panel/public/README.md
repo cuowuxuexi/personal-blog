@@ -20,7 +20,9 @@
 | `media.mjs` | 改条目内部：正文图片 URL |
 | `escape.mjs` | 动态 HTML/属性转义 |
 
-网址路径这次不改（`/api/draft` 仍是写入文章）。问进度是 `GET /api/publish/jobs/:id`；核对未结束由面板自动发 `POST .../continue-verify`。
+网址路径这次不改（`/api/draft` 仍是写入文章）。问进度是 `GET /api/publish/jobs/:id`。确认发布的长请求期间只用这条 GET 展示 `Committing / Pushed / Deploying / VerifyingProduction`，不另发推进 POST。核对未结束且确认请求已结束后，面板才自动发 `POST .../continue-verify`。
+
+写入文章后的条目 bootstrap 刷新与发布准备并行，刷新失败不阻塞 `prepare`。
 
 ## Stable UI anchors
 
@@ -45,4 +47,4 @@
 
 无。
 
-最后更新：2026-08-24
+最后更新：2026-08-25
