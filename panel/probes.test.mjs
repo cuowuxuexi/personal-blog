@@ -11,6 +11,7 @@ import {
 } from './lib/probes.mjs'
 import { createPanelContext } from './lib/context.mjs'
 import { DEFAULT_PRODUCTION_ORIGIN } from './lib/guonei.mjs'
+import { sha256Text } from './lib/hash.mjs'
 
 function writePackage(dir, scripts, marker) {
   fs.writeFileSync(path.join(dir, 'package.json'), `${JSON.stringify({
@@ -606,6 +607,89 @@ test('default deploy probe reuses a valid production candidate and never uploads
     ))
     assert.equal(meta.sha, 'cafebabe')
     assert.ok(meta.builtAt)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('default deploy probe forwards expectedBaselineSha and falls back when it mismatches', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'panel-probes-baseline-'))
+  const snapshotDir = path.join(root, 'snapshot')
+  const key = path.join(root, 'id_ed25519_servers')
+  const liveDist = path.join(snapshotDir, 'docs', '.vitepress', 'dist')
+  const candidateDir = path.join(snapshotDir, '.panel-production-candidate')
+  fs.mkdirSync(liveDist, { recursive: true })
+  fs.mkdirSync(candidateDir, { recursive: true })
+  fs.writeFileSync(path.join(liveDist, 'index.html'), [
+    '<head><link href="/release-preview/j_test/assets/preview.css"></head>',
+    '<body><div id="app">preview</div></body>',
+  ].join('\n'))
+  fs.writeFileSync(path.join(candidateDir, 'index.html'), [
+    '<head><link href="/assets/root.css"></head>',
+    '<body><div id="app">root-candidate</div></body>',
+  ].join('\n'))
+  fs.writeFileSync(key, 'fake')
+  const previous = {
+    version: 1,
+    algorithm: 'sha256',
+    sha: 'oldsha',
+    files: { 'index.html': sha256Text('old-index'), 'build.json': sha256Text('old-meta') },
+  }
+  const remoteManifest = `${JSON.stringify(previous)}\n`
+  const remoteBuild = `${JSON.stringify({ sha: 'oldsha' })}\n`
+
+  const runDeploy = async (expectedBaselineSha) => {
+    const calls = []
+    const probes = createDefaultProbes({
+      repoRoot: path.join(root, 'repo'),
+      productionOrigin: 'https://cuowo.cn',
+      guonei: {
+        host: '100.88.115.43',
+        user: 'root',
+        identityFile: key,
+        siteDir: '/var/www/blog',
+        remoteTar: '/tmp/blog-dist.tar',
+        enabled: true,
+      },
+      run: async (command, args, options = {}) => {
+        calls.push({ command, args, cwd: options.cwd })
+        if (command === 'tar') {
+          fs.writeFileSync(path.join(options.cwd, 'blog-dist.tar'), 'archive')
+          return { stdout: '', stderr: '' }
+        }
+        const remoteScript = String(args.at(-1) || '')
+        const isRemoteApply = remoteScript.includes('&&')
+        if (command === 'ssh' && !isRemoteApply && remoteScript.includes('.panel-dist-manifest.json')) {
+          return { stdout: remoteManifest, stderr: '' }
+        }
+        if (command === 'ssh' && !isRemoteApply && remoteScript.includes('build.json')) {
+          return { stdout: remoteBuild, stderr: '' }
+        }
+        return { stdout: '', stderr: '' }
+      },
+    })
+    probes.build = async () => {
+      throw new Error('有效候选不应再跑第三次 docs:build')
+    }
+    await probes.deploy({
+      snapshotDir,
+      sha: 'newsha',
+      expectedBaselineSha,
+    })
+    const apply = calls.filter((item) => (
+      item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock')
+    ))
+    return apply.map((item) => String(item.args.at(-1)))
+  }
+
+  try {
+    const matched = await runDeploy('oldsha')
+    assert.equal(matched.length, 1)
+    assert.match(matched[0], /cp -a/)
+    const mismatched = await runDeploy('not-the-remote-sha')
+    assert.equal(mismatched.length, 1)
+    assert.doesNotMatch(mismatched[0], /cp -a/)
+    assert.match(mismatched[0], /mkdir -p \/var\/www\/blog\.new/)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }

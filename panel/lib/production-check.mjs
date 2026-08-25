@@ -47,6 +47,7 @@ export async function checkProduction(ctx, job) {
           snapshotDir: job.snapshotDir,
           repoRoot: ctx.repoRoot,
           sha: job.commitSha,
+          expectedBaselineSha: job.baseSha,
           origin: ctx.productionOrigin,
         })
       }

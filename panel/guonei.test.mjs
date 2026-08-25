@@ -16,6 +16,7 @@ import {
   productionDeployLockDir,
   productionSwapCommands,
   readGuoneiConfig,
+  uniqueRemoteTarPath,
   uploadDist,
   writeDistManifest,
   writeProductionBuildMeta,
@@ -24,6 +25,50 @@ import { sha256Text } from './lib/hash.mjs'
 
 function tempDir(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
+}
+
+const UNIQUE_REMOTE_TAR_RE = /^\/tmp\/blog-dist-[a-f0-9]{16,32}\.tar$/
+
+function scpRemoteTar(call) {
+  const dest = String(call?.args?.at(-1) || '')
+  return dest.slice(dest.lastIndexOf(':') + 1)
+}
+
+function sshApplyCalls(calls) {
+  return calls.filter((item) => (
+    item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock')
+  ))
+}
+
+function sshCleanupCalls(calls) {
+  return calls.filter((item) => (
+    item.command === 'ssh' && /^rm -f \/[A-Za-z0-9._/-]+\.tar$/.test(String(item.args.at(-1) || ''))
+  ))
+}
+
+function assertOwnRemoteTarLifecycle(calls, { applyMustMatch, applyMustNotMatch } = {}) {
+  const scpCalls = calls.filter((item) => item.command === 'scp')
+  assert.ok(scpCalls.length >= 1)
+  const remoteTars = scpCalls.map(scpRemoteTar)
+  assert.equal(new Set(remoteTars).size, remoteTars.length)
+  for (const remoteTar of remoteTars) {
+    assert.match(remoteTar, UNIQUE_REMOTE_TAR_RE)
+    assert.notEqual(remoteTar, '/tmp/blog-dist.tar')
+  }
+  const applyCalls = sshApplyCalls(calls)
+  assert.equal(applyCalls.length, scpCalls.length)
+  for (const [index, apply] of applyCalls.entries()) {
+    const remoteTar = remoteTars[index]
+    assert.match(apply.args.at(-1), new RegExp(`tar -xf ${remoteTar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`))
+    if (applyMustMatch) assert.match(apply.args.at(-1), applyMustMatch)
+    if (applyMustNotMatch) assert.doesNotMatch(apply.args.at(-1), applyMustNotMatch)
+  }
+  const cleaned = sshCleanupCalls(calls).map((item) => String(item.args.at(-1)))
+  for (const remoteTar of remoteTars) {
+    assert.ok(cleaned.includes(`rm -f ${remoteTar}`), `must clean ${remoteTar}`)
+  }
+  assert.ok(!cleaned.includes('rm -f /tmp/blog-dist.tar'))
+  return remoteTars
 }
 
 test('readGuoneiConfig uses domestic defaults and enables only when the key exists', () => {
@@ -54,6 +99,22 @@ test('readGuoneiConfig uses domestic defaults and enables only when the key exis
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
+})
+
+test('uniqueRemoteTarPath is injection-safe and not a target SHA', () => {
+  const id16 = 'a'.repeat(16)
+  const id32 = 'b'.repeat(32)
+  assert.equal(uniqueRemoteTarPath('/tmp/blog-dist.tar', id16), `/tmp/blog-dist-${id16}.tar`)
+  assert.equal(uniqueRemoteTarPath('/tmp/blog-dist.tar', id32), `/tmp/blog-dist-${id32}.tar`)
+  assert.throws(() => uniqueRemoteTarPath('/tmp/blog-dist.tar', ''), /标识不合法/)
+  assert.throws(() => uniqueRemoteTarPath('/tmp/blog-dist.tar', 'abc; rm -rf /'), /标识不合法/)
+  assert.throws(() => uniqueRemoteTarPath('/tmp/blog-dist.tar', 'DEADBEEFdeadbeef'), /标识不合法/)
+  assert.throws(() => uniqueRemoteTarPath('/tmp/blog-dist.tar', 'c'.repeat(40)), /标识不合法/)
+  assert.throws(() => uniqueRemoteTarPath('/tmp/blog-dist.tar', 'd'.repeat(64)), /标识不合法/)
+  assert.throws(
+    () => uniqueRemoteTarPath('/tmp/blog-dist.tar; rm -rf /', id16),
+    /路径不合法/,
+  )
 })
 
 test('assertSafeGuoneiConfig rejects injection in host or remote paths', () => {
@@ -342,15 +403,16 @@ test('uploadDist packs locally then scp/ssh with the swap script', async () => {
     })
     const tar = calls.find((item) => item.command === 'tar')
     const scp = calls.find((item) => item.command === 'scp')
-    const sshApply = calls.filter((item) => item.command === 'ssh').at(-1)
+    const [remoteTar] = assertOwnRemoteTarLifecycle(calls, {
+      applyMustMatch: /mv \/var\/www\/blog\.new \/var\/www\/blog/,
+      applyMustNotMatch: /cp -a/,
+    })
     assert.ok(tar)
     assert.deepEqual(tar.args.slice(0, 2), ['-cf', 'blog-dist.tar'])
     assert.equal(tar.cwd, distDir)
     assert.ok(scp)
     assert.ok(scp.args.includes(`${key}`))
-    assert.ok(scp.args.at(-1).endsWith('root@100.88.115.43:/tmp/blog-dist.tar'))
-    assert.match(sshApply.args.at(-1), /mv \/var\/www\/blog\.new \/var\/www\/blog/)
-    assert.doesNotMatch(sshApply.args.at(-1), /cp -a/)
+    assert.ok(scp.args.at(-1).endsWith(`root@100.88.115.43:${remoteTar}`))
     assert.equal(fs.existsSync(path.join(distDir, 'blog-dist.tar')), false)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
@@ -598,16 +660,18 @@ test('uploadDist uses a trusted remote manifest for changed/new/deleted incremen
     assert.ok(packed.packedFiles.includes('change.html'))
     assert.ok(packed.packedFiles.includes('fresh.html'))
     assert.ok(!packed.packedFiles.includes('gone.html'))
-    const sshApply = calls.filter((item) => item.command === 'ssh').at(-1)
+    const [remoteTar] = assertOwnRemoteTarLifecycle(calls, {
+      applyMustMatch: /cp -a \/var\/www\/blog \/var\/www\/blog\.new/,
+    })
+    const sshApply = sshApplyCalls(calls).at(-1)
     const expectedDigest = sha256Text(`${JSON.stringify(previous)}\n`)
     assert.match(sshApply.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
     assert.match(sshApply.args.at(-1), /trap 'rmdir \/var\/www\/blog\.deploy-lock' EXIT/)
     assert.match(sshApply.args.at(-1), new RegExp(expectedDigest))
     assert.ok(sshApply.args.at(-1).indexOf('.deploy-lock') < sshApply.args.at(-1).indexOf('sha256sum'))
     assert.ok(sshApply.args.at(-1).indexOf('sha256sum') < sshApply.args.at(-1).indexOf('cp -a'))
-    assert.match(sshApply.args.at(-1), /cp -a \/var\/www\/blog \/var\/www\/blog\.new/)
+    assert.match(sshApply.args.at(-1), new RegExp(`tar -xf ${remoteTar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`))
     assert.match(sshApply.args.at(-1), /gone\.html/)
-    assert.equal(calls.some((item) => item.command === 'scp'), true)
     assert.equal(fs.existsSync(path.join(distDir, 'blog-dist.tar')), false)
     assert.equal(
       JSON.parse(fs.readFileSync(path.join(distDir, '.panel-dist-manifest.json'), 'utf8')).sha,
@@ -718,9 +782,10 @@ test('uploadDist falls back to full tar when remote manifest is missing or damag
         run: fakePackRun(calls, item),
       })
       assert.equal(result.mode, 'full', item.name)
-      const sshApply = calls.filter((entry) => entry.command === 'ssh').at(-1)
-      assert.match(sshApply.args.at(-1), /mkdir -p \/var\/www\/blog\.new/, item.name)
-      assert.doesNotMatch(sshApply.args.at(-1), /cp -a/, item.name)
+      assertOwnRemoteTarLifecycle(calls, {
+        applyMustMatch: /mkdir -p \/var\/www\/blog\.new/,
+        applyMustNotMatch: /cp -a/,
+      })
     } finally {
       fs.rmSync(root, { recursive: true, force: true })
     }
@@ -761,7 +826,9 @@ test('uploadDist falls back to full atomic replace when incremental apply fails'
     })
     assert.equal(result.mode, 'full')
     assert.ok(calls.filter((item) => item.command === 'tar').length >= 2)
-    const sshApply = calls.filter((item) => item.command === 'ssh').at(-1)
+    const remoteTars = assertOwnRemoteTarLifecycle(calls)
+    assert.equal(remoteTars.length, 2)
+    const sshApply = sshApplyCalls(calls).at(-1)
     assert.match(sshApply.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
     assert.match(sshApply.args.at(-1), /mkdir -p \/var\/www\/blog\.new/)
     assert.match(sshApply.args.at(-1), /mv \/var\/www\/blog\.new \/var\/www\/blog/)
@@ -837,7 +904,7 @@ test('uploadDist falls back to full when the locked baseline digest has drifted'
       }),
     })
     assert.equal(result.mode, 'full')
-    const apply = calls.filter((item) => item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock'))
+    const apply = sshApplyCalls(calls)
     assert.ok(apply.some((item) => String(item.args.at(-1)).includes('sha256sum')))
     const last = apply.at(-1)
     const deltaApply = apply.find((item) => String(item.args.at(-1)).includes('sha256sum'))
@@ -845,6 +912,8 @@ test('uploadDist falls back to full when the locked baseline digest has drifted'
     assert.match(last.args.at(-1), /mkdir \/var\/www\/blog\.deploy-lock/)
     assert.match(last.args.at(-1), /mkdir -p \/var\/www\/blog\.new/)
     assert.doesNotMatch(last.args.at(-1), /cp -a/)
+    const remoteTars = assertOwnRemoteTarLifecycle(calls)
+    assert.equal(remoteTars.length, 2)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -885,9 +954,61 @@ test('uploadDist fails closed when the shared deploy lock is busy', async () => 
       }),
       /部署锁被占用/,
     )
-    const apply = calls.filter((item) => item.command === 'ssh' && String(item.args.at(-1)).includes('.deploy-lock'))
+    const apply = sshApplyCalls(calls)
     assert.ok(apply.length >= 2, 'delta then full must both take the same lock')
     assert.ok(apply.every((item) => String(item.args.at(-1)).includes("trap 'rmdir /var/www/blog.deploy-lock' EXIT")))
+    const remoteTars = assertOwnRemoteTarLifecycle(calls)
+    assert.equal(remoteTars.length, 2)
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('concurrent uploads use distinct remote tars and apply only their own archive', async () => {
+  const root = tempDir('panel-guonei-unique-tar-')
+  const key = path.join(root, 'id_ed25519_servers')
+  fs.writeFileSync(key, 'fake')
+  const distA = path.join(root, 'dist-a')
+  const distB = path.join(root, 'dist-b')
+  writeSized(distA, 'index.html', 'site-a')
+  writeSized(distB, 'index.html', 'site-b')
+  writeProductionBuildMeta(distA, { sha: 'same-target-sha', builtAt: '2026-08-25T10:00:00.000Z' })
+  writeProductionBuildMeta(distB, { sha: 'same-target-sha', builtAt: '2026-08-25T10:00:00.000Z' })
+  const config = {
+    host: '100.88.115.43',
+    user: 'root',
+    identityFile: key,
+    siteDir: '/var/www/blog',
+    remoteTar: '/tmp/blog-dist.tar',
+  }
+  const callsA = []
+  const callsB = []
+  try {
+    await Promise.all([
+      uploadDist({
+        distDir: distA,
+        sha: 'same-target-sha',
+        config,
+        run: fakePackRun(callsA),
+      }),
+      uploadDist({
+        distDir: distB,
+        sha: 'same-target-sha',
+        config,
+        run: fakePackRun(callsB),
+      }),
+    ])
+    const [tarA] = assertOwnRemoteTarLifecycle(callsA, { applyMustNotMatch: /cp -a/ })
+    const [tarB] = assertOwnRemoteTarLifecycle(callsB, { applyMustNotMatch: /cp -a/ })
+    assert.notEqual(tarA, tarB)
+    const applyA = sshApplyCalls(callsA)[0].args.at(-1)
+    const applyB = sshApplyCalls(callsB)[0].args.at(-1)
+    assert.ok(applyA.includes(tarA))
+    assert.ok(applyB.includes(tarB))
+    assert.ok(!applyA.includes(tarB))
+    assert.ok(!applyB.includes(tarA))
+    assert.ok(!sshCleanupCalls(callsA).some((item) => String(item.args.at(-1)).includes(tarB)))
+    assert.ok(!sshCleanupCalls(callsB).some((item) => String(item.args.at(-1)).includes(tarA)))
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
