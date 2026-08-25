@@ -2,7 +2,7 @@
 
 对话方案的落档。现行行为仍以 live Skill / `package.json` 为准；本目录只持有本次 Herdr S1 的方案、执行规划与验收记录。
 
-**状态：** 执行规划 approved-v1，批准档 3。本窗口已做完 U-01–U-03，待写入本包 commit。不创建 Herdr 执行 workspace。
+**状态：** 执行规划 approved-v1，批准档 3。U-01–U-03 已在本窗口完成。代码提交 `f3b4aad`。未 push。
 
 | 文件 | 说明 |
 | --- | --- |
