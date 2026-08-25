@@ -129,28 +129,85 @@ export function failJob(job, error, ctx) {
   if (!error.status) error.status = 409
 }
 
+function wechatCheckFlights(ctx) {
+  if (!ctx.lock.wechatChecks) ctx.lock.wechatChecks = new Map()
+  return ctx.lock.wechatChecks
+}
+
+const WECHAT_PATCH_FIELDS = [
+  'wechatMissingAssets',
+  'wechatAssetStatus',
+  'wechatExternalAssetStatus',
+  'wechatAssetCheckedAt',
+]
+
+function applyWechatFields(target, source) {
+  for (const key of WECHAT_PATCH_FIELDS) {
+    if (Object.hasOwn(source, key)) target[key] = source[key]
+  }
+  return target
+}
+
+function patchWechatFields(ctx, jobId, fields, mirror) {
+  const latest = loadJob(ctx, jobId)
+  applyWechatFields(latest, fields)
+  saveJob(ctx, latest)
+  if (mirror) applyWechatFields(mirror, latest)
+  return latest
+}
+
 export async function checkWechatAssetsForJob(ctx, job) {
   if (!job.wechatPreviewFile) return job
-  job.wechatAssetStatus = 'CheckingAssets'
-  saveJob(ctx, job)
-  try {
-    const result = await ctx.probes.onlineAssets({ urls: job.wechatAssetUrls || [] })
-    job.wechatMissingAssets = result?.missing || []
-    job.wechatAssetStatus = result?.ok === true ? 'AssetsOnline' : 'WaitingForOnlineAssets'
-    const externalMissing = new Set(job.wechatMissingAssets)
-    job.wechatExternalAssetStatus = (job.wechatExternalAssetUrls || [])
-      .some((url) => externalMissing.has(url))
-      ? 'WaitingForOnlineAssets'
-      : 'AssetsOnline'
-  } catch {
-    job.wechatMissingAssets = job.wechatAssetUrls || []
-    job.wechatAssetStatus = 'WaitingForOnlineAssets'
-    job.wechatExternalAssetStatus = (job.wechatExternalAssetUrls || []).length
-      ? 'WaitingForOnlineAssets'
-      : 'AssetsOnline'
+  const flights = wechatCheckFlights(ctx)
+  const existing = flights.get(job.id)
+  if (existing) {
+    await existing
+    applyWechatFields(job, loadJob(ctx, job.id))
+    return job
   }
-  job.wechatAssetCheckedAt = now()
-  return saveJob(ctx, job)
+
+  const run = (async () => {
+    try {
+      patchWechatFields(ctx, job.id, { wechatAssetStatus: 'CheckingAssets' }, job)
+      const current = loadJob(ctx, job.id)
+      const urls = current.wechatAssetUrls || []
+      const externalUrls = current.wechatExternalAssetUrls || []
+      let wechatMissingAssets
+      let wechatAssetStatus
+      let wechatExternalAssetStatus
+      try {
+        const result = await ctx.probes.onlineAssets({ urls })
+        wechatMissingAssets = result?.missing || []
+        wechatAssetStatus = result?.ok === true ? 'AssetsOnline' : 'WaitingForOnlineAssets'
+        const externalMissing = new Set(wechatMissingAssets)
+        wechatExternalAssetStatus = externalUrls.some((url) => externalMissing.has(url))
+          ? 'WaitingForOnlineAssets'
+          : 'AssetsOnline'
+      } catch {
+        wechatMissingAssets = urls
+        wechatAssetStatus = 'WaitingForOnlineAssets'
+        wechatExternalAssetStatus = externalUrls.length
+          ? 'WaitingForOnlineAssets'
+          : 'AssetsOnline'
+      }
+      const latest = loadJob(ctx, job.id)
+      if (latest.state === 'Published' && latest.wechatAssetStatus === 'ProductionVerified') {
+        applyWechatFields(job, latest)
+        return job
+      }
+      return patchWechatFields(ctx, job.id, {
+        wechatMissingAssets,
+        wechatAssetStatus,
+        wechatExternalAssetStatus,
+        wechatAssetCheckedAt: now(),
+      }, job)
+    } finally {
+      flights.delete(job.id)
+    }
+  })()
+
+  flights.set(job.id, run)
+  return run
 }
 
 export function clearWechatPreview(job) {
@@ -204,5 +261,6 @@ export async function checkWechatAssets(ctx, jobId) {
   const job = loadJob(ctx, jobId)
   if (!job.wechatPreviewFile) fail('还没有公众号预览', 404)
   await checkWechatAssetsForJob(ctx, job)
-  return publicJob(job, { includeToken: job.state === 'PreviewReady' })
+  const latest = loadJob(ctx, jobId)
+  return publicJob(latest, { includeToken: latest.state === 'PreviewReady' })
 }

@@ -21,9 +21,9 @@
 | `prepare-publication.mjs` | 准备发布：清单、隔离快照、双预览、确认令牌；不动 Git |
 | `execute-publication.mjs` | 执行发布：提交并推送，停在已推送 |
 | `production-check.mjs` | 上线核对：上传国内站并对 SHA |
-| `probes.mjs` | Git、job-scoped preview base、根 SSR 合并、目标页/锚点校验、push、部署与生产 HTTP 等默认外部 adapter |
+| `probes.mjs` | Git、job-scoped preview base、根 SSR 合并、纯根生产候选持久化、目标页/锚点校验、push、部署与生产 HTTP 等默认外部 adapter |
 | `git.mjs` | Git 命令封装 |
-| `guonei.mjs` | 国内站构建元数据、打包、SSH 上传与目录原子替换 |
+| `guonei.mjs` | 国内站构建元数据、生产候选契约、SHA-256 清单增量上传、全量回退与目录原子替换 |
 | `wechat.mjs` | 公众号预览 HTML 与剪贴板 payload 生成 |
 | `preview-nav.mjs` | 发布预览文章位置与 hash 导航 |
 | `vitepress-supervisor.mjs` | 本地 VitePress 预览进程保活 |
@@ -36,11 +36,14 @@
 ## Behavioral warnings
 
 - `POST /api/draft` 当前调用 `applyDraft()`，会立即原子写工作区，并非纯内存草稿。
-- `confirmPublication()` 仍一次点完：先执行发布，再上线核对。
-- `getPublication()` 只读，不上传、不对国内站 SHA。核对未结束由 `continueVerify()` 推进；面板自动发 `POST .../continue-verify`。
+- `preparePublication()` 在线上图片 probe 完成前就返回 `PreviewReady`；公众号复制门保持锁定。检查在后台继续，经 `publish-job-record` 的 in-memory 互斥幂等继续/重试，不把 Promise 写入 job JSON。
+- `confirmPublication()` 仍一次点完：先执行发布，再上线核对。长请求期间 UI 用 `getPublication()` 展示真实阶段。
+- `getPublication()` 只读，不上传、不对国内站 SHA。核对未结束由 `continueVerify()` 推进；面板在确认请求结束后才自动发 `POST .../continue-verify`。
 - 准备 / 执行 / 上线核对分别在 `prepare-publication.mjs`、`execute-publication.mjs`、`production-check.mjs`。Git、构建、SSH 仍走现有 `probes`，不新套一层。
 - `weekly.mjs` 仍较宽；改发布阶段先进入对应深模块。
 - job 级 release preview 必须保留双构建：先生成根路径 SSR，再生成 `/release-preview/<jobId>/` base 的客户端资源，并把根 SSR app 区合入后者。它规避 Windows + VitePress 非根 base 可能生成 `NotFound` SSR 壳的问题；不要在缺少目标页、锚点和资源前缀回归测试时简化为单次构建。合并时跳过 `public/` 拷进 dist 的独立 HTML（没有 VitePress app 壳），不要把它们当成 SSR 页。
+- 非根预览的第一次根构建必须在合并前原样持久化为快照内 `.panel-production-candidate`。该目录是未 merge 的纯根产物，不能带 `/release-preview/` 前缀，也不能写入预览 `build.json`。确认发布时 `prepareProductionDist` 先检查该候选：有效则只复制到 `.panel-production-dist` 并注入生产 `build.json`，跳过第三次 `docs:build`；缺失、损坏、带预览前缀或带预览 meta 时 fail-closed 回退现有根构建。生产准备后必须恢复 live `docs/.vitepress/dist` 的 release-preview 产物，绝不能把 prefixed/merged 预览上传生产。
+- 国内站上传先写快照内 `.panel-dist-manifest.json`（SHA-256 文件清单）。远端清单可读且与 `build.json` / 预期基线 SHA 一致时，只打包 changed/new。`production-check` 把 `job.baseSha` 经 `probes.deploy` 传给 `uploadDist` 的 `expectedBaselineSha`；远端清单/`build.json` 与预期不一致时仍全量回退。full 与 delta 共用同一上传/apply/清理 helper：每次 SCP 到注入安全、任务唯一的远端 tar（不按目标 SHA 命名），成功、apply 失败与锁忙都尽力 `rm -f` 自己的 tar，不删其他任务归档。远端切换仍共用 `${siteDir}.deploy-lock`（`mkdir` 原子占有，`trap EXIT rmdir` 释放，不交互）。delta 在持锁后、`cp -a` 前用 `sha256sum` 核对刚才读到的清单原文摘要；不一致则本次 delta 失败并回退全量。锁被占用时 full/delta 都安全失败，不并发覆盖。缺清单、解析失败、路径不安全、基线不匹配或增量准备/SSH 失败时 fail-closed 回退现有全量 tar。清单路径与摘要拒绝注入；打包排除 `release-preview/` 与 `.panel-*` 候选/预览元数据。不要求 rsync。
 
 ## Tests
 
@@ -50,4 +53,4 @@
 
 无。
 
-最后更新：2026-08-24
+最后更新：2026-08-25

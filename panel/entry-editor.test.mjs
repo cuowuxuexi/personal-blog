@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { decideWorkspaceWrite } from './public/entry-editor.mjs'
+import {
+  decideWorkspaceWrite,
+  noticeAfterDraftPrepare,
+  runAfterDraftWrite,
+} from './public/entry-editor.mjs'
 
 test('空条目且期头有改动时写入文章走改期头', () => {
   assert.deepEqual(decideWorkspaceWrite({
@@ -52,4 +56,42 @@ test('改已有条目要确认，开新期直接写入', () => {
     theme: '底座',
     chromeDirty: false,
   }), { persist: {} })
+})
+
+test('draft 后 bootstrap 不阻塞 prepare', async () => {
+  let prepareStarted = false
+  let releaseBootstrap
+  const bootstrap = new Promise((resolve) => {
+    releaseBootstrap = resolve
+  })
+  const run = runAfterDraftWrite({
+    refreshBootstrap: () => bootstrap,
+    prepare: async () => {
+      prepareStarted = true
+      return true
+    },
+  })
+  await Promise.resolve()
+  await Promise.resolve()
+  assert.equal(prepareStarted, true)
+  releaseBootstrap()
+  const result = await run
+  assert.equal(result.prepared, true)
+  assert.equal(result.bootstrapError, null)
+})
+
+test('bootstrap 失败不阻止 prepare，错误仍可见', async () => {
+  const result = await runAfterDraftWrite({
+    refreshBootstrap: async () => {
+      throw new Error('刷新失败')
+    },
+    prepare: async () => true,
+  })
+  assert.equal(result.prepared, true)
+  assert.equal(result.bootstrapError, '刷新失败')
+  assert.deepEqual(noticeAfterDraftPrepare(result), {
+    text: '已写入文章，但刷新条目列表失败：刷新失败',
+    tone: 'err',
+  })
+  assert.equal(noticeAfterDraftPrepare({ prepared: false, bootstrapError: '刷新失败' }), null)
 })

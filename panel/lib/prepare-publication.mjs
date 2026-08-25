@@ -253,8 +253,9 @@ export async function preparePublication(ctx, { draftId, headingAnchor = '' }) {
     job.releasePreviewUrl = `/release-preview/${job.id}${draft.previewLink}${previewHash}`
     job.state = 'PreviewReady'
     saveJob(ctx, job)
-    await checkWechatAssetsForJob(ctx, job)
-    return publicJob(job, { includeToken: true })
+    const ready = publicJob(job, { includeToken: true })
+    void checkWechatAssetsForJob(ctx, job).catch(() => {})
+    return ready
   } catch (error) {
     clearWechatPreview(job)
     job.state = 'Failed'

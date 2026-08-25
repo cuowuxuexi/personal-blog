@@ -2,7 +2,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { spawn } from 'node:child_process'
 import { validateWeeklySnapshot } from './content-validation.mjs'
-import { prepareProductionDist, readGuoneiConfig, uploadDist } from './guonei.mjs'
+import {
+  persistProductionCandidate,
+  prepareProductionDist,
+  readGuoneiConfig,
+  uploadDist,
+} from './guonei.mjs'
 
 function run(command, args, {
   cwd,
@@ -178,20 +183,16 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
           env: { ...process.env, VITEPRESS_BASE: '/' },
         })
       } else {
-        const rootDistDir = path.join(snapshotDir, 'docs', '.vitepress', '.preview-root-dist')
-        fs.rmSync(rootDistDir, { recursive: true, force: true })
         await runPnpm(['docs:build'], snapshotDir, {
           env: { ...process.env, VITEPRESS_BASE: '/' },
         })
-        fs.cpSync(distDir, rootDistDir, { recursive: true })
-        try {
-          await runPnpm(['docs:build'], snapshotDir, {
-            env: { ...process.env, VITEPRESS_BASE: base },
-          })
-          mergeRootSsrIntoPreviewDist({ rootDistDir, previewDistDir: distDir, previewBase: base })
-        } finally {
-          fs.rmSync(rootDistDir, { recursive: true, force: true })
-        }
+        const rootDistDir = persistProductionCandidate({ snapshotDir, rootDistDir: distDir })
+        const mergeScratch = path.join(snapshotDir, 'docs', '.vitepress', '.preview-root-dist')
+        if (fs.existsSync(mergeScratch)) fs.rmSync(mergeScratch, { recursive: true, force: true })
+        await runPnpm(['docs:build'], snapshotDir, {
+          env: { ...process.env, VITEPRESS_BASE: base },
+        })
+        mergeRootSsrIntoPreviewDist({ rootDistDir, previewDistDir: distDir, previewBase: base })
       }
       validateBuiltPreview({ distDir, previewPath, headingAnchor })
       return { distDir }
@@ -199,7 +200,7 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
     async push({ git }) {
       await git.push()
     },
-    async deploy({ snapshotDir, sha }) {
+    async deploy({ snapshotDir, sha, expectedBaselineSha }) {
       if (process.env.NODE_TEST_CONTEXT && !runOverride && !guonei) {
         throw new Error('测试中拒绝真实国内上传')
       }
@@ -216,6 +217,8 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
         distDir: productionDir,
         config,
         run: runOverride || run,
+        sha,
+        expectedBaselineSha,
       })
       return { ok: true, origin: productionOrigin }
     },
