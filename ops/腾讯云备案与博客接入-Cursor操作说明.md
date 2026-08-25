@@ -3,23 +3,25 @@
 > 现役 runbook。历史准备过程保存在私有运维档案，本仓不记录其绝对路径。
 > 博客只做静态站乘客；UHT 是这台机主业。不在 guonei 上 `pnpm build`。
 
-## 现役事实（2026-08-21）
+## 现役事实（2026-08-24）
 
 | 项 | 值 |
 |----|-----|
 | 国内公网 | https://cuowo.cn 、 https://www.cuowo.cn |
 | ICP 网站名 | 生活与学习记录 |
 | ICP 号 | 闽ICP备2026032381号-1（页脚，链 `https://beian.miit.gov.cn/`） |
+| 公网安备号 | 闽公网安备35018302000421号（页脚，链 `https://beian.mps.gov.cn/#/query/webSearch?code=35018302000421`） |
 | 开通 / ICP 通过日 | 2026-08-21 |
+| 公网安备挂上网日 | 2026-08-24 |
 | 解析 | DNSPod `@` / `www` A → `114.132.244.14`（不要橙云） |
 | 机器 | `guonei`，`114.132.244.14`；SSH 优先 Tailscale `100.88.115.43` |
 | 站点目录 | `/var/www/blog` |
 | Nginx | `/etc/nginx/conf.d/cuowo.cn.conf`（80→301，443） |
 | 证书 | `/etc/letsencrypt/live/cuowo.cn/`，至 2026-11-19；certbot 自动续期 |
-| 页脚代码 | `docs/.vitepress/config.mts` 的 `footer.copyright`；内页 `SiteBeian.vue` |
+| 页脚代码 | `docs/.vitepress/config.mts` 的 `footer.copyright`；内页 `SiteBeian.vue`；图标 `/images/beian-mps.png` |
 | 海外备份 | `https://blog.cuowo.win`（Cloudflare Pages）。`push main` **只更新 Pages** |
 | 日常国内更新 | 发布面板确认发布：push 之后本机构建并上传 guonei，轮询 `https://cuowo.cn/build.json` |
-| 公安联网备案 | 2026-08-21 已提交；个人主体；属地 **闽侯**（非常住地≠接入商海淀）；等短信 |
+| 公安联网备案 | 已通过；个人主体；属地 **闽侯**（非常住地≠接入商海淀） |
 
 旧域：`cuowocom.com` 备案失败，不再当国内主域；其 Nginx/证书可仍留在机上。`.win` 不能备案。
 
@@ -28,8 +30,8 @@
 1. 禁止 `docker system prune -a`；禁止动卷 `tracker-data`
 2. `available < 800MB` 停手
 3. 博客只用 **80/443**，勿占 UHT **8080** / n8n **5678**
-4. 不要删页脚 ICP 号
-5. 不要把公安号、数据码、证件号写进公开 docs
+4. 不要删页脚 ICP 号或公网安备展示号
+5. 不要把证件号、申请数据码写进公开 docs；页脚展示的公网安备号必须保留
 6. 未获作者明确要求：Agent 不手动 upload guonei、不 push、不把 Pages 当成国内站已更新。作者在发布面板点「确认发布」会上传国内站，这是现役日常路径
 
 ## 日常更新国内站
@@ -78,11 +80,9 @@ if (-not $KEY) { throw 'PANEL_GUONEI_KEY is required' }
 ssh -i $KEY root@100.88.115.43
 ```
 
-## 公安备案（已交，等审）
+## 公安备案（已通过，页脚已挂）
 
-平台：[全国互联网安全管理服务平台](https://beian.mps.gov.cn/)。个人走「个人国际联网备案」。审核地按常住地址到闽侯，不是腾讯云海淀。
-
-补材料或被打回时对照：
+平台：[全国互联网安全管理服务平台](https://beian.mps.gov.cn/)。个人走「个人国际联网备案」。审核地按常住地址到闽侯，不是腾讯云海淀。页脚展示号 `闽公网安备35018302000421号`，与 ICP 并列。补材料或被打回时对照：
 
 | 项 | 值 |
 |----|-----|
@@ -98,17 +98,17 @@ ssh -i $KEY root@100.88.115.43
 | 语种 | 中文简体 |
 | 域名证书 | 腾讯云「我的域名」→ `cuowo.cn` → 更多 → 下载域名证书 → 转 png/jpg 上传 |
 
-通过后：把公网安备号发给作者/Agent，写入页脚并链 `https://beian.mps.gov.cn/`（`SiteBeian.vue` + 首页 footer）。30 天内挂上。
+2026-08-24 已写入页脚（`SiteBeian.vue` + 首页 footer），链 `https://beian.mps.gov.cn/#/query/webSearch?code=35018302000421`。不要再当「等审未挂」。
 
 ## 验收
 
 | 检查 | 期望 |
 |------|------|
-| https://cuowo.cn | 200，页脚有闽 ICP 号 |
+| https://cuowo.cn | 200，页脚有闽 ICP 号与公网安备号 |
 | http://cuowo.cn | 301 → HTTPS |
 | https://www.cuowo.cn | 200 |
 | UHT `http://127.0.0.1:8080/api/health` | 200 |
 
 微信若仍拦：确认工信部已能查到号，并走 `https://cuowo.cn` 而不是旧 `.win` / 未备案域。
 
-最后更新：2026-08-22
+最后更新：2026-08-24

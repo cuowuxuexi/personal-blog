@@ -13,6 +13,6 @@ Short decisions that shape this repository's durable boundaries.
 - One decision per file
 - Prefer accepted/rejected language over long essays
 - Do not put private absolute paths in ADRs
-- Experimental content structures stay in specs/issues until Phase 3 review promotes them
+- Experimental content structures stay in specs/issues until a later review promotes them. Phase 3 structure projection does not by itself promote an experimental page split.
 
 最后更新：2026-08-22

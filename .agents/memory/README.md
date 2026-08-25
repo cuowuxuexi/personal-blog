@@ -7,12 +7,12 @@
 | 文件 | 说明 |
 | --- | --- |
 | `MEMORY.md` | 共享记忆索引 |
-| `project_arch-deepen-open.md` | 架构加深已进 origin；worktree 与未提交周记仍在 |
-| `project_cuowo-cn-domestic.md` | 国内站 cuowo.cn 现役指针 |
+| `project_arch-deepen-open.md` | 架构加深与 agent-speed 已进 origin；旧 worktree 仍保留 |
+| `project_cuowo-cn-domestic.md` | 国内站 cuowo.cn、确认发布与备案现役指针 |
 | `project_journey-panel-live.md` | 我的AI历程发布面板现行协议指针 |
 | `project_pharma-maps-frontend.md` | 医药研究地图前端投影与构建门 |
-| `project_orca-dispatch-cursor-model.md` | S2 派发 Cursor 执行窗口默认模型 |
-| `reference_content_projections.md` | 周记/历程构建期投影的权威入口与不可回退约束 |
+| `project_orca-dispatch-cursor-model.md` | Orca S2 派发 Cursor 执行窗口默认模型 |
+| `reference_content_projections.md` | 周记/历程身份投影与投研等结构投影的权威入口 |
 | `reference_release_preview.md` | job 级 release preview 的非根 base、SSR 合并与 fail-closed 约束 |
 | `feedback_standalone-html.md` | 独立 HTML 的 404 与 `<base>+#hash` 漏检指针 |
 | `README.md` | 本目录说明 |

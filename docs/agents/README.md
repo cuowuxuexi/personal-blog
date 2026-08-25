@@ -19,6 +19,15 @@ Agent-facing operating notes for this repository. Root routing starts at `AGENTS
 | [agent-first-modularization.md](./agent-first-modularization.md) | Phased plan for content authority, capability modules, source maps, verification, and cleanup |
 | [agent-routing-benchmark.md](./agent-routing-benchmark.md) | Eight-task routing benchmark, scoring method, current result, and rerun cadence |
 
+## Accepted architecture deepen (2026-08-24)
+
+阶段 3 与阶段 5 按六条已批提案（改刚好/中档）完成，已进入 `origin/main`。阶段 4 样式拆分与阶段 6 大扫除未做。过程证据仍在 `.planning/架构加深/`，现行入口以本表和模块化计划为准。该包中的“Herdr S3”是 2026-08-24 执行时的历史角色标签；现役 `herdr-collaboration` 仅有 S1/S2，不得按旧 S3 拓扑复刻。
+
+| File | Purpose |
+| --- | --- |
+| [验收报告.md](../../.planning/架构加深/验收报告.md) | 独立验收结论与验证数字 |
+| [对照模块化计划.md](../../.planning/架构加深/对照模块化计划.md) | 六条提案与阶段 3–6 的重叠/缺口 |
+
 ## Accepted Phase 2 package
 
 | File | Purpose |
@@ -64,4 +73,4 @@ Content/design routing: `.agents/skills/blog-editor/SKILL.md`.
 
 Domain language: `CONTEXT.md`. Durable decisions: `docs/adr/`.
 
-最后更新：2026-08-24
+最后更新：2026-08-25

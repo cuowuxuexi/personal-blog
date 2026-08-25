@@ -18,5 +18,12 @@ panel/.local-backups/
 # Agent scratch screenshots
 .cursor-shots/
 
+# Local Chrome debug profile and UI snapshots (cookies / login data)
+scratch/chrome-debug/
+chrome-state.json
+
+# Accidental VitePress cache at repo root
+.vitepress/
+
 # Local test runner state
 test-results/

@@ -25,10 +25,6 @@ import {
   kindIdForPath,
   isManagedContentPath,
   matchesKindAssetPath,
-  kindContentPrefix,
-  kindAssetPrefix,
-  isUnderKindContentDir,
-  isKindAssetFile,
   yearGroupTitle,
   contentFileName,
   contentSiteLink,
@@ -228,17 +224,6 @@ test('path classification keeps nested life-family dirs distinct', () => {
   assert.equal(matchesKindAssetPath('journey', 'docs/public/images/journey/infra-cover.png'), true)
   assert.equal(matchesKindAssetPath('research', 'docs/public/images/weekly/x.webp'), false)
   assert.equal(assetRulesFor('weekly-investment').directory, 'docs/public/images/weekly')
-
-  const life = getContentKind('weekly-life')
-  const journey = getContentKind('journey')
-  assert.equal(kindContentPrefix(life), `${life.contentDir}/`)
-  assert.equal(kindAssetPrefix(journey), `${journey.assets.directory}/`)
-  assert.equal(kindAssetPrefix('research'), '')
-  assert.equal(isUnderKindContentDir(life, `${life.contentDir}/2026-08-17.md`), true)
-  assert.equal(isUnderKindContentDir(life, `${journey.contentDir}/基础设施篇.md`), true)
-  assert.equal(isKindAssetFile(life, `${life.assets.directory}/2026-08-17-01.webp`), true)
-  assert.equal(isKindAssetFile(life, life.assets.directory), false)
-  assert.equal(isKindAssetFile('research', 'docs/public/images/weekly/x.webp'), false)
 })
 
 test('post query helpers classify kinds and hide research from recent', () => {

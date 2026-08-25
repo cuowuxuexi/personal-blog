@@ -11,11 +11,6 @@ import StandaloneHtml from './components/StandaloneHtml.vue'
 import JumpToStandalone from './components/JumpToStandalone.vue'
 import WeeklyEvents from './components/WeeklyEvents.vue'
 import WeeklyEventYear from './components/WeeklyEventYear.vue'
-import ResearchDirectory from './components/ResearchDirectory.vue'
-import HubTopicList from './components/HubTopicList.vue'
-import IndustryDirectory from './components/IndustryDirectory.vue'
-import TrackedSubjectList from './components/TrackedSubjectList.vue'
-import ResearchCount from './components/ResearchCount.vue'
 import type { EnhanceAppContext } from 'vitepress'
 import { hrefWithSiteBase, isStandaloneHtmlPath } from './href-with-base'
 import './style.css'
@@ -31,11 +26,6 @@ export default {
     app.component('JumpToStandalone', JumpToStandalone)
     app.component('WeeklyEvents', WeeklyEvents)
     app.component('WeeklyEventYear', WeeklyEventYear)
-    app.component('ResearchDirectory', ResearchDirectory)
-    app.component('HubTopicList', HubTopicList)
-    app.component('IndustryDirectory', IndustryDirectory)
-    app.component('TrackedSubjectList', TrackedSubjectList)
-    app.component('ResearchCount', ResearchCount)
     const originalGo = router.go.bind(router)
     router.go = (href?: string) => {
       if (!href) return originalGo(href)
