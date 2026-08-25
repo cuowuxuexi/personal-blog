@@ -217,6 +217,7 @@ export function createDefaultProbes({ repoRoot, productionOrigin, guonei, run: r
         distDir: productionDir,
         config,
         run: runOverride || run,
+        sha,
       })
       return { ok: true, origin: productionOrigin }
     },
