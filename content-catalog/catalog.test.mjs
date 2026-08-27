@@ -182,6 +182,10 @@ test('hermes and research path rules match live scan / hub conventions', () => {
     contentSiteLink('research', { relativeFile: 'docs/投资/投研/医药/药明康德/index.md' }),
     '/投资/投研/医药/药明康德/',
   )
+  assert.equal(
+    contentSiteLink('research', { relativeFile: 'docs/投资/投研/医药/恒瑞医药/四问收口/index.md' }),
+    '/投资/投研/医药/恒瑞医药/四问收口/',
+  )
 
   const philosophy = getContentKind('philosophy')
   const bigQuestion = getContentKind('big-question')

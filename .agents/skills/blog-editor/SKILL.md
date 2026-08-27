@@ -41,7 +41,7 @@ description: >-
 | `content.weekly-investment` | 新增或修改投资周记 | `docs/投资/周记/*.md` | `templates/weekly-invest.md` + `references/weekly-and-journey.md`；再读 `CONTEXT.md` 与 `docs/agents/research-publishing.md` |
 | `content.weekly-life` | 新增或修改 AI与生活周记 | `docs/AI与生活/*.md`（不含子目录） | `templates/weekly-life.md` + `references/weekly-and-journey.md` |
 | `content.journey` | 我的AI历程篇章/日期期数 | `docs/AI与生活/我的AI历程/` | `references/weekly-and-journey.md`；只有用户明确指定面板时才转面板 |
-| `content.research-*` | 行业、研究地图、标的档案 | `docs/投资/投研/**` | `references/content-domains.md` + `docs/agents/research-publishing.md`；起草前再按协议读领域资料 |
+| `content.research-*` | 行业、研究地图、标的档案；「写入博客」 | `docs/投资/投研/**` | `references/content-domains.md` + `docs/agents/research-publishing.md`。「写入博客」按交稿落页，不回源；「按投资系统改认识」才回源；「上传」走 `pnpm publish:guonei` |
 | `content.philosophy` | 投资哲学内容 | `docs/投资哲学/**` | `references/content-domains.md` |
 | `content.big-question` | 大问题内容 | `docs/大问题/**` | `references/content-domains.md` |
 | `content.about` | 关于页 | `docs/关于.md` | 通常没有索引副作用 |
@@ -63,6 +63,7 @@ description: >-
 - 公开资源位于 `docs/public/`，正文引用以 `/` 开头。先做好的独立 HTML 放到 `docs/public/html/<名字>/index.html`，文章里用 `<StandaloneHtml src="/html/<名字>" />` 嵌入并单独打开。
 - `docs/agents/**`、`docs/adr/**` 和所有 `README.md` 不进入站点构建。
 - 周记 / 历程登记靠构建期投影；索引副作用以 `references/weekly-and-journey.md` 为准，不要手改 `posts.ts` 或受管 sidebar 字面量。
+- 投研 / 哲学 / 大问题侧栏由内容目录投影；新标的或章节不要手改 `config.mts`。投研标的读者面是完整档案页，不落成独立 HTML。
 
 ## Content policy
 
@@ -106,4 +107,4 @@ description: >-
 
 只有当路径、能力边界、内容类型或编辑工作流发生变化时才更新本 Skill；普通正文和局部样式任务不要顺手改它。
 
-最后更新：2026-08-25
+最后更新：2026-08-27

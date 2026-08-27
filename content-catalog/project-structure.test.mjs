@@ -7,9 +7,12 @@ import { fileURLToPath } from 'node:url'
 import {
   projectBigQuestionSidebar,
   projectPhilosophySidebar,
+  industrySubjectDirectory,
   projectResearchSidebar,
   researchHubRows,
   researchHubSummary,
+  researchSubjects,
+  trackedSubjects,
   structureNodeFromMarkdown,
   structureNodesFromSources,
   topicCards,
@@ -120,7 +123,9 @@ test('live structure projection matches current public URLs and hub counts', () 
     '白酒行业',
     '硬件制造行业',
   ])
-  assert.equal(researchHubSummary(nodes).text, '5 个行业 · 3 个标的')
+  assert.equal(researchHubSummary(nodes).industryCount, 5)
+  assert.equal(researchHubSummary(nodes).subjectCount, researchSubjects(nodes).length)
+  assert.ok(researchSubjects(nodes).some((item) => item.link === '/投资/投研/医药/恒瑞医药/'))
   assert.deepEqual(researchHubRows(nodes).map((row) => row.link), [
     '/投资/投研/医药/',
     '/投资/投研/互联网/',
@@ -141,6 +146,55 @@ test('live structure projection matches current public URLs and hub counts', () 
   assert.deepEqual(projectBigQuestionSidebar(nodes)[0].items.map((i) => i.text), [
     '总览',
     '开源与闭源',
+  ])
+})
+
+test('subject chapter nests under the company; directory stays company-only', () => {
+  const sources = [
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/医药/index.md',
+      raw: `---
+title: 医药行业
+pageClass: industry-index
+order: 1
+---
+`,
+    },
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/医药/恒瑞医药/index.md',
+      raw: `---
+title: 恒瑞医药
+pageClass: subject-index
+order: 1
+---
+`,
+    },
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/医药/恒瑞医药/四问收口/index.md',
+      raw: `---
+title: 四问收口
+pageClass: subject-index
+order: 1
+---
+`,
+    },
+  ]
+  const nodes = structureNodesFromSources(sources)
+  const groups = projectResearchSidebar(nodes)
+  const hengrui = groups[0].items[2].items[0]
+  assert.equal(hengrui.text, '恒瑞医药')
+  assert.equal(hengrui.link, '/投资/投研/医药/恒瑞医药/')
+  assert.deepEqual(hengrui.items.map((item) => item.link), [
+    '/投资/投研/医药/恒瑞医药/四问收口/',
+  ])
+  assert.deepEqual(industrySubjectDirectory(nodes, '医药').items.map((item) => item.link), [
+    '/投资/投研/医药/恒瑞医药/',
+  ])
+  assert.deepEqual(trackedSubjects(nodes).map((item) => item.link), [
+    '/投资/投研/医药/恒瑞医药/',
   ])
 })
 

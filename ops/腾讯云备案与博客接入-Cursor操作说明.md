@@ -38,41 +38,9 @@
 
 周记 / 历程优先走发布面板（`pnpm panel`）。确认发布会：提交并 `push main`（海外 Pages 备份），再从快照做 `base=/` 生产构建、写入 `build.json`、传到 guonei。需要 Tailscale 与本机 `~/.ssh/id_ed25519_servers`（或 `.env` 的 `PANEL_GUONEI_KEY`）。
 
-主题、投研页等不在面板范围内时，仍本机构建再上传（PowerShell 的 `tar` 不要用带盘符的绝对路径当归档路径，会被解析成远程主机）。手动上传也要写入 `build.json`，否则面板会认为国内站还停在旧提交：
+主题、投研页等不在面板范围内时：先只提交这次要上的文件并 `push main`，再从仓库根执行 `pnpm publish:guonei`。它会构建、写 `build.json`、复用 `uploadDist`。`docs/` / `panel/` / `content-catalog/` / `scripts/` / `package.json` 还有未提交改动时会拒绝上传，避免夹带周记半成品。未获作者明确说「上传」不要跑这条命令。
 
-```powershell
-# 从仓库根执行
-pnpm docs:build
-$env:PANEL_BUILD_SHA = (git rev-parse HEAD)
-node scripts/write-build-metadata.mjs
-
-$KEY = $env:PANEL_GUONEI_KEY
-if (-not $KEY) { throw 'PANEL_GUONEI_KEY is required' }
-Push-Location docs\.vitepress\dist
-if (Test-Path blog-dist.tar) { Remove-Item blog-dist.tar -Force }
-tar -cf blog-dist.tar .
-Pop-Location
-scp -i $KEY docs\.vitepress\dist\blog-dist.tar root@100.88.115.43:/tmp/blog-dist.tar
-```
-
-服务器上：
-
-```bash
-rm -rf /var/www/blog.new /var/www/blog.old
-mkdir -p /var/www/blog.new
-tar -xf /tmp/blog-dist.tar -C /var/www/blog.new
-rm -f /var/www/blog.new/blog-dist.tar
-if [ -d /var/www/blog ]; then mv /var/www/blog /var/www/blog.old; fi
-mv /var/www/blog.new /var/www/blog
-chown -R nginx:nginx /var/www/blog
-chmod -R a+rX /var/www/blog
-curl -sI https://cuowo.cn | head
-curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/api/health
-```
-
-本机删掉 `docs/.vitepress/dist/blog-dist.tar`，勿提交。
-
-登录：
+需要登服务器时：
 
 ```powershell
 $KEY = $env:PANEL_GUONEI_KEY
@@ -111,4 +79,4 @@ ssh -i $KEY root@100.88.115.43
 
 微信若仍拦：确认工信部已能查到号，并走 `https://cuowo.cn` 而不是旧 `.win` / 未备案域。
 
-最后更新：2026-08-24
+最后更新：2026-08-27

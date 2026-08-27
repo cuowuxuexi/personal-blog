@@ -12,6 +12,19 @@ Related: root `CONTEXT.md`, `docs/adr/0001-research-authority-and-publication-bo
 4. Publication is deny-by-default. Drafting is not publishing.
 5. Never put private absolute paths, handoff prompts, raw review files, workpapers, cognition originals, or non-redistributable source files into public docs.
 
+## Agent triggers
+
+The author finishes research in the investment system, then hands a draft to this repo.
+
+| The author says | Do this | Do not |
+| --- | --- | --- |
+| 「写入博客」 / 「把这份草稿写进去」 | Rewrite the handed draft as a full subject-archive Markdown page. New company → `docs/投资/投研/<行业>/<公司>/index.md`. Existing company → `docs/投资/投研/<行业>/<公司>/<标题>/index.md` with the same `subject-index` chrome. Preview, then wait. | Do not re-run Gate 1 discussion. Do not reread the private system unless asked. Do not land 投研标的 as standalone HTML or `<StandaloneHtml>`. |
+| 「上传」 | Commit only this research change, `push main`, then `pnpm publish:guonei`. | Do not rewrite the argument. Do not include weekly/panel WIP. |
+| 「按投资系统改认识」 | Resolve `research-sources.local.yaml` and rewrite the named page. | Do not treat this as the default handoff. |
+| 「新开一个行业」 | Stop and ask how to lay the industry shell. | Do not open a new industry from 「写入博客」. |
+
+Publication is still deny-by-default. 「写入博客」 is not 「上传」.
+
 ## Required reading before research content work
 
 1. Root `CONTEXT.md`
@@ -46,14 +59,15 @@ Do not set `source_root` to the command-center folder while also storing paths t
 When creating or materially updating **any** investment weekly note or research content under `docs/投资/` (including `周记/` and `投研/`):
 
 1. Read `research-sources.local.yaml` if it exists.
-2. Apply the two human publication gates for that content instance before drafting or publishing.
-3. If the content depends on private research, resolve the target page's `command_id` and consulted materials from the index.
-4. Read the private research registry from `source_root` + `registry_file`.
-5. Follow only the registered objects needed for the current task:
+2. If the author said 「写入博客」 and handed a finished draft, skip private-source reread and Gate 1. Still apply the public-body contract and Gate 2 before any push/upload. Stop here for source resolution.
+3. Apply the two human publication gates for that content instance before drafting or publishing.
+4. If the content depends on private research, resolve the target page's `command_id` and consulted materials from the index.
+5. Read the private research registry from `source_root` + `registry_file`.
+6. Follow only the registered objects needed for the current task:
    - command charter / current research view when relevant
    - campaign state and adjudicated brief when relevant
    - consulted materials listed for the page
-6. Do not invent IDs, status, dates, or authority from directory names alone.
+7. Do not invent IDs, status, dates, or authority from directory names alone.
 
 ### If the local index is missing
 
@@ -84,6 +98,8 @@ Before writing or substantially rewriting research/weekly content, confirm with 
 
 Do not start body drafting until Gate 1 is clear for that content instance.
 
+Skip Gate 1 when the author says 「写入博客」 and hands a finished draft. Gate 1 still applies to 「按投资系统改认识」, a new industry, a new research map, or a formal-conclusion rewrite.
+
 ### Gate 2 — approve before publish
 
 After local draft and preview:
@@ -95,6 +111,8 @@ After local draft and preview:
 - one approval applies only to that content instance
 
 Agents must not push, deploy, or treat issue readiness as publish approval unless the human explicitly asks for that action.
+
+When the human says 「上传」 for research pages: commit only those files, push `main`, then run `pnpm publish:guonei`. Do not invent a second upload path.
 
 ## What may become public
 

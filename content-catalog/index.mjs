@@ -81,6 +81,7 @@ export {
   researchIndustries,
   researchMaps,
   researchSubjects,
+  researchSubjectChapters,
   researchMapsHub,
   topicNodes,
   hubNode,

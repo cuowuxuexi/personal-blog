@@ -2,9 +2,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import {
   flattenStructureLinks,
+  industrySubjectDirectory,
   researchHubRows,
   researchHubSummary,
   researchMaps,
+  researchMapsHub,
+  researchSubjectChapters,
   researchSubjects,
   topicCards,
   trackedSubjects,
@@ -108,6 +111,8 @@ export function checkOverviewLists(repoRoot, nodes) {
   const medical = readRepo(repoRoot, 'docs/投资/投研/医药/index.md')
   const medicalMaps = researchMaps(nodes, '医药')
   const medicalSubjects = researchSubjects(nodes, '医药')
+  const medicalChapters = researchSubjectChapters(nodes, '医药')
+  const medicalDirectory = industrySubjectDirectory(nodes, '医药')
   const medicalHrefs = hrefsIn(medical, ['/投资/投研/'])
   for (const href of medicalHrefs) {
     const known = flattenStructureLinks(nodes, 'research').some((item) => item.link === href)
@@ -120,17 +125,34 @@ export function checkOverviewLists(repoRoot, nodes) {
       })
     }
   }
-  if (medicalMaps.length !== 3) {
+  if (medicalMaps.length && !researchMapsHub(nodes, '医药')) {
     fail(failures, 'overview-count', {
       kindId: 'research',
-      message: `医药地图数量应对账为 3，实际 ${medicalMaps.length}`,
+      message: '医药有详图时必须有地图总览',
     })
   }
-  if (medicalSubjects.length !== 2) {
+  if (medicalDirectory.items.length !== medicalSubjects.length) {
     fail(failures, 'overview-count', {
       kindId: 'research',
-      message: `医药标的数量应对账为 2，实际 ${medicalSubjects.length}`,
+      message: '医药行业清单与标的档案根不一致',
     })
+  }
+  const subjectKeys = new Set(medicalSubjects.map((item) => item.slug))
+  for (const chapter of medicalChapters) {
+    if (!subjectKeys.has(chapter.parentSlug)) {
+      fail(failures, 'overview-unknown-link', {
+        kindId: 'research',
+        link: chapter.link,
+        message: `章节没有对应档案根：${chapter.link}`,
+      })
+    }
+    if (medicalDirectory.items.some((item) => item.link === chapter.link)) {
+      fail(failures, 'overview-count', {
+        kindId: 'research',
+        link: chapter.link,
+        message: `章节不得进入行业标的清单：${chapter.link}`,
+      })
+    }
   }
 
   const tracked = trackedSubjects(nodes).map((item) => item.link)
@@ -147,6 +169,15 @@ export function checkOverviewLists(repoRoot, nodes) {
       kindId: 'research',
       message: '跟踪标的清单与标的计数不一致',
     })
+  }
+  for (const chapter of researchSubjectChapters(nodes)) {
+    if (tracked.includes(chapter.link)) {
+      fail(failures, 'overview-count', {
+        kindId: 'research',
+        link: chapter.link,
+        message: `章节不得进入跟踪标的：${chapter.link}`,
+      })
+    }
   }
 
   return { ok: failures.length === 0, failures }

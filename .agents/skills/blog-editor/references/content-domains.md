@@ -4,7 +4,9 @@
 
 ## 投研
 
-新标的放在 `docs/投资/投研/<行业>/<标的>/index.md`，公开 URL 为 `/投资/投研/<行业>/<标的>/`。起草前必须执行 `docs/agents/research-publishing.md` 的 Gate 1 与本地回源协议；发布前执行 Gate 2。
+新标的放在 `docs/投资/投研/<行业>/<标的>/index.md`，公开 URL 为 `/投资/投研/<行业>/<标的>/`。已有档案后再交研究结果，落在 `docs/投资/投研/<行业>/<标的>/<标题>/index.md`，仍是完整档案页（`pageClass: subject-index`）。投研标的不走独立 HTML / `<StandaloneHtml>`。
+
+作者说「写入博客」时按交来的稿改写落页，不回源、不重走 Gate 1。作者说「按投资系统改认识」才执行 `docs/agents/research-publishing.md` 的 Gate 1 与本地回源。发布前执行 Gate 2；作者说「上传」后只提交这次投研文件，`push main`，再跑 `pnpm publish:guonei`。
 
 ### 公开正文合同
 
@@ -16,10 +18,10 @@
 
 投研页面不强制统一章节顺序，但通常从以下读者问题中选择最小充分结构：研究对象或问题、适用范围与证据边界、核心内容、当前理解、开放问题、相关地图或标的、重要认识修订。
 
-现阶段新增既有行业下的标的只改：
+现阶段新增既有行业下的标的或章节只改：
 
-1. 新标的目录的 `index.md`（文头声明 `pageClass: subject-index`、`order`，以及清单用的 `ticker` / `status` / `hubLead`）与导航型 `README.md`。
-2. 所属行业、投研总览、投资总览跟踪卡和 `/投资/投研/` sidebar 由内容目录构建投影；不要手改 `docs/.vitepress/config.mts`。
+1. 档案根或章节目录的 `index.md`（文头声明 `pageClass: subject-index`、`order`，档案根再写清单用的 `ticker` / `status` / `hubLead`）与导航型 `README.md`。已有档案根时，在首页加一条指向新章的链接。
+2. 所属行业、投研总览、投资总览跟踪卡和 `/投资/投研/` sidebar 由内容目录构建投影；不要手改 `docs/.vitepress/config.mts`。行业清单只显示公司；侧栏在公司下展开章节。
 
 投研默认不登记 `docs/.vitepress/posts.ts`，避免进入首页最近更新；只有作者明确改变产品语义时才讨论。新增全新行业再写行业 hub / 研究地图入口，并在行业文头声明 `order`。不要另造第二套 registry。
 
@@ -39,4 +41,4 @@
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-08-24
+最后更新：2026-08-27

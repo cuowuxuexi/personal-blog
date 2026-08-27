@@ -16,7 +16,7 @@ Use the publishing panel only when the author explicitly asks to work through it
 
 Prebuilt standalone HTML belongs in `docs/public/html/<name>/index.html` and is embedded with `<StandaloneHtml src="/html/<name>" />`. Do not create a Markdown page for it, and do not open it with a normal in-site link. The publishing panel does not upload HTML. Existing Pi / Grok guides stay at `docs/public/journey-guides/`.
 
-Before drafting investment weekly notes or research content under `docs/投资/`, follow the research protocol selected by the Skill. Private research remains the research authority; this repository owns public presentation.
+Before drafting investment weekly notes or research content under `docs/投资/`, follow the research protocol selected by the Skill. Private research remains the research authority; this repository owns public presentation. For 投研标的：作者说「写入博客」按交来的稿改写成完整档案页（已有公司则在其下新开章节），不回源；说「上传」才提交这次投研文件、`push main` 并跑 `pnpm publish:guonei`；说「按投资系统改认识」才回源。
 
 Hermes diary is retired. Keep existing pages; create a new day only if the author explicitly reopens `docs/agents/hermes-diary.md`.
 

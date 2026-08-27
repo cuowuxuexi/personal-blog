@@ -33,22 +33,22 @@
 | **内容目录 / 信息架构** | 按内容类型查询列表、最新一期、导航和结构关系 | `content-catalog/`（共享合同）、`docs/.vitepress/posts.ts`、`docs/.vitepress/config.mts`、`panel/lib/repo-paths.mjs` | 内容类型、导航分组、顺序、可见性；周记/历程已按 ADR 0002 接入构建期投影 |
 | **站点呈现** | 把内容目录和 Markdown 渲染为公开页面 | `docs/.vitepress/theme/index.ts`、`Layout.vue`、`theme/components/`、`theme/style.css` | 页面组件、布局、交互、视觉与响应式 |
 | **发布面板** | 作者在本地编辑周记/历程并准备、确认发布 | `panel/start.mjs`、`panel/server.mjs`、`panel/public/`、`panel/lib/` | 编辑会话、工作区内容变更、发布任务交互 |
-| **发布部署** | 从已确认快照提交、推送、部署并校验生产 SHA | `panel/lib/publish-job.mjs`、`probes.mjs`、`guonei.mjs`、`.github/workflows/`、`ops/` | 发布状态、Git/构建/网络副作用、双站部署 |
+| **发布部署** | 从已确认快照提交、推送、部署并校验生产 SHA | `panel/lib/publish-job.mjs`、`probes.mjs`、`guonei.mjs`、`scripts/publish-guonei.mjs`、`.github/workflows/`、`ops/` | 发布状态、Git/构建/网络副作用、双站部署。投研说「上传」后走 `pnpm publish:guonei` |
 | **Agent 导航** | 把自然语言任务路由到正确能力、协议、源码和验证 | `AGENTS.md`、本文件、`docs/agents/`、`.agents/skills/` | 路由条件、红线、源码地图和最小验证指针 |
 
-> 周记与「我的AI历程」已完成去三写：Markdown/frontmatter 是内容身份真源，`posts.ts` 与受管 sidebar 由构建期投影生成。投研、投资哲学、大问题等尚未接入投影的内容仍可能需要维护 hub/sidebar；以 blog-editor Skill 的当前副作用表为准。
+> 周记、历程、投研、投资哲学、大问题的清单和受管 sidebar 由构建期投影生成。不要手改 `posts.ts` / `config.mts` 去登记这些条目。
 
 ## 任务路由
 
 | 用户意图 | 首读 | 常见实现入口 | 最小验证 |
 | --- | --- | --- | --- |
-| 新增/修改周记、历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；周记/历程目录自动投影，其它内容域按 Skill 维护 live hub/sidebar | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
+| 新增/修改周记、历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；周记/历程/投研目录自动投影 | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
 | 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
 | 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；正文 `<StandaloneHtml src="/html/<名字>" />` | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
 | 修改某类页面样式 | 目标页面 `pageClass` | `docs/.vitepress/theme/style.css` 对应段 | `pnpm docs:build` + 1440/768/390 检查 |
 | 修改栏目、侧栏、最近更新或最新一期 | 内容目录 / 信息架构能力 | 先读 `content-catalog/`；`posts.ts` / `config.mts` 是站点消费者，面板经 adapter 消费同一合同 | `pnpm test:content`；接线后还要 `pnpm docs:build` + 相关面板测试 |
 | 修改发布面板字段或交互 | `panel/README.md` → `panel/public/README.md` | `panel/public/index.html`、`app.js`、相关 `public/*.mjs` | 定向 `node --test panel/<feature>.test.mjs` |
-| 修改发布清单、确认、推送或国内部署 | 发布面板协议与 `ops/` runbook | `panel/lib/publish-job.mjs`、`scope.mjs`、`probes.mjs`、`guonei.mjs` | 定向测试 + `pnpm test:panel` |
+| 修改发布清单、确认、推送或国内部署 | 发布面板协议与 `ops/` runbook | `panel/lib/publish-job.mjs`、`scope.mjs`、`probes.mjs`、`guonei.mjs`、`scripts/publish-guonei.mjs` | 定向测试 + `pnpm test:panel`；投研上传口再跑 `scripts/publish-guonei.test.mjs` |
 | 修改 Agent 规则或源码导航 | 本文件、`docs/agents/README.md` | `AGENTS.md`、Skill、协议、目录 README | 检查每项事实只有一个权威入口 |
 
 ## 依赖方向

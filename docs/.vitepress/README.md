@@ -51,6 +51,7 @@
 ## Current contracts
 
 - 周记 / 历程身份真源是 Markdown frontmatter；`posts` 与受管 sidebar 由构建期投影生成。不要手改 `posts.ts` / `config.mts` 去登记周记或历程条目。
+- 投研 / 投资哲学 / 大问题侧栏由 `managed-sidebar-fs` 投影注入。新标的或章节只写目录和文头，不要手改 `config.mts`。
 - `config.mts` 的 base 必须读取 `VITEPRESS_BASE` 并默认 `/`；job 级 release preview 依赖该契约，非根路径 SSR 修复由 `panel/lib/probes.mjs` 负责。
 - VitePress 排除 `docs/agents/**`、`docs/adr/**` 和所有 `README.md`。
 - 修改内容目录 / 信息架构先读根 `PROJECT.md`；修改页面设计读 blog-editor 的 `references/site-design.md`。
@@ -61,4 +62,4 @@
 - 内容合同 / 最近更新 / 投影对等：`pnpm test:content`
 - 归一化定向测试：`node --test docs/.vitepress/normalize-math.test.mjs docs/.vitepress/normalize-weekly-headings.test.mjs`
 
-最后更新：2026-08-24
+最后更新：2026-08-27

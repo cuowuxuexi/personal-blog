@@ -28,7 +28,7 @@ export const lifeYearSidebarGroups = projectLifeSidebarManagedParts(managedPosts
 /** `/AI与生活/我的AI历程/` 具名篇章组 + 日期期数年份组 */
 export const journeySidebarGroups = projectJourneySidebar(managedPosts)
 
-/** `/投资/投研/` 行业树（静态投研壳仍手写） */
+/** `/投资/投研/` 行业树（公司下章节挂在该公司下面） */
 export const researchIndustrySidebarGroups = projectResearchSidebar(structureNodes)
 
 /** `/投资哲学/` 总览 + 主题 */

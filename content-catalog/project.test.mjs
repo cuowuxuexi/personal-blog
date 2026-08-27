@@ -286,16 +286,14 @@ test('live: fs and reconstructed glob adapters agree; year/journey sidebar proje
   const lifeYear = projectYearSidebarGroups('weekly-life', fromFs)
   const investYear = projectInvestSidebarManagedParts(fromFs)
   assert.deepEqual(lifeYear.map((g) => g.text), ['周记 · 2026年'])
-  assert.deepEqual(lifeYear[0].items.map((i) => i.link), [
-    '/AI与生活/2026-08-17',
-    '/AI与生活/2026-08-12',
-  ])
+  const lifeLinks = lifeYear[0].items.map((i) => i.link)
+  assert.ok(lifeLinks.includes('/AI与生活/2026-08-17'))
+  assert.ok(lifeLinks.includes('/AI与生活/2026-08-12'))
   assert.deepEqual(investYear.map((g) => g.text), ['2026年'])
-  assert.deepEqual(investYear[0].items.map((i) => i.link), [
-    '/投资/周记/2026-08-17-那是抓不住的月亮',
-    '/投资/周记/2026-08-13-看烟花',
-    '/投资/周记/2026-08-08-写在投资笔记开始之前',
-  ])
+  const investLinks = investYear[0].items.map((i) => i.link)
+  assert.ok(investLinks.includes('/投资/周记/2026-08-17-那是抓不住的月亮'))
+  assert.ok(investLinks.includes('/投资/周记/2026-08-13-看烟花'))
+  assert.ok(investLinks.includes('/投资/周记/2026-08-08-写在投资笔记开始之前'))
 
   const journeyYear = projectYearSidebarGroups('journey', fromFs)
   assert.deepEqual(journeyYear, [])

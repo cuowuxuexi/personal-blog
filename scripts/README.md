@@ -7,6 +7,7 @@
 | 文件 | 说明 |
 | --- | --- |
 | `write-build-metadata.mjs` | 向构建产物写入 `{ sha, builtAt }` 的 `build.json`；CI 和国内发布校验使用 |
+| `publish-guonei.mjs` | 构建并上传 cuowo.cn；不 commit/push。作者说「上传」且站点改动已提交后跑 `pnpm publish:guonei` |
 | `preview-ready.mjs` | 探 5173 是否可连（`127.0.0.1` / `localhost` / `::1`）；`pnpm preview:ready` |
 | `check-standalone-html.mjs` | 独立 HTML 面包屑与站内链接合同；按 `<base>` 解析后的 `URL.hash` 验锚点；`pnpm check:html` |
 | `create-panel-shortcut.ps1` | 在 Windows 桌面创建/更新发布面板快捷方式与图标 |
@@ -16,4 +17,4 @@
 
 无。
 
-最后更新：2026-08-25
+最后更新：2026-08-27

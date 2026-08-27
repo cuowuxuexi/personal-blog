@@ -64,6 +64,14 @@ function inferResearchRole(rest) {
   if (parts.length === 3 && parts[1] !== MAPS_DIR && parts[2] === 'index.md') {
     return { role: 'subject', industry: parts[0], slug: parts[1] }
   }
+  if (parts.length === 4 && parts[1] !== MAPS_DIR && parts[3] === 'index.md') {
+    return {
+      role: 'subject-chapter',
+      industry: parts[0],
+      slug: parts[2],
+      parentSlug: parts[1],
+    }
+  }
   return null
 }
 
@@ -90,7 +98,7 @@ function pageClassOk(kind, role, pageClass) {
     if (role === 'hub') return value === 'research-index'
     if (role === 'industry') return value === 'industry-index'
     if (role === 'maps-hub' || role === 'map') return value === 'map-index'
-    if (role === 'subject') return value === 'subject-index'
+    if (role === 'subject' || role === 'subject-chapter') return value === 'subject-index'
     return false
   }
   if (role === 'hub') return value === 'investment-hub'
@@ -124,6 +132,7 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
     role: inferred.role,
     industry: inferred.industry,
     slug: inferred.slug,
+    parentSlug: inferred.parentSlug || null,
     title,
     sidebarText: fmString(fm, 'sidebarText') || title,
     description: fmString(fm, 'description'),
@@ -186,6 +195,20 @@ export function researchMaps(nodes, industry) {
 
 export function researchSubjects(nodes, industry) {
   return nodesOf(nodes, 'research', 'subject', industry)
+}
+
+export function researchSubjectChapters(nodes, industry, subjectSlug) {
+  return (nodes || [])
+    .filter((node) => (
+      node.kindId === 'research'
+      && node.role === 'subject-chapter'
+      && node.link
+      && node.pageClassOk
+      && (industry == null || node.industry === industry)
+      && (subjectSlug == null || node.parentSlug === subjectSlug)
+    ))
+    .slice()
+    .sort(compareNodes)
 }
 
 export function researchMapsHub(nodes, industry) {
@@ -329,7 +352,19 @@ export function projectResearchSidebar(nodes) {
         {
           text: kind.subjectsGroupText || '标的档案',
           collapsed: true,
-          items: subjects.map((item) => ({ text: item.sidebarText, link: item.link })),
+          items: subjects.map((item) => {
+            const chapters = researchSubjectChapters(nodes, industry.slug, item.slug)
+            if (!chapters.length) return { text: item.sidebarText, link: item.link }
+            return {
+              text: item.sidebarText,
+              link: item.link,
+              collapsed: true,
+              items: chapters.map((chapter) => ({
+                text: chapter.sidebarText,
+                link: chapter.link,
+              })),
+            }
+          }),
         },
       ],
     })
