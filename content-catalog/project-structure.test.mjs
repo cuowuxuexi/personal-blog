@@ -120,7 +120,7 @@ test('live structure projection matches current public URLs and hub counts', () 
     '白酒行业',
     '硬件制造行业',
   ])
-  assert.equal(researchHubSummary(nodes).text, '5 个行业 · 2 个标的')
+  assert.equal(researchHubSummary(nodes).text, '5 个行业 · 3 个标的')
   assert.deepEqual(researchHubRows(nodes).map((row) => row.link), [
     '/投资/投研/医药/',
     '/投资/投研/互联网/',

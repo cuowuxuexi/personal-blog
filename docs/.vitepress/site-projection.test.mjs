@@ -97,6 +97,7 @@ test('research / philosophy / big-question sidebars project from structure decla
   ])
   assert.deepEqual(researchIndustrySidebarGroups[0].items[2].items.map((i) => i.link), [
     '/投资/投研/医药/药明康德/',
+    '/投资/投研/医药/恒瑞医药/',
   ])
   assert.deepEqual(researchIndustrySidebarGroups[1].items[2].items.map((i) => i.link), [
     '/投资/投研/互联网/腾讯/',

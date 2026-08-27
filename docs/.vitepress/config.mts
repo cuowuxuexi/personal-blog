@@ -137,6 +137,7 @@ export default defineConfig({
               collapsed: true,
               items: [
                 { text: '药明康德', link: '/投资/投研/医药/药明康德/' },
+                { text: '恒瑞医药', link: '/投资/投研/医药/恒瑞医药/' },
               ],
             },
           ],

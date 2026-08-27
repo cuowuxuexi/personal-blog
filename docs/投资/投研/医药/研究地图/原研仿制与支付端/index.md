@@ -104,6 +104,7 @@ order: 3
     <li><strong>支付状态：</strong>药价主要受医保谈判、集采、自费市场还是院外渠道影响？</li>
   </ol>
   <p>公司答案需要回到具体药品、适应症、专利、医保目录和财务披露。本页只提供问题坐标。</p>
+  <a class="knowledge-company-link" href="/投资/投研/医药/恒瑞医药/#company-map"><span>恒瑞医药</span><strong>查看卖药位置与两套口径 →</strong></a>
 </section>
 
 <section class="research-section" aria-labelledby="cxo-boundary">
@@ -120,7 +121,7 @@ order: 3
   <header class="research-section-head"><div><p>OPEN / 学习模型与待补证</p><h2 id="open">当前学习模型与仍待补证</h2></div></header>
   <div class="known-unknown">
     <article><h3>当前框架</h3><ul><li>创新属性、原研来源、参比指定和仿制关系需要分维度理解</li><li>原研产品在保护到期后仍可继续销售，替代产品在旁边进入</li><li>医保谈判与集采通常先作用在卖药公司的产品价单</li><li>传到 CXO 需要经过研发预算、管线与生产安排</li></ul></article>
-    <article><h3>仍待补证</h3><ul><li>中国药品注册分类与“创新药”口径的精确边界</li><li>具体集采批次、医保谈判降幅与支付标准</li><li>化学仿制药和生物类似药的公司级竞争差异</li><li>恒瑞、百济等公司的具体产品、专利和支付暴露</li></ul></article>
+    <article><h3>仍待补证</h3><ul><li>中国药品注册分类与“创新药”口径的精确边界</li><li>具体集采批次、医保谈判降幅与支付标准</li><li>化学仿制药和生物类似药的公司级竞争差异</li><li>百济等尚未建档公司的产品、专利和支付暴露；恒瑞已有学习档案，单品销售额仍未拆开</li></ul></article>
   </div>
 </section>
 

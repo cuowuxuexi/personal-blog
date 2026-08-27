@@ -126,10 +126,10 @@ export function checkOverviewLists(repoRoot, nodes) {
       message: `医药地图数量应对账为 3，实际 ${medicalMaps.length}`,
     })
   }
-  if (medicalSubjects.length !== 1) {
+  if (medicalSubjects.length !== 2) {
     fail(failures, 'overview-count', {
       kindId: 'research',
-      message: `医药标的数量应对账为 1，实际 ${medicalSubjects.length}`,
+      message: `医药标的数量应对账为 2，实际 ${medicalSubjects.length}`,
     })
   }
 

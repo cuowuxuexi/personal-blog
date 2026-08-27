@@ -84,7 +84,8 @@ order: 0
       <div class="knowledge-graph__label"><span>06</span><strong>公司映射</strong></div>
       <div class="knowledge-flow">
         <a class="knowledge-node knowledge-node--company" href="/投资/投研/医药/药明康德/#company-map"><small>CXO 公司</small><strong>药明康德</strong><span>以公司披露定位服务平台、能力与经营证据</span></a>
-        <span class="knowledge-node knowledge-node--future"><small>卖药公司</small><strong>恒瑞医药 / 百济神州</strong><span>同时定位药物身份、管线阶段与支付暴露</span></span>
+        <a class="knowledge-node knowledge-node--company" href="/投资/投研/医药/恒瑞医药/#company-map"><small>卖药公司</small><strong>恒瑞医药</strong><span>同时定位药物身份、销售结构与支付暴露</span></a>
+        <span class="knowledge-node knowledge-node--future"><small>卖药公司</small><strong>百济神州</strong><span>档案未建；先用同一组卖药坐标</span></span>
       </div>
     </div>
   </div>
@@ -105,7 +106,7 @@ order: 0
       <span>DRUG SELLER ROUTE</span>
       <h3>研究卖药的公司</h3>
       <p>药物身份 → 管线阶段 → 专利与替代 → 医保谈判 / 集采 → 药价、销量和现金流。</p>
-      <a href="/投资/投研/医药/研究地图/原研仿制与支付端/">先读卖药与支付端 →</a>
+      <a href="/投资/投研/医药/恒瑞医药/">进入恒瑞医药档案 →</a>
     </article>
   </div>
 </section>
