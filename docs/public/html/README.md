@@ -22,7 +22,7 @@ docs/public/html/<名字>/
 <StandaloneHtml src="/html/<名字>" title="说明" />
 ```
 
-「单独打开完整页」会新开标签打开这份 HTML。侧栏或系列 index 若要直接进入完整页，在对应具名篇章 frontmatter 写 `publicHref: /html/<名字>`（主题会整页跳转）。不要把 `/html/...` 当成普通 Markdown 文章路由。
+「单独打开完整页」会新开标签打开这份 HTML。侧栏或标题要直达完整页时，在对应篇章 frontmatter 写 `publicHref: /html/<名字>`（历程具名篇章和投研 HTML 章节都走这条）。不要把 `/html/...` 当成普通 Markdown 文章路由，也不要给投研 HTML 章节再套一层 iframe。
 
 ## 约定
 
@@ -37,5 +37,6 @@ docs/public/html/<名字>/
 | --- | --- |
 | `grok-skills/` | Grok Build 自带技能图解（旧整页，cli篇已改走 cli-hub） |
 | `cli-hub/` | cli篇目录：Pi / Grok / Herdr / Orca |
+| `hengrui-business-model/` | 恒瑞医药生意模型画布；章节标题直达 `/html/hengrui-business-model` |
 
-最后更新：2026-08-25
+最后更新：2026-08-28

@@ -18,7 +18,7 @@ The author finishes research in the investment system, then hands a draft to thi
 
 | The author says | Do this | Do not |
 | --- | --- | --- |
-| 「写入博客」 / 「把这份草稿写进去」 | Rewrite the handed draft as a full subject-archive Markdown page. New company → `docs/投资/投研/<行业>/<公司>/index.md`. Existing company → `docs/投资/投研/<行业>/<公司>/<标题>/index.md` with the same `subject-index` chrome. Preview, then wait. | Do not re-run Gate 1 discussion. Do not reread the private system unless asked. Do not land 投研标的 as standalone HTML or `<StandaloneHtml>`. |
+| 「写入博客」 / 「把这份草稿写进去」 | Land the handed draft. New company → archive root Markdown. Existing company → new chapter. If the draft is HTML: copy to `docs/public/html/<name>/index.html`, set chapter `publicHref: /html/<name>`, body only `<JumpToStandalone />`. If the draft is Markdown / prose: rewrite as a full archive page. Preview, then wait. | Do not re-run Gate 1. Do not reread the private system unless asked. Do not iframe-embed a handed HTML draft. |
 | 「上传」 | Commit only this research change, `push main`, then `pnpm publish:guonei`. | Do not rewrite the argument. Do not include weekly/panel WIP. |
 | 「按投资系统改认识」 | Resolve `research-sources.local.yaml` and rewrite the named page. | Do not treat this as the default handoff. |
 | 「新开一个行业」 | Stop and ask how to lay the industry shell. | Do not open a new industry from 「写入博客」. |

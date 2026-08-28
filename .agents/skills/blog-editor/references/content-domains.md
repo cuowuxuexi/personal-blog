@@ -4,9 +4,11 @@
 
 ## 投研
 
-新标的放在 `docs/投资/投研/<行业>/<标的>/index.md`，公开 URL 为 `/投资/投研/<行业>/<标的>/`。已有档案后再交研究结果，落在 `docs/投资/投研/<行业>/<标的>/<标题>/index.md`，仍是完整档案页（`pageClass: subject-index`）。投研标的不走独立 HTML / `<StandaloneHtml>`。
+新标的放在 `docs/投资/投研/<行业>/<标的>/index.md`，公开 URL 为 `/投资/投研/<行业>/<标的>/`。已有档案后再交研究结果，落在 `docs/投资/投研/<行业>/<标的>/<标题>/index.md`（`pageClass: subject-index`）。
 
-作者说「写入博客」时按交来的稿改写落页，不回源、不重走 Gate 1。作者说「按投资系统改认识」才执行 `docs/agents/research-publishing.md` 的 Gate 1 与本地回源。发布前执行 Gate 2；作者说「上传」后只提交这次投研文件，`push main`，再跑 `pnpm publish:guonei`。
+作者交来的是 HTML 画布时：拷进 `docs/public/html/<名字>/index.html`，章节文头写 `publicHref: /html/<名字>`，正文只放 `<JumpToStandalone />`。侧栏和档案里的标题直达这份 HTML，不要 iframe 嵌入，也不要改写成档案长文。作者交来的是 Markdown / 口述稿时，仍改写成完整档案页。
+
+作者说「写入博客」时按交来的稿落页，不回源、不重走 Gate 1。作者说「按投资系统改认识」才执行 `docs/agents/research-publishing.md` 的 Gate 1 与本地回源。发布前执行 Gate 2；作者说「上传」后只提交这次投研文件，`push main`，再跑 `pnpm publish:guonei`。
 
 ### 公开正文合同
 
@@ -20,8 +22,8 @@
 
 现阶段新增既有行业下的标的或章节只改：
 
-1. 档案根或章节目录的 `index.md`（文头声明 `pageClass: subject-index`、`order`，档案根再写清单用的 `ticker` / `status` / `hubLead`）与导航型 `README.md`。已有档案根时，在首页加一条指向新章的链接。
-2. 所属行业、投研总览、投资总览跟踪卡和 `/投资/投研/` sidebar 由内容目录构建投影；不要手改 `docs/.vitepress/config.mts`。行业清单只显示公司；侧栏在公司下展开章节。
+1. 档案根或章节目录的 `index.md`（文头声明 `pageClass: subject-index`、`order`，档案根再写清单用的 `ticker` / `status` / `hubLead`）与导航型 `README.md`。已有档案根时，在首页加一条指向新章的链接；HTML 章链到 `publicHref`，不要链回 Markdown 壳。
+2. 所属行业、投研总览、投资总览跟踪卡和 `/投资/投研/` sidebar 由内容目录构建投影；不要手改 `docs/.vitepress/config.mts`。行业清单只显示公司；侧栏在公司下展开章节。HTML 章的侧栏 link 是 `/html/<名字>`。
 
 投研默认不登记 `docs/.vitepress/posts.ts`，避免进入首页最近更新；只有作者明确改变产品语义时才讨论。新增全新行业再写行业 hub / 研究地图入口，并在行业文头声明 `order`。不要另造第二套 registry。
 
@@ -41,4 +43,4 @@
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-08-27
+最后更新：2026-08-28

@@ -198,6 +198,58 @@ order: 1
   ])
 })
 
+test('subject chapter publicHref becomes sidebar link; invalid fails closed', () => {
+  const base = (extra = '') => `---
+title: 生意模型
+pageClass: subject-index
+order: 1
+${extra}---
+`
+  const company = {
+    kindId: 'research',
+    relativePath: 'docs/投资/投研/医药/恒瑞医药/index.md',
+    raw: `---
+title: 恒瑞医药
+pageClass: subject-index
+order: 1
+---
+`,
+  }
+  const industry = {
+    kindId: 'research',
+    relativePath: 'docs/投资/投研/医药/index.md',
+    raw: `---
+title: 医药行业
+pageClass: industry-index
+order: 1
+---
+`,
+  }
+  const good = structureNodesFromSources([
+    industry,
+    company,
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/医药/恒瑞医药/生意模型/index.md',
+      raw: base('publicHref: /html/hengrui-business-model\n'),
+    },
+  ])
+  const hengrui = projectResearchSidebar(good)[0].items[2].items[0]
+  assert.deepEqual(hengrui.items.map((item) => item.link), [
+    '/html/hengrui-business-model',
+  ])
+  assert.deepEqual(industrySubjectDirectory(good, '医药').items.map((item) => item.link), [
+    '/投资/投研/医药/恒瑞医药/',
+  ])
+
+  const bad = structureNodeFromMarkdown({
+    kindId: 'research',
+    relativePath: 'docs/投资/投研/医药/恒瑞医药/生意模型/index.md',
+    raw: base('publicHref: /投资/投研/医药/恒瑞医药/生意模型/\n'),
+  })
+  assert.equal(bad?.link, null)
+})
+
 test('structure core has no node:fs / VitePress / panel imports', () => {
   const source = fs.readFileSync(path.join(HERE, 'project-structure.mjs'), 'utf8')
   assert.doesNotMatch(source, /from\s+['"]node:fs['"]/)

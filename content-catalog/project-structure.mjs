@@ -5,7 +5,7 @@
 
 import { parseFrontmatter } from './frontmatter.mjs'
 import { getContentKind } from './kinds.mjs'
-import { contentSiteLink, matchesKindPath, posixRel } from './paths.mjs'
+import { contentSiteLink, matchesKindPath, posixRel, standalonePublicHref } from './paths.mjs'
 
 export const STRUCTURE_KIND_IDS = Object.freeze(['research', 'philosophy', 'big-question'])
 
@@ -120,10 +120,17 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
 
   const { fm } = parseFrontmatter(raw)
   let link
-  try {
-    link = contentSiteLink(kind.id, { relativeFile: rel })
-  } catch {
+  const hrefOverride = inferred.role === 'subject-chapter' ? standalonePublicHref(fm) : undefined
+  if (hrefOverride === null) {
     link = null
+  } else if (hrefOverride) {
+    link = hrefOverride
+  } else {
+    try {
+      link = contentSiteLink(kind.id, { relativeFile: rel })
+    } catch {
+      link = null
+    }
   }
 
   const title = fmString(fm, 'title') || stemOf(basename(rel))
