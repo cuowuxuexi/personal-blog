@@ -21,7 +21,7 @@ hubLead: 当前处于公司生意底图阶段：先能复述入口、谁付钱�
     <div><dt>行业</dt><dd>互联网 / 关系链平台</dd></div>
     <div><dt>状态</dt><dd>学习中</dd></div>
     <div><dt>阶段</dt><dd>公司生意底图</dd></div>
-    <div><dt>更新</dt><dd>2026-08-13</dd></div>
+    <div><dt>更新</dt><dd>2026-08-28</dd></div>
   </dl>
 </section>
 
@@ -84,6 +84,14 @@ hubLead: 当前处于公司生意底图阶段：先能复述入口、谁付钱�
         <p>底图之后，才轮到市场逻辑。</p>
       </div>
       <span>↓</span>
+    </a>
+    <a href="/html/tencent-business-model/">
+      <span>05</span>
+      <div>
+        <strong>生意模型</strong>
+        <p>公司层生意图：谁付钱、供养是否闭合、护城河与每期该盯的数。</p>
+      </div>
+      <span>→</span>
     </a>
   </div>
 </section>
@@ -272,6 +280,14 @@ hubLead: 当前处于公司生意底图阶段：先能复述入口、谁付钱�
         <p>从关系链入口、四类付钱的人和利润三路走起，再挂上 2026Q2。</p>
       </div>
       <span>↓</span>
+    </a>
+    <a href="/html/tencent-business-model/">
+      <span>CH</span>
+      <div>
+        <strong>2026-08-28 · 生意模型</strong>
+        <p>公司层生意图单开一章：关系链入口、四类付钱方、现金双口径与观测面板。</p>
+      </div>
+      <span>→</span>
     </a>
   </div>
 </section>
