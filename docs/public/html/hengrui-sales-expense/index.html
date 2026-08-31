@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/hengrui-sales-expense/" />
+<title>恒瑞医药销售费用 · 五年变化与同业对照</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --text: #F0F0F0;
+    --text-2: #F0F0F0BD;
+    --text-3: #F0F0F099;
+    --text-4: #F0F0F05C;
+    --fill-1: #F0F0F033;
+    --fill-2: #F0F0F024;
+    --fill-3: #F0F0F014;
+    --fill-4: #F0F0F00F;
+    --stroke-1: #F0F0F033;
+    --stroke-2: #F0F0F01F;
+    --stroke-3: #F0F0F014;
+    --stroke-focus: #F0F0F0;
+    --link: #81a1c1;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+    --chart-green: #1F8A65E8;
+    --chart-light-green: #52B896E0;
+    --chart-light-blue: #70B0D8E0;
+    --chart-bright-orange: #F0A040E0;
+    --chart-dark-amber: #C04848E0;
+    --chart-muted: #8888A8E0;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #FCFCFC;
+      --bg-chrome: #F8F8F8;
+      --text: #141414;
+      --text-2: #141414BD;
+      --text-3: #14141499;
+      --text-4: #1414145C;
+      --fill-1: #14141433;
+      --fill-2: #14141424;
+      --fill-3: #14141414;
+      --fill-4: #1414140F;
+      --stroke-1: #14141433;
+      --stroke-2: #1414141F;
+      --stroke-3: #14141414;
+      --stroke-focus: #2778C1;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px 20px 64px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { width: 100%; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; width: 100%; }
+  .stack-8 { gap: 8px; }
+  .stack-20 { gap: 20px; }
+  .row { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; width: 100%; gap: 8px; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; color: var(--text); }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; color: var(--text); }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; color: var(--text); }
+  .body { margin: 0; font-size: 14px; line-height: 20px; font-weight: 400; color: var(--text); }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-2); }
+  .hr { border: 0; border-top: 1px solid var(--stroke-3); margin: 0; width: 100%; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+  .pill {
+    appearance: none; margin: 0; border: 1px solid var(--stroke-2); background: transparent;
+    color: var(--text-2); font: 400 12px/14px var(--font); padding: 6px 10px;
+    border-radius: 9999px; cursor: pointer; white-space: nowrap;
+  }
+  .pill.active {
+    background: var(--fill-2); color: var(--text); border-color: transparent; font-weight: 500;
+  }
+  .callout { display: flex; align-items: flex-start; gap: 10px; width: 100%; }
+  .callout .icon { width: 12px; height: 12px; flex: 0 0 12px; color: var(--chart-bright-orange); margin-top: 4px; }
+  .callout .copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 500; margin: 0; color: var(--text); }
+  .callout .msg { font-size: 14px; line-height: 20px; font-weight: 400; margin: 0; color: var(--text); }
+  .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 8px; }
+  .stat .v { font-size: 24px; line-height: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-2); text-align: center; }
+  .stat.info .v { color: var(--chart-light-blue); }
+  .stat.success .v { color: var(--chart-light-green); }
+  .stat.danger .v { color: var(--chart-dark-amber); }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; width: 100%; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 100%; }
+  @media (max-width: 640px) {
+    .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+  .table-wrap {
+    width: 100%; min-width: 0; border: 1px solid var(--stroke-3); border-radius: 8px;
+    background: var(--bg-editor); overflow-x: auto; overflow-y: clip;
+  }
+  table {
+    min-width: 100%; border-collapse: collapse; table-layout: auto;
+    font-size: 14px; line-height: 20px; color: var(--text);
+  }
+  th, td { padding: 8px 12px; text-align: left; vertical-align: top; }
+  th {
+    font-weight: 600; color: var(--text); background: var(--fill-4);
+    border-bottom: 1px solid var(--stroke-2);
+  }
+  td { border-bottom: 1px solid var(--stroke-3); }
+  tr:last-child td { border-bottom: 0; }
+  table.striped tbody tr:nth-child(even) td { background: var(--fill-4); }
+  td.right, th.right { text-align: right; font-variant-numeric: tabular-nums; }
+  table.sheet { min-width: 680px; }
+  table.sheet th, table.sheet td { white-space: nowrap; }
+  table.sheet td.src, table.sheet th.src { white-space: normal; color: var(--text-2); font-size: 13px; line-height: 18px; }
+  table.sheet th.src { color: var(--text); font-size: 14px; }
+  .year { display: inline-flex; align-items: center; gap: 6px; }
+  .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    flex: 0 0 6px; margin-right: 6px; vertical-align: middle;
+  }
+  .year .dot { margin-right: 0; }
+  .dot.ghost { visibility: hidden; }
+  .dot.success { background: var(--chart-light-green); }
+  .dot.danger { background: var(--chart-dark-amber); }
+  .dot.info { background: var(--chart-light-blue); }
+  .neg { color: var(--chart-dark-amber); }
+  .pos { color: var(--chart-light-green); }
+  .pane { display: none; }
+  .pane.on { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+  .chart { width: 100%; min-width: 0; position: relative; }
+  .legend {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 12px;
+    margin-top: 8px; font-size: 12px; line-height: 16px; color: var(--text-2);
+  }
+  .legend-row { display: inline-flex; align-items: center; gap: 4px; }
+  .swatch { width: 8px; height: 8px; border-radius: 9999px; flex: 0 0 8px; }
+  .tip {
+    position: absolute; min-width: 180px; max-width: 260px; pointer-events: none; z-index: 10;
+    padding: 6px 8px; background: var(--bg-chrome); border: 1px solid var(--stroke-1);
+    border-radius: 8px; font-size: 12px; line-height: 16px; color: var(--text);
+  }
+  .tip-cat { font-weight: 600; margin-bottom: 2px; }
+  .tip-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 1px; }
+  .tip-name { display: flex; align-items: center; gap: 4px; color: var(--text-2); }
+  .tip-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/恒瑞医药/">恒瑞医药</a><span>/</span><strong>销售费用</strong></nav>
+  <section class="stack stack-20" id="fivey">
+    <div class="stack stack-8">
+      <h1>恒瑞医药销售费用 · 2021–2025</h1>
+      <p class="body secondary">合并利润表「销售费用」，人民币亿元。基准日 2026-08-31。本页是学习对照，不是已晋升的正式研究观点。</p>
+    </div>
+
+    <div class="callout">
+      <svg class="icon" viewBox="0 0 300 300" aria-hidden="true"><g transform="matrix(1 0 0 -1 0 300)"><path fill="currentColor" d="M116 268Q123 281 136.5 286.0Q150 291 163.5 286.0Q177 281 185 268L290 86Q298 73 295.0 59.0Q292 45 281.0 35.5Q270 26 256 26H44Q30 26 19.0 35.5Q8 45 5.0 59.0Q2 73 10 86ZM164 257Q159 265 150.0 265.0Q141 265 136 257L30 74Q26 66 30.5 57.5Q35 49 44 49H256Q265 49 269.5 57.5Q274 66 270 74ZM150 113Q158 113 163.5 107.5Q169 102 169.0 94.0Q169 86 163.5 80.5Q158 75 150.0 75.0Q142 75 136.5 80.5Q131 86 131.0 94.0Q131 102 136.5 107.5Q142 113 150 113ZM150 209Q155 209 158.5 205.5Q162 202 162 197V150Q162 145 158.5 141.5Q155 138 150.0 138.0Q145 138 141.5 141.5Q138 145 138 150V197Q138 202 141.5 205.5Q145 209 150 209Z"/></g></svg>
+      <div class="copy">
+        <p class="title">效力</p>
+        <p class="msg">2024 / 2025 / 2026H1 来自已核对的年报、半年报。2021–2023 来自巨潮年报。hithink / westock 与年报元金额一致，只作交叉，不作原件。</p>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat"><div class="v">91.06 亿</div><div class="l">2025 销售费用  · 同比 +9.24%</div></div>
+      <div class="stat info"><div class="v">−2.96%</div><div class="l">2021→2025 绝对额</div></div>
+      <div class="stat success"><div class="v">28.79%</div><div class="l">2025 占营收  · 五年降 7.4 个百分点</div></div>
+      <div class="stat danger"><div class="v">73.48 亿</div><div class="l">2022 谷底  · 同比 −21.70%</div></div>
+    </div>
+
+    <h2>绝对额与营收</h2>
+    <p class="body secondary">销售费用 2022 年掉到 73.48 亿后回升，2025 年仍低于 2021 年的 93.84 亿。同期营收从 259.06 亿增到 316.29 亿（+22.1%）。</p>
+    <div class="chart" id="line-abs"></div>
+
+    <h2>销售费用率（占营收）</h2>
+    <p class="body secondary">五年连续下降：36.22% → 28.79%。2026 上半年 28.09%，与 2025 全年接近。</p>
+    <div class="chart" id="bar-rate5"></div>
+
+    <h2>五年主表</h2>
+    <div class="table-wrap">
+      <table class="striped sheet">
+        <thead>
+          <tr>
+            <th>年</th>
+            <th class="right">销售费用</th>
+            <th class="right">同比</th>
+            <th class="right">营业收入</th>
+            <th class="right">营收同比</th>
+            <th class="right">费用率</th>
+            <th class="src">原件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="year"><span class="dot ghost"></span>2021</span></td>
+            <td class="right">93.84</td>
+            <td class="right neg">−4.27%</td>
+            <td class="right">259.06</td>
+            <td class="right neg">−6.59%</td>
+            <td class="right">36.22%</td>
+            <td class="src">AR2021 p.45 / p.67</td>
+          </tr>
+          <tr>
+            <td><span class="year"><span class="dot danger"></span>2022</span></td>
+            <td class="right">73.48</td>
+            <td class="right neg">−21.70%</td>
+            <td class="right">212.75</td>
+            <td class="right neg">−17.87%</td>
+            <td class="right">34.54%</td>
+            <td class="src">AR2022 p.53 / p.70</td>
+          </tr>
+          <tr>
+            <td><span class="year"><span class="dot ghost"></span>2023</span></td>
+            <td class="right">75.77</td>
+            <td class="right pos">+3.12%</td>
+            <td class="right">228.20</td>
+            <td class="right pos">+7.26%</td>
+            <td class="right">33.20%</td>
+            <td class="src">AR2023 p.69 / p.87</td>
+          </tr>
+          <tr>
+            <td><span class="year"><span class="dot success"></span>2024</span></td>
+            <td class="right">83.36</td>
+            <td class="right pos">+10.02%</td>
+            <td class="right">279.85</td>
+            <td class="right pos">+22.63%</td>
+            <td class="right">29.79%</td>
+            <td class="src">AR2024 p.53；AR2025 p.58 上年栏</td>
+          </tr>
+          <tr>
+            <td><span class="year"><span class="dot success"></span>2025</span></td>
+            <td class="right">91.06</td>
+            <td class="right pos">+9.24%</td>
+            <td class="right">316.29</td>
+            <td class="right pos">+13.02%</td>
+            <td class="right">28.79%</td>
+            <td class="src">AR2025 p.58 / p.135</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">单位亿元。同比为各年年报费用表披露比例。2020 年销售费用 98.03 亿（AR2021 上年栏），作 2021 同比基数。</p>
+
+    <hr class="hr" />
+
+    <h2>2025 年构成（合并）</h2>
+    <p class="body secondary">AR2025 p.82–83、附注 63 p.205。2025 年改了科目名称；上年比较栏已按新年报口径重列，不能直接跟 2022–2024 年报旧科目横比。</p>
+    <div class="chart" id="bar-mix25"></div>
+    <div class="table-wrap">
+      <table class="striped">
+        <thead>
+          <tr>
+            <th>科目（2025 年报口径）</th>
+            <th class="right">2025</th>
+            <th class="right">占销售费用</th>
+            <th class="right">2024 重列</th>
+            <th class="right">差额</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>职工薪酬与福利</td><td class="right">35.36</td><td class="right">38.83%</td><td class="right">27.81</td><td class="right pos">+7.55</td></tr>
+          <tr><td>学术推广及医学教育等市场费用</td><td class="right">29.30</td><td class="right">32.18%</td><td class="right">25.73</td><td class="right pos">+3.57</td></tr>
+          <tr><td>专业咨询及会务费用</td><td class="right">22.32</td><td class="right">24.51%</td><td class="right">25.85</td><td class="right neg">−3.53</td></tr>
+          <tr><td>差旅、办公及一般经营开支</td><td class="right">2.63</td><td class="right">2.89%</td><td class="right">2.83</td><td class="right neg">−0.21</td></tr>
+          <tr><td>股权激励费用</td><td class="right">0.86</td><td class="right">0.94%</td><td class="right">0.70</td><td class="right pos">+0.16</td></tr>
+          <tr><td>其他</td><td class="right">0.59</td><td class="right">0.65%</td><td class="right">0.43</td><td class="right pos">+0.16</td></tr>
+          <tr><td>合计</td><td class="right">91.06</td><td class="right">100%</td><td class="right">83.36</td><td class="right pos">+7.70</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>最新一期：2026 上半年</h2>
+    <div class="grid-3">
+      <div class="stat"><div class="v">43.41 亿</div><div class="l">2026H1 销售费用  · 同比 −1.10%</div></div>
+      <div class="stat"><div class="v">28.09%</div><div class="l">2026H1 占营收</div></div>
+      <div class="stat"><div class="v">27.85%</div><div class="l">2025H1 占营收（对照）</div></div>
+    </div>
+    <div class="table-wrap">
+      <table class="striped">
+        <thead>
+          <tr><th>科目</th><th class="right">2026H1</th><th class="right">2025H1</th><th class="right">差额</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>职工薪酬与福利</td><td class="right">18.45</td><td class="right">17.08</td><td class="right pos">+1.38</td></tr>
+          <tr><td>学术推广及医学教育等市场费用</td><td class="right">14.76</td><td class="right">15.73</td><td class="right neg">−0.97</td></tr>
+          <tr><td>专业咨询及会务费用</td><td class="right">8.51</td><td class="right">9.51</td><td class="right neg">−1.00</td></tr>
+          <tr><td>差旅、办公及一般经营开支</td><td class="right">1.18</td><td class="right">1.17</td><td class="right pos">+0.01</td></tr>
+          <tr><td>股权激励费用</td><td class="right">0.51</td><td class="right">0.41</td><td class="right pos">+0.10</td></tr>
+          <tr><td>合计</td><td class="right">43.41</td><td class="right">43.89</td><td class="right neg">−0.48</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">IR2026H1 p.56 总额；附注 63 p.147 构成。半年报附注无「其他」。母公司销售费用小于合并数，本表一律用合并。</p>
+
+    <h3>怎么读这条曲线</h3>
+    <p class="body">五年里绝对额先深跌再回升，2025 年仍未回到 2021 年。费用率五年下行，说明销售费用没有跟营收同比膨胀。2025 年增加的 7.70 亿里，职工薪酬占了 7.55 亿。2022 年报把销售费用「重大变化」标成不适用；同年营收因集采品种掉量有独立说明，二者同向但不能写成已证因果。</p>
+  </section>
+
+  <hr class="hr" />
+
+  <section class="stack stack-20" id="peers">
+    <div class="stack stack-8">
+      <h1>销售费用率对照：恒瑞处在混合组中间</h1>
+      <p class="body secondary">口径一律 2025 全年合并「销售费用 / 营业收入」。A 股来自同花顺利润表，港股来自 westock。本页是学习对照，不是已晋升的正式研究观点。绝对额港币与人民币不横比，只比比率。</p>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat info"><div class="v">28.79%</div><div class="l">恒瑞 2025 销售费用率</div></div>
+      <div class="stat"><div class="v">34–47%</div><div class="l">多数创新药商业化公司</div></div>
+      <div class="stat success"><div class="v">16–20%</div><div class="l">典型仿制 / 原料（华海、科伦、海正）</div></div>
+      <div class="stat"><div class="v">48%</div><div class="l">恒瑞销售费用占销+管+研</div></div>
+    </div>
+
+    <div class="callout">
+      <svg class="icon" viewBox="0 0 300 300" aria-hidden="true"><g transform="matrix(1 0 0 -1 0 300)"><path fill="currentColor" d="M116 268Q123 281 136.5 286.0Q150 291 163.5 286.0Q177 281 185 268L290 86Q298 73 295.0 59.0Q292 45 281.0 35.5Q270 26 256 26H44Q30 26 19.0 35.5Q8 45 5.0 59.0Q2 73 10 86ZM164 257Q159 265 150.0 265.0Q141 265 136 257L30 74Q26 66 30.5 57.5Q35 49 44 49H256Q265 49 269.5 57.5Q274 66 270 74ZM150 113Q158 113 163.5 107.5Q169 102 169.0 94.0Q169 86 163.5 80.5Q158 75 150.0 75.0Q142 75 136.5 80.5Q131 86 131.0 94.0Q131 102 136.5 107.5Q142 113 150 113ZM150 209Q155 209 158.5 205.5Q162 202 162 197V150Q162 145 158.5 141.5Q155 138 150.0 138.0Q145 138 141.5 141.5Q138 145 138 150V197Q138 202 141.5 205.5Q145 209 150 209Z"/></g></svg>
+      <div class="copy">
+        <p class="title">先分组，再比数字</p>
+        <p class="msg">恒瑞是创新+仿制混合，不是纯创新药企，也不是原料厂。费用率低于信达/君实/康方这一档，高于华海/科伦/联邦；和丽珠几乎一样，略高于石药、复星。仙琚这类医院专科仿制也能到 31%，所以「仿制就该低」不成立。华东（商业流通）和普洛（原料/CDMO）不进主图。</p>
+      </div>
+    </div>
+
+    <div class="pills" id="nav-peer">
+      <button class="pill active" data-peer="rate">销售费用率</button>
+      <button class="pill" data-peer="mix">三费里怎么分</button>
+      <button class="pill" data-peer="table">全表</button>
+    </div>
+
+    <div class="pane on" id="peer-rate">
+      <h2>创新药商业化：多数明显高于恒瑞</h2>
+      <p class="body secondary">销售费用率（%）。再鼎、泽璟营收小，费率会被放大。百济用 A 股合并数（27.73%）；其港股 westock 销售费用字段与 A 股对不上，不用港股那条。</p>
+      <div class="chart" id="bar-innov"></div>
+
+      <h2>混合组与仿制 / 原料：恒瑞贴着丽珠</h2>
+      <p class="body secondary">同一口径。健康元并表丽珠，两行不要加总。联邦、科伦、华海更接近原料或大输液，费率被生产型收入拉低。</p>
+      <div class="chart" id="bar-mixed"></div>
+
+      <h3>和恒瑞自己年报同业表的关系</h3>
+      <p class="body">恒瑞 2025 年报 p.83 用的是截至 2026-03-25 能拿到的数：百济/中生/石药/信达仍是 2024 年（32.54% / 34.91% / 29.86% / 46.14%），只有复星用了 2025 年 22.07%。本页把这五家都更新到 2025 全年：百济降到 27.73%，石药降到 24.85%，信达仍高（43.81%），中生几乎不动（34.53%）。</p>
+    </div>
+
+    <div class="pane" id="peer-mix">
+      <h2>销售费用占「销 + 管 + 研」</h2>
+      <p class="body secondary">费用率看销售相对营收贵不贵；这一栏看三费内部谁吃钱。创新药研发大，销售占比会被压低；仿制药研发小，销售往往占三费六成以上。</p>
+      <div class="chart" id="bar-3fee"></div>
+      <p class="body">恒瑞 48.3%：销售仍是三费第一项，但研发 69.61 亿把占比压到一半以下，结构更接近百济/荣昌，不像丽珠/仙琚那样销售占三费 65–70%。艾力斯 78% 是单品商业化机器（伏美替尼），不能当行业常态。</p>
+
+      <h2>销售费用占营业总成本</h2>
+      <p class="body secondary">A 股同花顺「营业总成本」分母。港股未用同一字段，不进此图。</p>
+      <div class="chart" id="bar-tot"></div>
+    </div>
+
+    <div class="pane" id="peer-table">
+      <h2>2025 全年主表</h2>
+      <div class="table-wrap">
+        <table class="striped sheet">
+          <thead>
+            <tr>
+              <th>公司</th>
+              <th>分组</th>
+              <th class="right">费用率</th>
+              <th class="right">占三费</th>
+              <th class="right">销售费用</th>
+              <th class="right">营收</th>
+              <th>源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>再鼎医药</td><td>创新-引进商业化</td><td class="right">60.33%</td><td class="right">—</td><td class="right">21.60 亿港元</td><td class="right">35.81 亿港元</td><td>westock</td></tr>
+            <tr><td>泽璟制药</td><td>创新-规模小</td><td class="right">57.42%</td><td class="right">48.0%</td><td class="right">4.65 亿</td><td class="right">8.10 亿</td><td>hithink</td></tr>
+            <tr><td>康方生物</td><td>创新</td><td class="right">47.00%</td><td class="right">43.4%</td><td class="right">15.90 亿港元</td><td class="right">33.84 亿港元</td><td>westock</td></tr>
+            <tr><td>信达生物</td><td>创新</td><td class="right">43.81%</td><td class="right">61.6%</td><td class="right">63.25 亿港元</td><td class="right">144.39 亿港元</td><td>westock</td></tr>
+            <tr><td>君实生物</td><td>创新</td><td class="right">42.15%</td><td class="right">36.4%</td><td class="right">10.53 亿</td><td class="right">24.98 亿</td><td>hithink</td></tr>
+            <tr><td>艾力斯</td><td>创新-单品</td><td class="right">40.02%</td><td class="right">78.2%</td><td class="right">20.76 亿</td><td class="right">51.87 亿</td><td>hithink</td></tr>
+            <tr><td>康弘药业</td><td>创新/专科</td><td class="right">37.54%</td><td class="right">61.3%</td><td class="right">17.21 亿</td><td class="right">45.85 亿</td><td>hithink</td></tr>
+            <tr><td>海思科</td><td>创新/专科</td><td class="right">37.46%</td><td class="right">56.8%</td><td class="right">16.43 亿</td><td class="right">43.88 亿</td><td>hithink</td></tr>
+            <tr><td>贝达药业</td><td>创新</td><td class="right">35.97%</td><td class="right">56.7%</td><td class="right">12.98 亿</td><td class="right">36.09 亿</td><td>hithink</td></tr>
+            <tr><td>中国生物制药</td><td>混合</td><td class="right">34.53%</td><td class="right">57.9%</td><td class="right">121.71 亿港元</td><td class="right">352.46 亿港元</td><td>westock</td></tr>
+            <tr><td>荣昌生物</td><td>创新</td><td class="right">34.19%</td><td class="right">41.3%</td><td class="right">11.11 亿</td><td class="right">32.51 亿</td><td>hithink</td></tr>
+            <tr><td>仙琚制药</td><td>仿制-医院专科</td><td class="right">31.40%</td><td class="right">65.5%</td><td class="right">11.80 亿</td><td class="right">37.59 亿</td><td>hithink</td></tr>
+            <tr><td>丽珠集团</td><td>混合-仿制偏多</td><td class="right">29.79%</td><td class="right">70.0%</td><td class="right">35.81 亿</td><td class="right">120.20 亿</td><td>hithink</td></tr>
+            <tr><td><span class="dot info"></span>恒瑞医药</td><td>混合-创新主导</td><td class="right">28.79%</td><td class="right">48.3%</td><td class="right">91.06 亿</td><td class="right">316.29 亿</td><td>年报+hithink</td></tr>
+            <tr><td>百济神州</td><td>创新-出海规模</td><td class="right">27.73%</td><td class="right">34.8%</td><td class="right">106.02 亿</td><td class="right">382.25 亿</td><td>hithink A股</td></tr>
+            <tr><td>健康元</td><td>仿制/OTC（并表丽珠）</td><td class="right">27.26%</td><td class="right">65.9%</td><td class="right">41.48 亿</td><td class="right">152.16 亿</td><td>hithink</td></tr>
+            <tr><td>翰森制药</td><td>混合-创新主导</td><td class="right">27.04%</td><td class="right">50.2%</td><td class="right">44.99 亿港元</td><td class="right">166.39 亿港元</td><td>westock</td></tr>
+            <tr><td>石药集团</td><td>混合</td><td class="right">24.85%</td><td class="right">49.4%</td><td class="right">71.56 亿港元</td><td class="right">287.93 亿港元</td><td>westock</td></tr>
+            <tr><td>复星医药</td><td>混合-多元</td><td class="right">22.07%</td><td class="right">51.7%</td><td class="right">91.93 亿</td><td class="right">416.62 亿</td><td>hithink</td></tr>
+            <tr><td>海正药业</td><td>仿制/原料</td><td class="right">19.70%</td><td class="right">60.6%</td><td class="right">20.78 亿</td><td class="right">105.50 亿</td><td>hithink</td></tr>
+            <tr><td>华海药业</td><td>仿制/原料</td><td class="right">18.37%</td><td class="right">36.1%</td><td class="right">15.77 亿</td><td class="right">85.87 亿</td><td>hithink</td></tr>
+            <tr><td>科伦药业</td><td>仿制/大输液</td><td class="right">16.42%</td><td class="right">47.1%</td><td class="right">30.39 亿</td><td class="right">185.13 亿</td><td>hithink</td></tr>
+            <tr><td>联邦制药</td><td>仿制/原料</td><td class="right">10.26%</td><td class="right">42.1%</td><td class="right">15.00 亿港元</td><td class="right">146.26 亿港元</td><td>westock</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">占三费 = 销售费用 /（销售+管理+研发）。再鼎 westock 缺管理费用，不填。港股绝对额是港元，不与人民币相加。</p>
+
+      <hr class="hr" />
+
+      <h2>不宜直接比</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>公司</th><th class="right">2025 费用率</th><th>为什么拿掉</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>华东医药</td><td class="right">14.97%</td><td>收入里有大批发/商业流通，分母被抬高，费率被压低</td></tr>
+            <tr><td>普洛药业</td><td class="right">5.60%</td><td>原料药 / CDMO，销售费用不是医院推广机器</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2024→2025 费用率怎么变</h3>
+      <div class="table-wrap">
+        <table class="striped">
+          <thead>
+            <tr><th>公司</th><th class="right">2024</th><th class="right">2025</th><th class="right">变动</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>恒瑞</td><td class="right">29.79%</td><td class="right">28.79%</td><td class="right neg">−1.00</td></tr>
+            <tr><td>百济（A股）</td><td class="right">32.54%</td><td class="right">27.73%</td><td class="right neg">−4.81</td></tr>
+            <tr><td>信达</td><td class="right">46.14%</td><td class="right">43.81%</td><td class="right neg">−2.33</td></tr>
+            <tr><td>君实</td><td class="right">50.53%</td><td class="right">42.15%</td><td class="right neg">−8.38</td></tr>
+            <tr><td>荣昌</td><td class="right">55.26%</td><td class="right">34.19%</td><td class="right neg">−21.07</td></tr>
+            <tr><td>中国生物制药</td><td class="right">34.91%</td><td class="right">34.53%</td><td class="right neg">−0.38</td></tr>
+            <tr><td>石药</td><td class="right">29.86%</td><td class="right">24.85%</td><td class="right neg">−5.01</td></tr>
+            <tr><td>复星</td><td class="right">21.14%</td><td class="right">22.07%</td><td class="right pos">+0.93</td></tr>
+            <tr><td>丽珠</td><td class="right">27.55%</td><td class="right">29.79%</td><td class="right pos">+2.24</td></tr>
+            <tr><td>仙琚</td><td class="right">25.84%</td><td class="right">31.40%</td><td class="right pos">+5.56</td></tr>
+            <tr><td>华海</td><td class="right">17.58%</td><td class="right">18.37%</td><td class="right pos">+0.79</td></tr>
+            <tr><td>科伦</td><td class="right">16.01%</td><td class="right">16.42%</td><td class="right pos">+0.41</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="body">创新药商业化公司 2025 年普遍在降费率（收入上量）。恒瑞只降了 1 个百分点，幅度小于百济/君实/荣昌。仙琚仿制组反而上升。</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const PALETTE = {
+  green: "#1F8A65E8",
+  lightGreen: "#52B896E0",
+  blue: "#2E79B5E0",
+  lightBlue: "#70B0D8E0",
+  indigo: "#5A6CC0F0",
+  brightOrange: "#F0A040E0",
+  deepOrange: "#C06028E0",
+  goldenYellow: "#E8C030E0",
+  warmPink: "#C85898E0",
+  warmPeach: "#F0A088E0",
+  purple: "#7B64B8F0",
+  mintGreen: "#7DCAB0E0",
+  muted: "#8888A8E0",
+  vibrantTeal: "#2A9A8AE0",
+  darkAmber: "#C04848E0",
+};
+const CHART_SEQ = [
+  PALETTE.green, PALETTE.lightBlue, PALETTE.indigo, PALETTE.brightOrange,
+  PALETTE.deepOrange, PALETTE.goldenYellow, PALETTE.warmPink, PALETTE.warmPeach,
+  PALETTE.purple, PALETTE.mintGreen, PALETTE.muted, PALETTE.vibrantTeal,
+];
+const MARGIN = { top: 16, right: 12, bottom: 40, left: 48 };
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function tokens() {
+  return {
+    text: { primary: css("--text"), secondary: css("--text-2"), tertiary: css("--text-3") },
+    stroke: { primary: css("--stroke-1"), secondary: css("--stroke-2"), tertiary: css("--stroke-3"), focused: css("--stroke-focus") },
+    bg: { editor: css("--bg-editor"), chrome: css("--bg-chrome") },
+  };
+}
+function toneToColor(tone) {
+  if (tone === "success") return PALETTE.lightGreen;
+  if (tone === "danger") return PALETTE.darkAmber;
+  if (tone === "warning") return PALETTE.brightOrange;
+  if (tone === "info") return PALETTE.lightBlue;
+  if (tone === "neutral") return PALETTE.muted;
+}
+function seriesColor(i, tone) {
+  const t = toneToColor(tone);
+  if (t) return t;
+  return CHART_SEQ[i % CHART_SEQ.length];
+}
+function uniqueSeriesColor(i, tone, used) {
+  const t = toneToColor(tone);
+  if (t) { used.add(t); return t; }
+  for (let k = 0; k < CHART_SEQ.length; k++) {
+    const c = CHART_SEQ[(i + k) % CHART_SEQ.length];
+    if (!used.has(c)) { used.add(c); return c; }
+  }
+  return CHART_SEQ[i % CHART_SEQ.length];
+}
+function barColor(series, si, ci) {
+  const t = toneToColor(series[si].tone);
+  if (t) return t;
+  return series.length === 1 ? CHART_SEQ[ci % CHART_SEQ.length] : CHART_SEQ[si % CHART_SEQ.length];
+}
+function sanitize(v) { return Number.isFinite(v) && v >= 0 ? v : 0; }
+function trimZeros(s) { return s.replace(/\.0+$/, "").replace(/(\.\d*[1-9])0+$/, "$1"); }
+function formatValue(v) {
+  const n = Math.abs(v);
+  if (n >= 1e6) return `${trimZeros((v / 1e6).toFixed(n >= 1e7 ? 0 : 1))}M`;
+  if (n >= 1e3) return `${trimZeros((v / 1e3).toFixed(n >= 1e4 ? 0 : 1))}K`;
+  if (Number.isInteger(v)) return `${v}`;
+  return trimZeros(v.toFixed(n >= 10 ? 1 : 2));
+}
+function formatWithAffix(v, prefix, suffix) { return `${prefix || ""}${formatValue(v)}${suffix || ""}`; }
+function formatExact(v, decimals, prefix, suffix) {
+  if (decimals == null) return formatWithAffix(v, prefix, suffix);
+  return `${prefix || ""}${Number(v).toFixed(decimals)}${suffix || ""}`;
+}
+function formatChartValue(v, prefix, suffix) {
+  const s = suffix || "";
+  if (s === "%") return formatExact(v, Number.isInteger(v) ? 0 : 2, prefix, s);
+  if (s.indexOf("亿") !== -1) return formatExact(v, 2, prefix, s);
+  return formatWithAffix(v, prefix, s);
+}
+function truncateLabel(s, n) {
+  n = n == null ? 12 : n;
+  return s.length <= n ? s : `${s.slice(0, Math.max(1, n - 1))}…`;
+}
+function estLabelWidthPx(cats, n) {
+  let t = 1;
+  for (const c of cats) t = Math.max(t, Math.min(c.length, n));
+  return 7 * t + 14;
+}
+function fitStride(count, avail, minW) {
+  const a = Math.max(1, Math.floor(avail / Math.max(minW, 1)));
+  return count <= a ? 1 : Math.ceil(count / a);
+}
+function niceStep(e) {
+  if (!Number.isFinite(e) || e <= 0) return 1;
+  const n = 10 ** Math.floor(Math.log10(e));
+  const t = e / n;
+  return t <= 1 ? n : t <= 2 ? 2 * n : t <= 5 ? 5 * n : 10 * n;
+}
+function buildScale(minV, maxV, opt) {
+  opt = opt || {};
+  const beginAtZero = opt.beginAtZero !== false;
+  let lo = Number.isFinite(minV) ? minV : 0;
+  let hi = Number.isFinite(maxV) ? maxV : 1;
+  for (const e of opt.extra || []) {
+    if (Number.isFinite(e)) { lo = Math.min(lo, e); hi = Math.max(hi, e); }
+  }
+  let u = opt.yMin != null ? opt.yMin : (beginAtZero ? Math.min(0, lo) : lo);
+  let p = opt.yMax != null ? opt.yMax : hi;
+  if (!Number.isFinite(u)) u = 0;
+  if (!Number.isFinite(p) || p <= u) p = u + 1;
+  const m = niceStep((p - u) / Math.max((opt.tickCount || 4) - 1, 1));
+  if (opt.yMin == null) u = Math.floor(u / m) * m;
+  if (opt.yMax == null) p = Math.ceil(p / m) * m;
+  if (p <= u) p = u + m;
+  const ticks = [];
+  for (let e = u; e <= p + m / 2; e += m) ticks.push(Number(e.toFixed(10)));
+  const last = ticks[ticks.length - 1];
+  if (last == null || last < p - 1e-6 * m) ticks.push(Number(p.toFixed(10)));
+  return { ticks, min: u, max: p };
+}
+function valueFrac(scale, v) {
+  const t = scale.max - scale.min;
+  if (t <= 0) return 0;
+  const a = ((Number.isFinite(v) ? v : 0) - scale.min) / t;
+  return a < 0 ? 0 : a > 1 ? 1 : a;
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function measure(el) {
+  let w = Math.round(el.getBoundingClientRect().width);
+  if (w < 40) w = Math.round(document.querySelector(".page").getBoundingClientRect().width) || 480;
+  return Math.max(w, 240);
+}
+
+function yAxis(W, H, m, scale, t, opts) {
+  opts = opts || {};
+  const plotH = Math.max(H - m.top - m.bottom, 1);
+  const side = opts.side || "left";
+  const drawGrid = opts.grid !== false;
+  return scale.ticks.map((n) => {
+    const y = m.top + plotH - valueFrac(scale, n) * plotH;
+    const grid = drawGrid && n > scale.min
+      ? `<line x1="${m.left}" x2="${W - m.right}" y1="${y}" y2="${y}" stroke="${t.stroke.tertiary}" stroke-width="1"/>`
+      : "";
+    const label = esc(formatValue(n));
+    if (side === "right") {
+      return `${grid}<text x="${W - m.right + 8}" y="${y + 4}" text-anchor="start" fill="${opts.color || t.text.secondary}" font-size="12">${label}</text>`;
+    }
+    return `${grid}<text x="${m.left - 8}" y="${y + 4}" text-anchor="end" fill="${opts.color || t.text.secondary}" font-size="12">${label}</text>`;
+  }).join("");
+}
+
+function refLines(W, H, m, scale, refs, t) {
+  if (!refs || !refs.length) return "";
+  const plotH = Math.max(H - m.top - m.bottom, 1);
+  return refs.map((r) => {
+    if (!Number.isFinite(r.value) || r.value < scale.min || r.value > scale.max) return "";
+    const color = toneToColor(r.tone) || t.text.tertiary;
+    const y = m.top + plotH - valueFrac(scale, r.value) * plotH;
+    const chip = r.label ? (() => {
+      const w = 6.5 * r.label.length + 8;
+      const x = W - m.right;
+      return `<rect x="${x - w}" y="${y - 14}" width="${w}" height="14" fill="${t.bg.editor}" rx="2"/>
+        <text x="${x}" y="${y - 3}" text-anchor="end" fill="${color}" font-size="12" font-weight="500">${esc(r.label)}</text>`;
+    })() : "";
+    return `<line x1="${m.left}" x2="${W - m.right}" y1="${y}" y2="${y}" stroke="${color}" stroke-width="1" stroke-dasharray="4 3"/>${chip}`;
+  }).join("");
+}
+
+function legendHtml(items) {
+  if (items.length <= 1) return "";
+  return `<div class="legend">${items.map((it) =>
+    `<div class="legend-row"><span class="swatch" style="background:${it.color}"></span>${esc(it.name)}</div>`
+  ).join("")}</div>`;
+}
+
+function bindHover(el, hits, suffix, prefix) {
+  const tip = el.querySelector(".tip");
+  const guide = el.querySelector("[data-hover-guide]");
+  const hide = () => {
+    tip.hidden = true;
+    if (guide) guide.setAttribute("opacity", "0");
+  };
+  el.onmouseleave = hide;
+  hits.forEach((hit) => {
+    hit.el.addEventListener("mousemove", (ev) => {
+      const box = el.querySelector("svg").getBoundingClientRect();
+      const x = ev.clientX - box.left;
+      const y = ev.clientY - box.top;
+      tip.hidden = false;
+      tip.style.top = `${Math.max(y - 8, 0)}px`;
+      tip.style.left = `${x + 180 + 16 > box.width ? Math.max(0, x - 180 - 12) : x + 12}px`;
+      tip.innerHTML = `<div class="tip-cat">${esc(hit.label)}</div>` + hit.entries.map((e) =>
+        `<div class="tip-row"><span class="tip-name"><span class="swatch" style="background:${e.color}"></span>${esc(e.name)}</span><span class="tip-val">${esc(e.decimals != null ? formatExact(e.value, e.decimals, prefix, suffix) : formatChartValue(e.value, prefix, suffix))}</span></div>`
+      ).join("");
+      if (guide) {
+        guide.setAttribute("x1", String(hit.gx));
+        guide.setAttribute("x2", String(hit.gx));
+        guide.setAttribute("opacity", "0.72");
+      }
+    });
+  });
+}
+
+function renderBar(el, spec) {
+  const t = tokens();
+  const W = measure(el);
+  const H = spec.height || 240;
+  const cats = spec.categories;
+  const series = spec.series;
+  const k = cats.length;
+  const $ = series.length;
+  const suffix = spec.valueSuffix || "";
+  const prefix = spec.valuePrefix || "";
+  const showValues = (spec.showValues != null ? spec.showValues : ($ === 1 && k <= 8)) && k <= 8;
+  const m = MARGIN;
+  const plotW = Math.max(W - m.left - m.right, 1);
+  const plotH = Math.max(H - m.top - m.bottom, 1);
+  const stride = fitStride(k, plotW, estLabelWidthPx(cats, 12));
+  const extras = (spec.referenceLines || []).map((r) => r.value).filter(Number.isFinite);
+  let lo = Infinity, hi = 0;
+  for (const s of series) for (const v of s.data) { const n = sanitize(v); lo = Math.min(lo, n); hi = Math.max(hi, n); }
+  if (!Number.isFinite(lo)) lo = 0;
+  const scale = buildScale(lo, hi, { beginAtZero: spec.beginAtZero !== false, yMin: spec.yMin, yMax: spec.yMax, extra: extras });
+  const R = plotW / Math.max(k, 1);
+  const used = new Set();
+  const legendItems = series.map((s, i) => ({ name: s.name, color: uniqueSeriesColor(i, s.tone, used) }));
+  let bars = "";
+  const hits = [];
+  cats.forEach((cat, a) => {
+    const slotX = m.left + a * R;
+    const groupW = 0.7 * R;
+    const bw = groupW / $;
+    const x0 = slotX + (R - groupW) / 2;
+    const hitEntries = series.map((s, si) => ({
+      color: barColor(series, si, a),
+      name: s.name,
+      value: sanitize(s.data[a]),
+    }));
+    bars += `<g data-hit="${a}"><rect x="${slotX}" y="${m.top}" width="${R}" height="${plotH}" fill="transparent"/>`;
+    series.forEach((s, si) => {
+      const v = sanitize(s.data[a]);
+      const h = valueFrac(scale, v) * plotH;
+      const x = x0 + si * bw;
+      const y = m.top + plotH - h;
+      const wide = $ === 1 || bw >= 14;
+      const label = showValues && wide && v > 0
+        ? `<text x="${x + bw / 2}" y="${Math.max(y - 4, m.top)}" text-anchor="middle" fill="${t.text.primary}" font-size="12" font-weight="500">${esc(formatChartValue(v, prefix, suffix))}</text>`
+        : "";
+      bars += `<rect x="${x}" y="${y}" width="${Math.max(bw - 1, 1)}" height="${h}" fill="${barColor(series, si, a)}"/>${label}`;
+    });
+    if ((k - 1 - a) % stride === 0) {
+      bars += `<text x="${slotX + R / 2}" y="${H - 4}" text-anchor="middle" fill="${t.text.secondary}" font-size="12">${esc(truncateLabel(cat))}</text>`;
+    }
+    bars += `</g>`;
+    hits.push({ i: a, label: cat, entries: hitEntries, gx: slotX + R / 2 });
+  });
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" style="display:block;width:100%;height:${H}px">
+    ${yAxis(W, H, m, scale, t, { grid: true })}
+    ${bars}
+    ${refLines(W, H, m, scale, spec.referenceLines, t)}
+  </svg>
+  <div class="tip" hidden></div>
+  ${legendHtml(legendItems)}`;
+  const groups = [...el.querySelectorAll("[data-hit]")];
+  groups.forEach((g, i) => { hits[i].el = g; });
+  bindHover(el, hits, suffix, prefix);
+}
+
+function renderLine(el, spec) {
+  const t = tokens();
+  const W = measure(el);
+  const H = spec.height || 240;
+  const cats = spec.categories;
+  const series = spec.series;
+  const k = cats.length;
+  const suffix = spec.valueSuffix || "";
+  const prefix = spec.valuePrefix || "";
+  const dual = !!spec.dualAxis && series.length >= 2;
+  const m = dual
+    ? { top: 28, right: 48, bottom: 36, left: 44 }
+    : { top: 20, right: 16, bottom: 36, left: 44 };
+  const plotW = Math.max(W - m.left - m.right, 1);
+  const plotH = Math.max(H - m.top - m.bottom, 1);
+  const stride = fitStride(k, plotW, estLabelWidthPx(cats, 12));
+  const scales = series.map((s) => {
+    let lo = Infinity, hi = 0;
+    for (const v of s.data) { const n = sanitize(v); lo = Math.min(lo, n); hi = Math.max(hi, n); }
+    if (!Number.isFinite(lo)) lo = 0;
+    if (!dual) {
+      for (const other of series) for (const v of other.data) {
+        const n = sanitize(v); lo = Math.min(lo, n); hi = Math.max(hi, n);
+      }
+    }
+    return buildScale(lo, hi, {
+      beginAtZero: spec.beginAtZero !== false,
+      yMin: spec.yMin, yMax: spec.yMax, tickCount: 5,
+    });
+  });
+  const used = new Set();
+  const colors = series.map((s, i) => uniqueSeriesColor(i, s.tone, used));
+  const xAt = (i) => (k === 1 ? m.left + plotW / 2 : m.left + plotW * i / (k - 1));
+  const yAt = (si, v) => m.top + plotH - valueFrac(scales[dual ? si : 0], v) * plotH;
+  const baseY = m.top + plotH;
+  const paths = series.map((s, si) => {
+    const pts = s.data.map((v, i) => ({ x: xAt(i), y: yAt(si, sanitize(v)) }));
+    const d = pts.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" ");
+    const fill = pts.length >= 2
+      ? `M ${pts[0].x} ${baseY} ${pts.map((p) => `L ${p.x} ${p.y}`).join(" ")} L ${pts[pts.length - 1].x} ${baseY} Z`
+      : "";
+    const area = fill
+      ? `<path d="${fill}" fill="${colors[si]}" fill-opacity="0.12" stroke="none"/>`
+      : "";
+    const dots = k <= 20 ? pts.map((p) =>
+      `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${t.bg.editor}" stroke="${colors[si]}" stroke-width="2"/>`
+    ).join("") : "";
+    return `${area}<path d="${d}" fill="none" stroke="${colors[si]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${dots}`;
+  }).join("");
+  const slot = k === 1 ? plotW : plotW / Math.max(k - 1, 1);
+  let catsSvg = "";
+  const hits = [];
+  cats.forEach((cat, i) => {
+    const x = xAt(i);
+    catsSvg += `<g data-hit="${i}"><rect x="${x - slot / 2}" y="${m.top}" width="${slot}" height="${plotH}" fill="transparent"/>`;
+    if ((k - 1 - i) % stride === 0) {
+      catsSvg += `<text x="${x}" y="${H - 4}" text-anchor="middle" fill="${t.text.secondary}" font-size="12">${esc(truncateLabel(cat))}</text>`;
+    }
+    catsSvg += `</g>`;
+    hits.push({
+      label: cat,
+      gx: x,
+      entries: series.map((s, si) => ({
+        color: colors[si],
+        name: s.name,
+        value: sanitize(s.data[i]),
+        decimals: spec.decimals,
+      })),
+    });
+  });
+  const leftScale = scales[0];
+  const rightScale = dual ? scales[1] : null;
+  const unitL = spec.leftUnit || "";
+  const unitR = spec.rightUnit || "";
+  const units = (unitL ? `<text x="${m.left}" y="${m.top - 8}" text-anchor="start" fill="${colors[0]}" font-size="11">${esc(unitL)}</text>` : "")
+    + (dual && unitR ? `<text x="${W - m.right}" y="${m.top - 8}" text-anchor="end" fill="${colors[1]}" font-size="11">${esc(unitR)}</text>` : "");
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" style="display:block;width:100%;height:${H}px">
+    ${yAxis(W, H, m, leftScale, t, { grid: true, color: dual ? colors[0] : t.text.secondary })}
+    ${rightScale ? yAxis(W, H, m, rightScale, t, { grid: false, side: "right", color: colors[1] }) : ""}
+    ${units}
+    <line x1="${m.left}" x2="${W - m.right}" y1="${baseY}" y2="${baseY}" stroke="${t.stroke.secondary}" stroke-width="1"/>
+    ${paths}
+    ${catsSvg}
+    <line data-hover-guide="true" x1="0" x2="0" y1="${m.top}" y2="${baseY}" stroke="${t.stroke.focused}" stroke-dasharray="4 4" stroke-linecap="round" stroke-width="1.5" opacity="0" pointer-events="none"/>
+  </svg>
+  <div class="tip" hidden></div>
+  ${legendHtml(series.map((s, i) => ({ name: s.name, color: colors[i] })))}`;
+  const groups = [...el.querySelectorAll("[data-hit]")];
+  groups.forEach((g, i) => { hits[i].el = g; });
+  bindHover(el, hits, suffix, prefix);
+}
+
+const CHARTS = [
+  { id: "line-abs", kind: "line", spec: {
+    categories: ["2021", "2022", "2023", "2024", "2025"],
+    series: [
+      { name: "销售费用（亿元）", data: [93.84, 73.48, 75.77, 83.36, 91.06], tone: "info" },
+      { name: "营业收入（亿元）", data: [259.06, 212.75, 228.2, 279.85, 316.29] },
+    ],
+    height: 280, valueSuffix: " 亿", beginAtZero: true, dualAxis: true, decimals: 2,
+    leftUnit: "销售费用 · 亿", rightUnit: "营业收入 · 亿",
+  }},
+  { id: "bar-rate5", kind: "bar", spec: {
+    categories: ["2021", "2022", "2023", "2024", "2025"],
+    series: [{ name: "销售费用 / 营业收入", data: [36.22, 34.54, 33.2, 29.79, 28.79], tone: "info" }],
+    height: 220, valueSuffix: "%", showValues: true, yMin: 20, yMax: 40, beginAtZero: false,
+  }},
+  { id: "bar-mix25", kind: "bar", spec: {
+    categories: ["职工薪酬", "学术推广/医学教育", "专业咨询及会务", "差旅办公", "股权激励", "其他"],
+    series: [
+      { name: "2025", data: [35.36, 29.3, 22.32, 2.63, 0.86, 0.59], tone: "info" },
+      { name: "2024（年报重列）", data: [27.81, 25.73, 25.85, 2.83, 0.7, 0.43], tone: "neutral" },
+    ],
+    height: 260, valueSuffix: " 亿", showValues: true,
+  }},
+  { id: "bar-innov", kind: "bar", spec: {
+    categories: ["再鼎", "泽璟", "康方", "信达", "君实", "艾力斯", "康弘", "海思科", "贝达", "荣昌", "百济", "翰森"],
+    series: [{ name: "2025 销售费用 / 营收", data: [60.33, 57.42, 47.0, 43.81, 42.15, 40.02, 37.54, 37.46, 35.97, 34.19, 27.73, 27.04], tone: "info" }],
+    height: 280, valueSuffix: "%", showValues: true,
+  }},
+  { id: "bar-mixed", kind: "bar", spec: {
+    categories: ["中生制药", "仙琚", "丽珠", "恒瑞", "健康元", "石药", "复星", "海正", "华海", "科伦", "联邦"],
+    series: [{ name: "2025 销售费用 / 营收", data: [34.53, 31.4, 29.79, 28.79, 27.26, 24.85, 22.07, 19.7, 18.37, 16.42, 10.26], tone: "info" }],
+    height: 260, valueSuffix: "%", showValues: true,
+    referenceLines: [{ value: 28.79, label: "恒瑞", tone: "info" }],
+  }},
+  { id: "bar-3fee", kind: "bar", spec: {
+    categories: ["艾力斯", "丽珠", "仙琚", "健康元", "康弘", "海正", "海思科", "贝达", "复星", "恒瑞", "科伦", "石药", "中生", "荣昌", "君实", "华海", "百济"],
+    series: [{ name: "销售费用 /（销+管+研）", data: [78.2, 70.0, 65.5, 65.9, 61.3, 60.6, 56.8, 56.7, 51.7, 48.3, 47.1, 49.4, 57.9, 41.3, 36.4, 36.1, 34.8], tone: "neutral" }],
+    height: 280, valueSuffix: "%", showValues: true,
+  }},
+  { id: "bar-tot", kind: "bar", spec: {
+    categories: ["艾力斯", "康弘", "贝达", "海思科", "恒瑞", "丽珠", "仙琚", "荣昌", "健康元", "君实", "百济", "复星", "海正", "华海", "科伦"],
+    series: [{ name: "销售费用 / 营业总成本", data: [73.0, 52.5, 41.1, 38.9, 39.4, 39.1, 35.9, 34.9, 34.9, 30.6, 29.8, 22.9, 22.0, 19.4, 18.5], tone: "info" }],
+    height: 260, valueSuffix: "%", showValues: true,
+  }},
+];
+
+function draw() {
+  for (const c of CHARTS) {
+    const el = document.getElementById(c.id);
+    if (!el) continue;
+    if (c.kind === "line") renderLine(el, c.spec);
+    else renderBar(el, c.spec);
+  }
+}
+
+document.getElementById("nav-peer").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-peer]");
+  if (!b) return;
+  document.querySelectorAll("#nav-peer .pill").forEach((p) => p.classList.toggle("active", p === b));
+  ["rate", "mix", "table"].forEach((id) => {
+    document.getElementById("peer-" + id).classList.toggle("on", id === b.dataset.peer);
+  });
+  draw();
+});
+
+draw();
+new ResizeObserver(draw).observe(document.querySelector(".page"));
+matchMedia("(prefers-color-scheme: light)").addEventListener("change", draw);
+</script>
+</body>
+</html>

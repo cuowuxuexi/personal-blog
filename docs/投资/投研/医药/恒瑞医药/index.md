@@ -21,7 +21,7 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
     <div><dt>行业</dt><dd>医药 / 卖药</dd></div>
     <div><dt>状态</dt><dd>学习中</dd></div>
     <div><dt>阶段</dt><dd>四问初步收口</dd></div>
-    <div><dt>更新</dt><dd>2026-08-28</dd></div>
+    <div><dt>更新</dt><dd>2026-08-31</dd></div>
   </dl>
 </section>
 
@@ -61,6 +61,7 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
     <a href="#cash"><span>06</span><div><strong>现金储备也用同一把尺子</strong><p>账面现金对上；海外巨头净负债不是缺钱。</p></div><span>↓</span></a>
     <a href="#open"><span>07</span><div><strong>停在还没拆开的地方</strong><p>单品账、利润分拆、下一次大额许可。</p></div><span>↓</span></a>
     <a href="/html/hengrui-business-model/"><span>08</span><div><strong>生意模型</strong><p>公司层生意图：谁付钱、供养是否闭合、护城河与每期该盯的数。</p></div><span>→</span></a>
+    <a href="/html/hengrui-sales-expense/"><span>09</span><div><strong>销售费用</strong><p>五年绝对额与费用率，以及 2025 年同业对照。</p></div><span>→</span></a>
   </div>
 </section>
 
@@ -431,6 +432,14 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
       <div>
         <strong>2026-08-28 · 生意模型</strong>
         <p>公司层生意图单开一章：三层不同向、供养未闭合、失效条件与观测面板。</p>
+      </div>
+      <span>→</span>
+    </a>
+    <a href="/html/hengrui-sales-expense/">
+      <span>CH</span>
+      <div>
+        <strong>2026-08-31 · 销售费用</strong>
+        <p>销售费用五年变化与同业对照单开一章：绝对额先跌后升，费用率连续下行。</p>
       </div>
       <span>→</span>
     </a>

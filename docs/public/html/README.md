@@ -38,6 +38,7 @@ docs/public/html/<名字>/
 | `grok-skills/` | Grok Build 自带技能图解（旧整页，cli篇已改走 cli-hub） |
 | `cli-hub/` | cli篇目录：Pi / Grok / Herdr / Orca |
 | `hengrui-business-model/` | 恒瑞医药生意模型画布；章节标题直达 `/html/hengrui-business-model` |
+| `hengrui-sales-expense/` | 恒瑞医药销售费用五年变化与同业对照；章节标题直达 `/html/hengrui-sales-expense` |
 | `tencent-business-model/` | 腾讯生意模型画布；章节标题直达 `/html/tencent-business-model` |
 
-最后更新：2026-08-28
+最后更新：2026-08-31
