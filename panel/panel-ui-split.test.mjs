@@ -34,12 +34,12 @@ test('改主题输入只进改期头', () => {
 })
 
 test('贴图和表单草稿只进改条目', () => {
-  assert.match(entry, /resolvePasteRole/)
+  assert.match(entry, /decideImagePaste/)
   assert.match(entry, /DRAFT_BACKUP_KEY/)
   assert.match(entry, /\/api\/draft/)
   assert.match(entry, /btn-discard-draft/)
-  assert.doesNotMatch(chrome, /resolvePasteRole/)
-  assert.doesNotMatch(publication, /resolvePasteRole/)
+  assert.doesNotMatch(chrome, /decideImagePaste/)
+  assert.doesNotMatch(publication, /decideImagePaste/)
   assert.doesNotMatch(chrome, /DRAFT_BACKUP_KEY/)
   assert.doesNotMatch(publication, /DRAFT_BACKUP_KEY/)
 })

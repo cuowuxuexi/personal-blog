@@ -10,7 +10,8 @@
 
 | 入口 | 职责 |
 | --- | --- |
-| `start.mjs` | 启动面板服务并打开本地页面 |
+| `start.mjs` | 启动面板服务、执行本地备份轮转并打开本地页面 |
+| `cleanup.mjs` | 本地正文备份与发布快照的手动/启动时清理入口 |
 | `server.mjs` | HTTP/静态资源装配；普通路由表和发布 job 路由入口 |
 | `public/README.md` | 前端动态区域、稳定 DOM 锚点与文件索引 |
 | `lib/README.md` | 内容变更、发布状态机、部署 adapter 与后端文件索引 |
@@ -46,6 +47,16 @@ pnpm panel:shortcut
 - `PANEL_GUONEI_HOST` / `PANEL_GUONEI_USER` / `PANEL_GUONEI_KEY` / `PANEL_GUONEI_SITE_DIR`：国内机上传。私钥默认识别 `~/.ssh/id_ed25519_servers`
 
 没有 clipro key 也能写周记、维护历程篇章和发布；只是 AI 润色不可用。上传国内站需要 Tailscale 与 SSH 私钥。
+
+## 本地备份保留
+
+面板每次启动会自动轮转 `panel/.local-backups/`，也可在仓库根手动执行：
+
+```bash
+pnpm panel:cleanup
+```
+
+清理规则保持 fail-closed：当前 HEAD 上 7 天内最多保留最近 10 个 `PreviewReady`，所有进行中任务不动；基线已漂移的预览立即失效；已发布任务保留 2 天，普通失败、中断的 `Preparing`、取消/取代任务和孤儿快照保留 1 天，带 `retry-push` / `retry-verify` 等恢复能力的失败任务保留 7 天。正文修改前备份每篇最多保留最近 10 份，超过 30 天后只保留最新一份。清理会同步删除对应历史任务记录，但不触碰 `drafts.json`、`form-draft.json` 或当前仍可确认的发布快照。
 
 ## 发布流程
 

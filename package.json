@@ -12,6 +12,7 @@
     "check:html": "node scripts/check-standalone-html.mjs",
     "publish:guonei": "node scripts/publish-guonei.mjs",
     "panel": "node panel/start.mjs",
+    "panel:cleanup": "node panel/cleanup.mjs",
     "panel:shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-panel-shortcut.ps1",
     "test:panel": "node --test panel/*.test.mjs",
     "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs scripts/check-standalone-html.test.mjs scripts/publish-guonei.test.mjs"

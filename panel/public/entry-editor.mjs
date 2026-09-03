@@ -7,12 +7,7 @@ import {
 } from './draft.mjs'
 import { escapeHtml, escapeAttr } from './escape.mjs'
 import { bodyImageUrls, removeImageMarkdown } from './media.mjs'
-import {
-  imageFilesFromClipboard,
-  namePasteFile,
-  resolvePasteRole,
-  shouldAcceptImagePaste,
-} from './paste.mjs'
+import { decideImagePaste } from './paste.mjs'
 import { singleFlight } from './publish-flow.mjs'
 
 const DRAFT_KEY = 'panel-draft-v1'
@@ -339,14 +334,23 @@ export function createEntryEditor({
     for (const box of document.querySelectorAll('.drop')) bindDropBox(box)
 
     document.addEventListener('paste', async (event) => {
-      const files = imageFilesFromClipboard(event.clipboardData).map((file) => namePasteFile(file))
-      if (!shouldAcceptImagePaste(event.clipboardData, files)) return
+      const decided = await decideImagePaste({
+        clipboardData: event.clipboardData,
+        target: event.target,
+        lastRole: lastDropRole,
+        clipboardReader: navigator.clipboard?.read?.bind(navigator.clipboard),
+      })
+      if (!decided.accept) {
+        if (decided.miss) setNotice(decided.miss)
+        return
+      }
       event.preventDefault()
-      const role = resolvePasteRole(event.target, lastDropRole)
-      const box = document.querySelector(`.drop[data-role="${role}"]`)
+      const box = document.querySelector(`.drop[data-role="${decided.role}"]`)
       box?.classList.add('over')
       try {
-        await handleFiles(role, files)
+        await handleFiles(decided.role, decided.files)
+      } catch (error) {
+        setNotice(error.message || '贴图失败', 'err')
       } finally {
         box?.classList.remove('over')
       }

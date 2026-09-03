@@ -1,6 +1,7 @@
 import { execSync, spawn } from 'node:child_process'
 import { REPO_ROOT, loadEnv } from './lib/paths.mjs'
 import { createServer, PORT, VITEPRESS_URL } from './server.mjs'
+import { cleanupDefaultPanelStorage, formatCleanupSummary } from './cleanup.mjs'
 import { createVitepressSupervisor } from './lib/vitepress-supervisor.mjs'
 
 loadEnv()
@@ -89,6 +90,12 @@ if (await isUp(`${panelUrl}/api/bootstrap`)) {
   while (Date.now() < deadline && await isUp(`${panelUrl}/api/bootstrap`)) {
     await new Promise((resolve) => setTimeout(resolve, 200))
   }
+}
+
+try {
+  console.log(formatCleanupSummary(cleanupDefaultPanelStorage()))
+} catch (error) {
+  console.warn(`本地备份自动清理失败，已保留现有文件：${error.message}`)
 }
 
 const server = createServer()
