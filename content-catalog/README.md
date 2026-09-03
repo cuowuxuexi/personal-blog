@@ -36,7 +36,7 @@ Hermes 不启用 `revisionDate`；research 仍不进最近更新。缺省无 `re
 | `paths.mjs` | 路径归属、文件名、公开链接与资产规则 |
 | `frontmatter.mjs` | 扁平 frontmatter 解析（投影与 verifier 共用） |
 | `project.mjs` | 周记/历程纯投影 core（PostItem / sidebar 模型） |
-| `project-structure.mjs` | 投研/哲学/大问题树结构纯投影 |
+| `project-structure.mjs` | 投研/哲学/大问题树结构纯投影；投研 HTML 章的 `publicHref` 成为侧栏 link |
 | `project-fs.mjs` | Node-only fs adapter；不进浏览器 bundle |
 | `catalog.test.mjs` | 模块单测 |
 | `project.test.mjs` | 投影 fixture 红绿与 live 对账 |

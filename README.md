@@ -58,7 +58,7 @@ npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
 | `CONTEXT.md` | 领域词汇、权威边界、最新一期/最近更新等语义 |
 | `docs/adr/` | 已接受的长期架构决策 |
 | `docs/.vitepress/README.md` | VitePress 配置、内容查询、主题组件与构建插件索引 |
-| `docs/public/html/` | 先做好的独立 HTML；嵌进文章用 `<StandaloneHtml>` |
+| `docs/public/html/` | 先做好的独立 HTML；周记可嵌 `<StandaloneHtml>`；投研 HTML 章用标题直达 |
 | `panel/README.md` | 发布面板使用说明与源码入口 |
 | `panel/lib/README.md` | 发布面板后端能力索引 |
 | `panel/public/README.md` | 发布面板前端 DOM 与模块索引 |
@@ -71,10 +71,10 @@ npx wrangler pages deploy docs/.vitepress/dist --project-name=personal-blog
 投资板块是**投研前端**：记录研究成果、学习路径、研究思路和投资思路，而不是把私有投研指挥系统原样公开。
 
 1. 研究与取证在私有投研指挥系统中进行。  
-2. 准备发到博客时，先讨论页面目标、范围和结构。  
-3. Agent / 作者按 `docs/agents/research-publishing.md` 回源并本地起草。  
+2. 你把可公开的草稿带到本仓，对 Agent 说「写入博客」。  
+3. Agent 按 `docs/agents/research-publishing.md` 落页，不回源。新公司写档案根；已有公司则在其下新开章节。交来 HTML：拷进 `docs/public/html/<名字>/`，章节标题直达该页，不嵌 iframe。交来 Markdown：改写成完整档案页。  
 4. 本地 `pnpm docs:dev` / `docs:preview` 检查。  
-5. 你明确批准后，才 push / 部署。  
+5. 你说「上传」后，才提交这次投研文件、`push main`，并跑 `pnpm publish:guonei`。  
 
 本地来源索引 `research-sources.local.yaml` 只给本机 Agent 使用，不进 Git，也不进网站。  
 分阶段计划见 `RESEARCH-FRONTEND.md` 与 GitHub Issues `#1`–`#4`。  
@@ -108,7 +108,7 @@ description: 一句话摘要（首页与板块列表展示）
 
 2. 正文用 `#` / `##` 组织标题；右侧「本页指引」按 h2–h4 生成大纲。
 3. 周记与「我的AI历程」只维护 Markdown/frontmatter 和引用资产；`posts.ts` 与受管 sidebar 由 `content-catalog` 在开发/构建期投影，**不要手工登记**。
-4. 投研、投资哲学和大问题等尚未接入该投影的内容，按 Skill 对应分支维护当前 hub/sidebar，并遵守各自门禁。
+4. 投研、投资哲学和大问题的清单与受管 sidebar 同样由内容目录投影；只写目录和文头，不要手改 `config.mts`。投研另遵守「写入博客」/「上传」门禁。
 5. 运行与内容类型相称的验证；周记/历程至少运行 `pnpm test:content` 和 `pnpm docs:build`。
 
 投资类文章请保留「非投资建议」提示；全站页脚与「关于」页已有总声明。无 `cover` 时不渲染封面位；有图时用 frontmatter `cover` 指向 `docs/public/` 下路径。
@@ -116,7 +116,7 @@ description: 一句话摘要（首页与板块列表展示）
 ## 侧栏与内容目录
 
 - 周记与「我的AI历程」：由 Markdown/frontmatter + typed IA 投影，入口见 `content-catalog/`；不要为登记条目手改 `posts.ts` 或受管 sidebar。
-- 投研、投资哲学、大问题及其它未投影结构：仍以 blog-editor 对应分支列出的 live hub 与 `docs/.vitepress/config.mts` 为准。
+- 投研、投资哲学、大问题：目录与 sidebar 由内容目录投影；新标的或章节不要手改 `config.mts`。
 - 所有公开链接均不带 `.md`，且不得跨板块串栏。
 
 ## 顶栏与三栏布局
@@ -145,4 +145,4 @@ description: 一句话摘要（首页与板块列表展示）
 - 勿拷贝第三方周刊正文、封面或品牌资产。  
 - 勿将密钥写入仓库。  
 
-最后更新：2026-08-24
+最后更新：2026-08-27

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/html/pdd-earnings-premarket-close/" />
+  <title>拼多多 (PDD) 财报日盘前与收盘价</title>
+  <style>
+    :root {
+      --bg-editor: #FCFCFC;
+      --bg-chrome: #F8F8F8;
+      --text: #141414;
+      --text-2: #141414BD;
+      --text-3: #14141499;
+      --text-4: #1414145C;
+      --fill-q: #1414140F;
+      --stroke-2: #1414141F;
+      --stroke-3: #14141414;
+      --accent: #2778C1;
+      --success: #52B896E0;
+      --danger: #C04848E0;
+      --info: #70B0D8E0;
+      --muted-chart: #8888A8E0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-editor: #181818;
+        --bg-chrome: #141414;
+        --text: #F0F0F0;
+        --text-2: #F0F0F0BD;
+        --text-3: #F0F0F099;
+        --text-4: #F0F0F05C;
+        --fill-q: #F0F0F00F;
+        --stroke-2: #F0F0F01F;
+        --stroke-3: #F0F0F014;
+        --accent: #599CE7;
+        --success: #52B896E0;
+        --danger: #C04848E0;
+        --info: #70B0D8E0;
+        --muted-chart: #8888A8E0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: var(--bg-editor);
+      color: var(--text);
+      font-family: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 20px 40px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 30px;
+      font-weight: 590;
+      color: var(--text);
+    }
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 590;
+      color: var(--text);
+    }
+    .muted { margin: 0; color: var(--text-2); }
+    .small { margin: 0; color: var(--text-3); font-size: 12px; line-height: 16px; }
+    .research-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0 0 8px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+    }
+    .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+    .research-breadcrumb a:hover { color: var(--accent); }
+    .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+    .head { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+    .row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+      width: 100%;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 12px 8px;
+    }
+    .stat .v {
+      font-size: 24px;
+      line-height: 28px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .stat .v.success { color: #52B896E0; }
+    .stat .v.danger { color: #C04848E0; }
+    .stat .l {
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-2);
+    }
+    .callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 20px;
+    }
+    .callout-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 12px;
+      height: 20px;
+      color: #70B0D8E0;
+    }
+    .callout-icon svg { display: block; }
+    .callout-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .callout-title { font-weight: 500; }
+    hr {
+      width: 100%;
+      border: none;
+      border-top: 1px solid var(--stroke-3);
+      margin: 0;
+    }
+    .table-frame {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--stroke-3);
+      border-radius: 8px;
+      background: var(--bg-editor);
+      overflow-x: auto;
+      overflow-y: clip;
+    }
+    table {
+      min-width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text);
+    }
+    th, td {
+      padding: 8px 12px;
+      vertical-align: top;
+    }
+    th {
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid var(--stroke-2);
+      background: var(--fill-q);
+      white-space: nowrap;
+    }
+    td { white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--stroke-3); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(even) { background: var(--fill-q); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .left { text-align: left; }
+    .cell-dot {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      margin-top: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot.success { background: #52B896E0; }
+    .dot.danger { background: #C04848E0; }
+    .dot.neutral { background: #8888A8E0; }
+    .chart { width: 100%; min-width: 0; position: relative; }
+    .chart svg { display: block; width: 100%; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 12px;
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-2);
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .legend i {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    .note { margin: 0; }
+    .note strong { display: block; font-weight: 590; margin-bottom: 8px; }
+    .note p { margin: 0 0 8px; color: var(--text); }
+    .note p:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <div class="stack">
+    <nav class="research-breadcrumb">
+      <a href="/投资/投研/">投研标的</a><span>/</span>
+      <a href="/投资/投研/互联网/">互联网行业</a><span>/</span>
+      <strong>拼多多财报日盘前与收盘价</strong>
+    </nav>
+    <div class="head">
+      <h1>拼多多 (PDD) 财报日盘前与收盘价</h1>
+      <p class="muted">NASDAQ: PDD · 美元 · 过去三年共 13 次季报（2023-08-29 至 2026-08-24）· 全部为美股开盘前发布</p>
+    </div>
+
+    <div class="row">
+      <div class="stat"><div class="v">13</div><div class="l">开盘前发布的季报</div></div>
+      <div class="stat"><div class="v">+0.87%</div><div class="l">收盘相对前收中位数</div></div>
+      <div class="stat"><div class="v success">+18.08%</div><div class="l">最大正反应 · 2023Q3</div></div>
+      <div class="stat"><div class="v danger">-28.51%</div><div class="l">最大负反应 · 2024Q2</div></div>
+    </div>
+
+    <div class="callout" role="note">
+      <span class="callout-icon" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 300 300">
+          <g transform="matrix(1 0 0 -1 0 300)">
+            <path fill="currentColor" d="M150 293Q189 293 222.0 274.0Q255 255 274.0 222.0Q293 189 293.0 150.0Q293 111 274.0 78.0Q255 45 222.0 26.0Q189 7 150.0 7.0Q111 7 78.0 26.0Q45 45 26.0 78.0Q7 111 7.0 150.0Q7 189 26.0 222.0Q45 255 78.0 274.0Q111 293 150 293ZM150 270Q118 270 90.5 253.5Q63 237 46.5 209.5Q30 182 30.0 150.0Q30 118 46.5 90.5Q63 63 90.5 46.5Q118 30 150.0 30.0Q182 30 209.5 46.5Q237 63 253.5 90.5Q270 118 270.0 150.0Q270 182 253.5 209.5Q237 237 209.5 253.5Q182 270 150 270ZM150 152Q155 152 158.5 148.5Q162 145 162 141V94Q162 89 158.5 85.5Q155 82 150.0 82.0Q145 82 141.5 85.5Q138 89 138 94V141Q138 145 141.5 148.5Q145 152 150 152ZM150 216Q158 216 163.5 210.5Q169 205 169.0 197.0Q169 189 163.5 183.5Q158 178 150.0 178.0Q142 178 136.5 183.5Q131 189 131.0 197.0Q131 205 136.5 210.5Q142 216 150 216Z"/>
+          </g>
+        </svg>
+      </span>
+      <div class="callout-body">
+        <div class="callout-title">盘前价口径</div>
+        <div>拼多多近三年都是美东开盘前出季报（电话会通常 7:30 AM ET）。免费日线没有官方盘前最后一笔。表中「盘前」默认取 Yahoo 延时小时线 08:00–09:00 ET 收盘，约等于早上 9 点的盘前价；2026Q2 因仍在 1 分钟回看窗口，改用 09:29 盘前最后一分钟收盘 90.78。2023Q2 超出 730 天小时线窗口，盘前缺失，只保留官方开盘/收盘。</div>
+      </div>
+    </div>
+
+    <h2>财报当天价格</h2>
+    <div class="table-frame" id="table"></div>
+    <p class="small">价格为未复权官方日线开盘/收盘（Yahoo 与 WeStock/腾讯交叉核对到 $0.01）。盘前旁注：2023Q3–2026Q1 为约 09:00 ET；2026Q2 为 09:29 ET 1 分钟收盘。来源：公司 IR / GlobeNewswire 发布日；Yahoo Finance 延时行情；WeStock usPDD.OQ。抓取日 2026-08-25。</p>
+
+    <hr />
+
+    <h2>收盘相对前收：财报日全天反应</h2>
+    <div class="chart" id="chart1"></div>
+    <p class="small">收盘相对上一交易日官方收盘。这是财报日（含盘前跳空）的完整市场反应。13 次里 7 次收涨、6 次收跌；均值 -1.87%，中位数 +0.87%。</p>
+
+    <h2>盘前跳空 vs 当天消化</h2>
+    <div class="chart" id="chart2"></div>
+    <p class="small">蓝柱：消息在盘前已被定价多少。灰柱：开盘后到收盘是否继续走。例如 2023Q4 盘前高开约 +17.6%，当天相对盘前回吐 11.95%；2024Q2 盘前已跌约 17%，收盘相对盘前再跌 13.7%。不含 2023Q2（无盘前小时线）。</p>
+
+    <h2>口径、来源与限制</h2>
+    <div class="grid">
+      <div class="note">
+        <strong>已核对</strong>
+        <p>13 个发布日均来自 PDD Holdings 官方新闻稿（“today announced” + 通常写明 before U.S. markets open）。日线开盘/收盘 Yahoo 与 WeStock 一致。</p>
+        <p>最新一期 2026-08-24：盘前 4:00 第一笔 86.95，09:29 最后一笔 90.78，官方开盘 90.95，收盘 87.07。</p>
+      </div>
+      <div class="note">
+        <strong>不能当成官方盘前结算价</strong>
+        <p>历史盘前没有交易所官方日终字段。约 09:00 小时线接近、但不等于 09:29 盘前末价；盘前内部波动可以很大（2024Q1 新闻曾报盘中约 157，9 点附近已回到 154，开盘 150.26）。</p>
+        <p>聚合行情，未冻结 6-K 原件，也不是投资建议。</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROWS = [
+      { quarter: "2023Q2", period: "2023-06-30", date: "2023-08-29", prevClose: 80.76, premarket: null, open: 90.28, close: 93.22, preVsPrev: null, closeVsPrev: 15.43, closeVsPre: null },
+      { quarter: "2023Q3", period: "2023-09-30", date: "2023-11-28", prevClose: 117.72, premarket: 134.49, open: 135.25, close: 139.00, preVsPrev: 14.25, closeVsPrev: 18.08, closeVsPre: 3.35 },
+      { quarter: "2023Q4", period: "2023-12-31", date: "2024-03-20", prevClose: 127.68, premarket: 150.10, open: 147.09, close: 132.17, preVsPrev: 17.56, closeVsPrev: 3.52, closeVsPre: -11.95 },
+      { quarter: "2024Q1", period: "2024-03-31", date: "2024-05-22", prevClose: 145.45, premarket: 153.75, open: 150.26, close: 147.09, preVsPrev: 5.71, closeVsPrev: 1.13, closeVsPre: -4.33 },
+      { quarter: "2024Q2", period: "2024-06-30", date: "2024-08-26", prevClose: 139.87, premarket: 115.85, open: 110.20, close: 100.00, preVsPrev: -17.17, closeVsPrev: -28.51, closeVsPre: -13.68 },
+      { quarter: "2024Q3", period: "2024-09-30", date: "2024-11-21", prevClose: 116.49, premarket: 102.80, open: 104.43, close: 104.09, preVsPrev: -11.75, closeVsPrev: -10.64, closeVsPre: 1.26 },
+      { quarter: "2024Q4", period: "2024-12-31", date: "2025-03-20", prevClose: 125.92, premarket: 118.80, open: 122.62, close: 130.92, preVsPrev: -5.65, closeVsPrev: 3.97, closeVsPre: 10.20 },
+      { quarter: "2025Q1", period: "2025-03-31", date: "2025-05-27", prevClose: 119.24, premarket: 96.30, open: 98.22, close: 102.98, preVsPrev: -19.24, closeVsPrev: -13.64, closeVsPre: 6.94 },
+      { quarter: "2025Q2", period: "2025-06-30", date: "2025-08-25", prevClose: 127.11, premarket: 128.19, open: 125.85, close: 128.21, preVsPrev: 0.85, closeVsPrev: 0.87, closeVsPre: 0.02 },
+      { quarter: "2025Q3", period: "2025-09-30", date: "2025-11-18", prevClose: 129.04, premarket: 125.50, open: 123.18, close: 119.58, preVsPrev: -2.74, closeVsPrev: -7.33, closeVsPre: -4.72 },
+      { quarter: "2025Q4", period: "2025-12-31", date: "2026-03-25", prevClose: 98.09, premarket: 102.59, open: 100.92, close: 102.61, preVsPrev: 4.59, closeVsPrev: 4.61, closeVsPre: 0.02 },
+      { quarter: "2026Q1", period: "2026-03-31", date: "2026-05-27", prevClose: 96.64, premarket: 88.15, open: 88.69, close: 86.61, preVsPrev: -8.79, closeVsPrev: -10.38, closeVsPre: -1.75 },
+      { quarter: "2026Q2", period: "2026-06-30", date: "2026-08-24", prevClose: 88.38, premarket: 90.78, open: 90.95, close: 87.07, preVsPrev: 2.72, closeVsPrev: -1.48, closeVsPre: -4.09 },
+    ];
+
+    const CHART_COLORS = ["#1F8A65E8","#70B0D8E0","#5A6CC0F0","#F0A040E0","#C06028E0","#E8C030E0","#C85898E0","#F0A088E0","#7B64B8F0","#7DCAB0E0","#8888A8E0","#2A9A8AE0"];
+    const usd = (n) => "$" + n.toFixed(2);
+    const pct = (n) => (n > 0 ? "+" : "") + n.toFixed(2) + "%";
+    const tone = (n) => (n == null ? "neutral" : n > 0.05 ? "success" : n < -0.05 ? "danger" : "neutral");
+    const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+    document.getElementById("table").innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th class="left">报告期</th><th class="left">发布日</th>
+            <th class="num">前收</th><th class="num">盘前</th>
+            <th class="num">开盘</th><th class="num">收盘</th>
+            <th class="num">盘前 vs 前收</th>
+            <th class="num">收盘 vs 前收</th>
+            <th class="num">收盘 vs 盘前</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ROWS.map((r) => `<tr>
+            <td class="left"><span class="cell-dot"><span class="dot ${tone(r.closeVsPrev)}"></span><span>${r.quarter} · ${r.period}</span></span></td>
+            <td class="left">${r.date}</td>
+            <td class="num">${usd(r.prevClose)}</td>
+            <td class="num">${r.premarket == null ? "—" : usd(r.premarket)}</td>
+            <td class="num">${usd(r.open)}</td>
+            <td class="num">${usd(r.close)}</td>
+            <td class="num">${r.preVsPrev == null ? "—" : pct(r.preVsPrev)}</td>
+            <td class="num">${pct(r.closeVsPrev)}</td>
+            <td class="num">${r.closeVsPre == null ? "—" : pct(r.closeVsPre)}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table>`;
+
+    function niceStep(e) {
+      if (!Number.isFinite(e) || e <= 0) return 1;
+      const n = 10 ** Math.floor(Math.log10(e));
+      const t = e / n;
+      return t <= 1 ? n : t <= 2 ? 2 * n : t <= 5 ? 5 * n : 10 * n;
+    }
+    function buildScale(min, max, yMin, yMax, extra = []) {
+      let l = min, c = max;
+      extra.forEach((v) => { l = Math.min(l, v); c = Math.max(c, v); });
+      let u = yMin, p = yMax;
+      const m = niceStep((p - u) / 3);
+      const ticks = [];
+      for (let e = u; e <= p + m / 2; e += m) ticks.push(Number(e.toFixed(10)));
+      return { ticks, min: u, max: p };
+    }
+    function valueFrac(scale, n) {
+      const t = scale.max - scale.min;
+      const a = (n - scale.min) / t;
+      return a < 0 ? 0 : a > 1 ? 1 : a;
+    }
+    function trimZeros(e) {
+      return e.replace(/\.0+$/, "").replace(/(\.\d*[1-9])0+$/, "$1");
+    }
+    function formatValue(e) {
+      return Number.isInteger(e) ? `${e}` : trimZeros(e.toFixed(Math.abs(e) >= 10 ? 1 : 2));
+    }
+
+    function drawBars(el, categories, series, yMin, yMax, opts) {
+      const height = 280;
+      const width = Math.max(el.clientWidth || 980, 480);
+      const m = { top: 16, right: 12, bottom: 40, left: 48 };
+      const iw = Math.max(width - m.left - m.right, 1);
+      const ih = Math.max(height - m.top - m.bottom, 1);
+      const scale = buildScale(
+        Math.min(...series.flatMap((s) => s.data)),
+        Math.max(...series.flatMap((s) => s.data)),
+        yMin, yMax, [0]
+      );
+      const text2 = token("--text-2");
+      const text = token("--text");
+      const stroke3 = token("--stroke-3");
+      const editor = token("--bg-editor");
+      const n = categories.length;
+      const groupW = iw / n;
+      const inner = 0.7 * groupW;
+      const barW = inner / series.length;
+      const yOf = (v) => m.top + ih - valueFrac(scale, v) * ih;
+      const zeroY = yOf(0);
+
+      let axis = "";
+      scale.ticks.forEach((tick) => {
+        const y = yOf(tick);
+        if (tick > scale.min) axis += `<line x1="${m.left}" x2="${width - m.right}" y1="${y}" y2="${y}" stroke="${stroke3}" stroke-width="1"/>`;
+        axis += `<text x="${m.left - 8}" y="${y + 4}" text-anchor="end" fill="${text2}" font-size="12">${formatValue(tick)}%</text>`;
+      });
+      axis += `<line x1="${m.left}" x2="${width - m.right}" y1="${zeroY}" y2="${zeroY}" stroke="${text2}" stroke-width="1" stroke-dasharray="4 3"/>
+        <rect x="${width - m.right - 22}" y="${zeroY - 14}" width="22" height="14" fill="${editor}" rx="2"/>
+        <text x="${width - m.right}" y="${zeroY - 3}" text-anchor="end" fill="${text2}" font-size="12">0%</text>`;
+
+      let bars = "";
+      categories.forEach((cat, i) => {
+        const gx = m.left + i * groupW;
+        const x0 = gx + (groupW - inner) / 2;
+        series.forEach((s, si) => {
+          const v = s.data[i];
+          const color = s.color || CHART_COLORS[i % CHART_COLORS.length];
+          const y1 = yOf(v);
+          const y = Math.min(zeroY, y1);
+          const h = Math.max(Math.abs(zeroY - y1), 1);
+          const x = x0 + si * barW;
+          bars += `<rect x="${x}" y="${y}" width="${Math.max(barW - 1, 1)}" height="${h}" fill="${color}"/>`;
+          if (opts.showValues && series.length === 1) {
+            const label = (v > 0 ? "+" : "") + formatValue(v);
+            const ly = v >= 0 ? Math.max(y - 4, m.top) : Math.min(y + h + 12, m.top + ih - 2);
+            bars += `<text x="${x + barW / 2}" y="${ly}" text-anchor="middle" fill="${text}" font-size="12" font-weight="500">${label}</text>`;
+          }
+        });
+        bars += `<text x="${gx + groupW / 2}" y="${height - 8}" text-anchor="middle" fill="${text2}" font-size="12">${cat}</text>`;
+      });
+
+      const legend = series.length > 1
+        ? `<div class="legend">${series.map((s) => `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("")}</div>`
+        : "";
+
+      el.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img">${axis}${bars}</svg>${legend}`;
+    }
+
+    const withPre = ROWS.filter((r) => r.premarket != null);
+    const drawAll = () => {
+      drawBars(
+        document.getElementById("chart1"),
+        ROWS.map((r) => r.quarter),
+        [{ name: "收盘 vs 前收 (%)", data: ROWS.map((r) => r.closeVsPrev) }],
+        -32, 22, { showValues: true }
+      );
+      drawBars(
+        document.getElementById("chart2"),
+        withPre.map((r) => r.quarter),
+        [
+          { name: "盘前 vs 前收 (%)", data: withPre.map((r) => r.preVsPrev), color: "#70B0D8E0" },
+          { name: "收盘 vs 盘前 (%)", data: withPre.map((r) => r.closeVsPre), color: "#8888A8E0" },
+        ],
+        -22, 20, { showValues: false }
+      );
+    };
+    drawAll();
+    window.addEventListener("resize", drawAll);
+  </script>
+</body>
+</html>

@@ -17,7 +17,7 @@
 
 | 表面 | 地址 / 入口 | 所有者 |
 | --- | --- | --- |
-| 国内站（备案） | https://cuowo.cn | 发布面板确认后的国内部署 |
+| 国内站（备案） | https://cuowo.cn | 周记/历程：面板确认发布；投研：「上传」后 `pnpm publish:guonei` |
 | 海外备份 | https://blog.cuowo.win | `main` → Cloudflare Pages |
 | Cloudflare Pages | https://personal-blog-eue.pages.dev | `.github/workflows/deploy-pages.yml` |
 | 本地站点预览 | `pnpm docs:dev` | VitePress |
@@ -44,7 +44,7 @@
 | --- | --- | --- | --- |
 | 新增/修改周记、历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；周记/历程/投研目录自动投影 | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
 | 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
-| 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；正文 `<StandaloneHtml src="/html/<名字>" />` | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
+| 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；周记嵌 `<StandaloneHtml>`；投研 HTML 章写 `publicHref` 直达 | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
 | 修改某类页面样式 | 目标页面 `pageClass` | `docs/.vitepress/theme/style.css` 对应段 | `pnpm docs:build` + 1440/768/390 检查 |
 | 修改栏目、侧栏、最近更新或最新一期 | 内容目录 / 信息架构能力 | 先读 `content-catalog/`；`posts.ts` / `config.mts` 是站点消费者，面板经 adapter 消费同一合同 | `pnpm test:content`；接线后还要 `pnpm docs:build` + 相关面板测试 |
 | 修改发布面板字段或交互 | `panel/README.md` → `panel/public/README.md` | `panel/public/index.html`、`app.js`、相关 `public/*.mjs` | 定向 `node --test panel/<feature>.test.mjs` |
@@ -92,4 +92,4 @@ pnpm docs:build
 - 私有绝对路径、凭据、工作底稿和不可再分发材料不进入公开文档。
 - 当前工作区存在未提交功能修改时，结构迁移先等待该功能基线稳定，不覆盖或整理无关改动。
 
-最后更新：2026-08-25
+最后更新：2026-08-27

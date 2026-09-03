@@ -7,7 +7,7 @@ Agent-facing operating notes for this repository. Root routing starts at `AGENTS
 | File | Purpose |
 | --- | --- |
 | [publishing-panel.md](./publishing-panel.md) | Current publishing-panel scope, safety gates, and agent boundaries |
-| [research-publishing.md](./research-publishing.md) | Research frontend source resolution and publication gates |
+| [research-publishing.md](./research-publishing.md) | Research frontend source resolution, author triggers, and publication gates |
 | [issue-tracker.md](./issue-tracker.md) | GitHub Issues workflow via `gh` |
 | [triage-labels.md](./triage-labels.md) | Five-role triage label vocabulary |
 | [domain.md](./domain.md) | How to consume the root `CONTEXT.md` and ADRs |
@@ -73,4 +73,4 @@ Content/design routing: `.agents/skills/blog-editor/SKILL.md`.
 
 Domain language: `CONTEXT.md`. Durable decisions: `docs/adr/`.
 
-最后更新：2026-08-25
+最后更新：2026-08-28

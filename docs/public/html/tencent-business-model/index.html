@@ -157,6 +157,7 @@
   .box .k { margin: 0 0 4px; font-size: 12px; line-height: 16px; color: var(--text-3); }
   .box .t { margin: 0 0 4px; font-size: 16px; line-height: 22px; font-weight: 590; }
   .box .d { margin: 0; font-size: 13px; line-height: 18px; color: var(--text-2); }
+  .box .d + .d { margin-top: 6px; }
   .flow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
 </style>
 </head>
@@ -165,9 +166,8 @@
   <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/互联网/">互联网行业</a><span>/</span><a href="/投资/投研/互联网/腾讯/">腾讯</a><span>/</span><strong>生意模型</strong></nav>
   <div class="stack stack-8">
     <h1>腾讯生意模型</h1>
-    <p class="body secondary">
-      2026-08-28。公司层生意图，不是已晋升的研究结论，也不是买卖结论。
-      数字截至 2026 年第二季度。单位亿元。
+    <p class="body">
+      腾讯以微信和 QQ 承载的关系链与数字身份为基础，将用户的沟通、内容、娱乐和交易活动长期沉淀于同一数字生态，并凭借由此形成的触达、传播、分发和交易承接能力，连接游戏与社交增值、广告、金融科技及企业服务，向不同付费方实现多元变现。
     </p>
     <div class="pills" id="tabs">
       <button class="pill active" data-tab="map">总图</button>
@@ -180,7 +180,7 @@
 
   <section class="pane on" id="map">
     <h2>这门生意怎么转</h2>
-    <p class="small">模型是这条机器，不是下面那句压缩。数字是 2026Q2，单位亿元。</p>
+    <p class="small">先看 2026 年二季度，数字都是亿元。</p>
     <div class="machine">
       <div class="box">
         <p class="k">入口 · 身份在这里</p>
@@ -190,26 +190,27 @@
       <p class="flow">四类人在同一入口付钱</p>
       <div class="machine-grid">
         <div class="box">
-          <p class="k">增值 984 · 近端利润在这</p>
+          <p class="k">增值收入 984 亿 · 占 48% · +8%</p>
           <p class="t">游戏用户 + 社交用户</p>
-          <p class="d">国内游戏 473、+17%。社交 325、+0.8%。订阅日均 −2%。</p>
+          <p class="d">国内游戏 473 亿、+17%。社交收入 325 亿、+0.8%。付费会员日均 2.59 亿人，少了 2%。</p>
         </div>
         <div class="box">
-          <p class="k">营销 436</p>
+          <p class="k">营销收入 436 亿 · 占 21% · +22%</p>
           <p class="t">广告主</p>
           <p class="d">视频号时长逾 +20% 不是收入。闭环收入、流量、定价未拆。</p>
         </div>
         <div class="box">
-          <p class="k">金科及企服 603</p>
+          <p class="k">金科及企服收入 603 亿 · 占 30% · +9%</p>
           <p class="t">支付 / 理财 / 信贷 + 云</p>
-          <p class="d">约占收入 30%。无分金额，无资产质量。云不单列。</p>
+          <p class="d">无分金额，无资产质量。云不单列。</p>
         </div>
       </div>
       <p class="flow">收成经营利润和经营现金</p>
       <div class="box">
-        <p class="k">兑现 · 三层互不冒充</p>
-        <p class="t">收入 2,048（+11%）→ 含新AI经营利润 756（+9%）→ 现金双口径</p>
-        <p class="d">报告 FCF −138，同口径 376。514 不是纯 AI 预付款。剔新AI经营利润 861、+19%。</p>
+        <p class="k">收入、利润、现金要分开看</p>
+        <p class="t">收入 2,048 亿（+11%）→ 经营利润 756 亿（+9%）→ 自由现金流 −138 亿 / +376 亿</p>
+        <p class="d">自由现金流是这季生意赚到的现金，扣掉还要再投入的钱之后剩多少。按报表，这季是净流出 138 亿；公司把买算力的预付款拿掉后，是净流入 376 亿。两个数中间差 514 亿，公告没有把它写成单列的「纯 AI 预付款」。</p>
+        <p class="d">利润 756 亿已经算进新产品。把元宝、Hy、编程助手拿掉，经营利润是 861 亿，同比增了 19%。</p>
       </div>
       <p class="flow">经营现金再供养三处</p>
       <div class="machine-grid">
@@ -276,7 +277,7 @@
         <thead><tr><th>端</th><th>本轮</th></tr></thead>
         <tbody>
           <tr><td><span class="dot info"></span>身份</td><td>关系链平台。微信 MAU 14.39 亿是规模，不是护城河证明</td></tr>
-          <tr><td><span class="dot success"></span>近端利润</td><td>国内游戏 473、+17%。社交网络 +0.8%，订阅日均 −2%</td></tr>
+          <tr><td><span class="dot success"></span>近端利润</td><td>国内游戏 473 亿、+17%。社交收入 +0.8%；付费会员日均 2.59 亿人，少了 2%</td></tr>
           <tr><td><span class="dot warning"></span>现金</td><td>报告 FCF −138；同口径 376。514 不是纯 AI 预付款</td></tr>
           <tr><td><span class="dot neutral"></span>AI</td><td>叠加层。档位仍为激进但受控（上沿，临时），本图不重判</td></tr>
         </tbody>

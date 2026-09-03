@@ -60,7 +60,7 @@ description: >-
 - 站点源根：`docs/`；`cleanUrls: true`。
 - `docs/<dir>/index.md` → `/<dir>/`；`docs/<dir>/<file>.md` → `/<dir>/<file>`。
 - 内部链接不写 `.md`；`index.md` 路由保留尾斜杠。
-- 公开资源位于 `docs/public/`，正文引用以 `/` 开头。先做好的独立 HTML 放到 `docs/public/html/<名字>/index.html`，文章里用 `<StandaloneHtml src="/html/<名字>" />` 嵌入并单独打开。
+- 公开资源位于 `docs/public/`，正文引用以 `/` 开头。先做好的独立 HTML 放到 `docs/public/html/<名字>/index.html`。周记正文可嵌 `<StandaloneHtml>`；投研 HTML 章节和历程 `publicHref` 标题直达该页，不要再套 iframe。
 - `docs/agents/**`、`docs/adr/**` 和所有 `README.md` 不进入站点构建。
 - 周记 / 历程登记靠构建期投影；索引副作用以 `references/weekly-and-journey.md` 为准，不要手改 `posts.ts` 或受管 sidebar 字面量。
 - 投研 / 哲学 / 大问题侧栏由内容目录投影；新标的或章节不要手改 `config.mts`。投研档案根是完整档案页；作者交来的 HTML 章节用 `publicHref` 直达，不嵌 iframe。
@@ -107,4 +107,4 @@ description: >-
 
 只有当路径、能力边界、内容类型或编辑工作流发生变化时才更新本 Skill；普通正文和局部样式任务不要顺手改它。
 
-最后更新：2026-08-27
+最后更新：2026-08-28

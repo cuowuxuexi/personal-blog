@@ -14,7 +14,7 @@ When adding or revising public content, homepage copy, navigation, sidebars, pub
 
 Use the publishing panel only when the author explicitly asks to work through it. Creating, renaming, or deleting a named journey chapter always remains a blog-editor task.
 
-Prebuilt standalone HTML belongs in `docs/public/html/<name>/index.html` and is embedded with `<StandaloneHtml src="/html/<name>" />`. Do not create a Markdown page for it, and do not open it with a normal in-site link. The publishing panel does not upload HTML. Existing Pi / Grok guides stay at `docs/public/journey-guides/`.
+Prebuilt standalone HTML belongs in `docs/public/html/<name>/index.html`. Weekly/journey may embed it with `<StandaloneHtml>`. Research HTML chapters and journey `publicHref` titles open that URL full-page; do not iframe them into an archive shell. The publishing panel does not upload HTML. Existing Pi / Grok guides stay at `docs/public/journey-guides/`.
 
 Before drafting investment weekly notes or research content under `docs/投资/`, follow the research protocol selected by the Skill. Private research remains the research authority; this repository owns public presentation. For 投研标的：作者说「写入博客」按交来的稿落页（已有公司则在其下新开章节），不回源；交来 HTML 则标题直达该页，不嵌进档案壳；说「上传」才提交这次投研文件、`push main` 并跑 `pnpm publish:guonei`；说「按投资系统改认识」才回源。
 

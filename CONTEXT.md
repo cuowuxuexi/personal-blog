@@ -24,7 +24,7 @@ This repository is a personal blog. Recording matters more than polished exhibit
 | **Origin kind** | How a blog page was formed relative to private research: `command` (mainly from private research), `blog` (mainly from writing/thinking on the blog), or `mixed`. |
 | **Publishing panel (发布面板)** | The local, non-coding publishing tool for two weekly kinds (investment + AI/life) and 我的AI历程 (`type: journey`). The author drafts, AI-polishes, previews, and self-publishes through it; its preview-and-confirm step satisfies the publication gates for that weekly note, dated journey issue, or chapter instance. The panel can open a new dated journey issue (theme, cover, caption) and edit existing chapter headers; it does not create, rename, or delete named chapter files. Research pages are outside its scope. |
 | **Journey series（我的AI历程）** | An AI/life subseries containing named long-lived chapters and dated issues. It owns its chapter/issue navigation; the broader AI/life section links to the series instead of duplicating every journey item. |
-| **Standalone HTML（独立 HTML）** | A prebuilt public HTML page under `docs/public/html/` (existing Pi / Grok guides remain in `docs/public/journey-guides/`). Embed with `<StandaloneHtml>`. It is not a VitePress Markdown page. |
+| **Standalone HTML（独立 HTML）** | A prebuilt public HTML page under `docs/public/html/` (existing Pi / Grok guides remain in `docs/public/journey-guides/`). Weekly/journey may embed it with `<StandaloneHtml>`. A handed research HTML draft is the reader page: the chapter title uses `publicHref` to open it full-page. |
 | **Latest issue（最新一期）** | The newest dated issue within one recurring series. It is not the same as the most recently revised item across the site. |
 | **Recent update（最近更新）** | A public content item ordered by publication or important-revision freshness across the content types allowed in that surface. It is distinct from a series' latest issue. |
 | **Publication date（首次公开日期）** | The stable date when a content item first entered the public record, or the issue date for a dated series. |
@@ -61,9 +61,11 @@ All weekly notes, journey chapters, and research content require two human gates
 1. Discuss page goal, scope, and structure before drafting.
 2. Review local draft/preview before any push or deploy.
 
+When the author says 「写入博客」 and hands a finished research draft, skip gate 1 and land that draft. HTML becomes a titled full page via `publicHref`; Markdown/prose becomes an archive page. Gate 2 still applies; 「上传」 is the publish approval for that research change.
+
 One approval applies only to that content instance. There is no auto-sync and no auto-publish.
 
-The gates constrain **agent-mediated** drafting and publishing. When the author personally drafts and publishes a weekly note, a dated 我的AI历程 issue, or an existing journey chapter through the local publishing panel, the author's own preview-and-confirm action satisfies both gates for that content instance. Research pages (`docs/投资/投研/`) are outside panel scope and keep the full agent-mediated gate process. Creating, renaming, or deleting a named journey chapter file is not a panel action; it stays with blog-editor and still needs the two gates.
+The gates constrain **agent-mediated** drafting and publishing. When the author personally drafts and publishes a weekly note, a dated 我的AI历程 issue, or an existing journey chapter through the local publishing panel, the author's own preview-and-confirm action satisfies both gates for that content instance. Research pages (`docs/投资/投研/`) are outside panel scope. Creating, renaming, or deleting a named journey chapter file is not a panel action; it stays with blog-editor and still needs the two gates.
 
 ## Public research page states
 
@@ -123,4 +125,4 @@ The first three-page split is experimental and may change after preview and use.
 | publication gate | auto deploy, silent publish |
 | publishing panel / 发布面板 | 微博后台, CMS, 云端编辑器 |
 
-最后更新：2026-08-22
+最后更新：2026-08-27
