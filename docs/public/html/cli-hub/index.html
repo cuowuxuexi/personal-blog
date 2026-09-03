@@ -137,6 +137,33 @@
     }
     .knowledge-route-grid .entry-links a { margin-top: 0; }
 
+    .knowledge-route-grid--three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .knowledge-route-grid--four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .subject-row__tag {
+      font-size: 0.72rem;
+      color: var(--vp-c-text-3);
+      white-space: nowrap;
+    }
+    kbd {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      padding: 1px 4px;
+      border: 1px solid var(--section-line);
+      border-radius: 3px;
+      background: var(--vp-c-bg-soft);
+    }
+    code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      padding: 0.1em 0.35em;
+      background: var(--vp-c-bg-soft);
+      border-radius: 3px;
+    }
+
     .subject-directory { margin: 0 0 2.6rem; }
     .command-grid {
       display: grid;
@@ -159,6 +186,7 @@
     .command-grid .subject-row {
       display: flex;
       align-items: baseline;
+      justify-content: space-between;
       gap: 0.45rem 0.7rem;
       margin: 0;
       padding: 0.34rem 0;
@@ -230,7 +258,8 @@
     .page.is-on { display: block; }
 
     @media (max-width: 800px) {
-      .knowledge-route-grid,
+      .knowledge-route-grid,.knowledge-route-grid--three,
+      .knowledge-route-grid--four,
       .subject-masthead,
       .command-grid { grid-template-columns: 1fr; }
       .subject-row { grid-template-columns: 1fr auto; }
@@ -251,7 +280,7 @@
       <section class="industry-masthead">
         <p>TOOL 01 / CLI</p>
         <h1>cli篇</h1>
-        <p>终端里真正在用的助手，以及它们住的地方。Pi / Grok Build 是聊天机器人；Herdr / Orca 管它们的终端和 worktree。</p>
+        <p>终端里真正在用的助手，以及它们住的地方。Pi / Grok Build / Antigravity 是终端助手；Herdr / Orca 管它们的终端和 worktree。</p>
       </section>
 
       <section class="research-section">
@@ -261,7 +290,7 @@
             <h2>先判断你在用哪个</h2>
           </div>
         </header>
-        <div class="knowledge-route-grid">
+        <div class="knowledge-route-grid knowledge-route-grid--three">
           <article>
             <span>PI</span>
             <h3>轻量终端助手</h3>
@@ -276,6 +305,12 @@
               <a href="#grok">快捷命令 →</a>
               <a href="#skills">技能说明书 →</a>
             </div>
+          </article>
+          <article>
+            <span>ANTIGRAVITY</span>
+            <h3>Agentic 协同助手</h3>
+            <p>规划与执行分流，双击 Esc 时光机，四种模式轮转，技能与 MCP 扩展。</p>
+            <a href="#antigravity">进入 Antigravity 路径 →</a>
           </article>
         </div>
       </section>
@@ -791,6 +826,324 @@
         <div class="research-note"><strong>Linux</strong><span>桌面外的裸 orca 有时是读屏软件。那种环境用 orca-ide，不要乱撞。</span></div>
       </section>
     </section>
+<section class="page" id="page-antigravity">
+      <nav class="research-breadcrumb">
+        <a href="#hub">cli篇</a><span>/</span>
+        <strong>Antigravity CLI 快捷命令</strong>
+      </nav>
+
+      <section class="subject-masthead">
+        <div>
+          <p>GUIDE 06 / Antigravity CLI</p>
+          <h1>Antigravity CLI 快捷命令</h1>
+          <span>终端里的 Agentic 协同助手。你下目标，它排战役、调子代理、改代码、跑命令。</span>
+        </div>
+        <dl>
+          <div><dt>入口</dt><dd>输入框打一个 / 或空行敲 ?</dd></div>
+          <div><dt>忘了</dt><dd>/help 或 /?</dd></div>
+          <div><dt>范围</dt><dd>斜杠 · 快捷键 · @ ! ? · 技能 · MCP</dd></div>
+          <div><dt>模式</dt><dd>Plan · Default · Auto-Edit · YOLO</dd></div>
+        </dl>
+      </section>
+
+      <div class="research-note">
+      <strong>极速上手</strong>
+      <span>按两下 <kbd style="font-family:var(--mono);padding:1px 4px;border:1px solid #ccc;border-radius:3px;">Esc</kbd> 呼出时光机回滚代码；空行敲 <kbd style="font-family:var(--mono);padding:1px 4px;border:1px solid #ccc;border-radius:3px;">Shift+Tab</kbd> 秒切只读规划或改码模式。</span>
+    </div>
+
+    <!-- SLASH / 每天都用 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>SLASH / 每天都用</p>
+          <h2>每天都用</h2>
+        </div>
+        <span>核心高频指令</span>
+      </header>
+      <div class="subject-directory command-grid">
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/model</span><strong>换模型</strong></div>
+          <span class="subject-row__tag">pro / flash</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/plan</span><strong>进入规划模式</strong></div>
+          <span class="subject-row__tag">只读设计不改码</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/rewind</span><strong>回滚时光机</strong></div>
+          <span class="subject-row__tag">双击 Esc 唤出</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/settings</span><strong>打开设置</strong></div>
+          <span class="subject-row__tag">交互式配置面板</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/clear</span><strong>清空重开一局</strong></div>
+          <span class="subject-row__tag">卸下历史包袱</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/quit</span><strong>离开 CLI</strong></div>
+          <span class="subject-row__tag">--delete 抹除记录</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLASH / 这一局 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>SLASH / 这一局</p>
+          <h2>管这一局聊天与记忆</h2>
+        </div>
+        <span>状态与上下文控制</span>
+      </header>
+      <div class="subject-directory command-grid">
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/chat list</span><strong>查看会话列表</strong></div>
+          <span class="subject-row__tag">这一局</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/chat save</span><strong>打上命名存档点</strong></div>
+          <span class="subject-row__tag">这一局</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/chat resume</span><strong>恢复到指定存档</strong></div>
+          <span class="subject-row__tag">这一局</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/compress</span><strong>压缩历史记忆</strong></div>
+          <span class="subject-row__tag">节省 Token</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/memory show</span><strong>看生效说明书</strong></div>
+          <span class="subject-row__tag">GEMINI.md</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/memory refresh</span><strong>重载规则文件</strong></div>
+          <span class="subject-row__tag">无须重启立刻生效</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLASH / 带走 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>SLASH / 带走</p>
+          <h2>带走 / 扩展工作区</h2>
+        </div>
+        <span>协作与多目录管理</span>
+      </header>
+      <div class="subject-directory command-grid">
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/copy</span><strong>复制它的回答</strong></div>
+          <span class="subject-row__tag">系统剪贴板</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/chat share</span><strong>导出会话文件</strong></div>
+          <span class="subject-row__tag">Markdown / JSON</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/dir add</span><strong>挂载外部目录</strong></div>
+          <span class="subject-row__tag">跨项目协作</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/dir show</span><strong>查看已挂载目录</strong></div>
+          <span class="subject-row__tag">工作区边界</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLASH / 工具与外脑 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>SLASH / 外脑生态</p>
+          <h2>技能 · MCP · 子代理</h2>
+        </div>
+        <span>专长扩展与后台</span>
+      </header>
+      <div class="subject-directory command-grid">
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/skills list</span><strong>查看可用技能</strong></div>
+          <span class="subject-row__tag">技能状态表</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/skills reload</span><strong>刷新技能目录</strong></div>
+          <span class="subject-row__tag">重载 SKILL.md</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/mcp list</span><strong>列出 MCP 服务</strong></div>
+          <span class="subject-row__tag">工具连接池</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/mcp reload</span><strong>重载所有 MCP</strong></div>
+          <span class="subject-row__tag">重启协议桥</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/agents list</span><strong>查看子代理列表</strong></div>
+          <span class="subject-row__tag">研究员/审查员</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">/shells</span><strong>后台进程管理器</strong></div>
+          <span class="subject-row__tag">长耗时任务</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODE / 干活姿态 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>MODE / 干活姿态</p>
+          <h2>四种安全与审批姿态</h2>
+        </div>
+        <span>Shift+Tab 快速轮转</span>
+      </header>
+      <div class="knowledge-route-grid knowledge-route-grid--four">
+        <article>
+          <span>PLAN</span>
+          <h3>规划模式</h3>
+          <p>只读沙箱。勘察代码与推演方案，禁止任何写操作。</p>
+        </article>
+        <article>
+          <span>DEFAULT</span>
+          <h3>常规模式</h3>
+          <p>步步确认。改动任何文件或跑命令前弹出确认卡片。</p>
+        </article>
+        <article>
+          <span>AUTO-EDIT</span>
+          <h3>自动改码</h3>
+          <p>放行编辑，拦截命令。写文件全自动，敏感命令仍需审批。</p>
+        </article>
+        <article>
+          <span>YOLO</span>
+          <h3>极速放行</h3>
+          <p>全速推进。所有工具与命令直接放行，适合沙盒与独立分支。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- KEYS / 常用快捷键 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>KEYS / 快捷键</p>
+          <h2>常用快捷键</h2>
+        </div>
+        <span>键盘流效率核心</span>
+      </header>
+      <div class="subject-directory command-grid">
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Enter</span><strong>发送指令</strong></div>
+          <span class="subject-row__tag">即刻执行</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Shift+Enter</span><strong>多行换行</strong></div>
+          <span class="subject-row__tag">或行末打 \ 回车</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Tab</span><strong>自动补全</strong></div>
+          <span class="subject-row__tag">路径与文件补全</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Tab + Tab</span><strong>切换界面细节</strong></div>
+          <span class="subject-row__tag">极简 / 详细双向切换</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Shift+Tab</span><strong>轮转干活模式</strong></div>
+          <span class="subject-row__tag">Default ⇄ Auto-Edit ⇄ Plan</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Esc Esc</span><strong>打开历史时光机</strong></div>
+          <span class="subject-row__tag">输入非空时清空</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Ctrl+C</span><strong>中断生成 / 取消</strong></div>
+          <span class="subject-row__tag">连续两下退出</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Ctrl+L</span><strong>清屏重绘</strong></div>
+          <span class="subject-row__tag">保留对话上下文</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Ctrl+X</span><strong>外部编辑器协同</strong></div>
+          <span class="subject-row__tag">在编辑器中修改方案</span>
+        </div>
+        <div class="subject-row">
+          <div><span class="subject-row__ticker">Ctrl+O</span><strong>折叠/展开长粘贴</strong></div>
+          <span class="subject-row__tag">收拢 [Pasted Text]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREFIX / 开头 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>PREFIX / 开头</p>
+          <h2>三个魔法开头</h2>
+        </div>
+        <span>指令精准分流</span>
+      </header>
+      <div class="knowledge-route-grid knowledge-route-grid--three">
+        <article>
+          <span>@</span>
+          <h3>注入文件/目录</h3>
+          <p>如 <code>@src/core.ts 梳理流程</code>。遵循 Git 过滤规则，自动排除 node_modules 等干扰项。</p>
+        </article>
+        <article>
+          <span>!</span>
+          <h3>运行 Shell 命令</h3>
+          <p>输入 <code>!git status</code> 执行并直接返回；空行敲 <code>!</code> 切换至专属 Shell 交互终端。</p>
+        </article>
+        <article>
+          <span>?</span>
+          <h3>弹出快捷面板</h3>
+          <p>空行敲 <code>?</code> 立即在输入框上方挂起快捷按键抽屉，再敲一次或按 Esc 关闭。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILL / 技能 -->
+    <section class="research-section">
+      <header class="research-section-head">
+        <div>
+          <p>SKILL / 技能</p>
+          <h2>说明书，不是自带包</h2>
+        </div>
+        <span>按需触发 · 四级发现链路</span>
+      </header>
+
+      <div class="research-note">
+        <strong>规范化机制</strong>
+        <span>技能遵循 Agent Skills 开放标准，只在匹配意图或显式调用时按说明书激活，杜绝常驻占用上下文。</span>
+      </div>
+
+      <div class="knowledge-route-grid knowledge-route-grid--four">
+        <article>
+          <span>1</span>
+          <h3>./.gemini/skills</h3>
+          <p>当前项目私有技能，最高优先级</p>
+        </article>
+        <article>
+          <span>2</span>
+          <h3>./.agents/skills</h3>
+          <p>项目跨 Agent 协作共享专长目录</p>
+        </article>
+        <article>
+          <span>3</span>
+          <h3>~/.gemini/skills</h3>
+          <p>用户主目录全局技能，所有项目可用</p>
+        </article>
+        <article>
+          <span>4</span>
+          <h3>Extensions</h3>
+          <p>官方/社区插件附带的预装技能包</p>
+        </article>
+      </div>
+    </section>
+    </section>
   </div>
 
   <script>
@@ -801,6 +1154,7 @@
       skills: "page-skills",
       herdr: "page-herdr",
       orca: "page-orca",
+      antigravity: "page-antigravity",
     };
 
     function show(name) {
