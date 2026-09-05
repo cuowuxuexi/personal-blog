@@ -40,5 +40,6 @@ docs/public/html/<名字>/
 | `hengrui-business-model/` | 恒瑞医药生意模型画布；章节标题直达 `/html/hengrui-business-model` |
 | `hengrui-sales-expense/` | 恒瑞医药销售费用五年变化与同业对照；章节标题直达 `/html/hengrui-sales-expense` |
 | `tencent-business-model/` | 腾讯生意模型画布；章节标题直达 `/html/tencent-business-model` |
+| `knowledge-search/` | 全站公开内容的独立关键词检索页；静态快照，不替换 VitePress 搜索 |
 
 最后更新：2026-09-03

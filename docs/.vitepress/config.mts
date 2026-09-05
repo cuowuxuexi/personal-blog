@@ -78,6 +78,7 @@ export default defineConfig({
         text: '大问题的问与答',
         items: bigQuestionNavItems,
       },
+      { text: '知识检索', link: '/html/knowledge-search' },
       { text: '关于', link: '/关于' },
     ],
 
