@@ -2181,6 +2181,20 @@
   color: var(--vp-c-text-3);
 }
 
+.research-figure:has(.knowledge-chain) {
+  overflow: visible;
+}
+
+.research-figure .knowledge-chain {
+  overflow: visible;
+}
+
+.research-figure .knowledge-chain > span {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.65rem 0.5rem;
+}
+
 .subject-thesis {
   margin-top: 2rem;
 }
@@ -2628,6 +2642,51 @@
   color: var(--vp-c-brand-1);
 }
 
+.knowledge-checklist a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.knowledge-checklist a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.answer-list {
+  margin: 0 0 1.2rem;
+  border-top: 1px solid var(--section-line);
+  counter-reset: knowledge-check;
+}
+
+.answer-card {
+  position: relative;
+  padding: 0.9rem 0.9rem 0.95rem 3rem;
+  border-bottom: 1px solid var(--section-line);
+  counter-increment: knowledge-check;
+}
+
+.answer-card::before {
+  position: absolute;
+  left: 0.8rem;
+  content: counter(knowledge-check, decimal-leading-zero);
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.68rem;
+  color: var(--vp-c-brand-1);
+}
+
+.answer-card strong {
+  display: block;
+  margin: 0 0 0.4rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.answer-card p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--vp-c-text-2);
+}
+
 .role-span-map,
 .modality-matrix {
   margin: 0 0 1.2rem;
@@ -2832,6 +2891,13 @@
 .transmission-map__step strong {
   font-size: 0.8rem;
   line-height: 1.4;
+}
+
+.knowledge-chain em {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: var(--vp-c-text-3);
+  line-height: 1.45;
 }
 
 .knowledge-chain--muted > span {
