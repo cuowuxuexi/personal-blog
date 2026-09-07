@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/pharma-tech-waves/" />
+<title>技术浪潮与投资框架</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --bg-elevated: #181818;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-2: rgba(240, 240, 240, 0.14);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --accent: #81a1c1;
+    --on-accent: #141414;
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --neutral: #8888a8;
+    --green: #1f8a65;
+    --orange: #c06028;
+    --blue: #2e79b5;
+    --gray: rgba(240, 240, 240, 0.60);
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --bg-elevated: #ffffff;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-2: rgba(20, 20, 20, 0.08);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+      --on-accent: #ffffff;
+      --gray: rgba(20, 20, 20, 0.60);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-12 { gap: 12px; }
+  .stack-20 { gap: 20px; }
+  .row { display: flex; flex-direction: row; }
+  .row-8 { gap: 8px; }
+  .row-24 { gap: 24px; }
+  .wrap { flex-wrap: wrap; }
+  .align-end { align-items: flex-end; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; color: var(--text); }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; color: var(--text); }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; color: var(--text); }
+  .body { margin: 0; font-size: 14px; line-height: 20px; font-weight: 400; color: var(--text); }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    appearance: none; border: 1px solid var(--stroke-2); background: transparent;
+    color: var(--text-2); font: 400 13px/16px var(--font); padding: 5px 10px;
+    border-radius: 9999px; cursor: pointer;
+  }
+  .pill.active { background: var(--fill-1); color: var(--text); border-color: var(--stroke-1); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .callout.info .icon { color: var(--info); }
+  .callout.warning .icon { color: var(--warning); }
+  .callout.neutral .icon { color: var(--text-3); }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.success .v { color: var(--success); }
+  .stat.warning .v { color: var(--warning); }
+  .stat.info .v { color: var(--info); }
+  .stat.neutral .v { color: var(--text-3); }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  .dot.info { background: var(--info); }
+  .dot.neutral { background: var(--neutral); }
+  .pane { display: none; }
+  .pane.on { display: flex; flex-direction: column; gap: 20px; }
+  .machine { display: flex; flex-direction: column; gap: 10px; }
+  .machine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 820px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .machine-grid, .grid-4 { grid-template-columns: 1fr; }
+  }
+  .box {
+    border: 1px solid var(--stroke-3); border-radius: 8px;
+    padding: 12px 14px; background: var(--fill-4);
+  }
+  .box .k { margin: 0 0 4px; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .box .t { margin: 0 0 4px; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .box .d { margin: 0; font-size: 13px; line-height: 18px; color: var(--text-2); }
+  .box .d + .d { margin-top: 6px; }
+  .box.now { border-color: var(--stroke-1); background: var(--fill-3); }
+  a.box {
+    display: block; color: inherit; text-decoration: none; cursor: pointer;
+  }
+  a.box:hover {
+    border-color: var(--stroke-1); background: var(--fill-3); text-decoration: none;
+  }
+  a.box .go { margin-top: 8px; font-size: 12px; line-height: 16px; color: var(--link); }
+  .flow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 720px) { .meta { grid-template-columns: 1fr 1fr; } }
+  .meta .k { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .meta .t { margin: 4px 0 0; font-size: 13px; line-height: 18px; color: var(--text); }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .curve {
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch;
+  }
+  @media (max-width: 720px) { .curve { grid-template-columns: 1fr; } }
+  .arrow { align-self: center; color: var(--text-4); font-size: 14px; text-align: center; }
+  @media (max-width: 720px) { .arrow { transform: rotate(90deg); } }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><strong>技术浪潮与投资框架</strong></nav>
+
+  <div class="stack stack-8">
+    <h1>技术浪潮与投资框架</h1>
+    <p class="body secondary">访谈蒸馏，不是本博客已核验的研究结论。知识性内容按公开资料校正术语；市场判断只作假说收录。</p>
+    <div class="meta">
+      <div><p class="k">问题</p><p class="t">技术走到哪一步，机会按什么逻辑分层？</p></div>
+      <div><p class="k">状态</p><p class="t">学习中</p></div>
+      <div><p class="k">范围</p><p class="t">需求 × 供给平台 × 药械 × 支付</p></div>
+      <div><p class="k">截至</p><p class="t">2026-08-30 访谈上线</p></div>
+    </div>
+    <div class="pills" id="tabs">
+      <button class="pill active" data-tab="map">总图</button>
+      <button class="pill" data-tab="waves">浪潮</button>
+      <button class="pill" data-tab="concepts">概念</button>
+      <button class="pill" data-tab="cancers">癌种</button>
+      <button class="pill" data-tab="invest">药械</button>
+      <button class="pill" data-tab="policy">政策</button>
+      <button class="pill" data-tab="hypo">假说</button>
+    </div>
+  </div>
+
+  <section class="pane on" id="map">
+    <div class="callout info">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">一句话</p>
+        <p class="msg">肿瘤应用正站在第四波（ADC / PD-1 双抗），中国机会主要在抗体工程化下半场。药和械是两套价值曲线；DRG / 腾笼换鸟是支付滤镜。嘉宾的「黄金新十年」只进假说区。</p>
+      </div>
+    </div>
+
+    <h2>三套坐标先分开</h2>
+    <div class="machine">
+      <p class="flow">需求在换病种，供给在换平台，肿瘤在换武器</p>
+      <div class="machine-grid">
+        <div class="box">
+          <p class="k">需求浪潮</p>
+          <p class="t">抗感染 → 慢病 → 肿瘤 → 退行性病变</p>
+          <p class="d">1980 年代后研发进入靶点驱动。三高被管住之后，肿瘤成为主战场；自免、代谢是辅线。</p>
+        </div>
+        <div class="box now">
+          <p class="k">供给平台 · 中国机会</p>
+          <p class="t">盲筛 → 靶点小分子 → 单抗 → 工程化</p>
+          <p class="d">上半场找新靶点，美国更强；下半场同一靶点做成 ADC / 双抗，更适合中国。入胞、基因编辑仍看美股。</p>
+        </div>
+      </div>
+      <div class="box">
+        <p class="k">肿瘤应用 · 当下主线</p>
+        <p class="t">化疗 → 替尼 → 免疫（PD-1） → ADC ＋ 双抗</p>
+        <p class="d">这是把供给平台用到癌症上的四波，不是另一套平台史。CAR-T、核药是支线：疗效可以很强，但肿瘤科触达面窄。</p>
+      </div>
+      <p class="flow">投资不能用同一条曲线看药和械</p>
+      <div class="machine-grid">
+        <div class="box">
+          <p class="k">药</p>
+          <p class="t">找时代级突破，等价值跳升</p>
+          <p class="d">Biotech 赌创新，Pharma 做商业化。单药专利悬崖一到就会后崩。</p>
+        </div>
+        <div class="box">
+          <p class="k">械</p>
+          <p class="t">找新品类，吃后置壁垒</p>
+          <p class="d">技术不必颠覆。用的人越多，交流、反馈、迭代越强，龙头越难撬。</p>
+        </div>
+      </div>
+      <p class="flow">支付是第三层滤镜，不是药或械的附录</p>
+      <div class="machine-grid">
+        <div class="box">
+          <p class="k">腾笼换鸟</p>
+          <p class="t">仿制药控费 → 创新药扩容</p>
+          <p class="d">医药量入为出。集采省下的支付空间，用来把创新药盘子做大。</p>
+        </div>
+        <div class="box">
+          <p class="k">DRG</p>
+          <p class="t">把非标服务拉进可比较竞争</p>
+          <p class="d">同病同价，削弱医生处方权。三板斧里推进最慢、影响最深。展开见「政策」。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-24 align-end wrap">
+      <div class="stat info"><div class="v">第四波</div><div class="l">肿瘤应用现在站在这里</div></div>
+      <div class="stat success"><div class="v">慢病化</div><div class="l">疗效的通行表述，不是治愈</div></div>
+      <div class="stat warning"><div class="v">假说</div><div class="l">黄金十年 / BD 回归未核验</div></div>
+      <div class="stat neutral"><div class="v">访谈</div><div class="l">林伟 · 青侨阳光</div></div>
+    </div>
+    <p class="small">来源：雪球《厚雪长波》2026-08-30 期《中国医药资产可能迎来一个"黄金新十年"？》，<a href="https://www.xiaoyuzhoufm.com/episode/6a9145b8f03e74ee6b013561">小宇宙原始节目</a>。数字均为访谈口径。</p>
+  </section>
+
+  <section class="pane" id="waves">
+    <h2>需求浪潮</h2>
+    <div class="grid-4">
+      <div class="box"><p class="k">1950–60 年代</p><p class="t">抗感染</p><p class="d">感冒都能死人。研发还在盲筛。</p></div>
+      <div class="box"><p class="k">1980–90 年代</p><p class="t">慢病 · 三高</p><p class="d">找到靶点后，致死病变成吃药能管住的日常。</p></div>
+      <div class="box now"><p class="k">2000 年后</p><p class="t">肿瘤主战场</p><p class="d">有的从几个月活到十几年；胃癌、胰腺癌仍难。</p></div>
+      <div class="box"><p class="k">下一站 · 嘉宾观点</p><p class="t">退行性病变</p><p class="d">阿尔茨海默等。尚未成为主战场。</p></div>
+    </div>
+    <p class="small">医疗诉求分两层：先救命，再改善体验。胰岛素从一天一针到一周一针，GLP-1 控糖兼减重，都是第二层。嘉宾口径里，当下主战场是肿瘤，自身免疫和代谢是辅线。</p>
+
+    <h2>供给平台：武器本身也在换代</h2>
+    <div class="grid-4">
+      <div class="box"><p class="k">五六十年代</p><p class="t">盲筛</p><p class="d">碰运气。对上了是救命药，对不上就作废。</p></div>
+      <div class="box"><p class="k">1980 年代后</p><p class="t">靶点小分子</p><p class="d">先找病因和靶点，再设计分子去抑制或激活。找不到靶点的药，药企一般不敢做。</p></div>
+      <div class="box"><p class="k">生物药崛起</p><p class="t">多肽 → 单抗</p><p class="d">多肽模仿天然激素；1975 年杂交瘤让抗体分子清晰、可以成药。抗体是目前最大的生物药门类。</p></div>
+      <div class="box now"><p class="k">下半场 · 中国机会</p><p class="t">工程化升级</p><p class="d">同一靶点做成 ADC、双抗。嘉宾观点：上半场找新靶点美国更强；下半场工程化更适合中国。开辟式（入胞、基因编辑）仍看美股。</p></div>
+    </div>
+    <p class="small">成熟技术和新场景不同步。GLP-1 本是控糖工具，找到减重场景后才成为现象级品类——老平台也可以再爆一次。</p>
+
+    <h2>肿瘤四波</h2>
+    <div class="grid-4">
+      <div class="box"><p class="k">第一波</p><p class="t">化疗</p><p class="d">飞机扔炸弹，好坏一起杀。多数一线至今仍离不开。</p></div>
+      <div class="box"><p class="k">第二波 · 约 2000</p><p class="t">替尼类</p><p class="d">小分子堵住驱动突变。节目资料：伊马替尼把慢粒五年生存从约 30% 提到约 90%。</p></div>
+      <div class="box"><p class="k">第三波 · 2010 后</p><p class="t">免疫疗法</p><p class="d">CTLA-4 在前，PD-1 是代表：拆掉 T 细胞刹车，出现「超级幸存者」，五年生存曲线尾部被拉高。</p></div>
+      <div class="box now"><p class="k">第四波 · 当下</p><p class="t">ADC ＋ 双抗</p><p class="d">给毒素装导航；一个分子打两个靶点。当前研发与交易最热的主线。</p></div>
+    </div>
+
+    <div class="callout neutral">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">主线怎么认</p>
+        <p class="msg">嘉宾的操作性定义是临床触达面：肿瘤科医生几乎人人会碰到 ADC / PD-1；CAR-T、核药只有少数专科在用，所以是支线。不是按市值或论文热度。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="concepts">
+    <h2>八个核心概念</h2>
+    <div class="machine-grid">
+      <div class="box"><p class="k">小分子靶向</p><p class="t">替尼类（TKI）</p><p class="d">后缀 -tinib。堵住癌细胞内部激酶通路。代表药伊马替尼（格列卫）。</p></div>
+      <div class="box"><p class="k">升级版化疗</p><p class="t">ADC</p><p class="d">抗体导航 ＋ 连接子 ＋ 毒素弹头。精确制导，被视为化疗的迭代方向。访谈口径：目前大约二到三成患者能找到特别合适的 ADC。</p></div>
+      <div class="box"><p class="k">免疫基石</p><p class="t">PD-1 抑制剂</p><p class="d">癌细胞利用 PD-1 让 T 细胞别打我。拆刹车后免疫系统重新攻击肿瘤。</p></div>
+      <div class="box"><p class="k">1+1&gt;2</p><p class="t">PD-1 双抗</p><p class="d">同时绑两个靶点，如 PD-1＋VEGF。嘉宾认为这是国产创新药国际竞争力最强的方向之一。</p></div>
+      <div class="box"><p class="k">活的药</p><p class="t">CAR-T</p><p class="d">给患者 T 细胞装导航后回输，体内自我复制。部分血液瘤患者可临床治愈；制备贵、难普及。</p></div>
+      <div class="box"><p class="k">老技术新场景</p><p class="t">GLP-1</p><p class="d">从控糖延伸到减重。说明成熟工具找到新场景，也能再爆一次。</p></div>
+      <div class="box"><p class="k">前沿早期</p><p class="t">入胞疗法</p><p class="d">打细胞内靶点。节目资料称约 85% 疾病靶点在细胞内。目前看美股更多。</p></div>
+      <div class="box"><p class="k">出海通道</p><p class="t">BD</p><p class="d">把海外权益卖给跨国药企：首付款 ＋ 里程碑 ＋ 分成。国产创新药出海主通道。</p></div>
+    </div>
+    <div class="callout info">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">ADC 为什么这几年突然快了</p>
+        <p class="msg">嘉宾把加速点放在第一三共 DS-8201（约 2019 年前后）：毒素能穿细胞膜，产生旁观者效应，连 HER2 低表达患者也有效，适用面被打开。中国药企随后用工程化优化跟进。即便如此，化疗多数一线仍不可少，ADC 还在逐步替代中（嘉宾观点）。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="cancers">
+    <h2>各癌种不是同一场仗</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>癌种</th><th>进展</th><th>关键疗法</th><th>为什么</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot success"></span>血液瘤</td><td>部分慢病化，少数临床治愈</td><td>CAR-T、替尼</td><td>细胞在血里漂，药容易碰到</td></tr>
+          <tr><td><span class="dot success"></span>肺癌</td><td>过去十几年进步最大之一</td><td>EGFR/ALK 替尼、PD-1、部分 ADC</td><td>先按基因型分层；免疫相对敏感</td></tr>
+          <tr><td><span class="dot info"></span>乳腺癌</td><td>改善显著</td><td>HER2 单抗 → ADC → 双抗；三阴有 TROP2 ADC</td><td>体表器官易早发现</td></tr>
+          <tr><td><span class="dot warning"></span>胃癌 / 肝癌</td><td>有进展但有限</td><td>尚无突破性疗法</td><td>确诊时晚期比例高</td></tr>
+          <tr><td><span class="dot danger"></span>胰腺癌</td><td>仍是硬骨头</td><td>KRAS 等点状突破</td><td>免疫不敏感，缺好 ADC 靶点</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-3">
+      <div class="box"><p class="k">疗效怎么说</p><p class="t">慢病化，不是治愈</p><p class="d">监管批新肿瘤药，核心看生存期有没有拉长。生活质量是后一层。</p></div>
+      <div class="box"><p class="k">药在流程里的位置</p><p class="t">能切先切，药从后线往前挪</p><p class="d">访谈口径：肝癌、胃癌、肺癌确诊时约六成已晚期，这时创新药就是主疗法；乳腺癌等体表器官早期比例高。化疗多数还在；能找到合适 ADC 的患者大约二到三成。</p></div>
+      <div class="box"><p class="k">CAR-T 下一代</p><p class="t">两条路都在研发</p><p class="d">通用型（工厂化制备）和体内 CAR-T（mRNA/LNP 在体内改装）。走通才会真正普及。</p></div>
+    </div>
+  </section>
+
+  <section class="pane" id="invest">
+    <h2>药：前赌 · 中跳 · 后崩</h2>
+    <div class="curve">
+      <div class="box"><p class="k">早期</p><p class="t">前赌</p><p class="d">Biotech 九死一生。颠覆多出自小公司。</p></div>
+      <div class="arrow">→</div>
+      <div class="box now"><p class="k">创意落地</p><p class="t">中跳</p><p class="d">爆款把公司从百亿级抬到千亿级。稀缺。</p></div>
+      <div class="arrow">→</div>
+      <div class="box"><p class="k">专利 / 替代</p><p class="t">后崩</p><p class="d">专利悬崖一到，单药价值回落。要靠下一条管线续上。</p></div>
+    </div>
+    <div class="machine-grid">
+      <div class="box"><p class="k">Biotech</p><p class="t">创新端 · 胆子大</p><p class="d">要的是不走寻常路。成了赚十倍五十倍，败了就败了。</p></div>
+      <div class="box"><p class="k">Pharma</p><p class="t">商业化端 · 四平八稳</p><p class="d">体系保证稳定，也抑制创新。两端靠 BD 和收购连接。</p></div>
+    </div>
+    <p class="small">嘉宾观点：不存在「30% 增长持续 30 年」的药企。跳升后回到 12%–15% 平台化，再等下一次爆发。礼来抗抑郁 → 沉寂 → GLP-1 二次跳升是样本。最稀缺的是从 Biotech 长成 Pharma 的那几家。</p>
+
+    <h2>械：新品类 · 后置壁垒 · 农村包围城市</h2>
+    <div class="grid-3">
+      <div class="box"><p class="k">机会来源</p><p class="t">新品类开辟</p><p class="d">达芬奇手术机器人、结构性瓣膜、动态血糖仪：一家公司带出一条赛道。</p></div>
+      <div class="box"><p class="k">价值曲线</p><p class="t">越竞争龙头越强</p><p class="d">用的人多，交流、反馈、手感互相强化。起搏器半个世纪后仍难撬美敦力。</p></div>
+      <div class="box"><p class="k">中国路径</p><p class="t">替代 → 出海 → 反攻</p><p class="d">先替进口，迭代数代后再去东南亚、中东、南美。直接去美国硬碰没有意义。</p></div>
+    </div>
+    <p class="small">「找个好公司拿着不卖」更适合械。投创新药必须引入周期：跳升结束、估值又贵，就没有必要按传统价投一直躺着。支付层见「政策」。</p>
+  </section>
+
+  <section class="pane" id="policy">
+    <div class="callout info">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">这是滤镜，不是又一条技术浪潮</p>
+        <p class="msg">药和械回答「机会长在哪」；政策回答「支付能不能接住」。腾笼换鸟改的是资源从哪腾出来，DRG 改的是医院怎么花钱。</p>
+      </div>
+    </div>
+    <h2>支付四块</h2>
+    <div class="machine-grid">
+      <div class="box"><p class="k">医改三板斧里最硬的一块</p><p class="t">DRG</p><p class="d">同一病种只付固定标准，把无法标准化的医疗服务强行拉进可比较竞争，削弱医生处方权。集采、医保谈判、DRG 三板斧里，它推进最慢、影响最深。</p></div>
+      <div class="box"><p class="k">资源重配</p><p class="t">腾笼换鸟</p><p class="d">医药是量入为出的行业。访谈口径：过去十年仿制药增长有限，创新药盘子大约扩大十倍，钱来自集采控费省下来的支付空间。</p></div>
+      <div class="box"><p class="k">支付预期</p><p class="t">医疗升级放缓</p><p class="d">人工晶体从 600 档往 2000 档走的节奏变慢。器械自费比例高，对支付预期比药更敏感。</p></div>
+      <div class="box"><p class="k">高端药补位</p><p class="t">商保</p><p class="d">百万级 CAR-T 远超医保上限（约 30 万，嘉宾口径）。政策在推商业健康险补位。</p></div>
+    </div>
+  </section>
+
+  <section class="pane" id="hypo">
+    <div class="callout warning">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+      <div>
+        <p class="title">下面不是本博客的当前理解</p>
+        <p class="msg">全部是嘉宾在访谈里的市场判断。本页收录，不代表核验或采纳。要升级成「当前理解」，需另做证据核验。</p>
+      </div>
+    </div>
+    <div class="machine-grid">
+      <div class="box"><p class="k">假说 1</p><p class="t">黄金新十年</p><p class="d">全指医药 2005–2015 涨十几倍后横盘十年。2015 年医改创新转型框架已落地，行业要从阵痛期进入收获期。</p></div>
+      <div class="box"><p class="k">假说 2</p><p class="t">BD 均值回归</p><p class="d">创新药有奢侈品属性，BD 热潮跟美国财富效应绑在一起。当前规模超历史趋势，增量看国内市场变大和出海切那 96%。</p></div>
+      <div class="box"><p class="k">假说 3</p><p class="t">国际原创器械显化</p><p class="d">多家十亿级公司在引领全球新品类。逻辑 2019–2021 年才启动，未来三四年逐步被市场看见。</p></div>
+      <div class="box"><p class="k">假说 4</p><p class="t">四个关注方向</p><p class="d">国产创新高值耗材与原创器械；国产创新药（ADC/双抗工程化）；美股入胞生物科技；被错杀的低估传统药企。</p></div>
+    </div>
+    <div class="machine-grid">
+      <a class="box" href="/html/golden-decade-check/">
+        <p class="k">假说 1 备注 · 不同意见</p>
+        <p class="t">黄金新十年到了没有？</p>
+        <p class="d">上卡仍是嘉宾原话。点进对照页看访谈对话、估值分位和行业报表。这仍是备注，不是当前理解。</p>
+        <p class="go">打开对照页 →</p>
+      </a>
+      <a class="box" href="/html/bd-wealth-effect-check/">
+        <p class="k">假说 2 备注 · 不同意见</p>
+        <p class="t">BD 热潮是不是美国财富效应？</p>
+        <p class="d">上卡仍是嘉宾原话。点进对照页看访谈对话、三条线拆开和公开数据。这仍是备注，不是当前理解。</p>
+        <p class="go">打开对照页 →</p>
+      </a>
+      <a class="box" href="/html/intl-device-check/">
+        <p class="k">假说 3 备注 · 不同意见</p>
+        <p class="t">国际原创器械会被看见吗？</p>
+        <p class="d">上卡仍是嘉宾原话。点进对照页看访谈对话、FDA 认定和欧美门槛。这仍是备注，不是当前理解。</p>
+        <p class="go">打开对照页 →</p>
+      </a>
+      <a class="box" href="/html/four-focus-check/">
+        <p class="k">假说 4 备注 · 不同意见</p>
+        <p class="t">四个关注方向怎么拆？</p>
+        <p class="d">上卡仍是嘉宾原话。点进对照页看访谈对话、四条拆开和公开数据。这仍是备注，不是当前理解。</p>
+        <p class="go">打开对照页 →</p>
+      </a>
+    </div>
+    <h2>可复用、不必等核验的框架</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>可以留下当坐标</th><th>还不能当结论</th></tr></thead>
+        <tbody>
+          <tr><td>需求浪潮与靶点驱动</td><td>黄金新十年会不会发生</td></tr>
+          <tr><td>抗体工程化下半场（中国）vs 开辟式（美股）</td><td>BD 会不会回归、何时回归</td></tr>
+          <tr><td>肿瘤四波，以及 ADC/双抗是当下主线</td><td>哪几家会从 Biotech 长成 Pharma</td></tr>
+          <tr><td>药「前赌中跳后崩」vs 械后置壁垒</td><td>十亿级原创器械值多少钱</td></tr>
+          <tr><td>DRG / 腾笼换鸟是支付滤镜</td><td>错杀标的里谁会创新高</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">继续沿图谱看：<a href="/投资/投研/医药/研究地图/创新药研发全流程/">研发全流程</a> · <a href="/投资/投研/医药/研究地图/CXO与CRDMO/">CXO 与 CRDMO</a> · <a href="/投资/投研/医药/研究地图/原研仿制与支付端/">原研、仿制与支付端</a></p>
+  </section>
+</div>
+<script>
+function showTab(id) {
+  const b = document.querySelector(`[data-tab="${id}"]`);
+  if (!b) return;
+  document.querySelectorAll(".pill").forEach((p) => p.classList.toggle("active", p === b));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === id));
+}
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tab]");
+  if (!b) return;
+  showTab(b.dataset.tab);
+});
+const startTab = new URLSearchParams(location.search).get("tab");
+if (startTab) showTab(startTab);
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/four-focus-check/" />
+<title>四个关注方向怎么拆？</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-12 { gap: 12px; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .body { margin: 0; font-size: 14px; line-height: 20px; }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .eyebrow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; color: var(--info); }
+  .callout.info .icon { color: var(--info); }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) {
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.danger .v { color: var(--danger); }
+  .stat.info .v { color: var(--info); }
+  .stat.warning .v { color: var(--warning); }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  hr { border: 0; border-top: 1px solid var(--stroke-3); margin: 4px 0; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/">技术浪潮与投资框架</a><span>/</span><strong>四方向核验</strong></nav>
+
+  <div class="stack stack-8">
+    <p class="eyebrow">假说核验 · 信息截至 2026-09</p>
+    <h1>四个关注方向怎么拆？</h1>
+    <p class="body">嘉宾把四个方向并排放。公开数据里它们不是同一成色：小核酸最贴，国产创新药已是右侧共识，错杀传统药企最弱。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+
+  <div class="callout info">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5.4" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">结论：要拆开看。小核酸最贴数据，错杀传统药企最弱</p>
+      <p class="msg">四条共用一个前提：转型阵痛结束、支付端会重新松开。政策端确实在转向，但 2025 年报和医保支出还没松。方向可以留，时间表和「错杀就能年化 12–15%」过满。</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat info"><div class="v">最贴</div><div class="l">小核酸：2026Q1 出海三笔已超 2025 全年</div></div>
+    <div class="stat warning"><div class="v">已是共识</div><div class="l">港股创新药 2025 +72%，随后回撤 27.5%</div></div>
+    <div class="stat danger"><div class="v">最弱</div><div class="l">传统药企 2025 年报仍在挨打</div></div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>访谈对话</h2>
+    <p class="body secondary">假说卡上的原话没改。四个方向是收尾时主持人请他总结的。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>谁</th><th>原来说了什么</th></tr></thead>
+        <tbody>
+          <tr><td>主持人</td><td>短则半年、长则一年，主要机会在哪里？四个方向帮我们总结一下。</td></tr>
+          <tr><td>嘉宾</td><td>一是国产创新高值耗材与原创器械；二是国产创新药，永远有机会；三是美股入胞生物科技，基因编辑、小核酸，开辟式还看美国；四是被错杀的低估传统药企。</td></tr>
+          <tr><td>嘉宾</td><td>小核酸会比较快，因为国内化学还可以。基因编辑和肝外小核酸还得看美国。错杀里有些已经翻篇、回不到高点，有些还会创新高。找到错杀的，投未来高度确定的年化 12%–15%。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>四条并排放，成色不一样</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>方向</th><th>嘉宾理由</th><th>公开数据</th><th>不同意见</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="dot warning"></span>国产创新高值耗材 / 原创器械</td>
+            <td>替代 → 出海 → 反攻</td>
+            <td>同<a href="/html/intl-device-check/">假说 3 对照页</a></td>
+            <td>出海主场是新兴市场，不是欧美；集采仍在扩</td>
+          </tr>
+          <tr>
+            <td><span class="dot danger"></span>国产创新药（ADC / 双抗）</td>
+            <td>工程化下半场，永远有机会</td>
+            <td>中证港股创新药 2025 +72%，随后回撤 27.5%；2026 年「利好不涨」，BD 消息钝化</td>
+            <td>已是右侧共识。且和假说 2 打架：嘉宾自己说 BD 25–26H1 是高位、18A 增速要回归</td>
+          </tr>
+          <tr>
+            <td><span class="dot success"></span>美股入胞（基因编辑、小核酸）</td>
+            <td>开辟式创新看美国</td>
+            <td>Intellia lonvo-z 三期阳性、BLA 在路上；Casgevy 2026Q2 收入 7,600 万美元；2025-10 肝毒性死亡、临床暂停四个月</td>
+            <td>同意看美股，但「十倍二十倍」要过安全和支付两关；小核酸中国反而更快</td>
+          </tr>
+          <tr>
+            <td><span class="dot danger"></span>被错杀的低估传统药企</td>
+            <td>行业下杀时总有错杀，年化 12–15%</td>
+            <td>第十一批集采锚点价、复活、新药不集采；但 2025 年报：同仁堂净利 −22%，珍宝岛亏 13.7 亿，福安 −72%，葵花首亏</td>
+            <td>错杀和翻篇分不开，嘉宾自己也承认；中成药集采刚开始，仿制药 5 家以上过评品种从 79 涨到 203</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5.4" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">四个方向里，哪个最贴数据</p>
+      <p class="msg">小核酸。嘉宾说「小核酸会比较快，因为国内化学还可以」。2026 年一季度圣因 × 基因泰克 17 亿、瑞博 × Madrigal 44 亿、前沿 × GSK 约 10 亿美元，三笔加起来超过 2025 全年。这条本来放在「美股入胞」里，其实是中国供给的故事。</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="stack stack-8">
+    <h2>对这张假说卡该怎么读</h2>
+    <p class="body">工程化下半场、开辟式看美股，这两句可以留成坐标。四个方向不要当成同等权重的买入清单：创新药已经定价过一轮，传统药企 2025 年报还在出清，器械出海的地理范围要改成新兴市场。小核酸从「美股入胞」里拆出来单独看，更贴成交。</p>
+    <p class="small">主要来源：中国基金报 / 中证港股通创新药指数；Reuters / Fierce Biotech（Intellia）；CRISPR Therapeutics 2026Q2 业绩；21 财经与各公司 2025 年报；国家医保局第十一批集采规则。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+</div>
+</body>
+</html>

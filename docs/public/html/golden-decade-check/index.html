@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/golden-decade-check/" />
+<title>黄金新十年到了没有？</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-12 { gap: 12px; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .body { margin: 0; font-size: 14px; line-height: 20px; }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .eyebrow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; color: var(--warning); }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) {
+    .grid-3, .charts { grid-template-columns: 1fr; }
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.danger .v { color: var(--danger); }
+  .stat.warning .v { color: var(--warning); }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  .chart-svg { width: 100%; height: 220px; display: block; }
+  hr { border: 0; border-top: 1px solid var(--stroke-3); margin: 4px 0; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/">技术浪潮与投资框架</a><span>/</span><strong>黄金十年核验</strong></nav>
+
+  <div class="stack stack-8">
+    <p class="eyebrow">假说核验 · 信息截至 2026-09</p>
+    <h1>黄金新十年到了没有？</h1>
+    <p class="body">嘉宾把「全指医药横盘十年」推到「2025 年后进入收获期，景气和估值双升」。指数和估值那一半对得上；行业报表和支付端还撑不起「双升」。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+
+  <div class="callout">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">结论：部分同意。便宜是真的，收获期还没在报表里出现</p>
+      <p class="msg">估值修复可以当基准情景。「景气和估值双升、整体跑赢中国资产」目前只有估值那一半有数据。医药是量入为出的行业，这句是嘉宾自己说的；支付端只增零点几，行业整体想加速，钱还没地方来。</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="v">约 13.8×</div><div class="l">全指医药 2004 底 1000 → 2015-05 高点 13,783</div></div>
+    <div class="stat danger"><div class="v">约 −38%</div><div class="l">2015 高点 → 2026-08 约 8,500 点</div></div>
+    <div class="stat warning"><div class="v">PB 1%–4% 分位</div><div class="l">市净率 2.6–2.8 极低；PE 约 33 倍并不低</div></div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>访谈对话</h2>
+    <p class="body secondary">假说卡上的原话没改。黄金新十年是整期节目的主线，开头和收尾各说了一遍。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>谁</th><th>原来说了什么</th></tr></thead>
+        <tbody>
+          <tr><td>嘉宾</td><td>全指医药 2005–2015 涨十几倍，2015–2025 十年不涨还跌了一截。一是消化估值，二是转型阵痛。2025 年后框架落地，进入新的跑马圈地，营收和利润增速都会加速，景气上升。转型短期痛苦、长期利好。</td></tr>
+          <tr><td>主持人</td><td>估值底部徘徊到啥时候能看到曙光？</td></tr>
+          <tr><td>嘉宾</td><td>25 年起景气会持续上升，行业增速每年加一两个点。估值又在历史低位，有重估机会。横盘十年的中国医药资产作为整体（创新药和 CXO 另算）应跑赢中国整体资产。触发因素不知道，轮动或先崩再切都有可能。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="stack stack-8">
+      <h3>规模以上医药制造业：营收同比</h3>
+      <svg class="chart-svg" viewBox="0 0 400 220" role="img" aria-label="医药制造业营收同比 2025 到 2026 上半年">
+        <line x1="48" y1="20" x2="48" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="176" x2="384" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="40" x2="384" y2="40" stroke="currentColor" opacity="0.28" stroke-dasharray="4 4"/>
+        <text x="40" y="44" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">0</text>
+        <text x="40" y="176" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">−4%</text>
+        <rect x="72" y="40" width="36" height="41" fill="#2e79b5" opacity="0.88" rx="2"/>
+        <rect x="148" y="40" width="36" height="95" fill="#2e79b5" opacity="0.88" rx="2"/>
+        <rect x="224" y="40" width="36" height="109" fill="#2e79b5" opacity="0.88" rx="2"/>
+        <rect x="300" y="37" width="36" height="3" fill="#2e79b5" opacity="0.88" rx="2"/>
+        <text x="90" y="94" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−1.2%</text>
+        <text x="166" y="148" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−2.8%</text>
+        <text x="242" y="162" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−3.2%</text>
+        <text x="318" y="32" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">0%</text>
+        <text x="90" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2025</text>
+        <text x="166" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2025Q4</text>
+        <text x="242" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2026Q1</text>
+        <text x="318" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2026H1</text>
+      </svg>
+      <p class="small">零线在顶部附近。2025 全年到 2026 一季度营收持续负增长，上半年才回到零。</p>
+    </div>
+    <div class="stack stack-8">
+      <h3>同期利润总额同比</h3>
+      <svg class="chart-svg" viewBox="0 0 400 220" role="img" aria-label="医药制造业利润总额同比 2025 到 2026 上半年">
+        <line x1="48" y1="20" x2="48" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="176" x2="384" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="89" x2="384" y2="89" stroke="currentColor" opacity="0.28" stroke-dasharray="4 4"/>
+        <text x="40" y="93" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">0</text>
+        <text x="40" y="28" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">10%</text>
+        <text x="40" y="176" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">−12%</text>
+        <rect x="72" y="71" width="36" height="18" fill="#c9a227" opacity="0.88" rx="2"/>
+        <rect x="148" y="31" width="36" height="58" fill="#c9a227" opacity="0.88" rx="2"/>
+        <rect x="224" y="89" width="36" height="77" fill="#c04848" opacity="0.88" rx="2"/>
+        <rect x="300" y="62" width="36" height="27" fill="#c9a227" opacity="0.88" rx="2"/>
+        <text x="90" y="64" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+2.7%</text>
+        <text x="166" y="24" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+8.9%</text>
+        <text x="242" y="180" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−11.8%</text>
+        <text x="318" y="55" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+4.2%</text>
+        <text x="90" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2025</text>
+        <text x="166" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2025Q4</text>
+        <text x="242" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2026Q1</text>
+        <text x="318" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2026H1</text>
+      </svg>
+      <p class="small">行业口径是「营收承压未解、利润逆势改善」。这叫止跌，不叫加速。</p>
+    </div>
+  </div>
+  <p class="small">来源：国家统计局 2026-01-27、2026-07-27 工业企业利润；医药魔方 / 新康界季度整理。全指医药成分 2026Q1 营收 −1.0%、净利 +8.7%（知行研究）。</p>
+
+  <div class="stack stack-8">
+    <h2>嘉宾捆在一起的两件事，只有一件对得上</h2>
+    <p class="body secondary">便宜和景气回升被说成同一条线。公开数据把它们拆开了。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>嘉宾说法</th><th>核验</th><th>不同意见</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot success"></span>05–15 涨十几倍，15–25 不涨反跌</td><td>对。1000 → 13,783 → 约 8,500</td><td>事实成立</td></tr>
+          <tr><td><span class="dot warning"></span>估值在历史低位</td><td>PB 五年 1%–4% 分位成立；但 PE 约 33 倍</td><td>PB 低主要因为 ROE 掉了，不等于同样的盈利卖得便宜</td></tr>
+          <tr><td><span class="dot danger"></span>25 年后进入收获期，增速加速</td><td>2025 营收 −1.2%，2026Q1 利润 −11.8%，H1 利润 +4.2%</td><td>加速还没出现；只是不再恶化</td></tr>
+          <tr><td><span class="dot danger"></span>整体跑赢中国资产</td><td>医保收入 +2.7%、支出 +0.8%；居民参保七年下滑</td><td>上一个十年是全民医保扩容，这次没有同量级的新钱</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">核心分歧：钱从哪来</p>
+      <p class="msg">2005–2015 那十年赶上全民医保扩容，支付端是两位数增长。2025 年医保基金收入增 2.7%、支出只增 0.8%，十四五年均支出增速 7.4% 已在下台阶；首版商保创新药目录只有 19 个药。政策端在转向（集采反内卷、新药不集采），但钱的总量没有松。</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="stack stack-8">
+    <h2>对这张假说卡该怎么读</h2>
+    <p class="body">「横盘十年、估值极低」可以留。「转型框架落地所以景气加速」还是假说：报表仍是零增长附近，支付端没有上一个十年那种扩容。触发点嘉宾自己也说不知道。升级成当前理解之前，至少要看到行业营收转正、医保支出不再接近零增。</p>
+    <p class="small">主要来源：中证指数公司 000991；国家统计局工业企业利润；国家医保局 2025 年统计公报；知行研究全指医药成分季报整理。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+</div>
+</body>
+</html>

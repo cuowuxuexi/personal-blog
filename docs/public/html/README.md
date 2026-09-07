@@ -41,5 +41,10 @@ docs/public/html/<名字>/
 | `hengrui-sales-expense/` | 恒瑞医药销售费用五年变化与同业对照；章节标题直达 `/html/hengrui-sales-expense` |
 | `tencent-business-model/` | 腾讯生意模型画布；章节标题直达 `/html/tencent-business-model` |
 | `knowledge-search/` | 全站公开内容的独立关键词检索页；静态快照，不替换 VitePress 搜索 |
+| `pharma-tech-waves/` | 医药技术浪潮与投资框架交互画布；对应研究地图节点「技术浪潮与投资框架」 |
+| `bd-wealth-effect-check/` | 假说 2「BD 均值回归」的公开数据对照页；从技术浪潮假说区卡片进入 |
+| `golden-decade-check/` | 假说 1「黄金新十年」的公开数据对照页；从技术浪潮假说区卡片进入 |
+| `intl-device-check/` | 假说 3「国际原创器械显化」的公开数据对照页；从技术浪潮假说区卡片进入 |
+| `four-focus-check/` | 假说 4「四个关注方向」的公开数据对照页；从技术浪潮假说区卡片进入 |
 
-最后更新：2026-09-03
+最后更新：2026-09-07

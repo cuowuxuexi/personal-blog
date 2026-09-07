@@ -113,10 +113,11 @@ order: 0
 
 <section class="research-section" aria-labelledby="check">
   <header class="research-section-head">
-    <div><p>CHECK / 关键问题索引</p><h2 id="check">七个关键问题</h2></div>
+    <div><p>CHECK / 关键问题索引</p><h2 id="check">八个关键问题</h2></div>
   </header>
   <p>每一问都对应其归属的知识节点，可以沿关系继续查看相关概念和公司问题。</p>
   <ol class="knowledge-checklist">
+    <li><a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/#oncology-waves">肿瘤治疗经历了哪几波技术浪潮，现在站在哪一波？</a></li>
     <li><a href="/投资/投研/医药/研究地图/创新药研发全流程/#clinical">从靶点到上市；I 期和 II 期各回答什么？</a></li>
     <li><a href="/投资/投研/医药/研究地图/创新药研发全流程/#regulatory-gates">IND 和 NDA / BLA 差在哪？</a></li>
     <li><a href="/投资/投研/医药/研究地图/创新药研发全流程/#manufacturing">API、CMC、GMP 分别是什么？</a></li>
@@ -145,12 +146,13 @@ order: 0
 
 <section class="research-section" aria-labelledby="maps">
   <header class="research-section-head">
-    <div><p>MAPS / 节点详图</p><h2 id="maps">三张节点详图</h2></div>
+    <div><p>MAPS / 节点详图</p><h2 id="maps">四张节点详图</h2></div>
   </header>
   <div class="learning-path">
     <a href="/投资/投研/医药/研究地图/创新药研发全流程/"><span>01</span><div><strong>创新药研发全流程</strong><p>研发验证线与 CMC / 制造线如何并行</p></div><span>→</span></a>
     <a href="/投资/投研/医药/研究地图/CXO与CRDMO/"><span>02</span><div><strong>CXO 与 CRDMO</strong><p>R/D/M、药物类型、工厂与外包商业模式</p></div><span>→</span></a>
     <a href="/投资/投研/医药/研究地图/原研仿制与支付端/"><span>03</span><div><strong>原研、仿制与支付端</strong><p>药物身份、生命周期和支付冲击如何传导</p></div><span>→</span></a>
+    <a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/"><span>04</span><div><strong>技术浪潮与投资框架</strong><p>肿瘤治疗四波浪潮、核心概念与药械两套投资框架</p></div><span>→</span></a>
   </div>
 </section>
 

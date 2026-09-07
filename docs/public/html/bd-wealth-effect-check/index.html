@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/bd-wealth-effect-check/" />
+<title>BD 热潮是不是美国财富效应？</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-12 { gap: 12px; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .body { margin: 0; font-size: 14px; line-height: 20px; }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .eyebrow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; color: var(--warning); }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) {
+    .grid-3, .charts, .pair { grid-template-columns: 1fr; }
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.danger .v { color: var(--danger); }
+  .stat.info .v { color: var(--info); }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  .box {
+    border: 1px solid var(--stroke-3); border-radius: 8px;
+    padding: 12px 14px; background: var(--fill-4);
+  }
+  .box .k { margin: 0 0 4px; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .box .t { margin: 0 0 4px; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .box .d { margin: 0; font-size: 13px; line-height: 18px; color: var(--text-2); }
+  .bars {
+    display: flex; align-items: flex-end; gap: 12px;
+    height: 200px; padding: 8px 4px 0; border-bottom: 1px solid var(--stroke-3);
+  }
+  .bar-col {
+    flex: 1; min-width: 0; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px;
+  }
+  .bar {
+    width: 72%; max-width: 52px; background: var(--info); border-radius: 4px 4px 0 0; opacity: 0.88;
+  }
+  .bar-col .n { font-size: 11px; line-height: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .bar-col .y { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .chart-svg { width: 100%; height: 220px; display: block; }
+  hr { border: 0; border-top: 1px solid var(--stroke-3); margin: 4px 0; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/">技术浪潮与投资框架</a><span>/</span><strong>BD 热潮核验</strong></nav>
+
+  <div class="stack stack-8">
+    <p class="eyebrow">假说核验 · 信息截至 2026-09</p>
+    <h1>BD 热潮是不是美国财富效应？</h1>
+    <p class="body">嘉宾把「创新药有奢侈品属性」推到「中国对外 BD 超标、会随美国财富效应回归」。公开成交和股价把这件事拆开后，这条因果链撑不住。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+
+  <div class="callout">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">结论：这条假说过满，不宜升级为当前理解</p>
+      <p class="msg">你的直觉对。美股创新药企（尤其是 Biotech 指数）在 2021–2024 年并不好，而中国对外授权却在同一窗口爆炸。行业自己给出的主因是大药企专利悬崖加中国 ADC / 双抗供给，不是美国人更有钱所以去中国扫货。</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="v">约 10×</div><div class="l">中国对外授权 2021→2025 名义总额</div></div>
+    <div class="stat danger"><div class="v">−20% / −26%</div><div class="l">XBI 在 2021、2022 年回报</div></div>
+    <div class="stat info"><div class="v">约 1/3</div><div class="l">2025 年中国占全球授权金额</div></div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>嘉宾捆在一起的三条线，走势并不一样</h2>
+    <p class="body secondary">奢侈品属性和财富效应，最多能解释美国高端药销售的一部分；解释不了「现在中国 BD 为什么突然这么热」。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>对象</th><th>2021–2024 大致走势</th><th>能不能用财富效应解释</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot danger"></span>美股 Biotech 股价（XBI）</td><td>2021 见顶后深回撤，2024 几乎平盘</td><td>不能。BD 高潮期股价是冷的</td></tr>
+          <tr><td><span class="dot warning"></span>美国创新药销售 / 商保支出</td><td>专科药、GLP-1 等继续抬升人均支出</td><td>部分能。这是支付端，不是授权端</td></tr>
+          <tr><td><span class="dot success"></span>中国→西方 BD（名义总额）</td><td>2021 约 150 亿美金，2025 约 1360–1380 亿</td><td>不能当主因。供给和专利悬崖更贴</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">BD 数字是披露的潜在总对价（首付款 + 里程碑 + 分成口径），不是当年现金。来源：Pharmcube / Reuters（2026-02-13）；Vision Lifesciences China Out-Licensing Report 2026。XBI 年度回报：PortfoliosLab。</p>
+  </div>
+
+  <div class="charts">
+    <div class="stack stack-8">
+      <h3>中国对外授权名义总额</h3>
+      <div class="bars" aria-label="中国对外授权名义总额柱状图">
+        <div class="bar-col"><div class="bar" style="height:11%"></div><span class="n">$15</span><span class="y">2021</span></div>
+        <div class="bar-col"><div class="bar" style="height:18%"></div><span class="n">$25</span><span class="y">2022</span></div>
+        <div class="bar-col"><div class="bar" style="height:26%"></div><span class="n">$35</span><span class="y">2023</span></div>
+        <div class="bar-col"><div class="bar" style="height:38%"></div><span class="n">$52</span><span class="y">2024</span></div>
+        <div class="bar-col"><div class="bar" style="height:100%"></div><span class="n">$137</span><span class="y">2025</span></div>
+      </div>
+      <p class="small">单位：十亿美元。2021–2024 取行业追踪的约数，2025 取 Reuters / Pharmcube 的 1377 亿美元量级。各家统计口径不完全相同。</p>
+    </div>
+    <div class="stack stack-8">
+      <h3>同期 XBI 年度回报</h3>
+      <svg class="chart-svg" viewBox="0 0 400 220" role="img" aria-label="XBI 2021 到 2025 年日历年回报折线">
+        <line x1="48" y1="20" x2="48" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="176" x2="384" y2="176" stroke="currentColor" opacity="0.16"/>
+        <line x1="48" y1="91" x2="384" y2="91" stroke="currentColor" opacity="0.28" stroke-dasharray="4 4"/>
+        <text x="40" y="95" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">0</text>
+        <text x="40" y="28" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">40%</text>
+        <text x="40" y="176" text-anchor="end" fill="currentColor" opacity="0.45" font-size="11">−30%</text>
+        <polyline fill="none" stroke="#c04848" stroke-width="2.2" points="72,158 148,171 224,94 300,109 376,29"/>
+        <circle cx="72" cy="158" r="3.5" fill="#c04848"/>
+        <circle cx="148" cy="171" r="3.5" fill="#c04848"/>
+        <circle cx="224" cy="94" r="3.5" fill="#c04848"/>
+        <circle cx="300" cy="109" r="3.5" fill="#c04848"/>
+        <circle cx="376" cy="29" r="3.5" fill="#c04848"/>
+        <text x="72" y="148" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−20.5%</text>
+        <text x="148" y="188" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">−25.9%</text>
+        <text x="224" y="84" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+7.6%</text>
+        <text x="300" y="124" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+1.0%</text>
+        <text x="376" y="22" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="11">+35.9%</text>
+        <text x="72" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2021</text>
+        <text x="148" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2022</text>
+        <text x="224" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2023</text>
+        <text x="300" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2024</text>
+        <text x="376" y="208" text-anchor="middle" fill="currentColor" opacity="0.45" font-size="12">2025</text>
+      </svg>
+      <p class="small">来源：PortfoliosLab 对 XBI 的日历年回报。2021 年 2 月见顶后，到 2022 年 5 月最大回撤约 64%。</p>
+    </div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>访谈对话</h2>
+    <p class="body secondary">假说卡上的原话没改。访谈里主持人也当场问过同一件事。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>谁</th><th>原来说了什么</th></tr></thead>
+        <tbody>
+          <tr><td>嘉宾</td><td>创新药有奢侈品属性，跟美国财富效应高度相关。2010 年后美国富人财富加速，创新药也加速。若美股创新高停了、财富效应退坡，会投射到大药企的 BD / CXO 订单。当前 BD 规模偏离正常，基准假设是回归。</td></tr>
+          <tr><td>主持人</td><td>救命的事，经济下行也不会克扣；经济好也不会因此多花很多保命的钱。会明显下滑吗？</td></tr>
+          <tr><td>嘉宾</td><td>这是假说。2000–2010 年财富效应不强时，高端药械增速收敛；后来终端销售随富裕群体财富加速。药要分成必需品和非必需品：沙坦、二甲双胍不会没；定价贵很多、只延长一点生命体验的，会跟收入和商保有关。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>时间对不上，是最硬的反证</h2>
+    <p class="body">若「美国更有钱 → 创新药更景气 → 大药企来中国扫货」成立，BD 应该在美股和 Biotech 最热的 2020–2021 年附近抬头。事实相反：XBI 见顶回撤之后，中国对外授权才从几十亿级跳到千亿级名义总额。2024 年 XBI 只涨约 1%，授权金额已到约 520 亿美元；2025 年授权再翻倍以上。</p>
+    <p class="body">若把财富效应改成「标普 / 纳指创新高」，2023–2025 年确实共振，但这只能说明大环境不差，解释不了为什么买的是中国 ADC 和 PD-1/VEGF 双抗，而不是美国本土管线。</p>
+  </div>
+
+  <div class="stack stack-12">
+    <h2>行业自己怎么解释这波 BD</h2>
+    <div class="pair">
+      <div class="box">
+        <p class="k">买方</p>
+        <p class="t">大药企在补悬崖</p>
+        <p class="d">Reuters 把 2025–2026 年的加速直接写成：全球药企在专利到期前控成本、补管线，所以来中国找分子。这是资产负债表和生命周期问题，不是居民消费倾向。</p>
+      </div>
+      <div class="box">
+        <p class="k">卖方</p>
+        <p class="t">中国供给刚好成熟</p>
+        <p class="d">Vision LS：中国约占全球 ADC 授权活动的九成，双抗也很集中；国内融资变难，企业更愿意先卖海外权益。这是工程化下半场，不是美国人突然更有钱。</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>嘉宾说法</th><th>核验</th><th>不同意见</th></tr></thead>
+        <tbody>
+          <tr><td>创新药有奢侈品属性</td><td>对 GLP-1、自费升级、部分商保药部分成立；对肿瘤刚需药很弱</td><td>别写成创新药整体都是奢侈品</td></tr>
+          <tr><td>BD 热潮绑美国财富效应</td><td>时间上与 Biotech 股价负相关；与专利悬崖、中国供给更贴</td><td>当前这波 BD 的主因更像供给 + 悬崖，不是财富外溢</td></tr>
+          <tr><td>当前规模超历史趋势，会回归</td><td>2026 年一季度仍在加速，BofA 甚至说名义总额还可能再翻</td><td>回归可以当风险，不能当基准</td></tr>
+          <tr><td>增量看国内市场和出海切 96%</td><td>供给约 30%、需求约 4% 的错位，本身可复用</td><td>这条可以留，不必绑财富效应</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="stack stack-8">
+    <h2>对这张假说卡该怎么读</h2>
+    <p class="body">「奢侈品 / 财富效应」可以降级成对美国药价和商保的旁证，不要再当 BD 主因。更贴访谈后半段、也更贴成交的写法是：大药企补专利悬崖，中国在 ADC / 双抗上把工程化供给做出来了；名义总额含大量或有里程碑，现金没有标题数字那么猛。均值回归仍是未验证假说。</p>
+    <p class="small">主要来源：Reuters（Kane Wu / Andrew Silver, 2026-02-13）；Vision Lifesciences China Out-Licensing Report 2026；PortfoliosLab XBI；美国劳工部 2024 年处方药支出报告；UnitedHealth Group 商保人均药费 2014–2024。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+</div>
+</body>
+</html>

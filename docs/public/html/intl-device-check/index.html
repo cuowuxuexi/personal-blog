@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/intl-device-check/" />
+<title>国际原创器械会被看见吗？</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-12 { gap: 12px; }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .body { margin: 0; font-size: 14px; line-height: 20px; }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .eyebrow { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; color: var(--warning); }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) {
+    .grid-3, .pair { grid-template-columns: 1fr; }
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; padding: 4px 0; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.danger .v { color: var(--danger); }
+  .stat.info .v { color: var(--info); }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  .box {
+    border: 1px solid var(--stroke-3); border-radius: 8px;
+    padding: 12px 14px; background: var(--fill-4);
+  }
+  .box .k { margin: 0 0 4px; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .box .t { margin: 0 0 4px; font-size: 16px; line-height: 22px; font-weight: 590; }
+  .box .d { margin: 0; font-size: 13px; line-height: 18px; color: var(--text-2); }
+  hr { border: 0; border-top: 1px solid var(--stroke-3); margin: 4px 0; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/研究地图/">医药知识图谱</a><span>/</span><a href="/投资/投研/医药/研究地图/技术浪潮与投资框架/">技术浪潮与投资框架</a><span>/</span><strong>原创器械核验</strong></nav>
+
+  <div class="stack stack-8">
+    <p class="eyebrow">假说核验 · 信息截至 2026-09</p>
+    <h1>国际原创器械会被看见吗？</h1>
+    <p class="body">嘉宾说一批十亿、二十亿市值的公司在引领全球新品类，逻辑 2019–2021 年才启动，未来三四年会被市场看见。产品端是真的；「国际」和「三四年」两个词过满。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+
+  <div class="callout">
+    <svg class="icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+    <div>
+      <p class="title">结论：方向对，说满了。产品有，欧美的门在关</p>
+      <p class="msg">FDA 突破性认定和出口高增项是真的。但「引领全球」目前停在认定和临床，不是销售；出口真正在涨的是一带一路和设备大厂。嘉宾说的「直接去欧美」，现在反着走。</p>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="v">COMETIU</div><div class="l">赛诺颅内药物支架 2025-08 FDA 突破性认定，该适应症全球首个</div></div>
+    <div class="stat danger"><div class="v">−10.8%</div><div class="l">2025 年中国对美器械出口</div></div>
+    <div class="stat info"><div class="v">+368%</div><div class="l">2025 年手术机器人出口；增长在新兴市场，不是欧美采购</div></div>
+  </div>
+
+  <div class="stack stack-8">
+    <h2>访谈对话</h2>
+    <p class="body secondary">假说卡上的原话没改。访谈里主持人也追问过具体产品和时间表。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>谁</th><th>原来说了什么</th></tr></thead>
+        <tbody>
+          <tr><td>嘉宾</td><td>最前沿有两三家在引领全球全新品类。国际原创做得好，可以直接去欧美。创新药 2015–2017 年启动、2021 年已进收获期；这类器械 2019–2021 年才启动，我们很左侧。不出意外的话，未来三四年逻辑逐渐显化。</td></tr>
+          <tr><td>主持人</td><td>能先说一下这几个最原创的国内产品是什么吗？不说具体公司名也行。</td></tr>
+          <tr><td>嘉宾</td><td>不点名。很多公司现在就十一、二十亿。如果真开辟了全球新赛道，还会只给十一、二十亿估值吗？另一条线是国产替代：南美、东南亚，再去欧洲、美国硬碰硬。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="stack stack-12">
+    <h2>产品是真的，门在关</h2>
+    <div class="pair">
+      <div class="box">
+        <p class="k">同意</p>
+        <p class="t">产品端立得住</p>
+        <p class="d">赛诺 COMETIU 颅内药物支架 2025-08 拿到 FDA 突破性器械认定；心脉 Hector 三分支支架 2026 年同获认定；沛嘉 DCwire 2026-03 拿 510(k)。2025 年手术机器人出口 +368%，PET/SPECT +175%，内窥镜、人造关节两位数增长。这些不是嘉宾编的。</p>
+      </div>
+      <div class="box">
+        <p class="k">不同意见</p>
+        <p class="t">欧美的门在关</p>
+        <p class="d">欧盟 2025-06 首个 IPI 措施：中企被排除在 ≥500 万欧元器械公共采购之外，中方 7 月反制。2025 年对美器械出口 −10.8%，下半年单月跌幅超 14%。FDA 获批 534 件里 94% 是 II 类，III 类植入极少；参与认证的中国企业连续三年下滑到 341 家。</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>嘉宾说法</th><th>核验</th><th>不同意见</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot success"></span>十亿二十亿市值、引领全球新品类</td><td>赛诺市值约 80 亿、海外收入占 5.6%；沛嘉市值约 1.3 亿美元</td><td>公司确实小，但「引领全球」目前是认定和临床，不是销售</td></tr>
+          <tr><td><span class="dot danger"></span>国际原创做得好可以直接去欧美</td><td>IPI 排除、对美出口下滑、FDA III 类难</td><td>出口增长在一带一路、俄巴印，和联影、迈瑞这类设备大厂</td></tr>
+          <tr><td><span class="dot warning"></span>三四年逐步显化</td><td>赛诺 ICAS 国内市场 74 亿，2028 年才过百亿</td><td>细分市场小，显化需要海外收入，不是国内份额</td></tr>
+          <tr><td><span class="dot warning"></span>国内高值耗材空间大</td><td>第六批耗材国采 2026-05 落地，平均降幅超 60%，锚点价缓冲</td><td>集采规则变温和了，但仍在扩品类</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">来源：EUR-Lex 2025/1197；中国医药保健品进出口商会 2025 年器械进出口分析；中国医疗器械行业协会 FDA 获批复盘；赛诺医疗 H 股招股书报道（界面 2026-06）；国家医保局 2026-01-14。</p>
+  </div>
+
+  <hr />
+
+  <div class="stack stack-8">
+    <h2>对这张假说卡该怎么读</h2>
+    <p class="body">新品类开辟、国产替代这两条坐标可以留。「直接去欧美」和「三四年被市场看见」过满。更贴成交的写法是：产品在拿认定，销售主场还在国内和新兴市场；欧美公共采购和 III 类植入正在收紧。十亿级公司值多少钱，仍是开放问题，不是已经显化的事实。</p>
+    <p class="small">主要来源：EUR-Lex；中国医药保健品进出口商会；中国医疗器械行业协会；界面新闻赛诺招股书报道；国家医保局。</p>
+    <p class="small"><a href="/html/pharma-tech-waves/?tab=hypo">返回假说区</a></p>
+  </div>
+</div>
+</body>
+</html>
