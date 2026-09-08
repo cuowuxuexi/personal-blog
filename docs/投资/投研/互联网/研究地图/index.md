@@ -4,7 +4,7 @@ description: 互联网行业可复用的产业与商业知识入口
 pageClass: map-index
 outline: false
 order: 0
-hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图；腾讯底图先写在标的档案里。
+hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图；公司底图先写在标的档案里。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/互联网/">互联网行业</a><span>/</span><strong>研究地图</strong></nav>
@@ -39,6 +39,12 @@ hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地�
   <a class="subject-row" href="/投资/投研/互联网/腾讯/">
     <div><span class="subject-row__ticker">0700.HK</span><strong>腾讯</strong></div>
     <p>第一张公司底图写在标的档案里。行业地图仍空，不把腾讯页冒充可复用产业结论。</p>
+    <span class="subject-row__status">学习中</span>
+    <span class="subject-row__arrow">→</span>
+  </a>
+  <a class="subject-row" href="/投资/投研/互联网/美团/">
+    <div><span class="subject-row__ticker">3690.HK</span><strong>美团</strong></div>
+    <p>基石一句话和四问收口写在标的档案里。行业地图仍空，不把美团页冒充可复用产业结论。</p>
     <span class="subject-row__status">学习中</span>
     <span class="subject-row__arrow">→</span>
   </a>
