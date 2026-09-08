@@ -21,7 +21,7 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
     <div><dt>行业</dt><dd>医药 / 卖药</dd></div>
     <div><dt>状态</dt><dd>学习中</dd></div>
     <div><dt>阶段</dt><dd>四问收口 · 管理层三张表已查</dd></div>
-    <div><dt>更新</dt><dd>2026-09-05</dd></div>
+    <div><dt>更新</dt><dd>2026-09-08</dd></div>
   </dl>
 </section>
 
@@ -63,6 +63,7 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
     <a href="#open"><span>08</span><div><strong>停在还没拆开的地方</strong><p>单品账、利润分拆、下一次大额许可、翰森两笔许可的金额。</p></div><span>↓</span></a>
     <a href="/html/hengrui-business-model/"><span>09</span><div><strong>生意模型</strong><p>公司层生意图：谁付钱、供养是否闭合、护城河与每期该盯的数。</p></div><span>→</span></a>
     <a href="/html/hengrui-sales-expense/"><span>10</span><div><strong>销售费用</strong><p>五年绝对额与费用率，以及 2025 年同业对照。</p></div><span>→</span></a>
+    <a href="/html/hengrui-zou-narrative/"><span>11</span><div><strong>邹佩轩怎么读恒瑞</strong><p>外部框架学习层：生意在变好，股价为什么先掉头。</p></div><span>→</span></a>
   </div>
 </section>
 
@@ -482,6 +483,14 @@ hubLead: 国内创新销售已过半，仿制在收缩；销售结构能复算�
       <div>
         <strong>2026-08-31 · 销售费用</strong>
         <p>销售费用五年变化与同业对照单开一章：绝对额先跌后升，费用率连续下行。</p>
+      </div>
+      <span>→</span>
+    </a>
+    <a href="/html/hengrui-zou-narrative/">
+      <span>CH</span>
+      <div>
+        <strong>2026-09-08 · 邹佩轩怎么读恒瑞</strong>
+        <p>华源证券邹佩轩《叙事经济学》恒瑞案例的学习层提取：不进公司模型，不改已裁决命题。</p>
       </div>
       <span>→</span>
     </a>

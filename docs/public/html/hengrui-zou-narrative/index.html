@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<base href="/html/hengrui-zou-narrative/" />
+<title>邹佩轩怎么读恒瑞：生意在变好，股价为什么先掉头</title>
+<style>
+  :root {
+    --bg-editor: #181818;
+    --bg-chrome: #141414;
+    --bg-elevated: #181818;
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.74);
+    --text-3: rgba(240, 240, 240, 0.60);
+    --text-4: rgba(240, 240, 240, 0.36);
+    --fill-1: rgba(240, 240, 240, 0.20);
+    --fill-2: rgba(240, 240, 240, 0.14);
+    --fill-3: rgba(240, 240, 240, 0.08);
+    --fill-4: rgba(240, 240, 240, 0.06);
+    --stroke-1: rgba(240, 240, 240, 0.20);
+    --stroke-2: rgba(240, 240, 240, 0.12);
+    --stroke-3: rgba(240, 240, 240, 0.08);
+    --accent: #81a1c1;
+    --link: #81a1c1;
+    --success: #1f8a65;
+    --warning: #c9a227;
+    --danger: #c04848;
+    --info: #2e79b5;
+    --neutral: #8888a8;
+    --chart-danger: #c04848e0;
+    --chart-warning: #e8c030e0;
+    --chart-neutral: #8888a8e0;
+    --font: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg-editor: #f7f7f7;
+      --bg-chrome: #eeeeee;
+      --bg-elevated: #ffffff;
+      --text: #141414;
+      --text-2: rgba(20, 20, 20, 0.74);
+      --text-3: rgba(20, 20, 20, 0.60);
+      --text-4: rgba(20, 20, 20, 0.36);
+      --fill-1: rgba(20, 20, 20, 0.10);
+      --fill-2: rgba(20, 20, 20, 0.08);
+      --fill-3: rgba(20, 20, 20, 0.05);
+      --fill-4: rgba(20, 20, 20, 0.04);
+      --stroke-1: rgba(20, 20, 20, 0.18);
+      --stroke-2: rgba(20, 20, 20, 0.12);
+      --stroke-3: rgba(20, 20, 20, 0.08);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg-editor); color: var(--text); font-family: var(--font); }
+  body { padding: 24px; }
+  .page { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .stack { display: flex; flex-direction: column; }
+  .stack-8 { gap: 8px; }
+  .stack-10 { gap: 10px; }
+  .stack-12 { gap: 12px; }
+  .stack-20 { gap: 20px; }
+  .row { display: flex; flex-direction: row; }
+  .row-8 { gap: 8px; }
+  .row-16 { gap: 16px; }
+  .wrap { flex-wrap: wrap; }
+  .research-breadcrumb {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+  }
+  .research-breadcrumb a { color: var(--text-2); text-decoration: none; }
+  .research-breadcrumb a:hover { color: var(--link); }
+  .research-breadcrumb strong { font-weight: 590; color: var(--text); }
+  h1 { margin: 0; font-size: 24px; line-height: 30px; font-weight: 590; color: var(--text); }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 590; color: var(--text); }
+  h3 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 590; color: var(--text); }
+  .body { margin: 0; font-size: 14px; line-height: 20px; font-weight: 400; color: var(--text); }
+  .secondary { color: var(--text-2); }
+  .small { margin: 0; font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .tertiary { color: var(--text-3); }
+  .semibold { font-weight: 600; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    appearance: none; border: 1px solid var(--stroke-2); background: transparent;
+    color: var(--text-2); font: 400 13px/16px var(--font); padding: 5px 10px;
+    border-radius: 9999px; cursor: pointer;
+  }
+  .pill.active { background: var(--fill-1); color: var(--text); border-color: var(--stroke-1); }
+  .callout {
+    display: flex; gap: 10px; padding: 12px 14px; border: 1px solid var(--stroke-3);
+    border-radius: 8px; background: var(--fill-4);
+  }
+  .callout .icon { width: 16px; height: 16px; flex: 0 0 16px; margin-top: 2px; }
+  .callout .title { font-size: 14px; line-height: 20px; font-weight: 590; margin: 0 0 4px; }
+  .callout .msg { font-size: 14px; line-height: 20px; color: var(--text-2); margin: 0; }
+  .callout.info .icon { color: var(--info); }
+  .callout.warning .icon { color: var(--warning); }
+  .callout.neutral .icon { color: var(--text-3); }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat .v { font-size: 24px; line-height: 30px; font-weight: 590; }
+  .stat .l { font-size: 12px; line-height: 16px; color: var(--text-3); }
+  .stat.warning .v { color: var(--warning); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 800px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+  .card {
+    border: 1px solid var(--stroke-3); border-radius: 8px; background: var(--bg-elevated);
+    overflow: hidden; min-width: 0;
+  }
+  .card-h {
+    padding: 8px 12px; font-size: 12px; line-height: 16px; color: var(--text-2);
+    border-bottom: 1px solid var(--stroke-3); background: var(--fill-4);
+  }
+  .card-b { padding: 12px; }
+  .table-wrap { border: 1px solid var(--stroke-3); border-radius: 8px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--stroke-3); vertical-align: top; }
+  th { color: var(--text-3); font-weight: 500; background: var(--fill-4); }
+  tr:nth-child(even) td { background: var(--fill-4); }
+  tr:last-child td { border-bottom: 0; }
+  td.center, th.center { text-align: center; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+  .dot.success { background: var(--success); }
+  .dot.warning { background: var(--warning); }
+  .dot.danger { background: var(--danger); }
+  .dot.info { background: var(--info); }
+  .pane { display: none; }
+  .pane.on { display: flex; flex-direction: column; gap: 20px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px 16px; margin-top: 8px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); }
+  .swatch { width: 8px; height: 8px; border-radius: 2px; flex: 0 0 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/医药/">医药行业</a><span>/</span><a href="/投资/投研/医药/恒瑞医药/">恒瑞医药</a><span>/</span><strong>邹佩轩怎么读恒瑞</strong></nav>
+  <div class="stack stack-8">
+    <h1>邹佩轩怎么读恒瑞：生意在变好，股价为什么先掉头</h1>
+    <p class="body secondary">
+      来源：华源证券 邹佩轩《叙事经济学（2026 版）》第 27–35 页。这是别人的框架，我照原意提取、换成大白话，并标出每一步站在什么上面。它是学习层材料，不进公司模型，不改任何已裁决命题。页内所有倍数和金额，都是他在描述 2025 年 9 月市场押注的数，不是我的估值；这一页也不说该不该进出。
+    </p>
+    <div class="row row-16 wrap">
+      <p class="small tertiary">标签：外部框架</p>
+      <p class="small tertiary">提取日期：2026-09-08</p>
+      <p class="small tertiary">效力：学习层 · 待核验</p>
+    </div>
+  </div>
+
+  <div class="pills" id="tabs">
+    <button class="pill active" data-tab="summary">一页看懂</button>
+    <button class="pill" data-tab="rulers">三把尺子</button>
+    <button class="pill" data-tab="peaks">两次高点</button>
+    <button class="pill" data-tab="math">那道算术题</button>
+    <button class="pill" data-tab="footing">站在哪 · 怎么放</button>
+  </div>
+
+  <section class="pane on" id="summary">
+    <div class="callout neutral">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">用人话说</p>
+        <p class="msg">恒瑞 2022 年以后，所有能看出「生意在变好」的指标都在变好，分析师对它利润的预测也一路上调。可股价 2025 年 9 月初涨到头就开始跌，牛市里跌了半年多。他的解释：A 股不是一步一步算估值，而是先押「这公司最后能做多大」，再折回今天。到 2025 年 9 月，价格里押的已经是「再过几年变成今天的辉瑞」。故事讲到最乐观还说得通的那一版，再来利好也只能维持故事，不能把故事讲大，价格就先于业绩掉头。</p>
+      </div>
+    </div>
+
+    <div class="stack stack-12">
+      <h2>他的六步</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th class="center">步</th><th>他做了什么</th><th>得出什么</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="center">一</td>
+              <td>先造三把尺子：回款速度和毛利率是不是同向；每一块钱厂房研发资产带来多少收入；被上下游占用的净资金占总资产多少</td>
+              <td>前两把看生意效率、顺带验账是不是真的；第三把看在产业链里有没有话语权</td>
+            </tr>
+            <tr>
+              <td class="center">二</td>
+              <td>拿三把尺子量恒瑞 2022 年以后的每个季度</td>
+              <td>账是真的；三项都先跌到底再猛拉，在全市场普遍变差时逆着走；放到全部 A 股里名次持续往前冲</td>
+            </tr>
+            <tr>
+              <td class="center">三</td>
+              <td>顺着常规路径往下走</td>
+              <td>2022 年预期止跌，2024 年分析师逐季上调，股价反弹顺理成章。他说：很多研究写到这就停了</td>
+            </tr>
+            <tr>
+              <td class="center">四</td>
+              <td>把分析师的预测和股价叠在一起，看两次高点</td>
+              <td>2021 年 12 月和 2025 年 9 月，股价都比预测先掉头。利润和股价之间隔着别的东西</td>
+            </tr>
+            <tr>
+              <td class="center">五</td>
+              <td>倒推 2025 年 9 月那个价格把未来讲到了哪</td>
+              <td>60 倍利润 → 押的是将来一年赚现在的 12 倍 → 约 760 亿 → 等于「变成今天的辉瑞」</td>
+            </tr>
+            <tr>
+              <td class="center">六</td>
+              <td>从恒瑞推回一般规律</td>
+              <td>A 股先押终局再折回今天；利好只是给故事加信心；故事讲满，利好就只能维持不能升级，价格先于业绩掉头</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="stack stack-12">
+      <h2>撑起整条链的三个数</h2>
+      <div class="grid-3">
+        <div class="stat"><div class="v">60 倍</div><div class="l">2025 年 9 月初动态 PE，他读的数</div></div>
+        <div class="stat warning"><div class="v">12 倍</div><div class="l">价格隐含的终局利润 ÷ 当前利润，他按 10% 回报倒推</div></div>
+        <div class="stat warning"><div class="v">≈760 亿</div><div class="l">隐含终局利润，63.37 亿 × 12，他算的</div></div>
+      </div>
+      <p class="small">三个数都出自报告第 34 页。后两个不是读出来的，是算出来的，算法和假设见「那道算术题」。</p>
+    </div>
+  </section>
+
+  <section class="pane" id="rulers">
+    <div class="stack stack-8">
+      <h2>他先造了三把尺子，再拿去量恒瑞</h2>
+      <p class="body secondary">三把尺子都在报告第 27–29 页，先于恒瑞建立，套在全部 A 股上；恒瑞的读数在第 30–32 页。</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-h">尺子一 · 回款速度 × 毛利率</div>
+        <div class="card-b">
+          <div class="stack stack-10">
+            <p class="body"><span class="semibold">量什么。</span> 卖出去的货多久能收回钱（收入 ÷ 应收款），和毛利率是不是一起动。</p>
+            <p class="body"><span class="semibold">为什么能验账。</span> 想虚报收入，最常见的办法是把没收到的钱也记成收入。这样「应收款」和「收入」同时膨胀，收入 ÷ 应收款反而变小，看起来回款变慢了。但成本很难跟着造（折旧按当年买设备的价算，工资得对得上社保），毛利率会显得变高。一边说「钱越来越难收」，一边说「越来越赚钱」，对不上就是假账的信号。</p>
+            <p class="body"><span class="semibold">恒瑞量出来。</span> 两者长期一起动，账没问题。2022 年以后每个季度先跌到底再猛拉回来，而且是在全市场普遍变差的时候逆着走。放到全部 A 股里排名，名次一直在往前冲。</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">尺子二 · 每块资产带来多少收入</div>
+        <div class="card-b">
+          <div class="stack stack-10">
+            <p class="body"><span class="semibold">量什么。</span> 收入 ÷（固定资产 + 无形资产）。他不区分建厂房还是搞研发，反正花了大钱就得有对应的收入。</p>
+            <p class="body"><span class="semibold">往下掉说明什么。</span> 要么产能用不满，要么产品卖不上价，要么当年钱花得不值；甚至可能是把假利润藏进了长期资产里慢慢消化。</p>
+            <p class="body"><span class="semibold">恒瑞量出来。</span> 2020 年后下行，2022 年见底，2023–2025 年三年往上。因为全 A 中位数在掉，恒瑞的名次升得更快，2025 年四个季度都排在全 A 前 20%，回到前期位置。</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">尺子三 · 被谁占着钱</div>
+        <div class="card-b">
+          <div class="stack stack-10">
+            <p class="body"><span class="semibold">量什么。</span> （客户欠你的 − 你欠供应商的）÷ 总资产。客户欠你的是别人占你的钱，你欠供应商的是你占别人的钱。差值越小，话语权越强，能让上下游替你垫资。</p>
+            <p class="body"><span class="semibold">为什么可信。</span> 全社会所有公司加起来，你的应收就是我的应付，正好抵消，所以这个指标的分布是真实的。它是上下游用真金白银投出来的票，比研报里「细分行业龙头」这种形容词靠谱。</p>
+            <p class="body"><span class="semibold">恒瑞量出来。</span> 2023 年以来一个季度比一个季度低，绝对值和名次都在降，说明话语权越来越强。他附了一句：绝对值跟商业模式有关，跨行业不能比。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stack stack-8">
+      <h3>全市场的背景</h3>
+      <p class="body">三把尺子的全 A 中位数近几年都在往下掉。他读成：全社会中位数的盈利能力在下降、回款周期在拉长，只有少数公司逆势，这解释了 2024 年以来越来越极致的结构性行情。他自己也点出，尺子二上恒瑞名次的上升，有一部分是因为别人在变差。</p>
+      <p class="body">他顺手给了个原因：靠自己的研发突破加上行业顺风。这句是他的猜测，不是指标本身能证明的。</p>
+    </div>
+
+    <div class="callout info">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">到这一步，大部分研究就写完了</p>
+        <p class="msg">按上面三把尺子，2022 年预期止跌，2024 年分析师开始一个季度一个季度地上调预测，股价反弹，顺理成章。他说：很多人写到这就停了。接下来才是他要说的。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="peaks">
+    <div class="stack stack-8">
+      <h2>两次高点，股价都比预测先掉头</h2>
+      <p class="body secondary">他把「每一天分析师对当年利润预测的平均数」和「后来实际赚了多少」画在一起，再叠上 2017 年以来的股价（报告第 33 页）。</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>2021 年 12 月高点</th><th>2025 年 9 月初高点</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>分析师当时在想什么</td><td>对 2022 年的利润预期还很高</td><td>10 月 25 日三季报出来后，预测还在往上改</td></tr>
+          <tr><td>预测什么时候才转向</td><td>2022 年中报出来后才小幅下调</td><td>报告只说三季报后仍在上调；之后有没有下调，他没写</td></tr>
+          <tr><td>那时股价已经怎样</td><td>已经跌了一半</td><td>已经跌了半年多，牛市里大幅跑输大盘</td></tr>
+          <tr><td>他的补充</td><td>—</td><td>不能用「有人在卖」这种交易层面的理由打发掉</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warning">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+      <div>
+        <p class="title">他的结论</p>
+        <p class="msg">利润和股价之间不是「利润涨股价就涨」这么直接，中间隔着别的东西。</p>
+      </div>
+    </div>
+
+    <p class="small">他还在股价对比图上标了一句：2020 年四季度那波上涨可能是资金推的，没有跑赢大盘。这是他的解释，不是图能证明的。</p>
+  </section>
+
+  <section class="pane" id="math">
+    <div class="stack stack-8">
+      <h2>2025 年 9 月那个价格，把未来讲到哪了</h2>
+      <p class="body">一个人肯付 60 年的利润来买这家公司，不可能是看中今年赚多少，一定是在赌它将来某天一年能赚今天的很多倍。他假设买股票的人要求每年 10% 的回报，倒推出来：这个价格背后的赌注，是恒瑞将来一年能赚现在的 12 倍。恒瑞 2024 年赚了 63.37 亿，12 倍就是 760 亿左右。</p>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat"><div class="v">60 倍</div><div class="l">恒瑞动态 PE · 2025 年 9 月初</div></div>
+      <div class="stat warning"><div class="v">12 倍</div><div class="l">隐含终局 ÷ 当前利润 · 按 10% 倒推</div></div>
+      <div class="stat warning"><div class="v">≈760 亿</div><div class="l">隐含终局利润 · 63.37 × 12</div></div>
+      <div class="stat"><div class="v">12.4 倍</div><div class="l">辉瑞同期动态 PE</div></div>
+    </div>
+
+    <div class="stack stack-8">
+      <h3>恒瑞归母净利润要走到隐含终局 760 亿的两条路径（亿元人民币）</h3>
+      <div id="path-chart"></div>
+      <p class="small">横轴：距 2024 年的年数。纵轴：归母净利润，亿元人民币。两条线是我按他给的两条路径推算的示意，不是任何人的预测：12 开五次方减一是 64%，开十次方减一是 28%。起点 63.37 亿是恒瑞 2024 年归母净利润；760 亿是他按 10% 回报从 60 倍倒推的隐含终局；800 亿是他引用的辉瑞未来几年业绩预期量级。来源：报告第 34 页。</p>
+    </div>
+
+    <div class="callout warning">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 2.6 14.2 13.4H1.8L8 2.6Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.6v3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.6" r="0.7" fill="currentColor"/></svg>
+      <div>
+        <p class="title">分析师的预测离这两条线有多远</p>
+        <p class="msg">他只说了一句：Wind 一致预期在可预见的几年里，复合增速远低于 60% 或 28%。具体数字他没给。</p>
+      </div>
+    </div>
+
+    <div class="stack stack-8">
+      <h3>参照物：辉瑞</h3>
+      <p class="body">全球做同类生意的头牌辉瑞，同期股价只有利润的 12.4 倍。因为它是成熟公司，他把要求回报降到 8%，倒推出来的意思是：市场认为辉瑞以后不会再涨了，现在就是顶。辉瑞未来几年的利润折成人民币，大概也是 800 亿一年。两边一合：恒瑞那个价格，等于在说「再过几年，恒瑞就是今天的辉瑞」。</p>
+    </div>
+
+    <div class="callout neutral">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">他在页脚写的</p>
+        <p class="msg">仅客观描述历史股价中隐含的预期，不涉及任何公司的具体经营情况以及当下投资价值。</p>
+      </div>
+    </div>
+
+    <div class="stack stack-8">
+      <h2>从恒瑞推回的一般规律</h2>
+      <p class="body">A 股给很多公司定价的方式，不是「先算今年赚多少、再定个合理倍数、再算市值」一步一步来的，而是一步跳到「这公司最后能做多大」，再把那个终点折回到今天。业绩增长、效率改善、技术突破、政策利好、海外同行大涨，这些不是用来算数的，是用来给「它能做到那么大」这个故事加信心的。</p>
+      <p class="body">钱越涌进来，故事越乐观。但乐观有个头，就是「这个故事讲到多大还能说得过去」。一旦价格里的故事顶到了那个天花板，再来利好也只能维持故事，没法把故事再讲大，正反馈就断了。所以「看到景气就买」在一轮行情前半段特别灵，后半段就不灵，利好出来股价反而跌，因为大家早就按更好的版本定过价了。</p>
+      <p class="body">恒瑞就是这个模型的活例子：所有能给故事加分的东西都到位了，价格已经按「变成辉瑞」算过了，之后效率再好、预测再上调，也只是「符合剧本」，不是「剧本升级」，于是价格先于预测掉头。</p>
+    </div>
+  </section>
+
+  <section class="pane" id="footing">
+    <div class="stack stack-12">
+      <h2>每句话站在什么上面</h2>
+      <p class="body secondary">这张表是我按自己的分类补的，不是他写的。绿色是能查的事实，橙色是他的解释或设定，红色是最弱的一环。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>他说的</th><th>性质</th><th>备注</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="dot success"></span>回款速度和毛利率长期同向</td><td>可核验事实</td><td>报表能算；他用它证明账是真的</td></tr>
+            <tr><td><span class="dot success"></span>三项效率指标 2022 年后深 V，在全 A 里名次上升</td><td>可核验事实</td><td>他的图；三把尺子的算法是他定义的</td></tr>
+            <tr><td><span class="dot success"></span>分析师是在股价掉头之后才下调预测</td><td>可核验事实</td><td>Wind 时间序列；整条论证里最结实的一块</td></tr>
+            <tr><td><span class="dot warning"></span>效率变好是因为研发突破和行业顺风</td><td>他的解释</td><td>图证明不了原因</td></tr>
+            <tr><td><span class="dot warning"></span>2020 年四季度那波是资金推的</td><td>他的解释</td><td>同上</td></tr>
+            <tr><td><span class="dot warning"></span>2025 年这波跌不是交易因素</td><td>他的解释</td><td>同上</td></tr>
+            <tr><td><span class="dot info"></span>隐含终局 12 倍、760 亿</td><td>算出来的</td><td>挂在三个假设上：要求回报 10%、涨到顶后永远维持、利润差不多等于能拿到手的现金。他在中芯国际那页演示过，10% 改成 12% 会让倍数从 40 变 60；恒瑞这页没做同样的演示</td></tr>
+            <tr><td><span class="dot info"></span>60 倍的分母是哪一年的利润</td><td>没写明</td><td>他的表定义是「下一年业绩」，若用 2024 年实际利润，倍数会不同</td></tr>
+            <tr><td><span class="dot info"></span>辉瑞是可比对象；辉瑞用 8%、恒瑞用 10%</td><td>他定的</td><td>两个点的差是主观设定</td></tr>
+            <tr><td><span class="dot danger"></span>故事讲满了，价格就会先于业绩掉头</td><td>归纳</td><td>两次高点、两个样本；他在报告开头说过要慎用归纳</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="stack stack-8">
+      <h2>他明确没做的</h2>
+      <p class="body">没给恒瑞合理值多少，只算了市场当时押的是多少。</p>
+      <p class="body">没说 2025 年 9 月就是顶，也没说恒瑞生意有问题；相反，他承认生意确实在变好。</p>
+      <p class="body">没去论证「变成辉瑞」这事到底可不可能，只指出它和分析师的预测之间差着一大截。</p>
+    </div>
+
+    <div class="callout neutral">
+      <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.2" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.2v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="5" r="0.8" fill="currentColor"/></svg>
+      <div>
+        <p class="title">放到我的框架里</p>
+        <p class="msg">他的三把尺子，量的是我说的「企业事实」；他的倒推算术，量的是我说的「市场事实」外加几个假设。他用恒瑞想说的是：这两样东西可以长时间背着走，往哪边背，取决于价格里的故事离「最乐观还说得通的版本」还有多远。我留下的是这个看法本身和三把尺子的算法；他的解释和两个样本的归纳，放在待检验那一格。这一页不含我的估值，也不说该不该进出。</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tab]");
+  if (!b) return;
+  document.querySelectorAll(".pill").forEach((p) => p.classList.toggle("active", p === b));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === b.dataset.tab));
+});
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function drawPath() {
+  const el = document.getElementById("path-chart");
+  if (!el) return;
+  const cats = ["2024 实际", "1 年后", "2 年后", "3 年后", "4 年后", "5 年后", "6 年后", "7 年后", "8 年后", "9 年后", "10 年后"];
+  const y5 = [63.4, 104.2, 171.2, 281.4, 462.6, 760.4, 760.4, 760.4, 760.4, 760.4, 760.4];
+  const y10 = [63.4, 81.3, 104.2, 133.6, 171.3, 219.7, 281.7, 361.2, 463.2, 593.9, 760.4];
+  const W = 880, H = 260, padL = 44, padR = 16, padT = 28, padB = 36;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const yMax = 900;
+  const cDanger = css("--chart-danger") || "#c04848e0";
+  const cWarn = css("--chart-warning") || "#e8c030e0";
+  const cMuted = css("--text-3");
+  const axis = css("--stroke-2");
+  const text2 = css("--text-2");
+  const xs = cats.map((_, i) => padL + (i / (cats.length - 1)) * innerW);
+  const yOf = (v) => padT + innerH - (v / yMax) * innerH;
+  const pathOf = (vals) => xs.map((x, i) => `${i ? "L" : "M"}${x.toFixed(1)},${yOf(vals[i]).toFixed(1)}`).join(" ");
+  const ticks = [0, 200, 400, 600, 800];
+  const grid = ticks.map((t) => {
+    const y = yOf(t);
+    return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${axis}"/>
+      <text x="${padL - 8}" y="${y + 4}" text-anchor="end" fill="${cMuted}" font-size="11">${t}</text>`;
+  }).join("");
+  const labels = xs.map((x, i) =>
+    `<text x="${x}" y="${H - 10}" text-anchor="middle" fill="${cMuted}" font-size="11">${cats[i]}</text>`
+  ).join("");
+  const dots5 = xs.map((x, i) => `<circle cx="${x}" cy="${yOf(y5[i])}" r="3" fill="${cDanger}"/>`).join("");
+  const dots10 = xs.map((x, i) => `<circle cx="${x}" cy="${yOf(y10[i])}" r="3" fill="${cWarn}"/>`).join("");
+  const refY = yOf(800);
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}">
+    ${grid}
+    <line x1="${padL}" y1="${refY}" x2="${W - padR}" y2="${refY}" stroke="${cMuted}" stroke-dasharray="4 4"/>
+    <text x="${W - padR}" y="${refY - 6}" text-anchor="end" fill="${text2}" font-size="11">辉瑞未来几年业绩预期 ≈800 亿</text>
+    <path d="${pathOf(y5)}" fill="none" stroke="${cDanger}" stroke-width="2"/>
+    <path d="${pathOf(y10)}" fill="none" stroke="${cWarn}" stroke-width="2"/>
+    ${dots5}${dots10}${labels}
+  </svg>
+  <div class="legend">
+    <div class="legend-row"><span class="swatch" style="background:${cDanger}"></span>5 年到顶（每年 +64%，之后维持）</div>
+    <div class="legend-row"><span class="swatch" style="background:${cWarn}"></span>10 年到顶（每年 +28%，之后维持）</div>
+  </div>`;
+}
+
+drawPath();
+matchMedia("(prefers-color-scheme: light)").addEventListener("change", drawPath);
+</script>
+</body>
+</html>
