@@ -27,6 +27,13 @@ hubLead: 从化学与合成分子相关服务 × R/D/M 切入，继续核验收�
 
 <div class="research-note"><strong>研究边界</strong><span>本页聚焦药明康德在行业链条中的位置及仍待验证的公司问题；相关行业框架见医药知识图谱。</span></div>
 
+<section class="research-section" aria-labelledby="chapters">
+  <header class="research-section-head"><div><p>CHAPTERS / 已开章节</p><h2 id="chapters">已开章节</h2></div></header>
+  <div class="learning-path">
+    <a href="/投资/投研/医药/药明康德/药明康德纪实/"><span>01</span><div><strong>药明康德纪实</strong><p>从二十个分子到重资产系统，以及这块不属于它的地。</p></div><span>→</span></a>
+  </div>
+</section>
+
 <section class="research-section" aria-labelledby="why">
   <header class="research-section-head"><div><p>WHY / 为什么研究</p><h2 id="why">为什么研究药明康德</h2></div></header>
   <p>我要理解的不是“创新药怎么研发”本身，而是一家强调 CRDMO 的公司如何在这条长链上收费：客户具体购买哪些 R、D、M 能力；这些能力集中在哪类药物；项目推进后，收入为何可能从前端服务走向后端放量。</p>
