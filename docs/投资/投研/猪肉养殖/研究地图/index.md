@@ -114,7 +114,7 @@ hubLead: 商品身份、生产时滞、周期驱动、成本口径、账上分�
       <div class="knowledge-graph__label"><span>06</span><strong>格局与映射</strong></div>
       <div class="knowledge-flow">
         <a class="knowledge-node knowledge-node--company" href="#q6"><small>行业三层</small><strong>集团 / 地方 / 专业散户</strong><span>不是牧原、温氏那一刀；规模不自动等于成本优势</span></a>
-        <a class="knowledge-node knowledge-node--company" href="#company"><small>自繁自养</small><strong>牧原股份</strong><span>卖猪为主，屠宰是延伸；本页不写公司数字</span></a>
+        <a class="knowledge-node knowledge-node--company" href="/投资/投研/猪肉养殖/牧原股份/"><small>自繁自养</small><strong>牧原股份</strong><span>卖猪为主，屠宰是延伸；数字在公司档案</span></a>
         <span class="knowledge-node knowledge-node--future"><small>公司 + 农户</small><strong>温氏股份</strong><span>档案未建；只当生产组织对照坐标</span></span>
       </div>
     </div>
@@ -225,7 +225,8 @@ hubLead: 商品身份、生产时滞、周期驱动、成本口径、账上分�
     <article>
       <span>02</span>
       <h3>牧原股份 · 公司坐标</h3>
-      <p>自繁自养一体化 × 商品猪出栏；屠宰是延伸。公司数字和档案尚未公开。</p>
+      <p>自繁自养一体化 × 商品猪出栏；屠宰是延伸。公司数字在标的档案，本页不写。</p>
+      <a href="/投资/投研/猪肉养殖/牧原股份/">进入牧原档案 →</a>
     </article>
   </div>
 </section>
