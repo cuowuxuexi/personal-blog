@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-discount-rate/" />
+<title>折现率为什么取 10% · 分母端的叙事（邹佩轩叙事框架 · 2）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>折现率与分母端</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>折现率为什么取 10%：分母端的叙事</h1>
+    <div class="theline">
+      折现率就是<b>必要收益率</b>——吸引你买入并且拿着不动的最低年化回报，相当于债券的到期收益率。<br>
+      本页讲三件事：A 股为什么直接取 <b>10%</b> 就够；为什么它<b>不跟着无风险利率走</b>；无风险利率下行时，钱到底流向了谁。
+    </div>
+    <div class="nav">
+      <span class="nl">本页回答五个问题</span>
+      <a href="#s1">① 取多少</a>
+      <a href="#s2">② 为什么不随利率变</a>
+      <a href="#s3">③ 利率下行谁受益</a>
+      <a href="#s4">④ 股息率是结果</a>
+      <a href="#s5">⑤ 实操口径</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 ===== -->
+  <section>
+    <div class="card">
+      <div class="shead" style="margin-bottom:10px">
+        <div class="snum">0</div>
+        <h2>先说结论：不要在折现率上做太多文章</h2>
+      </div>
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 时间的价格 + 风险的价格</div>
+        <p>你手里有一笔钱，可以今天花掉，也可以投出去等以后花。愿意等，得有补偿：<em>等待本身</em>要一份价钱，这是无风险利率；<em>可能拿不回来</em>还要一份价钱，这是风险溢价。两份加起来，就是你肯把钱交出去的最低回报——必要收益率，也就是折现率。</p>
+        <p>它和债券的"到期收益率"是一回事：买了拿到期，一年赚多少。区别只是股票没写票面，这个数得从长期市场表现里读出来。</p>
+      </div>
+      <div class="claim" data-kg="concept">
+        <p class="claim-main">A 股权益折现率长期取 10%，美股取 8%。它有均值回归，不跟着无风险利率等额变化。</p>
+        <p class="claim-sub">解析解表的两个风险敞口，一个是天花板高度（见 <a href="/html/zou-endgame" style="color:var(--author);font-weight:600">空间叙事与终局</a>），另一个就是折现率。但作者的建议是：这个参数<b>大部分时候不可控、也不需要控</b>，取一个长期稳定的中枢，再按具体标的的确定性上下微调，比每次重算 CAPM 更接近市场实际。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 取多少 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>取多少：10% 不是拍出来的，是复盘拟合出来的</h2>
+      <span class="sub">三个互相独立的证据指向同一个数</span>
+    </div>
+    <div class="card">
+      <div class="mini" data-kg="metric">
+        <div><div class="k">A 股权益折现率</div><div class="v">10%<br><small>00 年代 / 10 年代 / 20 年代拟合度都高</small></div></div>
+        <div><div class="k">美股权益折现率</div><div class="v">8%<br><small>标普 500 百年对数斜率恒定</small></div></div>
+        <div><div class="k">A 股主动权益基金</div><div class="v">≈ 10%<br><small>有数据以来长期复合回报</small></div></div>
+        <div><div class="k">A 股 vs 标普 500</div><div class="v">跑赢<br><small>长期平均回报更高，但波动更大</small></div></div>
+      </div>
+      <p class="lead"><b>证据一：估值倍数拟合。</b>经过光伏、煤炭、水电、白酒等大跨度案例复盘，A 股权益口径的折现率无论在 21 世纪 00 年代、10 年代还是 20 年代，取 10% 时估值倍数的拟合度都比较高。这个数长期有均值回归，且不太受无风险利率高低影响——利率高的年份和低的年份，取 10% 都拟合得差不多。</p>
+      <p class="lead" style="margin-top:10px"><b>证据二：主动基金长期回报。</b>10% 差不多也是 A 股主动权益基金的长期复合回报率。折现率就是必要收益率，全市场主动管理的长期结果应当围绕它波动。</p>
+      <p class="lead" style="margin-top:10px"><b>证据三：新兴市场风险溢价。</b>A 股主动权益基金的长期平均回报其实超过标普 500，只是波动大得多——这符合新兴市场要求更高风险补偿的普遍规律。A 股必要收益率不会太低，否则无法解释"岁月静好"类资产为什么长期欠配。</p>
+      <div class="callout green" data-kg="caveat">
+        <div class="t">具体标的怎么调</div>
+        <p>10% 是中枢，不是每家公司的数。业绩确定性高、风险等级低的公司可以往下调（作者对台积电这类确定性更高的公司，按 8% 反算隐含终局）；没有业绩、天花板算不清的公司要往上调，折现率建议"至少" 10%，12% 也不过分。但调的是<b>风险等级</b>，不是当期利率环境。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.2 后半、图 1-7　·　播客 45:35–46:29</div>
+    </div>
+  </section>
+
+  <!-- ===== 2 内生性 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum">2</div>
+      <h2>为什么不随利率变：无风险利率与风险溢价存在内生性</h2>
+      <span class="sub">作者与市场主流分歧最大的一处</span>
+    </div>
+
+    <div class="essence" data-kg="concept">
+      <div class="tag-e">核心推论 · 分母端</div>
+      <h3>权益折现率 = 无风险利率 + 风险溢价。但这两项不是独立变量：无风险利率下降的原因，往往正是风险溢价上升的原因。</h3>
+      <p>流行的推理是：利率降 → DCF 分母变小 → 股票更值钱。它默认风险溢价是个常数。可无风险利率为什么会降？要么是<b>增长机会变少</b>了，要么是投资者<b>不愿冒险</b>、转而增配固收，把国债买贵了。这两种情形下，风险溢价都在往上走，幅度可能比利率降得还多。两者对冲，加起来的折现率反而长期稳定——甚至对权益资产形成利空。</p>
+      <div class="formula" data-kg="concept">
+        折现率 ＝ 无风险利率 <span class="dim">↓</span> ＋ 风险溢价 <span class="dim">↑</span> ≈ <b>长期稳定的中枢</b>
+        <span class="small">"利率下行利好权益"隐含假设风险溢价不动。而数据显示，风险溢价才是更显著的变量：全球范围内股债跷跷板比股债同涨同跌常见得多。</span>
+      </div>
+      <div class="eli5" data-kg="concept">
+        <div class="lbl">ELI5 · 为什么大家都去买国债</div>
+        <p>国债利率掉到很低，通常不是因为世界突然变安全了，而是因为<em>大家都在抢它</em>——觉得别的东西风险太大。这时你要的股票补偿不是更少，而是更多。降的是"等待的价钱"，涨的是"担心的价钱"，两头一抵，你肯为股票付的总价没怎么变。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 class="ct">四个市场的长期数据，都不支持"利率下行利好权益"</h4>
+      <div class="consensus" data-kg="metric">
+        <div class="crow">
+          <div class="a"><span class="who y">美国</span><p>10 年期国债收益率 20 世纪 80 年代初一度超过 15%，2020 年后接近 0%，大起大落。标普 500 取对数后却大致是一条直线——<b>1980–1995 与 2010–2025 利率环境天壤之别，斜率几乎一样</b>。影响长期收益的是 2001、2008 这类重大事件，不是利率。</p></div>
+          <div class="b"><span class="who z">中国</span><p>2015 年以来，沪深 300 与 10 年期国债收益率<b>大部分时候同向变化</b>。2022–2024 年国债收益率几乎直线下降，权益资产并没有迎来"大时代"。</p></div>
+        </div>
+        <div class="crow">
+          <div class="a"><span class="who y">欧元区</span><p>银行间利率 2015–2020 年一直为负，长债 2019 年降到零。Euro Stoxx 50 从 2015 年 4 月到 2021 年初<b>基本持平，最大回撤 30%</b>；反而是 2022 年利率大幅上升时迎来一波大行情。</p></div>
+          <div class="b"><span class="who z">日本</span><p>日经 225 与 10 年期国债收益率在 20 世纪 90 年代初至 2012 年<b>长达 20 年同向变化</b>；2020 年后两者又同步向上。利率长期下行意味着投资边际回报不足，很多商业模式直接被证伪。</p></div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px" data-kg="caveat">
+        <div class="t">CAPM 算出来的往往是"精确的错误"</div>
+        <p>CAPM 的框架没有问题——个股折现率取决于它与市场的协方差。问题在使用习惯：<b>"全市场平均风险溢价"本应是一个客观的动态变量，算的时候却被当成固定常数</b>，于是得出权益折现率随无风险利率等额变化的误区。美股"利率无关"其实是全球特例：领涨公司不断推陈出新（苹果→特斯拉→英伟达），分子端看全球、分母端看美国，两端联动弱。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.2 图 1-8 / 1-9、6.3 图 6-26～6-28　·　《叙事经济学 2026》6.2–6.4　·　播客 46:29–50:16</div>
+    </div>
+  </section>
+
+  <!-- ===== 3 利率下行谁受益 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>利率下行时钱流向谁：分子分母联动，协方差决定方向</h2>
+      <span class="sub">三种公司、同一次降息、三种完全不同的股价反应</span>
+    </div>
+    <div class="card">
+      <p class="lead">静态 DCF 说：利率降，久期长的成长股最受益，应该买"星辰大海"。可 2022–2024 年我国利率下行阶段，涨得最好的是长江电力、美的集团这类没什么增长的稳定资产，高成长资产普遍估值坍缩。问题出在 <b>DCF 的参数之间存在内生性</b>：折现率是经过风险调整的全社会投资边际回报率，它降下来，意味着<b>全社会的分子端也在降</b>。</p>
+      <p class="lead" style="margin-top:10px">极简模型：一家公司每年现金流 10 元、永续不增长、全额分红、折现率 10%，股价 100。现在折现率从 10% 降到 5%。分子跟不跟着降，取决于这家公司的抗风险能力相对全社会平均水平如何：</p>
+      <div class="mini" data-kg="metric">
+        <div><div class="k">基础情景</div><div class="v">100<br><small>10 元 ÷ 10%</small></div></div>
+        <div><div class="k">抗风险 = 全社会</div><div class="v">100 <span class="arrow">→</span> 100<br><small>分子等比降到 5 元，5 ÷ 5%。股价不动，此后每年只赚 5%</small></div></div>
+        <div><div class="k">抗风险 &gt; 全社会</div><div class="v">100 <span class="arrow">→</span> 200<br><small>分子不变，10 ÷ 5%。股价瞬间跳升，之后回到赚折现率</small></div></div>
+        <div><div class="k">抗风险 &lt; 全社会</div><div class="v">100 <span class="arrow">→</span> 60<br><small>分子降到 3 元，3 ÷ 5%。先杀一次估值，再降到新折现率</small></div></div>
+      </div>
+      <p class="lead">所以无风险利率的变化带来的<b>不是整体性的指数行情，而是板块之间的深度分化与财富再分配</b>。用 CAPM 的语言：只有与宏观经济协方差足够小的公司，才可能受益于利率下降。这正是很多红利资产拔估值的主要途径——宏观波动时，市场发现它的业绩穿越周期屹立不倒，协方差被重新评估。大部分新兴行业享受不到。</p>
+      <div class="grid2" style="margin-top:18px">
+        <div class="addon">
+          <div class="n">降折现率的两条正路</div>
+          <h4>证明协方差低；或者"出海"斜着拔估值</h4>
+          <p>要降折现率，通常需要降低与宏观经济的协方差，即证明公司基本面与经济的相关度比大家想的低。这很难，还需要机遇——只有经济波动时才有机会被验证。</p>
+          <p>"出海"是个特例：证明拥有出海能力，既提高了天花板预期（横着走），又降低了与单一经济体的协方差（竖着走），在解析解表上是<b>"斜着拔估值"</b>，提升空间明确且强劲。这是纯粹的理论推演，不涉及任何经济多空判断。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.2 CAPM 式、6.3 表 6-4～6-7</div>
+        </div>
+        <div class="addon">
+          <div class="n">更底层：自然利率长期下行</div>
+          <h4>资本边际回报递减，只有技术革命带来脉冲式上涨</h4>
+          <p>全球 700 年实际利率长期下行，只在重大技术革命与制度创新时脉冲式上涨。技术革命是"创造性破坏"：先少数战胜多数，再扩散。相当部分存量公司是受损的，指数靠少数甚至是新成分股创新高。</p>
+          <p>这解释了为什么"低风险资产长期收益率更高"不是 A 股特例而是全球特征，也是杠铃策略的真实经济基础：找<b>能改变世界的公司</b>与<b>不被世界改变的公司</b>，两类资产的分子分母是脱钩的，能摆脱自然利率陷阱。</p>
+          <div class="src" data-kg="source">📖 《叙事经济学 2026》6.1、6.5（引 Schmelzing 2020 英格兰银行工作论文）</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4 股息率 ===== -->
+  <section id="s4">
+    <div class="shead">
+      <div class="snum">4</div>
+      <h2>股息率是估值的结果，不是原因</h2>
+      <span class="sub">一个常被问反的问题："利率下行更利好高股息还是低股息？"</span>
+    </div>
+    <div class="card">
+      <p class="lead">只要符合预期，现金流曲线的形状不影响持有期收益率，只影响它在<b>股息率</b>和<b>除权股价涨幅</b>之间怎么分。两个极端例子（当前现金流 10 元，全额分红，折现率 10%，一年后预期完全兑现）：</p>
+      <div class="consensus" data-kg="metric">
+        <div class="crow">
+          <div class="a"><span class="who y">预期 20% 增长 5 年</span><p>合理股价 219.9 → 一年后 229.9。除权涨幅 <b>+4.54%</b>，收到分红 12 元，股息率 <b>5.46%</b>。合计 <b>10.0%</b>。</p></div>
+          <div class="b"><span class="who z">预期 20% 下滑 5 年</span><p>合理股价 41.6 → 一年后 37.7。除权跌幅 <b>−9.24%</b>，收到分红 8 元，股息率 <b>19.24%</b>。合计 <b>10.0%</b>。</p></div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">一家确定增长、一家确定下滑，持有期收益率完全一样，都等于折现率——因为这就是必要收益率的定义。所以"利率下行更利好高股息还是低股息"的正确回答是：<b>两者没有必然联系</b>。股息率高低是叙事的结果。</p>
+      <div class="callout blue" data-kg="caveat">
+        <div class="t">A 股的一个反直觉推论</div>
+        <p>由于 A 股是乐观资金定价，在没有叙事变化的前提下，"确定下滑"的公司投资性价比甚至可能高于"确定增长"：前者大概率真的下滑，能赚到折现率；后者未必有那么确定，不一定能赚到折现率。这解释了 2021 年以来绩优股指数始终没跑赢亏损股指数。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》6.3 表 6-2 / 6-3、1.2 图 1-5　·　《叙事经济学 2026》1.5</div>
+    </div>
+  </section>
+
+  <!-- ===== 5 实操 ===== -->
+  <section id="s5">
+    <div class="shead">
+      <div class="snum">5</div>
+      <h2>实操口径：怎么用、怎么不用</h2>
+    </div>
+    <div class="card">
+      <div class="grid2">
+        <div class="addon">
+          <div class="n">这样用</div>
+          <h4>取 10% 中枢，按确定性微调，然后把精力花在天花板上</h4>
+          <p>折现率是解析解表的纵轴。大部分公司直接用 10% 那一行；确定性格外高的往上一两行（8–9%），格外低的往下一两行（11–12%）。然后所有研究精力回到横轴——天花板倍数才是你有可能形成超额认知的地方。</p>
+          <p>给永续增长率 g 与降折现率数学等价（10% + 2% g ≈ 8%），所以"给 g"也是在动分母，容错率同样被吃掉。作者建议不给。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.2　·　表格用法见 <a href="/html/zou-endgame#s3">空间叙事与终局 §3</a></div>
+        </div>
+        <div class="addon">
+          <div class="n">别这样用</div>
+          <h4>不要因为利率降了就调低折现率；不要给不同阶段设不同折现率</h4>
+          <p>利率下行时把折现率一起下调，等于假设风险溢价不动，是 CAPM 的经典误用。真正会发生的是分子分母联动、结构分化（§3）。</p>
+          <p>牛市后半段的"竖着拔估值"——流动性冲击把隐含折现率压低——不是折现率中枢变了，是拍卖机制下的暂时漂移，均值回归后会吐回去。可以不参与，但要知道自己赚的是哪一截。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.3 末段　·　流动性机制见 <a href="/html/zou-auction">拍卖机制</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6">
+    <div class="shead">
+      <div class="snum" style="background:var(--gold)">6</div>
+      <h2>读完带走：四问四答</h2>
+      <span class="sub">如果只记四句话</span>
+    </div>
+    <div class="qa">
+      <div class="item" data-kg="concept">
+        <div class="qq">Q1 · 折现率是什么</div>
+        <div class="qh">必要收益率：让你买入并拿着不动的最低回报，相当于债券到期收益率。</div>
+        <p>= 时间的价格（无风险利率）+ 风险的价格（风险溢价）。它是解析解表的纵轴，是天花板之外唯一没有被对冲的参数。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q2 · 取多少</div>
+        <div class="qh">A 股 10%，美股 8%。长期均值回归，00/10/20 年代拟合度都高。</div>
+        <p>10% 也约等于 A 股主动权益基金的长期复合回报。按标的确定性上下微调一两个点，但调的是风险等级，不是利率环境。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q3 · 为什么不跟着利率走</div>
+        <div class="qh">无风险利率和风险溢价有内生性：利率下降的原因，往往就是风险溢价上升的原因。</div>
+        <p>美、中、欧、日四个市场的长期数据都不支持"利率下行利好权益"。CAPM 把动态的风险溢价当常数，算出"精确的错误"。</p>
+      </div>
+      <div class="item" data-kg="caveat">
+        <div class="qq">Q4 · 利率下行时该买什么</div>
+        <div class="qh">不是久期最长的成长股，是分子端不跟着全社会一起降的公司。</div>
+        <p>折现率 10% → 5%：抗风险与全社会相当的公司股价不动，更强的翻倍，更弱的先跌 40%。协方差决定方向。股息率高低与此无关，它是结果不是原因。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 原话 ===== -->
+  <section>
+    <div class="shead">
+      <div class="snum">“</div>
+      <h2>原话摘录</h2>
+    </div>
+    <div class="quotes">
+      <div class="q" data-kg="quote"><p>"折现率就是必要收益率，是吸引投资者买入并且长期持有、拿着不动的最低收益率，相当于债券中的到期收益率。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"A 股市场的必要收益率不会太低，不然无法解释'岁月静好'类资产长期欠配。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"恰恰是因为投资者不愿意冒风险了，转而增配固定收益类资产，才导致无风险利率下降，此时风险溢价上升的幅度可能更大。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"如果无风险利率下降一定利好权益资产，那么股债应该永远同涨同跌。但是在全球范围内，股债跷跷板效应更为常见。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"用 CAPM 模型算出来的值，往往是一个精确的错误。"</p><span>播客 49:57</span></div>
+      <div class="q" data-kg="quote"><p>"股息率是估值的结果，而非原因。"</p><span>《穿透叙事》6.3</span></div>
+      <div class="q" data-kg="quote"><p>"不要在折现率上做太多文章，因为这个可能是不可控的。"</p><span>播客 45:35</span></div>
+      <div class="q" data-kg="quote"><p>"无风险利率本质上反映的是全社会投资的边际回报率，其对存量资产的影响更多是结构分化与财富的再分配。"</p><span>《叙事经济学 2026》6.4</span></div>
+    </div>
+  </section>
+
+  <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 2 / 5</span>
+      <span class="tag">折现率 / 分母端</span>
+      <span class="tag g">ELI5 版 · v1</span>
+    </div>
+    <b>素材来源</b>：《穿透叙事》1.2 后半（折现率取值、内生性、CAPM）、6.3（分子分母联动模型，表 6-2～6-7）；《叙事经济学（2026 版）》1.5、6.1–6.5；播客《面基》45:35–50:16。<br>
+    <b>版本口径</b>：折现率取值以 PDF 与叙事书一致口径为准（A 股 10%、美股 8%）。§3 的 100 / 100 / 200 / 60 为按书中表 6-4～6-7 假设（永续现金流 10 元、折现率 10% → 5%）复算的简化值。<br>
+    <b>本页在框架中的位置</b>：五个承重概念中的第二个，与 <a href="/html/zou-endgame">空间叙事与终局</a> 共同构成解析解表的两个轴。总览见 <a href="/html/zou-narrative-map">叙事框架总览</a>。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-endgame/" />
+<title>叙事就是终局 · 空间叙事怎么算（邹佩轩叙事框架 · 1）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>空间叙事与终局</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>叙事就是终局：空间叙事怎么算</h1>
+    <div class="theline">
+      叙事不是故事。它是一套<b>基于逻辑、可证伪、可量化</b>的市场共识——具体到一家公司，就是<b>市场此刻信的那个终局</b>。<br>
+      本页只讲一件事：为什么估值几乎只由"天花板有多高"决定，多久到达并不重要；以及怎么从当前股价<b>反算</b>出市场信的是哪个终局。
+    </div>
+    <div class="nav">
+      <span class="nl">本页回答五个问题</span>
+      <a href="#s1">① 什么叫叙事</a>
+      <a href="#s2">② 为什么终局 &gt; 增速</a>
+      <a href="#s3">③ 解析解表</a>
+      <a href="#s4">④ 反算隐含叙事</a>
+      <a href="#s5">⑤ 景气度陷阱</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 预防针 ===== -->
+  <section>
+    <div class="card">
+      <div class="shead" style="margin-bottom:10px">
+        <div class="snum">0</div>
+        <h2>先说结论：决定股价高度的是叙事，决定涨跌的是叙事的变化</h2>
+      </div>
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 只用指南针能跨越大洋吗</div>
+        <p>不能。方向白天看太阳、晚上看星星就够了；远洋航行真正难的是<em>知道自己在哪</em>。没有位置，你不知道目的地在北边还是南边。定位靠的是六分仪和高精度时钟，不是指南针。</p>
+        <p>投资也一样。各种边际变化、高频数据、景气度，都是<b>指南针</b>——只告诉你风往哪吹。DCF 是<b>六分仪</b>：它告诉你股价此刻在什么位置、里面写着什么叙事。不知道位置，方向再准也到不了。</p>
+      </div>
+      <div class="claim" data-kg="concept">
+        <p class="claim-main">股价 = 市场此刻信的那个终局。超额收益只来自终局被改写，不来自增速本身。</p>
+        <p class="claim-sub">DCF 说股价等于目之所及所有未来现金流的折现值。可未来还没发生，所以它其实是一段<b>叙事</b>——一个人把公司的未来折叠到今天，打包卖给另一个人；对方认这套叙事，交易就成。"许诺精彩的未来，拿走现在的全部。"问题只在：未来是否真的精彩。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 什么叫叙事 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>叙事的三道门槛，和一个比"预期差"窄得多的定义</h2>
+      <span class="sub">先把词说清楚，后面的算式才有对象</span>
+    </div>
+    <div class="card">
+      <p class="lead">"叙事"这个词太容易被听成"讲故事"。作者的定义有三道门槛，缺一条都不算叙事：</p>
+      <div class="gloss">
+        <div data-kg="concept"><b>基于逻辑</b>能从 DCF 第一性原理一步步推出来，不是贴标签（成长股 / 周期股 / 价值股）之后再倒推的结论。</div>
+        <div data-kg="concept"><b>可证伪</b>能被时间检验对错。"这家公司有想象空间"不是叙事；"终局利润是当前的 3 倍"才是——五年后一查便知。</div>
+        <div data-kg="concept"><b>可量化</b>能算出数。给定终局高度和折现率，存在唯一合理 PE；反过来给定 PE，能反算市场信的终局。</div>
+      </div>
+      <div class="callout blue" data-kg="caveat">
+        <div class="t">它比通常说的"预期差"窄</div>
+        <p>对下一季、明年业绩的预期差也叫预期差，但作者说的叙事<b>只指两件事：对行业终局空间的判断，和对折现率的判断</b>。短期业绩超预期或低预期，对股价的影响其实不大；真正动股价的是<b>远期叙事</b>松动——2026 年 7 月美股存储与云厂商交出超预期财报却大跌，就是远期叙事在动摇。</p>
+      </div>
+      <p class="lead" style="margin-top:16px">为什么叙事可以直接简化成"终局业绩"？因为在三阶段增长模型里，<b>价值占比最高的是不再增长的稳态期</b>，而决定稳态期价值的就是稳态期的高度。增速、增速的增速，都只是让市场相信这个终局的手段，不是估值的本源。</p>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.2　·　《叙事经济学 2026》1.2　·　播客 06:08、01:07:10</div>
+    </div>
+  </section>
+
+  <!-- ===== 2 为什么终局 > 增速 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum">2</div>
+      <h2>一个极简 DCF：把动态 PE 拆开，只有两个参数是真正的风险敞口</h2>
+      <span class="sub">这是全页的数学核心，看懂它，后面的表和陷阱都是顺推</span>
+    </div>
+
+    <div class="essence" data-kg="concept">
+      <div class="tag-e">推导 · 三个参数，敏感性完全不同</div>
+      <h3>动态 PE 由 n、m、r 三个参数构成。n 处处被对冲，m 和 r 没有任何东西对冲——所以<u>天花板高度和折现率</u>才是估值的风险敞口。</h3>
+      <p>设某公司当前利润为 1，业绩 <b>n 年 m 倍</b>匀速增长到天花板 m，之后维持不变直至永续；净利润 ≈ 权益现金流；折现率 r。那么合理市值和动态 PE（市值 ÷ 下一年利润）是：</p>
+      <div class="formula" data-kg="concept">
+        合理市值 ＝
+        <span class="frac"><span>m<sup>1/n</sup></span><span>(1+r)<sup>1</sup></span></span> ＋
+        <span class="frac"><span>m<sup>2/n</sup></span><span>(1+r)<sup>2</sup></span></span> ＋ … ＋
+        <span class="frac"><span>m<sup>n/n</sup></span><span>(1+r)<sup>n</sup></span></span> ＋
+        <span class="frac"><span><b>m</b> / <b>r</b></span><span>(1+r)<sup>n</sup></span></span>
+        <br>
+        动态 PE ＝ 合理市值 ÷ <span class="hl">m<sup>1/n</sup></span>
+        <span class="small">每一处 n 都同时出现在分子 m<sup>k/n</sup> 与分母 (1+r)<sup>k</sup> 里，一升一降相互对冲；再除以下一年利润 m<sup>1/n</sup>，又对冲掉一层。终值 m/r 里只有 m 和 r，谁也不对冲谁。</span>
+      </div>
+      <p>把数字代进去，这个现象"很神奇"。折现率取 10%，把到达天花板的年限从 10 年砍到 5 年——增速翻倍以上——动态 PE 几乎不动：</p>
+      <div class="mini" data-kg="metric">
+        <div><div class="k">2 倍天花板</div><div class="v">15.3 <span class="arrow">→</span> 15.8<br><small>10 年 → 5 年</small></div></div>
+        <div><div class="k">3 倍天花板</div><div class="v">20.1 <span class="arrow">→</span> 20.9<br><small>10 年 → 5 年</small></div></div>
+        <div><div class="k">5 倍天花板</div><div class="v">28.8 <span class="arrow">→</span> 30.0<br><small>10 年 → 5 年</small></div></div>
+        <div><div class="k">10 倍天花板</div><div class="v">48.6 <span class="arrow">→</span> 49.9<br><small>10 年 → 5 年</small></div></div>
+      </div>
+      <p>而只要天花板从 2 倍抬到 3 倍，PE 就从 15 跳到 20；抬到 10 倍，PE 直接到 48。<b>横着比（改年限）几乎不动，竖着比（改天花板）成倍变化。</b>这就是"叙事就是终局，增速只是过程"的全部数学内容。</p>
+      <p style="margin-top:14px;font-size:13px;color:var(--ink3);font-weight:700;letter-spacing:.5px">年限 n 到底有多不敏感？固定 5 倍天花板、10% 折现率，只改 n：</p>
+      <div class="nstrip" data-kg="metric">
+        <div><div class="n">2 年</div><div class="p">21.2</div></div>
+        <div><div class="n">3 年</div><div class="p">26.5</div></div>
+        <div class="ok"><div class="n">5 年</div><div class="p">30.0</div></div>
+        <div class="ok"><div class="n">8 年</div><div class="p">29.9</div></div>
+        <div class="ok"><div class="n">10 年</div><div class="p">28.8</div></div>
+        <div class="ok"><div class="n">15 年</div><div class="p">25.6</div></div>
+        <div><div class="n">20 年</div><div class="p">22.7</div></div>
+        <div><div class="n">30 年</div><div class="p">18.6</div></div>
+      </div>
+      <p class="strip-note">成长期落在 5～15 年之间（涵盖大部分公司）时，n 对 PE 的影响在 ±10% 以内，天花板越低误差越小。只有 2～3 年就到顶、或 20～30 年才到顶的极端情形，年限才需要单独考虑。</p>
+
+      <div class="eli5" data-kg="concept">
+        <div class="lbl">ELI5 · 人人都说 A 股像渣男</div>
+        <p>投资像谈恋爱，难点是判断<em>这个人能不能和你走一辈子</em>。如果结局是白头偕老，过程里吵几次架、冷战几周，事后都叫浪漫和经历。可如果最终没走到一起，过程再轰轰烈烈，大家也管他叫渣男。</p>
+        <p>资本市场对过程的容忍度可以非常高——<b>只要终局足够精彩</b>。增速快慢是过程；天花板在哪是终局。DCF 算出来的，从来是后者。</p>
+      </div>
+    </div>
+    <div class="src" style="margin-top:-8px;padding:0 2px;border:none" data-kg="source">📖 《穿透叙事》1.2 式③、表 1-1 / 1-2、图 1-6　·　《叙事经济学 2026》1.2–1.3　·　播客 35:30–39:05　·　本页数字已按公式复算核对</div>
+  </section>
+
+  <!-- ===== 3 解析解表 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>解析解表：横轴天花板倍数、纵轴折现率，直接查合理动态 PE</h2>
+      <span class="sub">作者称之为"本书最重要的一张表"，后面所有案例复盘都拿它当尺</span>
+    </div>
+    <div class="card">
+      <p class="lead">既然几年到顶不重要，那么只要满足两个条件——<b>匀速增长</b>、<b>到顶后维持稳定</b>——一家公司的合理动态 PE 就由"天花板较当前业绩的倍数"和"折现率"<b>唯一确定</b>。统一取 10 年到顶，得到下表（单元格 = 合理动态 PE，即市值 ÷ 下一年利润）：</p>
+
+      <div class="tbl-wrap" data-kg="metric">
+        <table class="solve">
+          <thead>
+            <tr>
+              <th>折现率 ＼ 天花板倍数</th>
+              <th>1×</th><th>1.5×</th><th>2×</th><th>3×</th><th>5×</th><th>10×</th><th>20×</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>7%</th><td>14.3</td><td>18.8</td><td>23.0</td><td>30.9</td><td>45.6</td><td>79.3</td><td>140.5</td></tr>
+            <tr><th>8%</th><td>12.5</td><td>16.2</td><td>19.8</td><td>26.3</td><td>38.6</td><td class="pick2">66.3</td><td>116.5</td></tr>
+            <tr><th>9%</th><td>11.1</td><td>14.3</td><td>17.3</td><td>22.8</td><td>33.1</td><td>56.4</td><td>98.3</td></tr>
+            <tr class="base"><th>10%（A 股基准）</th><td>10.0</td><td>12.7</td><td class="pick">15.3</td><td class="pick">20.1</td><td>28.8</td><td class="pick">48.6</td><td>84.1</td></tr>
+            <tr><th>11%</th><td>9.1</td><td>11.5</td><td>13.7</td><td>17.8</td><td>25.4</td><td>42.4</td><td>72.7</td></tr>
+            <tr><th>12%</th><td>8.3</td><td>10.4</td><td>12.4</td><td>16.0</td><td>22.6</td><td>37.3</td><td>63.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="axis"><span>← 天花板越低，越像债券：1× 不增长时 PE = 1/r</span><span>天花板越高，越靠"信仰"：20× 在 10% 下也要 84 倍 →</span></div>
+      <div class="legend"><span class="l1">10% 行 = A 股权益折现率长期基准</span><span class="l2">§2 算例对应格</span><span class="l3">§4 永续增长等价示例</span></div>
+
+      <div class="grid2" style="margin-top:20px">
+        <div class="addon">
+          <div class="n">怎么读这张表</div>
+          <h4>三个参数知道任意两个，第三个就定了——正算、反算皆可</h4>
+          <p><b>正算</b>：你判断一家公司终局利润是当前的 5 倍，A 股折现率取 10%，合理动态 PE 就是 28.8 倍。高于它是透支，低于它是折价。</p>
+          <p><b>反算</b>：一家公司现在 20 倍动态 PE，折现率 10%，那么股价里写着的叙事是"终局约为当前业绩的 3 倍"。你可能算不清它的天花板，但你能算清<b>市场此刻信的天花板</b>，然后只需判断：这个数高了还是低了？</p>
+          <p>作者的口径：<b>该表从 DCF 第一性原理推得，优先级高于一切替代方法</b>。哪天天花板算不清被迫用别的方法，一旦能算清，仍以此表为准。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.2 表 1-3　·　《叙事经济学 2026》1.4</div>
+        </div>
+        <div class="addon">
+          <div class="n">两条前提 · 表失效时怎么办</div>
+          <h4>当下必须有业绩，且大致匀速——不满足时跳过 PE，直接用市值速算</h4>
+          <p>表算的是动态 PE，<b>没有业绩就没有 PE</b>；天花板倍数 m 超过 40，或公司当前利润为 0（相当于 m 无限大），年限 n 也不能再忽略。</p>
+          <p>这时换一个思路：直接给定终局利润，假设<b>等差</b>增长 n 年到顶，算市值 ÷ 终局利润的"速算倍数"。10% 折现率下，5 年到顶约 <b>8.3</b> 倍，10 年到顶约 <b>6.8</b> 倍。</p>
+          <div class="fml" data-kg="metric">
+            当前市值 1 000 亿、预计 10 年到顶、折现率 10%：<br>
+            股价隐含的终局利润 ＝ 1 000 ÷ 6.8 ≈ <b>147 亿</b><br>
+            <span class="dim">折现率若取 12%，则需要终局利润约 189 亿。没有业绩的公司不确定性大，折现率建议"至少"10%。</span>
+          </div>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.2 表 1-6 / 1-7 / 1-8</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4 反算 ===== -->
+  <section id="s4">
+    <div class="shead">
+      <div class="snum">4</div>
+      <h2>正确的打开方式是倒过来算：先定天花板，增速只是观察窗口</h2>
+      <span class="sub">为什么常规 DCF 算不准，而反算能准</span>
+    </div>
+    <div class="card">
+      <div class="consensus" data-kg="concept">
+        <div class="crow">
+          <div class="a"><span class="who y">常规 DCF · 正算</span><p>先预测未来 3 年业绩，再拍半显性期的增速和增速持续时间，再折回来。形如 <b>(1+a)<sup>b</sup></b> 的式子对 a、b 都极度敏感，尤其是指数位置的 b——增速持续时间差一两年，天花板高度就剧烈变化。<b>确实很难算出准确的数字。</b></p></div>
+          <div class="b"><span class="who z">作者 · 反算</span><p>一步到位先算<b>天花板高度</b>（空间），再根据"发育时间"倒推复合增速。增速仅仅是<b>观察公司能不能顺利到达天花板的窗口</b>。或者更省事：从当前股价反算市场隐含的天花板，再判断它合不合理——<b>反算比正算容易得多。</b></p></div>
+        </div>
+      </div>
+
+      <div class="mini" style="margin-top:18px" data-kg="metric">
+        <div><div class="k">15 倍 PE @10%</div><div class="v">≈ 2×<br><small>市场信的终局</small></div></div>
+        <div><div class="k">20 倍 PE @10%</div><div class="v">≈ 3×<br><small>市场信的终局</small></div></div>
+        <div><div class="k">30 倍 PE @10%</div><div class="v">≈ 5.3×<br><small>市场信的终局</small></div></div>
+        <div><div class="k">48.6 倍 PE @10%</div><div class="v">10×<br><small>市场信的终局</small></div></div>
+      </div>
+
+      <h4 class="ct" style="margin-top:20px">永续增长率怎么处理？不建议给，但表兼容它</h4>
+      <p class="lead">作者不建议给任何公司永续增长假设：一是 100 年前的标普 500 成分股与今天重合度不到 10%，不存在永续增长的公司；二是既然已经一次性定价了终局，再给永续增长，预期未免打得太满、没有容错率。但这张表<b>数学上兼容</b>永续增长——</p>
+      <div class="fml" data-kg="concept">
+        终值 ＝ 稳态期现金流 ÷ (r − g)　⇒　<b>提高永续增长率 g 与降低折现率 r 等价</b><br>
+        天花板 10 倍 + 稳态期给 2% 永续增长 + 折现率 10%　≈　天花板 10 倍 + 不给增长 + 折现率 8%　→ 查表 <b>66.3 倍</b><br>
+        <span class="dim">§3 表中虚线框那一格。所以"给 g"其实是在"往表上竖着走"，和降折现率是一回事，容错率也一起被吃掉。</span>
+      </div>
+
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 六分仪不预测航向，它告诉你此刻在哪</div>
+        <p>正算 DCF 像闭着眼推算"我从港口出发，按这个速度走了这么久，现在大概在哪"——每一步的小误差都会累积成大偏航。反算像抬头量一下北极星的角度：<em>不管你怎么走过来的</em>，此刻的位置就是这个。</p>
+        <p>股价是一个确定的数字。拿它对着表一量，市场信的终局就读出来了。你不必先知道公司值多少，只需判断：<b>市场信的这个终局，我信不信？</b></p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.2　·　《叙事经济学 2026》1.4　·　播客 17:37、25:10、40:47–42:57</div>
+    </div>
+  </section>
+
+  <!-- ===== 5 景气度陷阱 ===== -->
+  <section id="s5">
+    <div class="shead">
+      <div class="snum" style="background:var(--red)">5</div>
+      <h2>反例：用这张表构造一个经典的景气度陷阱</h2>
+      <span class="sub">三要素齐全、PE 分位历史底部，却是该卖不该买</span>
+    </div>
+    <div class="card">
+      <p class="lead">一家公司原本的市场预期是<b>10 年 5 倍</b>：当前利润 1，终局 5，匀速增长。10% 折现率下，合理动态 PE <b>28.8 倍</b>，复合增速 17.5%。现在所有高频数据、产业链调研都告诉你：<b>盈利预测要上修，而且未来五年每一年都要上修</b>。新预期变成<b>5 年 3 倍</b>——更快到顶，但顶更低。</p>
+
+      <table class="trap" data-kg="metric">
+        <thead>
+          <tr><th></th><th>第 1 年</th><th>第 2 年</th><th>第 3 年</th><th>第 4 年</th><th>第 5 年</th><th>复合增速</th><th>终局</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>旧预期 · 10 年 5 倍</th><td>1.17</td><td>1.38</td><td>1.62</td><td>1.90</td><td>2.24</td><td>17.5%</td><td>5.0</td></tr>
+          <tr><th>新预期 · 5 年 3 倍</th><td class="up">1.25</td><td class="up">1.55</td><td class="up">1.93</td><td class="up">2.41</td><td class="up">3.00</td><td class="up">24.6%</td><td class="dn">3.0</td></tr>
+          <tr class="pe"><th>合理动态 PE @10%</th><td colspan="5" style="text-align:left;color:var(--ink2);font-weight:500">每一年业绩都比旧预期高，增速更快，季季超预期</td><td class="dn">28.8 → 20.9</td><td class="dn">−27%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout" data-kg="caveat">
+        <div class="t">设身处地：站在第 1 年末，你看到的是什么</div>
+        <p>之前预测 1.17，实际出来 1.25，超预期；未来四年逐年上修。<b>增速绝对值高（"景气度高"）、增速边际提升（"景气度改善"）、业绩超预期</b>——景气度投资三要素一条不缺。可 PE 从接近 30 倍跌到 25 倍，再看历史分位数，已经在很低的位置。按 PEG 或景气度框架，此刻应该"抄底"。<b>而正确答案是：估值刚刚合理地压缩了 27%，因为天花板从 5 倍算清成了 3 倍。</b>越抄越低。</p>
+      </div>
+
+      <div class="grid2" style="margin-top:18px">
+        <div class="addon">
+          <div class="n">它解释了一个经典困惑</div>
+          <h4>为什么很多公司进入业绩爆发期后，股价反而跌了</h4>
+          <p>公司没进入爆发期时，市场对它的判断有一种<b>"朦胧美"</b>，天花板拍得比较高。进入爆发期后，天花板<b>能算清楚了</b>——市场可能一次性上修、可能下修、可能不修。所以景气度投资时而有效、时而无效：它只能判断行情的起点，判断不了终点，"怎么涨上去的，就怎么跌下来"，而且因为景气度尚在，还会引诱你抄底。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.1、1.2　·　播客 43:19–45:35</div>
+        </div>
+        <div class="addon">
+          <div class="n">真实版本 · 2021–2024</div>
+          <h4>宁德时代 vs 银行：三年背离，景气度框架无法自圆其说</h4>
+          <p>宁德时代 2022–2023 年业绩逐季上修、年年超预期，三要素全中，股价却在 2021 年 10 月见顶，此后近三年与创业板指高度重合、没有任何超额收益。同期银行龙头维持个位数增速，"业绩不增长，强行拔估值"，农业银行三年跑赢纳指。</p>
+          <p>用本页框架看：一个是天花板被算清后的估值压缩，一个是折现率与终局稳定性被重新定价。两者的此消彼长，用"增速"解释不了，用"叙事"一句话就够。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.1 图 1-1～1-4　·　播客 27:08–30:31</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5b 接口 ===== -->
+  <section id="s5b">
+    <div class="shead">
+      <div class="snum" style="background:var(--accent)">→</div>
+      <h2>与 DCF 画布的接口：两条硬推论，那边已经讲过</h2>
+      <span class="sub">不重复，只标注关系</span>
+    </div>
+    <div class="card">
+      <div class="consensus" data-kg="concept">
+        <div class="crow">
+          <div class="a"><span class="who y">DCF 画布 §4 硬推论 01</span><p>只要预期不变，持有一年的收益率恒等于折现率，和增速无关。<b>P<sub>1</sub>/P<sub>0</sub> = 1 + r</b>，分子分母全部约掉。</p></div>
+          <div class="b"><span class="who z">本页的角色</span><p>那条推论说"超额收益只来自叙事变化"；本页回答<b>叙事变化具体是什么</b>——几乎就是天花板高度 m 的变化，而不是 n 的变化。这是同一个 DCF 的两次求导。</p></div>
+        </div>
+        <div class="crow">
+          <div class="a"><span class="who y">DCF 画布 §4 硬推论 02</span><p>分子端真正该盯的不是增速多高，而是增速能撑几年——你估的是终局，不是明年。</p></div>
+          <div class="b"><span class="who z">本页的角色</span><p>把"能撑几年"再往前推一步：既然 n 被对冲，那就<b>直接估终局高度 m</b>，增速和持续时间都只是拟合 m 的工具。解析解表就是这一步的产物。</p></div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">两条硬推论的算例与 ELI5 见 <a href="/html/dcf-eli5#s4" style="color:var(--accent);font-weight:600">DCF 画布 §4</a>。</p>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6">
+    <div class="shead">
+      <div class="snum" style="background:var(--gold)">6</div>
+      <h2>读完带走：四问四答</h2>
+      <span class="sub">如果只记四句话</span>
+    </div>
+    <div class="qa">
+      <div class="item" data-kg="concept">
+        <div class="qq">Q1 · 什么叫叙事</div>
+        <div class="qh">市场此刻信的那个终局——基于逻辑、可证伪、能算出数。</div>
+        <p>不是故事，也不是泛泛的"预期差"。它只指两件事：<b>终局空间</b>和<b>折现率</b>。DCF 本身就是一套叙事：把还没发生的未来折叠到今天，卖给认这套叙事的人。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q2 · 为什么终局比增速重要</div>
+        <div class="qh">动态 PE 里，年限 n 处处被对冲，天花板 m 和折现率 r 没有对冲。</div>
+        <p>10 年 2 倍 15.3 倍、5 年 2 倍 15.8 倍；10 年 10 倍 48.6 倍、5 年 10 倍 49.9 倍。<b>改年限几乎不动，改天花板成倍变</b>。成长期在 5～15 年内，n 的影响在 ±10% 以内。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q3 · 怎么用</div>
+        <div class="qh">查表，或者反算：知道天花板倍数、折现率、PE 中的任意两个，第三个就定了。</div>
+        <p>A 股折现率取 <b>10%</b>。20 倍 PE 意味着市场信"终局 3 倍"。天花板算不清时，别正算——<b>反算市场信的终局，再判断信不信</b>。没有业绩的公司改用市值速算倍数（10 年到顶 ≈ 6.8）。</p>
+      </div>
+      <div class="item" data-kg="caveat">
+        <div class="qq">Q4 · 最容易踩的坑</div>
+        <div class="qh">增速上修 + 季季超预期 + PE 分位历史底部 = 可能是天花板刚被算清。</div>
+        <p>10 年 5 倍修正为 5 年 3 倍：每年业绩都更高，合理 PE 却从 28.8 跌到 20.9。<b>景气度三要素全中的时候，先问天花板动没动</b>。进入爆发期股价反而跌，是"朦胧美"消失，不是市场错了。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 原话 ===== -->
+  <section>
+    <div class="shead">
+      <div class="snum">“</div>
+      <h2>原话摘录</h2>
+    </div>
+    <div class="quotes">
+      <div class="q" data-kg="quote"><p>"叙事不是故事，而是一套基于逻辑的、可证伪的、可量化的市场共识。"</p><span>播客 06:08</span></div>
+      <div class="q" data-kg="quote"><p>"所谓的叙事就是指终局，增速也就是过程，其实没有那么重要。这就是信仰的力量：只要相信，无惧遥远；只要心中有光，就有春潮浩荡。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"投资在很大程度上是许诺精彩的未来，拿走现在的全部。只要未来足够精彩，资本市场对过程的容忍度可以非常高。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"所有对增速及增速持续时间的判断，都是在我们不知道业绩天花板高度的情况下，拟合业绩天花板高度的工具。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"很多观点认为 DCF 模型算不准，其实是因为打开方式不对。正确的打开方式是倒过来算，一步到位先算业绩天花板高度。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"PE 的本质是当下股价对终局预期的透支程度，与业绩增速并无必然联系。如果终局不够精彩，无论过程多么波澜壮阔，市场都不会给予高估值。"</p><span>《叙事经济学 2026》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"所有的夕阳产业都有过激情燃烧的岁月。没有人永远年轻，但是永远有人年轻。"</p><span>播客 44:28</span></div>
+      <div class="q" data-kg="quote"><p>"反算要比正算容易很多。"</p><span>播客 40:47</span></div>
+    </div>
+  </section>
+
+  <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 1 / 5</span>
+      <span class="tag">空间叙事 / 终局</span>
+      <span class="tag g">ELI5 版 · v1</span>
+    </div>
+    <b>素材来源</b>：《穿透叙事：寻找 A 股投资解析解》（2026.05）第 1 章 1.1–1.2；华源证券《叙事经济学（2026 版）》1.2–1.5；播客《面基》「财报的根 + 估值的茎 = 叙事的果实」（2026.08.31）06:08–08:21、17:37、25:10、35:30–45:35、01:07:10。<br>
+    <b>版本口径</b>：同一概念多处表述不一时，以时间靠后者为准（PDF 2026.06 &gt; 叙事书 2026.05 &gt; 播客补充）。折现率取值按 PDF 与叙事书统一口径：A 股 10%、美股 8%。<br>
+    <b>数字核对</b>：§2、§3、§4、§5 的全部 PE 与倍数均按本页公式（10 年匀速到顶、到顶后永续不增长、净利润 = 权益现金流）重新计算，与书稿表 1-1 至表 1-5 一致。书稿正文一处将"10 年 3 倍 20.1 倍 / 5 年 3 倍 20.9 倍"两数互换，本页以复算结果与播客口径为准。解析解表为按同一公式重绘，非书中原图。<br>
+    <b>本页在框架中的位置</b>：这是邹佩轩五个承重概念中的第一个。其余四个——折现率为何取 10% 且与无风险利率内生、拍卖机制（A 股第二套定价机制）、叙事变化 = 超额收益、研究方法论（逻辑推理优先于归纳）——将作为并列页面陈列于 <a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a>。DCF 本体见 <a href="/html/dcf-eli5">DCF 画布</a>。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

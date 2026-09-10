@@ -22,7 +22,7 @@ docs/public/html/<名字>/
 <StandaloneHtml src="/html/<名字>" title="说明" />
 ```
 
-「单独打开完整页」会新开标签打开这份 HTML。侧栏或标题要直达完整页时，在对应篇章 frontmatter 写 `publicHref: /html/<名字>`（历程具名篇章和投研 HTML 章节都走这条）。不要把 `/html/...` 当成普通 Markdown 文章路由，也不要给投研 HTML 章节再套一层 iframe。
+「单独打开完整页」会新开标签打开这份 HTML。侧栏或标题要直达完整页时，在对应篇章 frontmatter 写 `publicHref: /html/<名字>`（历程具名篇章、投研 HTML 章节和投资哲学 HTML 主题都走这条）。不要把 `/html/...` 当成普通 Markdown 文章路由，也不要再套一层 iframe。
 
 ## 约定
 
@@ -47,6 +47,12 @@ docs/public/html/<名字>/
 | `golden-decade-check/` | 假说 1「黄金新十年」的公开数据对照页；从技术浪潮假说区卡片进入 |
 | `intl-device-check/` | 假说 3「国际原创器械显化」的公开数据对照页；从技术浪潮假说区卡片进入 |
 | `four-focus-check/` | 假说 4「四个关注方向」的公开数据对照页；从技术浪潮假说区卡片进入 |
-| `dcf-eli5/` | DCF 到底怎么用 · 知识画布（ELI5 版）；从投资哲学档 `DCF` 主题页内嵌进入 |
+| `dcf-eli5/` | DCF 到底怎么用 · 知识画布（ELI5 版）；投资哲学档 → 框架页 `邹佩轩投资哲学框架` → `DCF` 直达 `/html/dcf-eli5` |
+| `zou-narrative-map/` | 邹佩轩叙事框架 · 总览（关系图 / 派生概念 / 作者术语速查；骨架与阅读路径在框架页）；同组 `叙事框架总览` 直达 `/html/zou-narrative-map` |
+| `zou-endgame/` | 邹佩轩叙事框架 1/5 · 空间叙事与终局（解析解表、反算隐含叙事、景气度陷阱）；同组 `空间叙事与终局` 直达 `/html/zou-endgame` |
+| `zou-discount-rate/` | 邹佩轩叙事框架 2/5 · 折现率与分母端（10% 取值、内生性、利率下行谁受益）；同组 `折现率与分母端` 直达 `/html/zou-discount-rate` |
+| `zou-auction/` | 邹佩轩叙事框架 3/5 · 拍卖机制（预期分布、中线 + 截距、流动性定价、中芯国际案例）；同组 `拍卖机制` 直达 `/html/zou-auction` |
+| `zou-alpha/` | 邹佩轩叙事框架 4/5 · 叙事变化与超额收益（P₁/P₀ = 1 + r、三种走势、隆基三轮）；同组 `叙事变化与超额收益` 直达 `/html/zou-alpha` |
+| `zou-method/` | 邹佩轩叙事框架 5/5 · 研究方法论（推理 vs 归纳、三圆五偏误、显著性、贝叶斯）；同组 `研究方法论` 直达 `/html/zou-method` |
 
 最后更新：2026-09-10

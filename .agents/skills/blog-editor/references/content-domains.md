@@ -29,7 +29,7 @@
 
 ## 投资哲学
 
-正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增主题只写主题目录的 `index.md`（`order` / `hubIndex` / `hubLead`），主题目录不建 `README.md`（这与投研章节不同）；总览卡片、nav 与 `/投资哲学/` sidebar 由内容目录投影。作者交来 HTML 画布时：拷进 `docs/public/html/<名字>/index.html`，主题页正文用 `<StandaloneHtml src="/html/<名字>" />` 内嵌，不要写 `publicHref`（`project-structure` 只在投研 `subject-chapter` 上读它，哲学主题页写了也不会直达）；这类内嵌 iframe 的高度按页面族挂在 `style.css` 的 `.subject-index` 下，不要为此改全局样式。现有主题页底部的兄弟主题链接若该页面族继续手写互链，才同步改那些页。普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
+正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增主题只写主题目录的 `index.md`（`order` / `hubIndex` / `hubLead`），主题目录不建 `README.md`（这与投研章节不同）；总览卡片、nav 与 `/投资哲学/` sidebar 由内容目录投影。多张画布同属一个框架时：先建框架主题页，画布主题文头写 `navGroup: <组名>`；nav / 哲学总览只出现框架这一条，点进去是框架页，画布卡片只在框架页用 `<HubTopicList navGroup>` 列出；`/投资哲学/` sidebar 在框架条下展开这些画布。公理或总览画布若不应出现在侧栏下拉，再写 `navGroupSidebar: false`。不要为此改 `config.mts`，也不要挪画布主题目录。作者交来 HTML 画布时：拷进 `docs/public/html/<名字>/index.html`，主题文头写 `publicHref: /html/<名字>`，正文只放 `<JumpToStandalone />`；侧栏和总览卡片的标题直达这份 HTML，不要 iframe 嵌入。作者交来的是 Markdown / 口述稿时，仍写成完整主题页。现有主题页底部的兄弟主题链接若该页面族继续手写互链，才同步改那些页。普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
 
 ## 大问题
 
@@ -43,4 +43,4 @@
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-08-28
+最后更新：2026-09-10

@@ -197,13 +197,26 @@ export function checkHtmlSource(html, options = {}) {
     }
   }
 
+  const currentPath = normalizePath(filePublic)
+  const targetHtmlCache = new Map()
+  const htmlForHashTarget = (pathname) => {
+    if (!pathname || pathname === currentPath) return html
+    if (!targetHtmlCache.has(pathname)) {
+      const found = standaloneHtmlFile(pathname)
+      targetHtmlCache.set(pathname, found && fs.existsSync(found.file) ? fs.readFileSync(found.file, 'utf8') : null)
+    }
+    return targetHtmlCache.get(pathname)
+  }
+
   for (const anchor of extractAnchors(html)) {
     const rawHref = String(anchor.href || '').trim()
     const parts = parseHref(rawHref, baseHref, filePublic)
     if (!parts.resolved || /^(https?:|mailto:|javascript:)/i.test(parts.raw)) continue
     if (parts.hash) {
-      if (!hasFragmentTarget(html, parts.hash)) {
-        failures.push(`${label}: hash #${parts.hash} has no matching id`)
+      const targetHtml = parts.hashOnly ? html : htmlForHashTarget(parts.pathname)
+      // 跨页 hash 对目标独立页的 id 校验；目标不是独立 HTML 时留给站内路径检查
+      if (targetHtml != null && !hasFragmentTarget(targetHtml, parts.hash)) {
+        failures.push(`${label}: hash #${parts.hash} has no matching id${parts.hashOnly ? '' : ` in ${parts.pathname}`}`)
       }
       if (parts.hashOnly) continue
     } else if (parts.hashOnly) {

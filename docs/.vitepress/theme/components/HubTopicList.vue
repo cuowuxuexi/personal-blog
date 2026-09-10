@@ -5,10 +5,13 @@ import { bigQuestionCards, philosophyCards } from '../../structure-catalog'
 
 const props = defineProps<{
   kind: 'philosophy' | 'big-question'
+  navGroup?: string
 }>()
 
 const cards = computed(() => (
-  props.kind === 'philosophy' ? philosophyCards() : bigQuestionCards()
+  props.kind === 'philosophy'
+    ? philosophyCards(props.navGroup)
+    : bigQuestionCards()
 ))
 const wrapClass = computed(() => (
   props.kind === 'philosophy' ? 'invest-paths philosophy-paths' : 'invest-paths'
@@ -16,7 +19,7 @@ const wrapClass = computed(() => (
 </script>
 
 <template>
-  <section :class="wrapClass" :aria-label="kind === 'philosophy' ? '哲学主题入口' : '开放问题入口'">
+  <section :class="wrapClass" :aria-label="navGroup || (kind === 'philosophy' ? '哲学主题入口' : '开放问题入口')">
     <a
       v-for="card in cards"
       :key="card.link"

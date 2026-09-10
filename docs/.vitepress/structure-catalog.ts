@@ -43,8 +43,8 @@ export function hubSummary() {
   return researchHubSummary(structureNodes)
 }
 
-export function philosophyCards() {
-  return topicCards(structureNodes, 'philosophy')
+export function philosophyCards(navGroup?: string) {
+  return topicCards(structureNodes, 'philosophy', navGroup ? { navGroup } : undefined)
 }
 
 export function bigQuestionCards() {

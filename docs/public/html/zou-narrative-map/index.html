@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-narrative-map/" />
+<title>邹佩轩叙事框架总览 · 关系图、派生概念与术语速查（邹佩轩叙事框架 · 0）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <style>
+  .derived{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:800px){.derived{grid-template-columns:1fr}}
+  .derived div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+  .derived b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+  .derived small{display:block;color:var(--ink3);font-size:11.5px;margin-top:4px}
+  .axes{position:relative;border:1px solid var(--line);border-radius:12px;background:#fbfcfd;padding:18px 18px 18px 18px;margin-top:14px}
+  .axes svg{width:100%;display:block}
+  .term{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:13.5px}
+  @media(max-width:600px){.term{grid-template-columns:1fr}}
+  .term dt{font-weight:700;color:var(--ink)}
+  .term dd{color:var(--ink2);margin:0;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+  </style>
+
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>叙事框架总览</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>邹佩轩叙事框架总览：一张关系图、一批派生物、一份术语表</h1>
+    <div class="theline">
+      骨架——一条公理、五根承重柱、它们的推导顺序和阅读路径——已经在 <a href="/投资哲学/邹佩轩投资哲学框架/" style="color:var(--author)"><b>框架页</b></a> 一次讲完。<br>
+      本页只放三样框架页放不下的东西：把五根柱子画进<b>同一张图</b>；那些<b>可以单独理解的派生概念</b>；以及<b>作者自己的术语定义</b>，遇到概念冲突时以此为准。
+    </div>
+    <div class="nav">
+      <span class="nl">本页内容</span>
+      <a href="#s1">① 一张图串起来</a>
+      <a href="#s2">② 派生概念</a>
+      <a href="#s3">③ 术语速查</a>
+      <a href="/投资哲学/邹佩轩投资哲学框架/" style="background:var(--gold-soft);color:var(--gold)">← 回框架页</a>
+    </div>
+  </div>
+
+      <!-- ===== 1 一张图 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>一张图串起来：解析解表的两个轴，加一个漂移项，再加一个时间导数</h2>
+    </div>
+    <div class="card">
+      <div class="axes" data-kg="concept">
+        <svg viewBox="0 0 900 320" role="img" aria-label="叙事框架关系图">
+          <!-- axes -->
+          <line x1="90" y1="270" x2="560" y2="270" stroke="#4b5468" stroke-width="1.6"/>
+          <polygon points="560,270 550,265 550,275" fill="#4b5468"/>
+          <line x1="90" y1="270" x2="90" y2="40" stroke="#4b5468" stroke-width="1.6"/>
+          <polygon points="90,40 85,50 95,50" fill="#4b5468"/>
+          <text x="330" y="300" font-size="13" fill="#1f5c4a" font-weight="700" text-anchor="middle">① 横轴：天花板倍数 m（空间叙事 / 终局）</text>
+          <text x="40" y="160" font-size="13" fill="#1f5c4a" font-weight="700" text-anchor="middle" transform="rotate(-90 40 160)">② 纵轴：折现率 r</text>
+          <!-- grid cells -->
+          <g fill="#e9f2ee" stroke="#cfe0d8">
+            <rect x="120" y="200" width="60" height="40"/><rect x="200" y="200" width="60" height="40"/><rect x="280" y="200" width="60" height="40"/><rect x="360" y="200" width="60" height="40"/><rect x="440" y="200" width="60" height="40"/>
+            <rect x="120" y="140" width="60" height="40"/><rect x="200" y="140" width="60" height="40"/><rect x="280" y="140" width="60" height="40"/><rect x="360" y="140" width="60" height="40"/><rect x="440" y="140" width="60" height="40"/>
+            <rect x="120" y="80" width="60" height="40"/><rect x="200" y="80" width="60" height="40"/><rect x="280" y="80" width="60" height="40"/><rect x="360" y="80" width="60" height="40"/><rect x="440" y="80" width="60" height="40"/>
+          </g>
+          <g font-size="11" fill="#0f2b23" text-anchor="middle">
+            <text x="150" y="225">10.0</text><text x="230" y="225">15.3</text><text x="310" y="225">20.1</text><text x="390" y="225">28.8</text><text x="470" y="225">48.6</text>
+            <text x="150" y="165">12.5</text><text x="230" y="165">19.8</text><text x="310" y="165">26.3</text><text x="390" y="165">38.6</text><text x="470" y="165">66.3</text>
+            <text x="150" y="105">14.3</text><text x="230" y="105">23.0</text><text x="310" y="105">30.9</text><text x="390" y="105">45.6</text><text x="470" y="105">79.3</text>
+          </g>
+          <g font-size="11" fill="#8d95a8" text-anchor="middle">
+            <text x="150" y="258">1×</text><text x="230" y="258">2×</text><text x="310" y="258">3×</text><text x="390" y="258">5×</text><text x="470" y="258">10×</text>
+          </g>
+          <g font-size="11" fill="#8d95a8" text-anchor="end">
+            <text x="112" y="224">10%</text><text x="112" y="164">8%</text><text x="112" y="104">7%</text>
+          </g>
+          <!-- horizontal move -->
+          <path d="M 230 232 L 380 232" stroke="#1f5c4a" stroke-width="2.2" stroke-opacity=".6" fill="none" marker-end="url(#a1)"/>
+          <text x="305" y="194" font-size="11" fill="#1f5c4a" font-weight="700" text-anchor="middle">横着拔：天花板上修，能站住</text>
+          <!-- vertical move -->
+          <path d="M 470 200 L 470 125" stroke="#c0392b" stroke-width="2.2" fill="none" stroke-dasharray="5 3" marker-end="url(#a2)"/>
+          <text x="478" y="168" font-size="11" fill="#c0392b" font-weight="700">竖着拔：流动性压低折现率</text>
+          <text x="478" y="182" font-size="11" fill="#c0392b">③ 拍卖机制的截距，会吐回去</text>
+          <!-- time derivative -->
+          <rect x="700" y="70" width="180" height="130" rx="12" fill="#fbfcfd" stroke="#e4e7ee"/>
+          <text x="790" y="94" font-size="12" fill="#2b5c8a" font-weight="700" text-anchor="middle">④ 对时间求导</text>
+          <text x="790" y="116" font-size="11" fill="#4b5468" text-anchor="middle">格子不变 → 赚折现率</text>
+          <text x="790" y="134" font-size="11" fill="#4b5468" text-anchor="middle">格子移动 → 超额收益</text>
+          <text x="790" y="160" font-size="11" fill="#1f5c4a" font-weight="700" text-anchor="middle">叙事变化 = alpha</text>
+          <text x="790" y="182" font-size="11" fill="#8d95a8" text-anchor="middle">增速只是观察窗口</text>
+          <!-- meta rule -->
+          <rect x="700" y="215" width="180" height="55" rx="12" fill="#f0edf8" stroke="#dcd5ee"/>
+          <text x="790" y="238" font-size="12" fill="#5b4b8a" font-weight="700" text-anchor="middle">⑤ 元规则</text>
+          <text x="790" y="257" font-size="11" fill="#5b4b8a" text-anchor="middle">全部由推理得出，用案例检验</text>
+          <defs>
+            <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1f5c4a"/></marker>
+            <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#c0392b"/></marker>
+          </defs>
+        </svg>
+      </div>
+      <p class="lead" style="margin-top:14px">格子里的数是合理动态 PE。<b>①②</b> 决定一家公司"应该"在哪个格子（静态解）；<b>③</b> 解释为什么实际股价常常不在格子里，尤其是牛市后半段被流动性竖着推上去；<b>④</b> 说明只有格子移动才有超额收益，停在格子里只赚折现率；<b>⑤</b> 保证这张图是从公理推出来的，而不是从历史数据拟合出来的。</p>
+      <div class="src" data-kg="source">📖 表格数字见 <a href="/html/zou-endgame#s3">终局 §3</a>　·　横竖拔估值见 <a href="/html/zou-auction#s4">拍卖机制 §4</a>　·　时间导数见 <a href="/html/zou-alpha#s1">叙事变化 §1</a></div>
+    </div>
+  </section>
+
+    <!-- ===== 2 派生 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum" style="background:var(--purple)">2</div>
+      <h2>派生概念：重要，但可以单独理解</h2>
+      <span class="sub">每一条都能追溯到某根承重柱</span>
+    </div>
+    <div class="card">
+      <div class="derived" data-kg="concept">
+        <div><b>PE 看顶、PB 托底、DCF 终审落锤</b>PE = 当下股价对终局预期的透支程度；PB 看壁垒强度与可复制性（行业成本曲线形状）。<small>← 柱 1 · 《叙事经济学 2026》1.3、1.7–1.10</small></div>
+        <div><b>三种走势与长牛拼接</b>厂字 = 兑现，A 字 = 证伪，长牛 = 多个厂字拼接。大部分人赚不到长牛的钱。<small>← 柱 4 · 《叙事经济学 2026》4.1</small></div>
+        <div><b>改变世界 vs 不被世界改变 → 杠铃</b>两类公司分子分母脱钩，能摆脱自然利率陷阱；低风险资产长期收益更高是全球特征。<small>← 柱 2 · 《穿透叙事》第 6 章、《叙事经济学 2026》5–7 章</small></div>
+        <div><b>景气度陷阱与三要素</b>增速高 + 边际提升 + 超预期，PE 分位历史底部——可能是天花板刚被算清。<small>← 柱 1、4 · 《穿透叙事》1.1–1.2</small></div>
+        <div><b>叙事传播的两个临界点</b>利好低于第一临界点无人注意；越过第二临界点关注度高于事件本身。<small>← 柱 3 · 《叙事经济学 2026》3.4</small></div>
+        <div><b>市值速算倍数</b>没有业绩的公司：市值 ÷ 终局利润，10% 下 5 年到顶 ≈ 8.3，10 年 ≈ 6.8。<small>← 柱 1 · 《穿透叙事》1.2 表 1-8</small></div>
+        <div><b>TFP 与索罗模型</b>全要素生产率增速对宽基指数长期回报有较强解释力，把微观估值接到宏观。<small>← 柱 2 · 《叙事经济学 2026》第 2 章（PDF 独有）</small></div>
+        <div><b>慢变量</b>刘易斯拐点与消费股牛市；辜朝明拐点与全球化布局；AI 是否加速 K 型分化。<small>← 柱 1 · 《叙事经济学 2026》第 9 章（PDF 独有）</small></div>
+        <div><b>财报验证叙事</b>财报是根：区分价值中"现状支撑"与"未来支撑"的部分；A 股财报里挖不出向上预期差。<small>← 全部 · 《穿透财报》、播客 01:09:42</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 3 术语 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>术语速查：作者自己的定义</h2>
+      <span class="sub">遇到概念冲突时以此为准</span>
+    </div>
+    <div class="card">
+      <dl class="term" data-kg="concept">
+        <dt>叙事</dt><dd>不是故事，是一套基于逻辑、可证伪、可量化、能算出数的市场共识。具体到公司层面就是"市场此刻信的那个终局"。比"预期差"窄：只指对行业终局空间和折现率的判断。</dd>
+        <dt>空间叙事</dt><dd>A 股第一套定价机制。市场对天花板高度的共识决定股价高度。"叙事就是终局，增速就是过程。"</dd>
+        <dt>拍卖机制</dt><dd>A 股第二套定价机制。不能做空，股价从"多空对冲后的平均预期"变成"最乐观资金说了算"的拍卖出清。</dd>
+        <dt>折现率 / 必要收益率</dt><dd>吸引投资者买入并长期拿着不动的最低年化收益率，相当于债券到期收益率。A 股 10%、美股 8%。</dd>
+        <dt>一致预期</dt><dd>其实不存在。预期永远是一个分布，不是一个点。</dd>
+        <dt>景气度投资三要素</dt><dd>增速绝对值高 + 增速边际提升 + 超预期。狭义定义下，2022–2024、2025 年 6–7 月持续失效，常为反指。</dd>
+        <dt>分子端 / 分母端</dt><dd>分子 = 现金流（基本面），分母 = 折现率（风险与利率）。行情驱动力常在两端之间切换。</dd>
+        <dt>解析解 / 数值解</dt><dd>解析解：从公理推出的封闭公式，任意参数秒得结果，普遍适用。数值解：针对具体参数迭代逼近，换个公司就得重算。</dd>
+        <dt>相关性 / 因果性</dt><dd>相关性是双向弱联系，不能传递；因果性是单向强联系，可以传递。</dd>
+        <dt>幸存者偏差</dt><dd>能观察到的样本都是活下来的。作者的复盘原则：基于逻辑推理搭框架、用案例验证框架，不用案例归纳框架。</dd>
+      </dl>
+      <div class="src" data-kg="source">📖 整理自播客 shownotes 作者术语定义（2026-08-31）</div>
+    </div>
+  </section>
+
+    <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 总览</span>
+      <span class="tag">关系图 · 派生 · 术语</span>
+      <span class="tag g">v2</span>
+    </div>
+    <b>素材来源</b>：本页为导航与关系梳理，内容来自五页画布及其各自标注的原始素材：《穿透财报》（2023.08）、《穿透估值》（2024.08）、《穿透叙事：寻找 A 股投资解析解》（2026.05）、华源证券《叙事经济学（2026 版）》（2026.06）、播客《面基》「财报的根 + 估值的茎 = 叙事的果实」（2026.08.31）。<br>
+    <b>三本书的关系</b>：作者的说法是"财报是根，估值是茎，叙事是果实"，建议阅读顺序为《穿透叙事》→《穿透财报》→《穿透估值》（播客 01:08:57–01:10:59）。<br>
+    <b>层级划分说明</b>："公理 / 承重柱 / 派生"是本系列整理者对作者理论结构的归纳，不是作者原文用语；判据为"抽掉后整套理论是否仍然成立"。<br>
+    <b>版本口径</b>：同一概念多处表述不一时，以时间靠后者为准（PDF 2026.06 &gt; 叙事书 2026.05 &gt; 估值书 2024.08 &gt; 播客补充）。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

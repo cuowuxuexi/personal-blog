@@ -38,4 +38,5 @@ export const philosophySidebarGroups = projectPhilosophySidebar(structureNodes)
 export const bigQuestionSidebarGroups = projectBigQuestionSidebar(structureNodes)
 
 export const philosophyNavItems = projectTopicNavItems('philosophy', structureNodes)
+
 export const bigQuestionNavItems = projectTopicNavItems('big-question', structureNodes)

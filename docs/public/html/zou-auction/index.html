@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-auction/" />
+<title>拍卖机制 · A 股的第二套定价机制（邹佩轩叙事框架 · 3）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <style>
+  .svgbox{background:#fbfcfd;border:1px solid var(--line);border-radius:12px;padding:10px 12px 4px}
+  .ladder{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  @media(max-width:760px){.ladder{grid-template-columns:1fr}}
+  .ladder .rung{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+  .ladder .rung .n{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--author);margin-bottom:6px}
+  .ladder .rung h4{font-size:15px;margin-bottom:6px}
+  .ladder .rung p{font-size:13.5px;color:var(--ink2)}
+  .ladder .rung.hot{background:var(--red-soft);border-color:#f3d3ce}
+  .ladder .rung.hot .n{color:var(--red)}
+  .bars{display:flex;align-items:flex-end;gap:18px;height:120px;margin:14px 0 4px;padding:0 6px}
+  .bars div{flex:1;background:var(--accent-soft);border:1px solid #cfe0f0;border-radius:6px 6px 0 0;position:relative}
+  .bars div span{position:absolute;left:0;right:0;top:-22px;text-align:center;font-size:12px;font-weight:700;color:var(--ink)}
+  .bars div i{position:absolute;left:0;right:0;bottom:-20px;text-align:center;font-size:11px;color:var(--ink3);font-style:normal}
+  .bars .top{background:var(--author-soft);border-color:#b9d3c8}
+  </style>
+
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>拍卖机制</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>拍卖机制：A 股的第二套定价机制</h1>
+    <div class="theline">
+      DCF 算出的是估值<b>"应该"</b>在哪；股价<b>"实际"</b>在哪，中间隔着一层价格形成机制。<br>
+      A 股难以做空，悲观者的票投不出去，定价就从"多空对冲后的平均预期"变成了<b>从最乐观的资金开始依次出清的拍卖</b>。于是<b>流动性本身成了定价要素</b>，天花板越算不清的股票越容易被拉起来。
+    </div>
+    <div class="nav">
+      <span class="nl">本页回答五个问题</span>
+      <a href="#s1">① 预期是分布</a>
+      <a href="#s2">② 中线 + 截距</a>
+      <a href="#s3">③ 流动性定价</a>
+      <a href="#s4">④ 横着拔 vs 竖着拔</a>
+      <a href="#s5">⑤ 案例：中芯国际</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 ===== -->
+  <section>
+    <div class="card">
+      <div class="shead" style="margin-bottom:10px">
+        <div class="snum">0</div>
+        <h2>先说结论：基本面画出预期分布，到此为止；股价停在哪，由交易机制决定</h2>
+      </div>
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 选美比赛的冠军为什么总有争议</div>
+        <p>如果观众只能投喜欢的选手、<em>不能给不喜欢的投负分</em>，那最符合大众审美的选手未必拿冠军——冲排名靠的是铁粉。粉丝最狂热、最不计成本的那位，把票投满，就把名次顶上去了。</p>
+        <p>A 股的股价就是这样产生的。不看好的人只能不买，没法把"不看好"变成一张反对票。所以股价不是大家的平均看法，而是<b>最乐观那批钱肯出的价</b>。</p>
+      </div>
+      <div class="claim" data-kg="concept">
+        <p class="claim-main">股价 = 中线位置（基本面决定的平均预期）+ 截距位置（交易机制带来的漂移）。</p>
+        <p class="claim-sub">这是 A 股最大的魅力，也是最大的风险点。它解释了为什么"天花板越算不清 + 流动性泛滥 = 越涨"，为什么牛市后期有基本面的票跑不赢指数，为什么大票小票风格是估值的结果而不是原因。是否参与这套正反馈，是投资哲学与风险偏好的选择——<b>可以不参与，但不能不知道</b>。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 预期是分布 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>预期不是一个点，是一个分布——所谓"一致预期"并不存在</h2>
+      <span class="sub">同样的平均预期，共识强弱不同，拍卖出来的价格差很多</span>
+    </div>
+    <div class="card">
+      <p class="lead">横轴是不同投资者的心理股价，纵轴是持这个看法的资金量。特别乐观和特别悲观的人都少，中间最多，大致是一个正态分布。<b>每个人预期不同，是因为对基本面理解不同；但股价反映谁的预期，不取决于基本面，取决于交易机制。</b></p>
+      <p class="lead" style="margin-top:8px">允许做空时，乐观与悲观的观点相互抵消，股价落在<b>中线</b>。不能做空时，从最乐观的预期开始依次表态，<b>卖到筹码出清为止</b>——阴影面积等于公司流通盘能容纳的资金量时，对应的股价就是成交价。</p>
+      <div style="margin-top:16px" data-kg="concept"><div class="grid2" style="gap:14px"><div class="svgbox"><svg viewBox="0 0 460 190" width="100%" role="img" aria-label="(a) 共识强 · 预期分布集中">
+  <line x1="0" y1="160" x2="460" y2="160" stroke="#c9cfda" stroke-width="1"/>
+  <polygon points="266.7,90.1 269.9,96.6 273.1,103.0 276.3,109.2 279.6,115.1 282.8,120.7 286.0,125.8 289.2,130.5 292.5,134.8 295.7,138.6 298.9,142.0 302.1,145.0 305.3,147.6 308.6,149.8 311.8,151.7 315.0,153.3 318.2,154.7 321.4,155.8 324.7,156.7 327.9,157.4 331.1,158.0 334.3,158.5 337.6,158.8 340.8,159.1 344.0,159.3 347.2,159.5 350.4,159.6 353.7,159.7 356.9,159.8 360.1,159.9 363.3,159.9 366.6,159.9 369.8,160.0 373.0,160.0 376.2,160.0 379.4,160.0 382.7,160.0 385.9,160.0 389.1,160.0 392.3,160.0 395.6,160.0 398.8,160.0 402.0,160.0 405.2,160.0 408.4,160.0 411.7,160.0 414.9,160.0 418.1,160.0 421.3,160.0 424.6,160.0 427.8,160.0 431.0,160.0 434.2,160.0 437.4,160.0 440.7,160.0 443.9,160.0 447.1,160.0 450.3,160.0 453.6,160.0 456.8,160.0 460.0,160.0 460.0,160 266.7,160" fill="#1f5c4a" fill-opacity=".18"/>
+  <polyline points="0.0,160.0 3.8,160.0 7.7,160.0 11.5,160.0 15.3,160.0 19.2,160.0 23.0,160.0 26.8,160.0 30.7,160.0 34.5,160.0 38.3,160.0 42.2,160.0 46.0,160.0 49.8,160.0 53.7,160.0 57.5,160.0 61.3,160.0 65.2,160.0 69.0,160.0 72.8,160.0 76.7,160.0 80.5,160.0 84.3,160.0 88.2,160.0 92.0,159.9 95.8,159.9 99.7,159.9 103.5,159.8 107.3,159.7 111.2,159.6 115.0,159.4 118.8,159.1 122.7,158.8 126.5,158.3 130.3,157.7 134.2,156.9 138.0,155.9 141.8,154.6 145.7,153.0 149.5,151.0 153.3,148.6 157.2,145.6 161.0,142.1 164.8,138.0 168.7,133.4 172.5,128.0 176.3,122.1 180.2,115.6 184.0,108.6 187.8,101.2 191.7,93.4 195.5,85.6 199.3,77.8 203.2,70.2 207.0,63.1 210.8,56.6 214.7,51.0 218.5,46.5 222.3,43.1 226.2,41.0 230.0,40.3 233.8,41.0 237.7,43.1 241.5,46.5 245.3,51.0 249.2,56.6 253.0,63.1 256.8,70.2 260.7,77.8 264.5,85.6 268.3,93.4 272.2,101.2 276.0,108.6 279.8,115.6 283.7,122.1 287.5,128.0 291.3,133.4 295.2,138.0 299.0,142.1 302.8,145.6 306.7,148.6 310.5,151.0 314.3,153.0 318.2,154.6 322.0,155.9 325.8,156.9 329.7,157.7 333.5,158.3 337.3,158.8 341.2,159.1 345.0,159.4 348.8,159.6 352.7,159.7 356.5,159.8 360.3,159.9 364.2,159.9 368.0,159.9 371.8,160.0 375.7,160.0 379.5,160.0 383.3,160.0 387.2,160.0 391.0,160.0 394.8,160.0 398.7,160.0 402.5,160.0 406.3,160.0 410.2,160.0 414.0,160.0 417.8,160.0 421.7,160.0 425.5,160.0 429.3,160.0 433.2,160.0 437.0,160.0 440.8,160.0 444.7,160.0 448.5,160.0 452.3,160.0 456.2,160.0 460.0,160.0" fill="none" stroke="#4b5468" stroke-width="1.8"/>
+  <line x1="230.0" y1="34.0" x2="230.0" y2="160" stroke="#2b5c8a" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="266.7" y1="90.7" x2="266.7" y2="160" stroke="#1f5c4a" stroke-width="2"/>
+  <text x="226.0" y="176" font-size="11" fill="#2b5c8a" text-anchor="end">对冲机制价格（中线）</text>
+  <text x="270.7" y="176" font-size="11" fill="#1f5c4a" text-anchor="start">拍卖出清价</text>
+  <text x="272.7" y="84.7" font-size="11" fill="#1f5c4a">阴影 = 流通盘可容纳的资金</text>
+  <text x="8" y="16" font-size="12" fill="#161b26" font-weight="700">(a) 共识强 · 预期分布集中</text>
+  <text x="8" y="32" font-size="11" fill="#8d95a8">横轴：心理股价　纵轴：对应资金量　截距 = 1.0σ</text>
+</svg></div><div class="svgbox"><svg viewBox="0 0 460 190" width="100%" role="img" aria-label="(b) 共识弱 · 预期分布离散（同样的平均预期）">
+  <line x1="0" y1="160" x2="460" y2="160" stroke="#c9cfda" stroke-width="1"/>
+  <polygon points="303.3,125.0 306.0,126.4 308.6,127.7 311.2,129.0 313.8,130.3 316.4,131.6 319.0,132.9 321.6,134.1 324.2,135.3 326.8,136.5 329.5,137.7 332.1,138.8 334.7,140.0 337.3,141.0 339.9,142.1 342.5,143.1 345.1,144.1 347.7,145.0 350.3,145.9 353.0,146.8 355.6,147.6 358.2,148.4 360.8,149.2 363.4,149.9 366.0,150.6 368.6,151.2 371.2,151.8 373.8,152.4 376.5,153.0 379.1,153.5 381.7,154.0 384.3,154.4 386.9,154.9 389.5,155.3 392.1,155.7 394.7,156.0 397.3,156.3 399.9,156.7 402.6,156.9 405.2,157.2 407.8,157.4 410.4,157.7 413.0,157.9 415.6,158.1 418.2,158.3 420.8,158.4 423.4,158.6 426.1,158.7 428.7,158.8 431.3,159.0 433.9,159.1 436.5,159.2 439.1,159.2 441.7,159.3 444.3,159.4 446.9,159.5 449.6,159.5 452.2,159.6 454.8,159.6 457.4,159.7 460.0,159.7 460.0,160 303.3,160" fill="#1f5c4a" fill-opacity=".18"/>
+  <polyline points="0.0,159.7 3.8,159.6 7.7,159.6 11.5,159.5 15.3,159.4 19.2,159.3 23.0,159.2 26.8,159.0 30.7,158.9 34.5,158.7 38.3,158.5 42.2,158.2 46.0,158.0 49.8,157.7 53.7,157.3 57.5,156.9 61.3,156.5 65.2,156.0 69.0,155.5 72.8,154.9 76.7,154.3 80.5,153.6 84.3,152.8 88.2,152.0 92.0,151.1 95.8,150.1 99.7,149.0 103.5,147.9 107.3,146.7 111.2,145.4 115.0,144.0 118.8,142.6 122.7,141.1 126.5,139.5 130.3,137.8 134.2,136.1 138.0,134.3 141.8,132.5 145.7,130.6 149.5,128.7 153.3,126.7 157.2,124.8 161.0,122.8 164.8,120.8 168.7,118.9 172.5,117.0 176.3,115.1 180.2,113.3 184.0,111.6 187.8,109.9 191.7,108.3 195.5,106.9 199.3,105.5 203.2,104.3 207.0,103.2 210.8,102.3 214.7,101.5 218.5,100.9 222.3,100.5 226.2,100.2 230.0,100.2 233.8,100.2 237.7,100.5 241.5,100.9 245.3,101.5 249.2,102.3 253.0,103.2 256.8,104.3 260.7,105.5 264.5,106.9 268.3,108.3 272.2,109.9 276.0,111.6 279.8,113.3 283.7,115.1 287.5,117.0 291.3,118.9 295.2,120.8 299.0,122.8 302.8,124.8 306.7,126.7 310.5,128.7 314.3,130.6 318.2,132.5 322.0,134.3 325.8,136.1 329.7,137.8 333.5,139.5 337.3,141.1 341.2,142.6 345.0,144.0 348.8,145.4 352.7,146.7 356.5,147.9 360.3,149.0 364.2,150.1 368.0,151.1 371.8,152.0 375.7,152.8 379.5,153.6 383.3,154.3 387.2,154.9 391.0,155.5 394.8,156.0 398.7,156.5 402.5,156.9 406.3,157.3 410.2,157.7 414.0,158.0 417.8,158.2 421.7,158.5 425.5,158.7 429.3,158.9 433.2,159.0 437.0,159.2 440.8,159.3 444.7,159.4 448.5,159.5 452.3,159.6 456.2,159.6 460.0,159.7" fill="none" stroke="#4b5468" stroke-width="1.8"/>
+  <line x1="230.0" y1="97.0" x2="230.0" y2="160" stroke="#2b5c8a" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="303.3" y1="125.3" x2="303.3" y2="160" stroke="#1f5c4a" stroke-width="2"/>
+  <text x="226.0" y="176" font-size="11" fill="#2b5c8a" text-anchor="end">对冲机制价格（中线）</text>
+  <text x="307.3" y="176" font-size="11" fill="#1f5c4a" text-anchor="start">拍卖出清价</text>
+  <text x="309.3" y="119.3" font-size="11" fill="#1f5c4a">阴影 = 流通盘可容纳的资金</text>
+  <text x="8" y="16" font-size="12" fill="#161b26" font-weight="700">(b) 共识弱 · 预期分布离散（同样的平均预期）</text>
+  <text x="8" y="32" font-size="11" fill="#8d95a8">横轴：心理股价　纵轴：对应资金量　截距 = 2.1σ</text>
+</svg></div></div></div>
+      <p class="lead" style="margin-top:12px">两张图平均预期完全相同，只是右图分歧更大。<b>分歧越大，截距向右漂移得越远</b>——因为你永远不知道最乐观的资金有多离谱。而分歧大小，本质上取决于判断天花板高度所需线索的强弱：线索越弱、越无法凝聚共识，分布越离散。</p>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.3 图 1-10　·　播客 50:56–53:57　·　图为按正态分布假设重绘，阴影取总资金的 15%</div>
+    </div>
+  </section>
+
+  <!-- ===== 2 中线 + 截距 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum">2</div>
+      <h2>对冲机制 vs 拍卖机制：同一个"分歧"，估值方向相反</h2>
+    </div>
+    <div class="card">
+      <div class="consensus" data-kg="concept">
+        <div class="crow">
+          <div class="a"><span class="who y">对冲机制（美股为代表）</span><p>股价由<b>平均预期</b>决定。分歧越大 → 预期收益率方差越大 → 风险溢价越高 → <b>估值越低</b>。投资者不必关心预期分布，也不必太关心流动性强弱。</p></div>
+          <div class="b"><span class="who z">拍卖机制（A 股为代表）</span><p>股价由<b>中线 + 截距</b>共同决定。分歧越大 → 天花板越算不清 → 越有"朦胧美" → 截距右漂越远 → <b>估值反而越高</b>。预期分布和流动性都成了必须关心的变量。</p></div>
+        </div>
+        <div class="crow">
+          <div class="a"><span class="who y">流动性的角色</span><p>只影响定价的<b>有效性</b>：流动性越好，预期分布越接近标准正态，价格越接近真实平均预期。</p></div>
+          <div class="b"><span class="who z">流动性的角色</span><p>本身就是<b>独立的定价要素</b>。关注资金变多、观点比例一点不变，出清价也会向右移——涨跌与基本面无关。</p></div>
+        </div>
+      </div>
+      <div class="eli5" data-kg="concept">
+        <div class="lbl">ELI5 · 中线是船的位置，截距是潮水</div>
+        <p>基本面把船停在中线上。潮水（流动性）来了，船跟着往上漂，潮退了又落回去。看船的高度，你得先分清：<em>是船开到了新地方，还是只是涨潮了</em>。前者是天花板上修，能站住；后者是截距漂移，涨跌同源。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.3　·　播客 53:57–54:30</div>
+    </div>
+  </section>
+
+  <!-- ===== 3 流动性定价 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>流动性为什么能单独定价：最乐观的"第 100 亿"</h2>
+      <span class="sub">再加一点数学：二阶导为正，弹性与方差正相关</span>
+    </div>
+    <div class="card">
+      <p class="lead">一家公司流通市值 100 亿。关注它的资金有 1 000 亿时，股价不由这 1 000 亿的平均预期决定，而由<b>其中最乐观的 100 亿</b>决定。关注资金变成 2 000 亿，哪怕每种观点的比例一模一样，2 000 亿里最乐观的 100 亿，出价也远高于 1 000 亿里最乐观的 100 亿。</p>
+      <div class="bars" data-kg="metric" aria-hidden="true">
+        <div style="height:40%"><span>1 000 亿关注</span><i>最乐观的 10%</i></div>
+        <div style="height:62%"><span>2 000 亿关注</span><i>最乐观的 5%</i></div>
+        <div style="height:82%" class="top"><span>4 000 亿关注</span><i>最乐观的 2.5%</i></div>
+        <div style="height:100%" class="top"><span>8 000 亿关注</span><i>最乐观的 1.25%</i></div>
+      </div>
+      <p class="strip-note" style="margin-top:22px">流通盘固定为 100 亿。关注资金翻倍，出清价所在的分位往右尾挪，而正态分布的右尾越往右越窄——所以<b>股价对流动性的二阶导为正</b>：流动性扩张时拍卖价加速上涨，且弹性与预期方差正相关。共识越低的股票，越容易被流动性拉起来。</p>
+      <div class="formula" data-kg="concept">
+        设平均预期 μ、分歧 σ²、流通盘可容纳资金 s、关注资金 x，则出清价 y 满足　<b>右尾面积（从 y 到 +∞）× x ＝ s</b>
+        <span class="small">x 越大，同样的 s 只需要更薄的一片右尾就够了，y 被推得越远；σ 越大，右尾越厚、越长，y 对 x 越敏感。</span>
+      </div>
+
+      <div class="grid2" style="margin-top:18px">
+        <div class="addon">
+          <div class="n">推论一</div>
+          <h4>牛市后期，越有基本面的票越可能跑不赢指数</h4>
+          <p>一旦市场进入资金正反馈，影响股价弹性的最主要因素就变成了有没有"朦胧美"：天花板想象空间极大、无法凝聚共识、短期又不能证伪的公司涨得最好。基本面清楚的公司分布集中，截距漂不动。</p>
+        </div>
+        <div class="addon">
+          <div class="n">推论二</div>
+          <h4>大票风格 / 小票风格是估值的结果，不是原因</h4>
+          <p>2022 年到 2024 年"924"之前是大票风格，流行解释是"流动性不行，干流的水都不够，支流早干了"。可 2013–2014 年同样流动性差、有著名的资产荒，却是小票风格，流行解释又变成"钱太少，拉不动大票"。同一个原因解释两个相反结果——说明它不是原因。用 DCF 看，两轮都是流动性冲击下的截距漂移，与市值大小关系不大。</p>
+        </div>
+      </div>
+
+      <div class="callout" data-kg="caveat">
+        <div class="t">话筒对着音响：正反馈的来源是机制，不是鼓掌</div>
+        <p>把话筒对准老式音响，鼓一下掌：掌声被话筒吸收、被音响放大、再被话筒吸收，往复之后是长时间尖锐刺耳的噪声。<b>噪声的源头是鼓掌，但持续时间和刺耳程度与鼓掌无关，取决于话筒与音响之间的反馈机制。</b>没有做空力量制约，拍卖机制远比对冲机制容易产生正反馈循环。股价上涨本身也是叙事的一部分，会吸引更多资金关注；一旦预期打满、没有赔率，聚焦的流动性消退，出现其他热点就会大幅跑输。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.3 图 1-11 / 1-12（引席勒《非理性繁荣》）　·　《叙事经济学 2026》3.3–3.4　·　播客 54:30–57:24</div>
+    </div>
+  </section>
+
+  <!-- ===== 4 横着拔 vs 竖着拔 ===== -->
+  <section id="s4">
+    <div class="shead">
+      <div class="snum">4</div>
+      <h2>横着拔估值 vs 竖着拔估值：一轮牛市的两个半场</h2>
+      <span class="sub">回到解析解表：横轴是天花板，纵轴是折现率</span>
+    </div>
+    <div class="card">
+      <div class="ladder" data-kg="concept">
+        <div class="rung">
+          <div class="n">牛市前半段 · 横着拔</div>
+          <h4>按 10% 的长期折现率，把天花板高度上修到位</h4>
+          <p>在解析解表上是<b>横着走</b>：同一行里从 2× 走到 3×、5×。这段拔估值让股价上一个台阶，只要后续基本面跟得上，<b>涨幅不会回吐</b>。这是叙事变化，是可以站住的部分。</p>
+        </div>
+        <div class="rung hot">
+          <div class="n">牛市后半段 · 竖着拔</div>
+          <h4>流动性冲击 + 情绪亢奋，把隐含折现率压低</h4>
+          <p>在解析解表上是<b>竖着走</b>：同一列里从 10% 那行往 8%、7% 那行挪。但折现率有均值回归倾向，这段涨幅只是<b>加剧波动而不形成趋势</b>，最终都会吐出去。基本面中线可能一点没动，涨幅全由截距贡献，涨跌同源，走出"A"形。</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">再叠加叙事的传播学特性：市场关注度并不随利好程度线性增长，而是有两个临界点。利好低于<b>第一临界点</b>时引不起注意；越过<b>第二临界点</b>后关注度反而高于事情本身的重要性，直到审美疲劳。截距的漂移，很大程度上就发生在两个临界点之间。</p>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.3 末段　·　《叙事经济学 2026》3.4　·　折现率中枢见 <a href="/html/zou-discount-rate">折现率与分母端</a></div>
+    </div>
+  </section>
+
+  <!-- ===== 5 案例 ===== -->
+  <section id="s5">
+    <div class="shead">
+      <div class="snum" style="background:var(--accent)">5</div>
+      <h2>案例：中芯国际 2025 年 2 月，股价里的叙事是什么</h2>
+      <span class="sub">用反算把"朦胧美"翻译成一个可证伪的数</span>
+    </div>
+    <div class="card">
+      <p class="lead">中芯国际 A 股 2024 年 9–10 月股价上台阶，2025 年 2 月底进入约半年调整，当时动态 PE 约 <b>153 倍</b>。这是拍卖机制下典型的"天花板算不清"标的。把它放回解析解表：</p>
+      <div class="mini" data-kg="metric">
+        <div><div class="k">PE 153 @10%</div><div class="v">≈ 40×<br><small>隐含终局 = 2024 年业绩的 40 倍</small></div></div>
+        <div><div class="k">PE 153 @12%</div><div class="v">≈ 60×<br><small>不确定性高，折现率理应更高</small></div></div>
+        <div><div class="k">2024 归母净利润</div><div class="v">37 亿<br><small>→ 终局需 1 500–2 200 亿</small></div></div>
+        <div><div class="k">对标台积电 PE&lt;20 @8%</div><div class="v">≈ 2×<br><small>2 582 亿 → 隐含终局约 5 000 亿</small></div></div>
+      </div>
+      <p class="lead">如果两边估值都算合理，中芯国际 2025 年 2 月底的股价隐含着：<b>终局利润要达到台积电终局利润的 30%–45%</b>。这就把一段说不清的"朦胧美"翻译成了一个可以讨论、可以证伪的命题。反算不告诉你对错，只告诉你市场此刻信什么、你要不要跟。</p>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》3.4–3.5（p37）　·　反算方法见 <a href="/html/zou-endgame#s4">空间叙事与终局 §4</a></div>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6">
+    <div class="shead">
+      <div class="snum" style="background:var(--gold)">6</div>
+      <h2>读完带走：四问四答</h2>
+      <span class="sub">如果只记四句话</span>
+    </div>
+    <div class="qa">
+      <div class="item" data-kg="concept">
+        <div class="qq">Q1 · 什么是拍卖机制</div>
+        <div class="qh">不能做空时，股价不是平均预期，而是从最乐观的资金开始依次出清的成交价。</div>
+        <p>预期是分布不是点。基本面画出分布曲线就停了，股价停在哪由交易机制决定。股价 = 中线 + 截距。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q2 · 它和对冲机制差在哪</div>
+        <div class="qh">分歧大的股票，在美股估值更低，在 A 股可能更高。</div>
+        <p>对冲机制里分歧 = 风险溢价；拍卖机制里分歧 = 朦胧美 = 截距右漂。流动性在前者只影响有效性，在后者是独立定价要素。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q3 · 流动性怎么定价</div>
+        <div class="qh">流通盘 100 亿，关注资金 1 000 亿 → 2 000 亿，出清价由更靠右尾的"最乐观 100 亿"决定。</div>
+        <p>二阶导为正，弹性与分歧正相关。天花板越算不清 + 流动性越泛滥 = 越涨。大小票风格是这个过程的结果。</p>
+      </div>
+      <div class="item" data-kg="caveat">
+        <div class="qq">Q4 · 怎么区分能站住的涨和会吐回去的涨</div>
+        <div class="qh">横着拔（天花板上修）能站住；竖着拔（折现率被流动性压低）会均值回归。</div>
+        <p>后者涨跌同源，最终"A"形。可以参与正反馈，但要知道自己赚的是截距，不是中线。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 原话 ===== -->
+  <section>
+    <div class="shead">
+      <div class="snum">“</div>
+      <h2>原话摘录</h2>
+    </div>
+    <div class="quotes">
+      <div class="q" data-kg="quote"><p>"基本面的作用是画出市场预期的分布曲线，到这一步就停止了，具体股价停在哪，与基本面没有关系。"</p><span>《穿透叙事》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"我们永远不知道最乐观的资金有多离谱。"</p><span>《穿透叙事》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"只要不能为不喜欢的选手投负分，最符合大众审美的选手就不一定能获得好名次，所以选美比赛冠军的争议一般都比较大。"</p><span>《穿透叙事》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"在拍卖机制中，流动性本身就是一个单独的定价要素。"</p><span>《穿透叙事》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"天花板越算不清楚 + 流动性泛滥 = 越涨。大票风格和小票风格，更多是估值的结果，而不是估值的原因。"</p><span>播客 55:47–56:26</span></div>
+      <div class="q" data-kg="quote"><p>"噪声的源头来自鼓掌，但是持续时间与刺耳程度，与鼓掌无关，取决于话筒与音响之间的反馈机制。"</p><span>《穿透叙事》1.3，引席勒</span></div>
+      <div class="q" data-kg="quote"><p>"流动性潮汐带来的涨幅只是加剧波动，而不是形成趋势，最终都会吐出去。"</p><span>《穿透叙事》1.3</span></div>
+      <div class="q" data-kg="quote"><p>"至于是否参与正反馈循环，这不算是一种投资理念，算是一种投资哲学，或者是个人的风险偏好。可以不参与，但是不能不知道。"</p><span>播客 57:24</span></div>
+    </div>
+  </section>
+
+  <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 3 / 5</span>
+      <span class="tag">拍卖机制 / 流动性</span>
+      <span class="tag g">ELI5 版 · v1</span>
+    </div>
+    <b>素材来源</b>：《穿透叙事》1.3（图 1-10～1-12、出清价公式、席勒类比）；《叙事经济学（2026 版）》3.3–3.5（叙事自我强化、传播学两临界点、中芯国际案例）；播客《面基》50:16–58:10。<br>
+    <b>图表说明</b>：§1 两张分布图为按正态分布假设重绘，阴影面积取总关注资金的 15%，用于示意"同样均值、不同方差"下出清价的位置差异，非书中原图。§3 柱状为示意，不是实测数据。<br>
+    <b>本页在框架中的位置</b>：五个承重概念中的第三个，负责从"应然"（<a href="/html/zou-endgame">空间叙事与终局</a>、<a href="/html/zou-discount-rate">折现率</a>）到"实然"的最后一跳。总览见 <a href="/html/zou-narrative-map">叙事框架总览</a>。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

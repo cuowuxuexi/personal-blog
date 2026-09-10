@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import {
   projectBigQuestionSidebar,
   projectPhilosophySidebar,
+  projectTopicNavItems,
   industrySubjectDirectory,
   projectResearchSidebar,
   researchHubRows,
@@ -133,14 +134,58 @@ test('live structure projection matches current public URLs and hub counts', () 
     '/投资/投研/白酒/',
     '/投资/投研/硬件制造/',
   ])
-  assert.deepEqual(projectPhilosophySidebar(nodes)[0].items.map((i) => i.link), [
+  assert.deepEqual(projectPhilosophySidebar(nodes)[0].items.map((item) => (
+    item.items
+      ? { text: item.text, link: item.link, items: item.items.map((child) => child.link) }
+      : item.link
+  )), [
     '/投资哲学/',
     '/投资哲学/认识与证据/',
     '/投资哲学/市场与价格/',
     '/投资哲学/企业与回报/',
     '/投资哲学/个人与研究边界/',
-    '/投资哲学/DCF/',
+    {
+      text: '邹佩轩投资哲学框架',
+      link: '/投资哲学/邹佩轩投资哲学框架/',
+      items: [
+        '/html/zou-endgame',
+        '/html/zou-discount-rate',
+        '/html/zou-auction',
+        '/html/zou-alpha',
+        '/html/zou-method',
+      ],
+    },
   ])
+  assert.deepEqual(
+    projectTopicNavItems('philosophy', nodes).map((item) => item.link),
+    [
+      '/投资哲学/',
+      '/投资哲学/认识与证据/',
+      '/投资哲学/市场与价格/',
+      '/投资哲学/企业与回报/',
+      '/投资哲学/个人与研究边界/',
+      '/投资哲学/邹佩轩投资哲学框架/',
+    ],
+  )
+  assert.deepEqual(topicCards(nodes, 'philosophy').map((item) => item.link), [
+    '/投资哲学/认识与证据/',
+    '/投资哲学/市场与价格/',
+    '/投资哲学/企业与回报/',
+    '/投资哲学/个人与研究边界/',
+    '/投资哲学/邹佩轩投资哲学框架/',
+  ])
+  assert.deepEqual(
+    topicCards(nodes, 'philosophy', { navGroup: '邹佩轩投资哲学框架' }).map((item) => item.link),
+    [
+      '/html/dcf-eli5',
+      '/html/zou-narrative-map',
+      '/html/zou-endgame',
+      '/html/zou-discount-rate',
+      '/html/zou-auction',
+      '/html/zou-alpha',
+      '/html/zou-method',
+    ],
+  )
   assert.deepEqual(topicCards(nodes, 'big-question').map((item) => item.link), [
     '/大问题/开源与闭源/',
   ])
@@ -247,6 +292,139 @@ order: 1
     kindId: 'research',
     relativePath: 'docs/投资/投研/医药/恒瑞医药/生意模型/index.md',
     raw: base('publicHref: /投资/投研/医药/恒瑞医药/生意模型/\n'),
+  })
+  assert.equal(bad?.link, null)
+})
+
+test('philosophy navGroup hides canvases from top nav; they list on the framework page', () => {
+  const nodes = structureNodesFromSources([
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/index.md',
+      raw: `---
+title: 投资哲学档
+pageClass: investment-hub
+order: 0
+---
+`,
+    },
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/认识与证据/index.md',
+      raw: `---
+title: 认识与证据
+pageClass: subject-index
+order: 1
+---
+`,
+    },
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/邹佩轩投资哲学框架/index.md',
+      raw: `---
+title: 邹佩轩投资哲学框架
+pageClass: subject-index
+order: 5
+---
+`,
+    },
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/DCF/index.md',
+      raw: `---
+title: DCF
+pageClass: subject-index
+order: 5
+navGroup: 邹佩轩投资哲学框架
+navGroupSidebar: false
+publicHref: /html/dcf-eli5
+---
+`,
+    },
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/叙事框架总览/index.md',
+      raw: `---
+title: 叙事框架总览
+pageClass: subject-index
+order: 6
+navGroup: 邹佩轩投资哲学框架
+publicHref: /html/zou-narrative-map
+---
+`,
+    },
+  ])
+  assert.deepEqual(projectPhilosophySidebar(nodes)[0].items, [
+    { text: '总览', link: '/投资哲学/' },
+    { text: '认识与证据', link: '/投资哲学/认识与证据/' },
+    {
+      text: '邹佩轩投资哲学框架',
+      link: '/投资哲学/邹佩轩投资哲学框架/',
+      collapsed: false,
+      items: [
+        { text: '叙事框架总览', link: '/html/zou-narrative-map' },
+      ],
+    },
+  ])
+  assert.deepEqual(projectTopicNavItems('philosophy', nodes), [
+    { text: '总览', link: '/投资哲学/' },
+    { text: '认识与证据', link: '/投资哲学/认识与证据/' },
+    { text: '邹佩轩投资哲学框架', link: '/投资哲学/邹佩轩投资哲学框架/' },
+  ])
+  assert.deepEqual(topicCards(nodes, 'philosophy').map((item) => item.link), [
+    '/投资哲学/认识与证据/',
+    '/投资哲学/邹佩轩投资哲学框架/',
+  ])
+  assert.deepEqual(
+    topicCards(nodes, 'philosophy', { navGroup: '邹佩轩投资哲学框架' }).map((item) => item.link),
+    ['/html/dcf-eli5', '/html/zou-narrative-map'],
+  )
+})
+
+test('philosophy topic publicHref becomes sidebar and card link; invalid fails closed', () => {
+  const hub = {
+    kindId: 'philosophy',
+    relativePath: 'docs/投资哲学/index.md',
+    raw: `---
+title: 投资哲学档
+pageClass: investment-hub
+order: 0
+---
+`,
+  }
+  const good = structureNodesFromSources([
+    hub,
+    {
+      kindId: 'philosophy',
+      relativePath: 'docs/投资哲学/DCF/index.md',
+      raw: `---
+title: DCF
+pageClass: subject-index
+order: 5
+hubIndex: 05 / DCF
+publicHref: /html/dcf-eli5
+---
+`,
+    },
+  ])
+  assert.deepEqual(projectPhilosophySidebar(good)[0].items.map((item) => item.link), [
+    '/投资哲学/',
+    '/html/dcf-eli5',
+  ])
+  assert.deepEqual(topicCards(good, 'philosophy').map((item) => item.link), [
+    '/html/dcf-eli5',
+  ])
+
+  const bad = structureNodeFromMarkdown({
+    kindId: 'philosophy',
+    relativePath: 'docs/投资哲学/DCF/index.md',
+    raw: `---
+title: DCF
+pageClass: subject-index
+order: 5
+publicHref: /投资哲学/DCF/
+---
+`,
   })
   assert.equal(bad?.link, null)
 })

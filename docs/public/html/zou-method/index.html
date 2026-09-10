@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-method/" />
+<title>研究方法论 · 能用逻辑推理就不要归纳总结（邹佩轩叙事框架 · 5）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <style>
+  .traps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  @media(max-width:800px){.traps{grid-template-columns:1fr}}
+  .trap{border:1px solid var(--line);border-radius:13px;padding:16px 18px;background:#fff}
+  .trap .n{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px;color:var(--red)}
+  .trap h4{font-size:15px;margin-bottom:6px}
+  .trap p{font-size:13.5px;color:var(--ink2)}
+  .trap .ex{margin-top:10px;padding:9px 12px;border-radius:8px;background:var(--gold-soft);font-size:12.5px;color:#3d3423;line-height:1.65}
+  .trap .ex b{color:var(--gold)}
+  .circles{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center;margin-top:14px}
+  @media(max-width:760px){.circles{grid-template-columns:1fr}}
+  .circles svg{width:100%;display:block}
+  .biaslist{list-style:none}
+  .biaslist li{font-size:13.5px;color:var(--ink2);padding:8px 0;border-bottom:1px dashed var(--line)}
+  .biaslist li:last-child{border-bottom:none}
+  .biaslist li b{color:var(--ink)}
+  .biaslist li .w{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:5px;margin-right:6px;vertical-align:1px}
+  .w.in{background:var(--author-soft);color:var(--author)}
+  .w.mid{background:var(--accent-soft);color:var(--accent)}
+  .w.out{background:var(--purple-soft);color:var(--purple)}
+  .chain{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 4px;font-size:13px}
+  .chain span{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  .chain i{color:var(--ink3);font-style:normal}
+  .chain .bad{background:var(--red-soft);border-color:#f3d3ce;color:#6d2b23;font-weight:700}
+  </style>
+
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>研究方法论</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>研究方法论：能用逻辑推理，就不要归纳总结</h1>
+    <div class="theline">
+      这是产生前面四个概念的<b>元规则</b>。作者把它放在每本书正式复盘之前。<br>
+      社会科学没法控制变量，同一个现象总有好几种"都能自圆其说、结论却相反"的解释。应对办法只有两条：<b>以逻辑推理为主线</b>，<b>用统一的框架解释尽可能多的现象</b>。归纳总结有严格的适用范围，推理没有。
+    </div>
+    <div class="nav">
+      <span class="nl">本页回答五个问题</span>
+      <a href="#s1">① 三个常见陷阱</a>
+      <a href="#s2">② 统一框架 vs 打补丁</a>
+      <a href="#s3">③ 样本为什么靠不住</a>
+      <a href="#s4">④ 做反方最佳辩手</a>
+      <a href="#s5">⑤ 不开后视镜</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 ===== -->
+  <section>
+    <div class="card">
+      <div class="shead" style="margin-bottom:10px">
+        <div class="snum">0</div>
+        <h2>先说结论："证明"和"拟合结果显著"是两个完全不同的概念</h2>
+      </div>
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 连投五次硬币都是正面，第六次押哪边</div>
+        <p>选项一：相信趋势，趋势形成短期不会逆转，继续押正面。选项二：相信均值回归，五次正面已经远离统计规律，左侧押反面。选项三：理论上每次独立，各 50%，均衡下注。</p>
+        <p>答案：<em>都不选</em>。连续五次正面，首先该做的是<b>检验硬币是否均匀</b>。数据本身分不清"趋势"和"回归"，能分清的只有逻辑。</p>
+      </div>
+      <div class="claim" data-kg="concept">
+        <p class="claim-main">复盘以逻辑推理为主线、归纳总结为辅助。只要大前提、小前提成立，结论就一定成立；拟合再显著，也只是相关。</p>
+        <p class="claim-sub">作者对自己复盘方式的描述是学术研究式的 hypothesis → test → forecast：先从 DCF 第一性原理推出框架，再拿光伏、煤炭、白酒、乐视、长江电力、腾讯去检验，<b>不用案例归纳框架</b>。这一页是那套推理的"操作手册"。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 三个陷阱 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>三个最常见的陷阱：相关性传递、趋势 vs 回归、先结论后论据</h2>
+    </div>
+    <div class="card">
+      <div class="traps" data-kg="concept">
+        <div class="trap">
+          <div class="n">陷阱一 · 把相关当因果，还传递</div>
+          <h4>相关性是双向弱联系，不能传递；只有因果能传递</h4>
+          <p>流行范式：先拟合 A 与 B 强相关，再拟合 B 与 C 强相关，然后看到 A 出现拐点就断言 C 会变。这不成立。"因为 A 所以 B、因为 B 所以 C"是单向链，能传到 C；相关是双向的，传不过去。</p>
+          <div class="ex"><b>血缘</b>：爸爸和孩子有血缘关系，孩子和妈妈有血缘关系——能通过任意强度的显著性检验——却得不出爸爸和妈妈有血缘关系。</div>
+        </div>
+        <div class="trap">
+          <div class="n">陷阱二 · 数据分不清趋势与回归</div>
+          <h4>两条线历史高度吻合、近期背离，未来收敛还是继续背离？</h4>
+          <p>仅凭数据本身，答案是"一切皆有可能"。要判断，只能回到逻辑：两者之间有没有因果机制，机制是否还在。</p>
+          <div class="ex"><b>硬币</b>：五次正面后，趋势派押正、回归派押反、理论派均衡——都错。先检验硬币是否均匀，也就是先检验机制。</div>
+        </div>
+        <div class="trap">
+          <div class="n">陷阱三 · 怎么说都有道理</div>
+          <h4>社会科学的 bug：先有结论再找论据</h4>
+          <p>只要历史够长，正反面案例唾手可得。从"狭路相逢勇者胜"到"退一步海阔天空"，从"人定胜天"到"天意难违"，每个失败案例都有一句话接着。一个框架如果输入参数后不能输出唯一稳定的结果，它就不是函数，就是不完整的。</p>
+          <div class="ex"><b>判据</b>：框架应当能被证伪，且能预测——不只是解释。</div>
+        </div>
+      </div>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》1.1　·　播客 09:18–12:28</div>
+    </div>
+  </section>
+
+  <!-- ===== 2 统一框架 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum">2</div>
+      <h2>统一框架 vs 打补丁：地心说的本轮，和 A 股的贴标签</h2>
+      <span class="sub">解释范围最广的，往往是预测能力最强的</span>
+    </div>
+    <div class="card">
+      <div class="essence" data-kg="concept">
+        <div class="tag-e">类比 · 日心说为什么花了两千年</div>
+        <h3>地心说不是解释力不够——它解释力极强。它输在没有预测力：每来一个新天体，都得多套几层本轮。</h3>
+        <p>古希腊人早就知道行星轨迹是螺旋的。阿波罗尼乌斯提出<b>均轮—本轮</b>：行星绕本轮转，本轮圆心再绕地球转；托勒密加上多重本轮、偏心轮。到哥白尼时代，地心说已能近乎完美地解释内太阳系。均轮套本轮的实质是<b>傅里叶级数展开</b>——本轮够多，能拟合任意曲线，连日心说都能"构造"出来。</p>
+        <p>真正冲击它的是观测技术进步：天体越多，每个天体需要的本轮数都不一样——火星一层、木星两层、土星再多几层。<b>它能解释一切，却预测不了任何新东西。</b>日心说胜出，是因为预测能力更强。</p>
+      </div>
+      <div class="split" data-kg="concept" style="display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden">
+        <div style="padding:16px 20px;background:#fbfcfd;border-right:1px solid var(--line)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:6px">投资里的地心说 · 给理论打补丁</div>
+          <p style="font-size:13.5px;color:var(--ink2)">先把股票分成成长股、周期股、价值股，各配一套估值框架。三分法遇到解释不了的，再把成长股拆成大盘成长、周期成长、景气成长……无限细分，解释力当然上升，但<b>贴标签本身就是价值判断</b>，再根据标签去评估价值，是循环论证。过去几年 A 股屡见不鲜。</p>
+          <div class="chain"><span>贴标签</span><i>→</i><span>选框架</span><i>→</i><span>算估值</span><i>→</i><span class="bad">用估值验证标签</span></div>
+        </div>
+        <div style="padding:16px 20px;background:#fff">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--author);margin-bottom:6px">投资里的日心说 · 从头推到尾</div>
+          <p style="font-size:13.5px;color:var(--ink2)">从 DCF 第一性原理出发，用同一套框架（天花板 × 折现率 × 拍卖机制）解释成长、周期、价值——煤炭一个行业就依次当过成长股、价值股、周期股、价值股，框架不变。切忌为细分场景量身定做框架，否则极易过度拟合。<b>解释范围广和解释力强不能画等号，要在两者之间平衡。</b></p>
+          <div class="chain"><span>公理</span><i>→</i><span>推导</span><i>→</i><span>预测</span><i>→</i><span>用案例检验</span></div>
+        </div>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》前言"用统一的框架解释尽可能多的现象"　·　播客 12:28–17:24</div>
+    </div>
+  </section>
+
+  <!-- ===== 3 样本 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>样本为什么靠不住：三个圆，五种偏误</h2>
+      <span class="sub">高斯—马尔可夫定理的五个假设，A 股几乎不可能同时满足</span>
+    </div>
+    <div class="card">
+      <p class="lead">要让回归结果是最佳线性无偏估计，原始数据得同时满足五个经典假设（线性关系、随机抽样、无完全共线、零条件均值、同方差）。最棘手的是<b>样本有偏</b>（几乎无解，只能靠逻辑分析和扩大样本缓解）和<b>内生性</b>（计量经济学一半内容都在和它作斗争）。以案例为出发点的复盘和大部分时间序列分析，稍不留神就成了下面这些偏误的错题集：</p>
+      <div class="circles" data-kg="concept">
+        <svg viewBox="0 0 220 220" aria-label="三个圆：所有理论可能性、可观测样本、研究选取的样本">
+          <circle cx="110" cy="110" r="100" fill="#f0edf8" stroke="#5b4b8a" stroke-width="1.5"/>
+          <circle cx="118" cy="118" r="66" fill="#eaf1f8" stroke="#2b5c8a" stroke-width="1.5"/>
+          <circle cx="128" cy="128" r="34" fill="#e9f2ee" stroke="#1f5c4a" stroke-width="1.5"/>
+          <text x="110" y="28" font-size="11" fill="#5b4b8a" text-anchor="middle" font-weight="700">所有理论可能性</text>
+          <text x="118" y="70" font-size="11" fill="#2b5c8a" text-anchor="middle" font-weight="700">现实中可观测的样本</text>
+          <text x="128" y="132" font-size="11" fill="#1f5c4a" text-anchor="middle" font-weight="700">研究选取的样本</text>
+        </svg>
+        <ul class="biaslist">
+          <li><span class="w in">小圆≠中圆</span><b>幸存者偏差</b>：飞回来的飞机机翼弹孔最多，于是加固机翼——其实该加固油箱，油箱中弹的没飞回来。</li>
+          <li><span class="w in">小圆≠中圆</span><b>样本选择偏误</b>：预设 A 与 B 正相关，只挑对结论有利的数据。数据难获取时几乎不可避免——有利数据是主动挖的，不利数据是偶然碰到的，潜意识先射箭后画靶。</li>
+          <li><span class="w mid">中圆≠大圆</span><b>自选择偏误</b>："某医院亲子鉴定显示当地一半新生儿非亲生"——只有怀疑的父母才去鉴定，穷尽全部可观测数据也得不出正确结论。</li>
+          <li><span class="w out">大圆本身有问题</span><b>遗漏变量 / 时间序列</b>：树和我一起长高，于是"树长高导致我长高"。时间让很多变量共同趋势，彼此没有因果。股票研究最常见的恰恰是时间序列。</li>
+          <li><span class="w out">大圆本身有问题</span><b>因果倒置</b>：游泳运动员身材好，于是"游泳塑造身材"——大样本显示是身材好的人才成了游泳运动员。</li>
+        </ul>
+      </div>
+      <div class="callout" data-kg="caveat">
+        <div class="t">我们生活在有限样本、有限时间的世界里</div>
+        <p>可能轮不到大数定律登场，<b>特异性和随机性是更重要的力量</b>。所有模型都是盲人摸象，漏掉的参数一定远多于纳入的参数，只是在环境稳定时暂时不发挥作用。A 股时间跨度短、早期历史借鉴有限，值得深复盘的案例寥寥可数，想同时满足五个假设几乎不可能——所以能推理就不要归纳。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.4 第 1 条、图 1-13 及脚注　·　播客 59:31–01:01:29</div>
+    </div>
+  </section>
+
+  <!-- ===== 4 反方辩手 ===== -->
+  <section id="s4">
+    <div class="shead">
+      <div class="snum">4</div>
+      <h2>做反方观点的最佳辩手：证伪，而不是证实</h2>
+      <span class="sub">"显著"是一个很强的形容词，不要对着两条线就说显著</span>
+    </div>
+    <div class="card">
+      <p class="lead">不得不归纳时，借用显著性检验的思想：不直接论证假设正确，而是论证<b>有没有足够理由拒绝相反的假设</b>。检验药物有效，先假设它与安慰剂等同，再找足够证据拒绝这个假设。</p>
+      <div class="mini" data-kg="metric">
+        <div><div class="k">投 10 次，8 次正面</div><div class="v">不能拒绝<br><small>≥8 次同面概率 10.94% &gt; 5%</small></div></div>
+        <div><div class="k">投 10 000 次</div><div class="v">&gt; 5 098 次<br><small>或 &lt; 4 902 次才能说硬币不均匀</small></div></div>
+        <div><div class="k">正面比例</div><div class="v">80% vs 51%<br><small>能否拒绝原假设，取决于样本量</small></div></div>
+        <div><div class="k">方差</div><div class="v">越大越难<br><small>均值再贴近，波动一下就越界</small></div></div>
+      </div>
+      <p class="lead">忽略样本数量和方差谈概率没有意义——<b>尤其是方差，很少看到报告认真讨论它</b>。样本方差很大时，平均数拟合得再好看，也很难达到统计意义上的显著。</p>
+      <div class="grid2" style="margin-top:16px">
+        <div class="addon">
+          <div class="n">被证伪的"常识"一</div>
+          <h4>PB 与 ROE 没有必然的线性关系</h4>
+          <p>申万一级行业 2020 vs 2024：食品饮料 ROE 没怎么变，PB 减半；有色 ROE 翻倍，PB 变化很小；房地产从高盈利到深度亏损，PB 降幅也不夸张。因为 PB = ROE × PE，ROE 不变但天花板预期下降，PB 大降；天花板不变而 ROE 提升，意味着离顶更近，PE 下降，相乘变化不大。PB-ROE 只适用于业绩稳定的重资产行业。</p>
+        </div>
+        <div class="addon">
+          <div class="n">被证伪的"常识"二</div>
+          <h4>PE 与业绩增速不正相关</h4>
+          <p>同一组散点图，横纵坐标连视觉上的相关性都没有。PE 取决于天花板倍数与折现率：天花板不上修，增速越快离顶越近，PE 反而越低；天花板上修，PE 与增速才可能双升。就算表现出相关，这种级别的方差也过不了显著性检验。</p>
+          <div class="src" data-kg="source">📖 《穿透叙事》1.4 第 2 条、图 1-14～1-16　·　结论见 <a href="/html/zou-endgame#s2">空间叙事与终局 §2</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5 贝叶斯 ===== -->
+  <section id="s5">
+    <div class="shead">
+      <div class="snum">5</div>
+      <h2>不开后视镜：按贝叶斯条件概率回溯当时的信息</h2>
+      <span class="sub">开后视镜的两个后果：把偶然当必然，严重高估预期收益</span>
+    </div>
+    <div class="card">
+      <p class="lead">世界存在概率事件。投十次硬币，参与的人足够多，一定有人投出十次正面，但从中总结不出成功经验。身临其境往前看，任何投资逻辑都是概率事件；预期兑现需要 A、B 同时成立，概率就是 P(A)·P(B|A)，而 A、B 通常只是必要条件，后面还有 C、D 和未知条件要一路乘下去。</p>
+      <div class="formula" data-kg="concept">
+        P(逻辑兑现) ＝ P(A) · P(B|A) · P(C|AB) · P(D|ABC) · P(未知条件)
+        <span class="small">链条一长，市场大概率不按剧本走：0.8<sup>4</sup> &lt; 0.41，0.999<sup>1000</sup> &lt; 0.37。这就是"福尔摩斯推票法"的问题——每个环节再精妙，纵向叠加就是在乘小数。</span>
+      </div>
+      <div class="grid2" style="margin-top:16px">
+        <div class="addon">
+          <div class="n">后果一 · 把偶然当必然</div>
+          <h4>长时间跨度的"涨幅—增速"拟合，本身就是开后视镜</h4>
+          <p>叙事先行：市场预期业绩涨 50%，股价很快涨了不止 50%；兑现就高位横盘，不兑现就跌回去。拉长到年度，涨幅与增速怎么都能拟上——但站在年初，你不知道谁的全年增速高。换成年初的一致预期增速做横轴，解释力不仅不高，多数年份还是负的。</p>
+          <p>正确的做法：去找<b>贝叶斯条件概率发生变化的节点</b>，还原当时的决策流程。叙事变化能否提前预期？不能，超额收益就是运气或风险补偿；能，就要分析需求脉络、竞争格局、商业模式，才能提高预测力。与其把贝叶斯链拉长，不如拓展成<b>贝叶斯网</b>：每个十字路口的市场空间、改变叙事的信号、各种情况的预案。</p>
+        </div>
+        <div class="addon">
+          <div class="n">后果二 · 高估预期收益</div>
+          <h4>80% 准确率的选股者，选出翻倍股的概率只有 30.77%</h4>
+          <p>全 A 出现翻倍股的概率 10%；某人识别翻倍股的准确率 80%（真翻倍股 80% 能选出，非翻倍股 20% 会误选，误选后跌 30%）。他现在认定某股是翻倍股，它真是翻倍股的概率是多少？</p>
+          <div class="fml" data-kg="metric">
+            P(真翻倍 | 认为翻倍) ＝ 10%×80% ÷ (10%×80% + 90%×20%) ＝ <b>30.77%</b><br>
+            预期收益 ＝ 30.77%×100% + 69.23%×(−30%) ＝ <b>10.0%</b><br>
+            <span class="dim">被证伪后若跌超 30%，总收益可能为负。</span>
+          </div>
+          <p style="margin-top:10px">能钓到多少鱼，不只取决于钓鱼者水平，还取决于<b>池塘里有多少鱼</b>；还取决于选错时跌多少——预期越高的公司，证伪后下行空间越大。这解释了为什么没什么叙事的"躺平股"和红利低波长期收益反而不错：<b>惩罚机制很轻</b>。</p>
+        </div>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.4 第 3 条、图 1-17～1-19　·　《叙事经济学 2026》5.3、5.5　·　播客 11:13–12:28</div>
+    </div>
+  </section>
+
+  <!-- ===== 5b 解析解 ===== -->
+  <section id="s5b">
+    <div class="shead">
+      <div class="snum" style="background:var(--accent)">→</div>
+      <h2>这套方法论最终指向什么：解析解，和可以资本化的研究</h2>
+    </div>
+    <div class="card">
+      <div class="consensus" data-kg="concept">
+        <div class="crow">
+          <div class="a"><span class="who y">数值解</span><p>每次针对具体参数迭代逼近，换个公司就得重算。对应"为每个细分场景量身定做框架"——解释得了，预测不了，也<b>积累不了</b>。</p></div>
+          <div class="b"><span class="who z">解析解</span><p>从公理推出的封闭公式，任意参数代入秒得结果，普遍适用。对应解析解表：天花板 × 折现率 → 合理 PE。书名副标题"寻找 A 股投资解析解"就是这个意思。</p></div>
+        </div>
+        <div class="crow">
+          <div class="a"><span class="who y">费用化的研究</span><p>卷高频数据、边际信息博弈。当信息过载成为常态，大部分场景下没有意义，日积跬步不了，甚至只能算"非经常性损益"。</p></div>
+          <div class="b"><span class="who z">资本化的研究</span><p>结论和过程可以复用，下次研究站在上一次的基础上往前推——像资产负债表上的资产一个一个累加。分析师的终极 alpha 是<b>基于公开信息的定价能力</b>：同样的信息，因处理方式、观察角度、方法论不同，得出差异巨大甚至相反的结论。</p></div>
+        </div>
+      </div>
+      <div class="src" data-kg="source">📖 播客 05:17、22:32–25:05　·　解析解表本体见 <a href="/html/zou-endgame#s3">空间叙事与终局 §3</a></div>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6">
+    <div class="shead">
+      <div class="snum" style="background:var(--gold)">6</div>
+      <h2>读完带走：四问四答</h2>
+      <span class="sub">如果只记四句话</span>
+    </div>
+    <div class="qa">
+      <div class="item" data-kg="concept">
+        <div class="qq">Q1 · 为什么推理优先于归纳</div>
+        <div class="qh">归纳有严格适用范围，推理没有：前提成立，结论就成立。</div>
+        <p>相关性不能传递，因果才能。数据本身分不清趋势与回归。有限样本、有限时间，轮不到大数定律登场。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q2 · 什么叫好框架</div>
+        <div class="qh">用统一的框架解释尽可能多的现象，且能预测——不是解释力最强，是预测力最强。</div>
+        <p>地心说能拟合一切，却预测不了新天体。给成长/周期/价值各配一套框架是均轮套本轮，还涉嫌循环论证。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q3 · 不得不归纳时怎么办</div>
+        <div class="qh">做反方观点的最佳辩手：论证能否拒绝相反假设，而不是找支持自己的案例。</div>
+        <p>10 次 8 正面不显著，10 000 次要 &gt;5 098。看样本量、看方差。PB-ROE、PE-增速的散点图连视觉相关都没有。</p>
+      </div>
+      <div class="item" data-kg="caveat">
+        <div class="qq">Q4 · 复盘最容易犯什么错</div>
+        <div class="qh">开后视镜。用事后的业绩解释事前的股价，把偶然当必然，把 30% 的胜率当 80%。</div>
+        <p>按贝叶斯回溯当时的信息，找概率发生变化的节点；链条要拓成网。惩罚机制必须纳入——预期越高，证伪后跌得越深。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 原话 ===== -->
+  <section>
+    <div class="shead">
+      <div class="snum">“</div>
+      <h2>原话摘录</h2>
+    </div>
+    <div class="quotes">
+      <div class="q" data-kg="quote"><p>"能用逻辑推理就尽量不要用归纳总结。所有的归纳总结都有严格的适用范围，使用时必须小心翼翼。但是逻辑推理没有此限制。"</p><span>《穿透叙事》1.4</span></div>
+      <div class="q" data-kg="quote"><p>"'证明'与'拟合结果显著'是完全不同的概念。"</p><span>《穿透叙事》1.4</span></div>
+      <div class="q" data-kg="quote"><p>"只有因果性是可以传递的，相关性是不能传递的。"</p><span>播客 09:53</span></div>
+      <div class="q" data-kg="quote"><p>"如果连投五次硬币，每次都是正面朝上，首先应该检验硬币是否均匀。"</p><span>播客 11:56</span></div>
+      <div class="q" data-kg="quote"><p>"地心说不是没有解释能力，它是缺乏预测能力。地心说被日心说取代，是因为后者的预测能力更强。"</p><span>播客 14:53</span></div>
+      <div class="q" data-kg="quote"><p>"贴标签的行为它本身就是一种价值判断，然后你再根据价值判断的结果来评估股票的价值，那这其实是涉嫌循环论证的。"</p><span>播客 15:55</span></div>
+      <div class="q" data-kg="quote"><p>"我们生活在一个有限样本、有限时间的世界里，可能轮不到大数定律登场，特异性和随机性是更重要的力量。"</p><span>《穿透叙事》1.4</span></div>
+      <div class="q" data-kg="quote"><p>"能钓到多少鱼，不仅取决于钓鱼者的水平，还取决于池塘里有多少鱼。"</p><span>《穿透叙事》1.4</span></div>
+      <div class="q" data-kg="quote"><p>"当信息过载成为常态的时候，分析师基于公开信息的定价能力才是终极阿尔法。"</p><span>播客 22:32</span></div>
+      <div class="q" data-kg="quote"><p>"估值是一项科学，或者说估值的科学的成分应该要比它的艺术成分要给予远远更多的权重。"</p><span>播客 24:34</span></div>
+    </div>
+  </section>
+
+  <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 5 / 5</span>
+      <span class="tag">研究方法论</span>
+      <span class="tag g">ELI5 版 · v1</span>
+    </div>
+    <b>素材来源</b>：《穿透叙事》前言、1.4（三条方法论要点、图 1-13～1-19 及全部脚注案例）；《叙事经济学（2026 版）》1.1、5.3、5.5；播客《面基》05:17、09:18–17:24、22:32–25:05、58:35–01:01:29。<br>
+    <b>数字核对</b>：10 次 8 正面 10.94%、10 000 次临界 5 098 / 4 902、贝叶斯 30.77% 与 10.0%、0.8⁴≈0.41、0.999¹⁰⁰⁰≈0.37，均按书中公式复算一致。§3 三圆图为按图 1-13 文字描述重绘。<br>
+    <b>本页在框架中的位置</b>：五个承重概念中的第五个，是产生其余四个（<a href="/html/zou-endgame">终局</a>、<a href="/html/zou-discount-rate">折现率</a>、<a href="/html/zou-auction">拍卖机制</a>、<a href="/html/zou-alpha">叙事变化</a>）的元规则。总览见 <a href="/html/zou-narrative-map">叙事框架总览</a>。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

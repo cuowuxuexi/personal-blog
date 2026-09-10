@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-alpha/" />
+<title>叙事变化 = 超额收益 · 兑现叙事只赚折现率（邹佩轩叙事框架 · 4）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--author),var(--accent));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+.card p.lead{font-size:14.5px;color:var(--ink2)}
+.card p.lead b{color:var(--ink)}
+
+/* ---------- eli5 ---------- */
+.eli5{background:var(--gold-soft);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0}
+.eli5 .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+.eli5.au em{background:#fff}
+
+/* ---------- claim ---------- */
+.claim{margin-top:18px;padding:20px 24px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px}
+.claim-sub{margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+
+/* ---------- formula ---------- */
+.formula{margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink)}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--author)}
+.formula .hl{background:var(--author-soft);padding:0 6px;border-radius:5px}
+.formula .dim{color:var(--ink3)}
+
+/* ---------- gloss ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- mini metric cards ---------- */
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+.mini .v .arrow{color:var(--ink3);font-weight:400;margin:0 4px}
+
+/* ---------- essence ---------- */
+.essence{border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);padding:26px 28px;margin-bottom:20px}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence p+p{margin-top:10px}
+.essence .eli5{margin:16px 0 0}
+
+/* ---------- n-sensitivity strip ---------- */
+.nstrip{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+.nstrip div{flex:1;min-width:72px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center}
+.nstrip .n{font-size:11px;color:var(--ink3);font-weight:700}
+.nstrip .p{font-size:15px;font-weight:700;color:var(--ink)}
+.nstrip .ok{border-color:#b9d3c8;background:var(--author-soft)}
+.nstrip .ok .p{color:var(--author)}
+.strip-note{font-size:12.5px;color:var(--ink3)}
+
+/* ---------- solve table ---------- */
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+table.solve th,table.solve td{padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--line)}
+table.solve thead th:first-child{text-align:left}
+table.solve tbody th{text-align:left;color:var(--ink2);font-weight:700;background:#fbfcfd;white-space:nowrap}
+table.solve tr.base td{background:var(--author-soft);color:#0f2b23;font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+table.solve td.pick{outline:2px solid var(--author);outline-offset:-2px;border-radius:6px}
+table.solve td.pick2{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:6px}
+.axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3);margin-top:8px;padding:0 2px}
+.axis b{color:var(--ink2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.legend .l1::before{background:var(--author-soft);border:1px solid #b9d3c8}
+.legend .l2::before{border:2px solid var(--author)}
+.legend .l3::before{border:2px dashed var(--accent)}
+
+/* ---------- addon / grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.addon{border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;display:flex;flex-direction:column}
+.addon .n{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.addon p+p{margin-top:8px}
+.addon .eli5{margin:12px 0 0;padding:12px 14px}
+.addon .eli5 p{font-size:13.5px}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75}
+.fml b{color:#0f2b23}
+.fml .dim{color:#6b7d75}
+
+/* ---------- trap table ---------- */
+table.trap{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;margin-top:12px}
+table.trap th,table.trap td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.trap thead th{font-size:12px;color:var(--ink2);background:#fbfcfd}
+table.trap tbody th{text-align:left;color:var(--ink2);font-weight:600;white-space:nowrap}
+table.trap td.up{color:var(--red);font-weight:700}
+table.trap td.dn{color:var(--author);font-weight:700}
+table.trap tr.pe td{background:#fbfcfd;font-weight:700}
+
+/* ---------- compare rows ---------- */
+.consensus{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:14px}
+.crow{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+@media(max-width:760px){.crow{grid-template-columns:1fr}}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+.crow p b{color:var(--ink)}
+
+/* ---------- callout ---------- */
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--author)}
+.qa .item:nth-child(2){border-top-color:var(--accent)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--red)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quotes ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:15px 18px}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <style>
+  .shapes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+  @media(max-width:800px){.shapes{grid-template-columns:1fr}}
+  .shape{border:1px solid var(--line);border-radius:13px;padding:16px 18px;background:#fff}
+  .shape .n{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px;color:var(--author)}
+  .shape h4{font-size:15px;margin-bottom:6px}
+  .shape p{font-size:13.5px;color:var(--ink2)}
+  .shape svg{width:100%;height:90px;display:block;margin:6px 0 8px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:14px}
+  @media(max-width:760px){.split{grid-template-columns:1fr}}
+  .split>div{padding:16px 20px}
+  .split .l{background:#fbfcfd;border-right:1px solid var(--line)}
+  .split .t{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
+  .split .l .t{color:var(--red)}
+  .split .r .t{color:var(--author)}
+  .split p{font-size:13.5px;color:var(--ink2)}
+  .split p b{color:var(--ink)}
+  </style>
+
+  <nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>叙事变化与超额收益</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-kg="concept">
+    <h1>叙事变化 = 超额收益：兑现叙事只赚折现率</h1>
+    <div class="theline">
+      前面讲的都是<b>什么决定股价</b>。这一页讲<b>什么决定股价的涨跌</b>——两者有本质区别。<br>
+      结论只有一句：叙事不变时，持有一年的收益率<b>严格等于折现率</b>，与业绩曲线的形状无关；超过折现率的部分，<b>只能</b>来自新叙事与旧叙事的估值差。增速本身不产生超额收益。
+    </div>
+    <div class="nav">
+      <span class="nl">本页回答五个问题</span>
+      <a href="#s1">① 为什么只赚折现率</a>
+      <a href="#s2">② 收益该怎么拆</a>
+      <a href="#s3">③ 三种走势</a>
+      <a href="#s4">④ 长牛是拼出来的</a>
+      <a href="#s5">⑤ 实证：增速与涨幅无关</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 ===== -->
+  <section>
+    <div class="card">
+      <div class="shead" style="margin-bottom:10px">
+        <div class="snum">0</div>
+        <h2>先说结论：增速不产生超额收益，叙事的变化才产生</h2>
+      </div>
+      <div class="eli5 au" data-kg="concept">
+        <div class="lbl">ELI5 · 许诺精彩的未来，拿走现在的全部</div>
+        <p>一笔股票交易，是一个人把公司<em>目之所及的全部未来</em>折到今天、打包卖给另一个人。买的人付的价钱里，已经包含了他相信的全部未来。之后公司按剧本走，他赚的只是"等待的报酬"——折现率。剧本一字不差地兑现，他不多赚一分。</p>
+        <p>想多赚，只有一条路：<b>剧本改了</b>，而且是往好的方向改。增速再高，只要它早就写在剧本里，就不是你的超额收益。</p>
+      </div>
+      <div class="claim" data-kg="concept">
+        <p class="claim-main">兑现叙事，赚折现率；改变叙事，赚超额收益。两者与时间无关的那一部分，就是 alpha。</p>
+        <p class="claim-sub">这一条从数学上直接推出：景气度投资框架缺乏底层逻辑闭环，它本质上在否认市场有效、认为市场定价只看短期。真实的市场是<b>动态有效</b>的——今天无效、明天有效、后天高估、再回来。研究的意义就在这个回归过程里。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 推导 ===== -->
+  <section id="s1">
+    <div class="shead">
+      <div class="snum">1</div>
+      <h2>为什么只赚折现率：P<sub>1</sub> / P<sub>0</sub> = 1 + r，分子全部约掉</h2>
+      <span class="sub">DCF 从静态模型升级为动态模型</span>
+    </div>
+    <div class="essence" data-kg="concept">
+      <div class="tag-e">推导</div>
+      <h3>每个时点的 DCF 都是一套独立的叙事。如果 t<sub>1</sub> 仍在演绎 t<sub>0</sub> 的叙事，两个时点的股价之比严格等于 (1 + r)，与业绩是增长、下滑还是周期震荡无关。</h3>
+      <p>t<sub>0</sub> 的股价 P<sub>0</sub> 是从 t<sub>0</sub> 看到的所有未来现金流的折现和；t<sub>1</sub> 的股价 P<sub>1</sub> 是从 t<sub>1</sub> 看到的。叙事没变，就是同一串现金流，只是坐标轴右移了一格——每一项都少折一年，整体乘上 (1 + r)。曲线形状是三角形还是五角星，no difference。</p>
+      <div class="mini" data-kg="metric">
+        <div><div class="k">t<sub>0</sub> 合理股价</div><div class="v">219.9<br><small>现金流 10，预期 20% 增长 5 年，r = 10%</small></div></div>
+        <div><div class="k">t<sub>1</sub> 合理股价（除权）</div><div class="v">229.9<br><small>预期兑现，还剩 4 年 20%</small></div></div>
+        <div><div class="k">除权涨幅 + 股息率</div><div class="v">4.54% + 5.46%<br><small>分红 12 元，全额分红</small></div></div>
+        <div><div class="k">持有期收益率</div><div class="v">10.0%<br><small>= 折现率</small></div></div>
+      </div>
+      <p>把假设改成<b>每年下滑 20%</b>，合理股价 41.6 → 37.7，除权跌 9.24%，但股息率 19.24%，加起来仍是 10.0%。一家确定增长、一家马上要倒闭，如果都没有叙事变化，<b>两条股价曲线可以重合</b>——都在兑现自己的叙事，都赚折现率。</p>
+      <div class="eli5" data-kg="concept">
+        <div class="lbl">ELI5 · 走路费</div>
+        <p>票价里已经写好了后面每一站的风景。你坐一年，风景按图出现，你拿到的只是"坐了一年车"的报酬。窗外是高山还是平原，不影响这笔报酬——它只影响报酬里多少是分红、多少是涨价。</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div class="callout blue" style="margin-top:0" data-kg="caveat">
+        <div class="t">A 股的推论：确定下滑可能比确定增长更容易赚到折现率</div>
+        <p>A 股是乐观资金定价。预期"确定下滑"的公司大概率真的下滑，赚到折现率；预期"确定增长"的公司未必那么确定，未必赚到折现率。于是 2021 年以来，绩优股指数（全 A ROE 前 100）始终没跑赢亏损股指数，2024 年 9 月后说亏损股指数"遥遥领先"并不过分。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《穿透叙事》1.2 前半、图 1-5、6.3 表 6-2 / 6-3　·　《叙事经济学 2026》1.5　·　播客 33:26–35:30　·　另一组数字（6% 折现率、383.6 → 394.7）见 <a href="/html/dcf-eli5#s4">DCF 画布 §4</a></div>
+    </div>
+  </section>
+
+  <!-- ===== 2 收益拆分 ===== -->
+  <section id="s2">
+    <div class="shead">
+      <div class="snum">2</div>
+      <h2>收益该怎么拆：不是"业绩 + 估值"，是"必要收益 + 叙事差"</h2>
+    </div>
+    <div class="card">
+      <div class="split" data-kg="concept">
+        <div class="l">
+          <div class="t">常见拆法 · 有问题</div>
+          <p>股价 = EPS × PE，所以涨幅 = 业绩增长 + 估值变化。</p>
+          <p style="margin-top:8px">问题：<b>两者存在内生性</b>。天花板不变时，业绩每增长一步就离天花板更近一步，PE <b>就应该</b>持续下降——"业绩涨了估值跌了"不是两件事，是一件事。PE 的历史分位数因此没有意义。</p>
+        </div>
+        <div class="r">
+          <div class="t">正确拆法 · 按预期拆</div>
+          <p><b>第一部分：必要收益率</b>，等于折现率 = 时间成本 + 风险补偿。无论叙事是什么，只要如期兑现，持有期回报就是它。</p>
+          <p style="margin-top:8px"><b>第二部分：超额收益率</b>，来自叙事本身的变化，即新叙事与旧叙事的估值差。<b>与时间无关</b>——新预期一形成，股价迅速修正到位。</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">有时 PE 不降反稳，是因为市场随着业绩增长<b>等比例上修了天花板</b>；PE 上行，则是上修幅度大于业绩增速。所以真正重要的不是业绩增速，而是<b>业绩中释放的信号，能否支持修正市场对终局的预期</b>。所有超过折现率的收益赚的都是估值的钱，而折现率本身也是估值的一部分——权益投资的所有收益，赚的都是估值的钱。</p>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》1.5（p11）　·　《穿透估值》1.2.3"在股权投资层面，一切收益都来自估值"</div>
+    </div>
+  </section>
+
+  <!-- ===== 3 三种走势 ===== -->
+  <section id="s3">
+    <div class="shead">
+      <div class="snum">3</div>
+      <h2>三种走势：厂字、A 字、长牛</h2>
+      <span class="sub">用叙事的展望期与兑现期切分公司，而不是用自然时间</span>
+    </div>
+    <div class="card">
+      <p class="lead">每一段叙事分为<b>展望期</b>与<b>兑现期</b>。通过"第一分水岭"（逻辑初步验证）后，正反馈往往启动；等情绪稳定后进入"第二分水岭"，逻辑持续证实还是证伪，决定了走势的形状。</p>
+      <div class="shapes" data-kg="concept">
+        <div class="shape">
+          <div class="n">厂字 · 叙事一次兑现</div>
+          <svg viewBox="0 0 200 90" aria-hidden="true"><polyline points="8,78 40,74 70,30 120,26 190,28" fill="none" stroke="#1f5c4a" stroke-width="2.5"/><line x1="70" y1="10" x2="70" y2="84" stroke="#c9cfda" stroke-dasharray="3 3"/><text x="74" y="16" font-size="9" fill="#8d95a8">叙事修复完毕</text></svg>
+          <h4>上一个台阶，然后横住</h4>
+          <p>叙事变化时股价快速修复到位；之后业绩如期兑现，<b>增长全部用来消化估值</b>，超额收益归零，股价与宽基指数重合。这是通过第二分水岭的样子。</p>
+        </div>
+        <div class="shape">
+          <div class="n" style="color:var(--red)">A 字 · 叙事没兑现</div>
+          <svg viewBox="0 0 200 90" aria-hidden="true"><polyline points="8,78 40,74 80,22 120,36 150,60 190,76" fill="none" stroke="#c0392b" stroke-width="2.5"/><line x1="80" y1="10" x2="80" y2="84" stroke="#c9cfda" stroke-dasharray="3 3"/><text x="84" y="16" font-size="9" fill="#8d95a8">证伪</text></svg>
+          <h4>先涨完，再漫长下跌</h4>
+          <p>市场对叙事非常美好，股价提前反映；第二分水岭证伪后是漫长的下跌。流动性冲击带来的"竖着拔估值"多以此收场。<b>大部分公司无法通过第二分水岭。</b></p>
+        </div>
+        <div class="shape">
+          <div class="n">长牛 · 多个厂字拼接</div>
+          <svg viewBox="0 0 200 90" aria-hidden="true"><polyline points="8,80 30,78 50,58 80,56 100,36 130,34 150,16 190,14" fill="none" stroke="#1f5c4a" stroke-width="2.5"/><text x="34" y="52" font-size="9" fill="#8d95a8">①</text><text x="86" y="30" font-size="9" fill="#8d95a8">②</text><text x="136" y="12" font-size="9" fill="#8d95a8">③</text></svg>
+          <h4>上台阶式，不是慢慢涨上去</h4>
+          <p>拆开看，是两三轮厂字走势拼起来的。长牛的实质<b>不是业绩稳定增长，而是持续的叙事变化</b>。扎实的业绩增长只是必要条件——起点叙事低、叙事随业绩慢慢上修，才是长牛的条件。</p>
+        </div>
+      </div>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》4.1　·　播客 18:33–20:46</div>
+    </div>
+  </section>
+
+  <!-- ===== 4 长牛 ===== -->
+  <section id="s4">
+    <div class="shead">
+      <div class="snum">4</div>
+      <h2>长牛是拼出来的：隆基的三轮叙事，和一个数学上的残酷结论</h2>
+    </div>
+    <div class="card">
+      <div class="consensus" data-kg="metric">
+        <div class="crow">
+          <div class="a"><span class="who z">第一轮 · 2014–2015 · 单晶替代多晶</span><p>金刚线技术在单晶上突破。2015 年 4 月完成估值修复，此后到 2017 年 7 月股价与沪深 300 基本重合——<b>标准厂字</b>，进入兑现期。</p></div>
+          <div class="b"><span class="who z">第二轮 · 2017 · 政策改变竞争格局</span><p>PERC 电池对单晶效率的提升远大于多晶，叠加能源局政策。预期单晶彻底取代多晶，股价再上台阶，之后业绩如期兑现，<b>又是厂字</b>。</p></div>
+        </div>
+        <div class="crow">
+          <div class="a"><span class="who z">第三轮 · 2020–2021 · 全球双碳共振</span><p>2021 年 7 月修复完毕。到 2022 年底虽略跌，主要是宽基拖累，超额收益层面仍是厂字。<b>2023 年后竞争格局恶化，叙事没兑现，A 字。</b></p></div>
+          <div class="b"><span class="who y">为什么第三轮没兑现</span><p>前两轮是<b>内生技术进步</b>：先降成本再激发需求，成本曲线更陡。第三轮是<b>外生政策风口</b>：先给需求再倒逼降本，存量资产阶段性暴利，产能随即扩张，供给曲线被拉平，再投资的增厚大幅减少。</p></div>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">拉长看，隆基的股价和业绩似乎匹配；身临其境看，<b>股价一直提前反映叙事</b>。长牛的每一个台阶，都是一次叙事变化。</p>
+      <div class="callout" data-kg="caveat">
+        <div class="t">数学上的残酷结论：大部分人赚不到长牛股的大钱</div>
+        <p>之所以有持续的叙事变化，恰恰是因为<b>大部分人看错了</b>——如果大部分人都看对，股价一开始就把预期打满，不会再有叙事变化。所以长牛股存在的前提，就是多数人在多数时候不在车上。腾讯从上市到 2021 年初涨了千倍，是无数或大或小的叙事变化拼起来的，不是一条 EPS 曲线撑起来的。</p>
+      </div>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》4.1–4.2（p42–43）、第 8 章　·　《穿透叙事》第 2 章、第 7 章　·　播客 19:17–21:22</div>
+    </div>
+  </section>
+
+  <!-- ===== 5 实证 ===== -->
+  <section id="s5">
+    <div class="shead">
+      <div class="snum" style="background:var(--red)">5</div>
+      <h2>实证：业绩增速对股价的影响，近年来已趋于中性</h2>
+      <span class="sub">用全 A 样本的散点图，直接证伪"PE 与增速正相关"</span>
+    </div>
+    <div class="card">
+      <div class="grid2">
+        <div class="addon">
+          <div class="n">实际增速 vs 全年涨幅</div>
+          <h4>视觉上有点相关，拟合度靠负增长的公司撑着</h4>
+          <p>2023–2025 年全 A 样本，横轴全年实际业绩增速、纵轴全年涨幅。A 股对利空反映不充分，业绩负增长的公司大多表现不好；但对<b>业绩正增长的公司，涨幅与当年增速几乎没有关系</b>。这不是市场无效，恰恰是定价越来越前瞻。</p>
+          <p>有观点先按增速分组取均值再拟合，得出正相关——这是人为提高某些组别的权重、靠异常值抬高拟合优度，不能用来指导个股。</p>
+        </div>
+        <div class="addon">
+          <div class="n">年初一致预期增速 vs 全年涨幅</div>
+          <h4>不开后视镜，解释力不仅不高，还常常是负的</h4>
+          <p>想吃到全年涨幅得年初买，年初能拿到的只有"预期增速"。用年初 Wind 一致预期作横轴：<b>2023 年几乎无关；2024 年负相关</b>——一开始预期越高，低于预期的可能性越大；2025 年有点正相关。所有年份都通不过显著性检验。</p>
+          <p>景气度投资（狭义：按增速、增速边际变化、是否超预期选股）在 2022–2024 年、2025 年 6–7 月持续失效，很多时候是反指。</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:14px">超额收益的窗口期非常短暂，在时间轴上分布极不均匀。随着信息传播工具普及和 AI 发展，从无效到有效的均值回归越来越快：一轮上涨从几年压缩到半年，再到几个月——股价横盘很久，一个利好，一个月涨完；跌起来也可以很快。<b>识别叙事变化的那一刻，就是有效市场的一部分。</b></p>
+      <div class="src" data-kg="source">📖 《叙事经济学 2026》5.2–5.3　·　《穿透叙事》1.4 图 1-17 / 1-18　·　播客 26:16–27:41、01:04:17–01:06:59　·　宁德 vs 银行案例见 <a href="/html/zou-endgame#s5">空间叙事与终局 §5</a></div>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6">
+    <div class="shead">
+      <div class="snum" style="background:var(--gold)">6</div>
+      <h2>读完带走：四问四答</h2>
+      <span class="sub">如果只记四句话</span>
+    </div>
+    <div class="qa">
+      <div class="item" data-kg="concept">
+        <div class="qq">Q1 · 超额收益从哪来</div>
+        <div class="qh">只从叙事变化来。叙事不变，P₁/P₀ = 1 + r，你赚的就是折现率。</div>
+        <p>增长 20% 与下滑 20% 的公司，如期兑现时持有期收益率都是 10%，只是分红与涨价的分配不同。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q2 · 收益怎么拆</div>
+        <div class="qh">必要收益（折现率）+ 叙事差（与时间无关，迅速修正）。</div>
+        <p>不要拆成"业绩 + 估值"，两者内生：天花板不变，增长本身就应该压低 PE。PE 分位数没有意义。</p>
+      </div>
+      <div class="item" data-kg="concept">
+        <div class="qq">Q3 · 三种走势怎么读</div>
+        <div class="qh">厂字 = 兑现，A 字 = 证伪，长牛 = 多个厂字拼接。</div>
+        <p>长牛的条件不是业绩增长，是起点叙事低 + 持续的叙事变化。大部分人赚不到长牛的钱，因为持续变化的前提是大部分人看错。</p>
+      </div>
+      <div class="item" data-kg="caveat">
+        <div class="qq">Q4 · 那增速还看不看</div>
+        <div class="qh">看，但只把它当"能否到达天花板的观察窗口"，不把它当收益来源。</div>
+        <p>全 A 数据：正增长公司的涨幅与增速无关，年初预期增速与涨幅有时负相关。真正重要的是业绩释放的信号能否改写终局预期。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 原话 ===== -->
+  <section>
+    <div class="shead">
+      <div class="snum">“</div>
+      <h2>原话摘录</h2>
+    </div>
+    <div class="quotes">
+      <div class="q" data-kg="quote"><p>"增速本身不产生超额收益，叙事的变化才产生超额收益。兑现叙事就是赚折现率，这也是必要收益率的定义。"</p><span>播客 08:21</span></div>
+      <div class="q" data-kg="quote"><p>"两个公司的叙事可能完全不一样，一个公司确定增长，另一个公司马上就要倒闭了，两者的股价走势可能是重合的，都在兑现自己的叙事。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"虽然股价 = EPS · PE，但是股价涨幅不能分拆为业绩增长和估值变化，两者存在内生性。"</p><span>《叙事经济学 2026》1.5</span></div>
+      <div class="q" data-kg="quote"><p>"长牛的实质并不是业绩稳定增长，而是多个正向叙事的拼接。大部分人无法从长牛股上赚到大钱，因为之所以有持续叙事的变化，恰恰是因为大部分人都看错了。"</p><span>《叙事经济学 2026》4.1</span></div>
+      <div class="q" data-kg="quote"><p>"业绩长牛不一定会带来股价长牛，它只是一个必要条件。"</p><span>播客 20:46</span></div>
+      <div class="q" data-kg="quote"><p>"景气度框架缺乏底层逻辑支撑，本质是在否认市场的有效性，认为市场定价仅聚焦短期维度。"</p><span>《穿透叙事》1.2</span></div>
+      <div class="q" data-kg="quote"><p>"市场有效是一个长期的动态的过程……今天是无效的，明天马上就有效了，后天有可能高估了，大后天又有效了。"</p><span>播客 01:04:25–01:05:34</span></div>
+      <div class="q" data-kg="quote"><p>"权益投资的所有收益赚的都是估值的钱。"</p><span>《叙事经济学 2026》1.5</span></div>
+    </div>
+  </section>
+
+  <footer data-kg="source">
+    <div class="tagrow" style="margin-bottom:12px">
+      <span class="tag a">邹佩轩叙事框架 · 4 / 5</span>
+      <span class="tag">叙事变化 / 超额收益</span>
+      <span class="tag g">ELI5 版 · v1</span>
+    </div>
+    <b>素材来源</b>：《穿透叙事》1.2 前半（P₁/P₀ 推导、图 1-5）、1.4（图 1-17 / 1-18）、6.3（表 6-2 / 6-3）；《叙事经济学（2026 版）》1.5（收益分拆）、4.1–4.2（三种走势、隆基三轮）、5.2–5.3（全 A 实证）；播客《面基》08:21、18:33–21:47、26:16–27:41、33:26–35:30、01:04:17–01:06:59。<br>
+    <b>图表说明</b>：§3 三张走势示意图为按文字描述手绘的形状示意，不对应任何具体股票的真实价格。<br>
+    <b>本页在框架中的位置</b>：五个承重概念中的第四个，把 <a href="/html/zou-endgame">终局</a>、<a href="/html/zou-discount-rate">折现率</a>、<a href="/html/zou-auction">拍卖机制</a> 串成收益来源的定理；它的反面是景气度投资。总览见 <a href="/html/zou-narrative-map">叙事框架总览</a>。<br>
+    <b>风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

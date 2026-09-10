@@ -124,6 +124,22 @@ test('path plus hash still checks the fragment', () => {
   assert.ok(failures.some((line) => line.includes('#ghost')), failures.join('\n'))
 })
 
+test('cross-page hash is checked against the target standalone file, not the current one', () => {
+  const catalog = buildCatalogTitleLinks(REPO_ROOT)
+  const html = `<!DOCTYPE html><html><head><base href="/html/zou-narrative-map/" /></head><body>
+    <nav class="research-breadcrumb"><strong>叙事框架总览</strong></nav>
+    <a href="/html/zou-auction#s4">exists there</a>
+    <a href="/html/zou-auction#nope">missing there</a>
+  </body></html>`
+  const failures = checkHtmlSource(html, {
+    catalog,
+    publicHref: '/html/zou-narrative-map',
+    label: 'fixture-cross-hash',
+  })
+  assert.ok(!failures.some((line) => line.includes('#s4')), failures.join('\n'))
+  assert.ok(failures.some((line) => line.includes('#nope') && line.includes('/html/zou-auction')), failures.join('\n'))
+})
+
 test('unknown standalone path fails', () => {
   const catalog = buildCatalogTitleLinks(REPO_ROOT)
   const html = `<!DOCTYPE html><html><body>

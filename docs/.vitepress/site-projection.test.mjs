@@ -103,13 +103,27 @@ test('research / philosophy / big-question sidebars project from structure decla
     researchIndustrySidebarGroups[1].items[2].items.map((i) => i.link),
     researchSubjects(structureNodes, '互联网').map((item) => item.link),
   )
-  assert.deepEqual(philosophySidebarGroups[0].items.map((i) => i.link), [
+  assert.deepEqual(philosophySidebarGroups[0].items.map((item) => (
+    item.items
+      ? { text: item.text, link: item.link, items: item.items.map((child) => child.link) }
+      : item.link
+  )), [
     '/投资哲学/',
     '/投资哲学/认识与证据/',
     '/投资哲学/市场与价格/',
     '/投资哲学/企业与回报/',
     '/投资哲学/个人与研究边界/',
-    '/投资哲学/DCF/',
+    {
+      text: '邹佩轩投资哲学框架',
+      link: '/投资哲学/邹佩轩投资哲学框架/',
+      items: [
+        '/html/zou-endgame',
+        '/html/zou-discount-rate',
+        '/html/zou-auction',
+        '/html/zou-alpha',
+        '/html/zou-method',
+      ],
+    },
   ])
   assert.deepEqual(bigQuestionSidebarGroups[0].items.map((i) => i.link), [
     '/大问题/',

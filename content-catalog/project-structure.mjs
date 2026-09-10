@@ -43,10 +43,14 @@ function fmOrder(value) {
   return undefined
 }
 
-function fmCollapsed(value, fallback) {
+function fmBool(value, fallback) {
   if (value === false || value === 'false' || value === 0) return false
   if (value === true || value === 'true' || value === 1) return true
   return fallback
+}
+
+function fmCollapsed(value, fallback) {
+  return fmBool(value, fallback)
 }
 
 function inferResearchRole(rest) {
@@ -120,7 +124,9 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
 
   const { fm } = parseFrontmatter(raw)
   let link
-  const hrefOverride = inferred.role === 'subject-chapter' ? standalonePublicHref(fm) : undefined
+  const hrefOverride = (inferred.role === 'subject-chapter' || inferred.role === 'topic')
+    ? standalonePublicHref(fm)
+    : undefined
   if (hrefOverride === null) {
     link = null
   } else if (hrefOverride) {
@@ -155,6 +161,9 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
     link,
     relativePath: rel,
     pageClassOk: pageClassOk(kind, inferred.role, fm.pageClass),
+    navGroup: fmString(fm, 'navGroup') || null,
+    navGroupOrder: fmOrder(fm.navGroupOrder),
+    navGroupSidebar: fmBool(fm.navGroupSidebar, true),
   }
   return node
 }
@@ -256,13 +265,17 @@ export function industryShortName(industry) {
   return String(industry?.sidebarText || industry?.title || industry?.slug || '').replace(/行业$/, '')
 }
 
-export function topicCards(nodes, kindId) {
-  return topicNodes(nodes, kindId).map((topic) => ({
-    title: topic.title,
-    link: topic.link,
-    hubIndex: topic.hubIndex || '',
-    hubLead: topic.hubLead || topic.description || '',
-  }))
+export function topicCards(nodes, kindId, options) {
+  const wanted = options?.navGroup || ''
+  return topicNodes(nodes, kindId)
+    .filter((topic) => (topic.navGroup || '') === wanted)
+    .map((topic) => ({
+      title: topic.title,
+      link: topic.link,
+      hubIndex: topic.hubIndex || '',
+      hubLead: topic.hubLead || topic.description || '',
+      navGroup: topic.navGroup || '',
+    }))
 }
 
 export function industryMapDirectory(nodes, industrySlug) {
@@ -379,6 +392,32 @@ export function projectResearchSidebar(nodes) {
   return groups
 }
 
+function topicGroupKeys(topic) {
+  return new Set([topic.sidebarText, topic.title].filter(Boolean))
+}
+
+function navGroupChildren(nodes, kindId, parent) {
+  const keys = topicGroupKeys(parent)
+  return topicNodes(nodes, kindId).filter((topic) => (
+    keys.has(topic.navGroup) && topic.navGroupSidebar !== false
+  ))
+}
+
+function sidebarTopicItem(topic, children) {
+  if (!children.length) {
+    return { text: topic.sidebarText, link: topic.link }
+  }
+  return {
+    text: topic.sidebarText,
+    link: topic.link,
+    collapsed: false,
+    items: children.map((child) => ({
+      text: child.sidebarText,
+      link: child.link,
+    })),
+  }
+}
+
 export function projectTopicSidebar(kindId, nodes) {
   const kind = getContentKind(kindId)
   const hub = hubNode(nodes, kindId)
@@ -387,7 +426,8 @@ export function projectTopicSidebar(kindId, nodes) {
     items.push({ text: kind.hubSidebarText || '总览', link: hub.link })
   }
   for (const topic of topicNodes(nodes, kindId)) {
-    items.push({ text: topic.sidebarText, link: topic.link })
+    if (topic.navGroup) continue
+    items.push(sidebarTopicItem(topic, navGroupChildren(nodes, kindId, topic)))
   }
   return [{
     text: kind.label,
@@ -405,7 +445,10 @@ export function projectBigQuestionSidebar(nodes) {
 
 export function projectTopicNavItems(kindId, nodes) {
   const [group] = projectTopicSidebar(kindId, nodes)
-  return group?.items || []
+  return (group?.items || []).map((item) => ({
+    text: item.text,
+    link: item.link,
+  }))
 }
 
 export function flattenStructureLinks(nodes, kindId) {
