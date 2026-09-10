@@ -1821,6 +1821,20 @@
   color: var(--vp-c-brand-1);
 }
 
+.subject-index .standalone-html__open {
+  margin: 1rem 0 0.6rem;
+}
+
+.subject-index .journey-html-embed {
+  display: block;
+  width: 100%;
+  height: min(86vh, 1400px);
+  margin: 0 0 2rem;
+  border: 1px solid var(--section-line);
+  border-radius: 16px;
+  background: var(--vp-c-bg-soft);
+}
+
 .invest-paths {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

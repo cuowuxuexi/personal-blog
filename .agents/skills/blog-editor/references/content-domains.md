@@ -29,7 +29,7 @@
 
 ## 投资哲学
 
-正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增主题只写主题目录的 `index.md`（`order` / `hubIndex` / `hubLead`）与 `README.md`；总览卡片、nav 与 `/投资哲学/` sidebar 由内容目录投影。现有主题页底部的兄弟主题链接若该页面族继续手写互链，才同步改那些页。普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
+正文位于 `docs/投资哲学/<主题>/index.md`，总览在 `docs/投资哲学/index.md`。新增主题只写主题目录的 `index.md`（`order` / `hubIndex` / `hubLead`），主题目录不建 `README.md`（这与投研章节不同）；总览卡片、nav 与 `/投资哲学/` sidebar 由内容目录投影。作者交来 HTML 画布时：拷进 `docs/public/html/<名字>/index.html`，主题页正文用 `<StandaloneHtml src="/html/<名字>" />` 内嵌，不要写 `publicHref`（`project-structure` 只在投研 `subject-chapter` 上读它，哲学主题页写了也不会直达）；这类内嵌 iframe 的高度按页面族挂在 `style.css` 的 `.subject-index` 下，不要为此改全局样式。现有主题页底部的兄弟主题链接若该页面族继续手写互链，才同步改那些页。普通正文修改不动 nav/sidebar，不进入 `posts.ts`。
 
 ## 大问题
 

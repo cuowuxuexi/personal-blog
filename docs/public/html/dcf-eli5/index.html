@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="HAzAczDX7qxOrQWbRbrNZU">
+<head data-page-node-id="E1biVO6Ik30NIovCcieyTE">
+<meta charset="UTF-8" data-page-node-id="ylK1VAA7DSUMhHItq53DsC">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="H8VuOrVj3CCcHvWBLrJ4rv">
+<base href="/html/dcf-eli5/" data-page-node-id="NWDXC38bcSVCWcmC5EEMCF" />
+<title>DCF 到底怎么用 · 知识画布（ELI5 版）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;
+  padding:40px 24px 80px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+
+/* ---------- header ---------- */
+.hero{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:38px 40px 32px;
+  margin-bottom:26px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{
+  font-size:12px;padding:4px 11px;border-radius:20px;
+  background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px;
+}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.r{background:var(--red-soft);color:var(--red)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{
+  margin-top:22px;padding:18px 22px;border-radius:12px;
+  background:linear-gradient(135deg,#f8fafc,#eef3f9);
+  border:1px solid var(--line);
+  font-size:17px;color:var(--ink);
+}
+.theline b{color:var(--accent)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{
+  font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--accent-soft);
+  color:var(--accent);text-decoration:none;font-weight:600;
+}
+.nav a:hover{background:#dbe7f3}
+
+/* ---------- section ---------- */
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{
+  font-size:12px;font-weight:700;color:#fff;background:var(--ink);
+  width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;
+  align-self:center;
+}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px;
+}
+.card h4.ct{font-size:16px;margin-bottom:12px}
+
+/* ---------- eli5 block ---------- */
+.eli5{
+  background:var(--gold-soft);border-left:3px solid var(--gold);
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:14px 0;
+}
+.eli5 .lbl{
+  font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;margin-bottom:7px;
+}
+.eli5 p{font-size:15px;color:#3d3423}
+.eli5 p+p{margin-top:8px}
+.eli5 em{font-style:normal;background:#fff5d6;padding:1px 5px;border-radius:4px;font-weight:600}
+
+/* ---------- claim ---------- */
+.claim{
+  margin-top:18px;padding:20px 24px;border-radius:13px;
+  background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--accent);
+}
+.claim-main{
+  font-size:19px;font-weight:700;color:var(--ink);line-height:1.5;letter-spacing:-.2px;
+}
+.claim-sub{
+  margin-top:9px;font-size:13.5px;color:var(--ink2);line-height:1.75;
+}
+
+/* ---------- formula ---------- */
+.formula{
+  margin:14px 0;padding:18px 22px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);
+  font-size:17px;text-align:center;color:var(--ink);letter-spacing:.3px;line-height:1.9;
+}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;margin:0 4px}
+.formula .frac span{padding:0 6px;line-height:1.3}
+.formula .frac span:first-child{border-bottom:1.5px solid var(--ink);}
+.formula .small{font-size:12.5px;color:var(--ink3);display:block;margin-top:6px;letter-spacing:0}
+.formula b{color:var(--accent)}
+
+/* ---------- stages ---------- */
+.stages{display:grid;grid-template-columns:1fr 1.5fr 2.6fr;gap:8px;margin-top:16px}
+@media(max-width:760px){.stages{grid-template-columns:1fr}}
+.stg{border-radius:10px;padding:13px 15px;font-size:13px;color:var(--ink2);border:1px solid var(--line)}
+.stg .t{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:3px}
+.stg .y{font-size:11.5px;color:var(--ink3);margin-bottom:6px}
+.stg.s1{background:var(--accent-soft)}
+.stg.s2{background:var(--gold-soft)}
+.stg.s3{background:var(--green-soft)}
+.share{display:flex;height:24px;border-radius:6px;overflow:hidden;margin-top:14px;font-size:11.5px;color:#fff;font-weight:700}
+.share>div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.share .a{background:var(--accent)}
+.share .b{background:#d9a441}
+.share .c{background:var(--green)}
+.share-note{font-size:12.5px;color:var(--ink3);margin-top:8px}
+
+/* ---------- glossary ---------- */
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:800px){.gloss{grid-template-columns:1fr}}
+.gloss div{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink2)}
+.gloss b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+
+/* ---------- funnel ---------- */
+.funnel{margin:24px 0 6px}
+.frow{display:flex;align-items:center;gap:14px;margin-bottom:11px}
+.flabel{width:118px;flex:none;font-size:13px;color:var(--ink2);text-align:right;font-weight:600}
+.fbar-wrap{flex:1;background:#f0f2f6;border-radius:7px;height:34px;position:relative;overflow:hidden}
+.fbar{height:100%;border-radius:7px;display:flex;align-items:center;padding-left:14px;color:#fff;font-size:13px;font-weight:600}
+.fbar.b1{background:var(--accent)}
+.fbar.b2{background:#d98a7a}
+.fbar.b3{background:#c96f5c}
+.fbar.b4{background:var(--green)}
+.fval{width:64px;flex:none;font-size:15px;font-weight:700}
+.fnote{width:100%;padding-left:132px;font-size:12.5px;color:var(--ink3);margin-top:-4px;margin-bottom:12px}
+
+/* ---------- grid ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+
+.pcard{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;
+  display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s;
+}
+.pcard:hover{box-shadow:0 8px 28px rgba(20,30,50,.08);transform:translateY(-2px)}
+.pnum{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:9px;font-size:13px;font-weight:700;color:#fff;margin-bottom:12px;
+}
+.pcard h3{font-size:18px;margin-bottom:4px;letter-spacing:-.2px}
+.pmeta{font-size:12px;color:var(--ink3);margin-bottom:14px}
+.pcard ul{list-style:none;margin-top:14px}
+.pcard li{
+  font-size:14px;color:var(--ink2);padding-left:16px;position:relative;margin-bottom:8px;line-height:1.65;
+}
+.pcard li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--ink3)}
+.pcard li b{color:var(--ink);font-weight:600}
+
+/* ---------- scale (with zero axis) ---------- */
+.scale{margin-top:16px;border-top:1px dashed var(--line);padding-top:16px}
+.scale-t{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:1px;margin-bottom:10px}
+.srow{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.sdot{width:9px;height:9px;border-radius:50%;flex:none}
+.sname{width:110px;flex:none;font-size:12px;color:var(--ink2)}
+.gaxis{flex:1;height:20px;background:#f0f2f6;border-radius:5px;position:relative}
+.gaxis::before{content:"";position:absolute;left:25%;top:0;bottom:0;width:1.5px;background:#9aa3b5}
+.gfill{position:absolute;top:3px;bottom:3px;border-radius:4px}
+.gfill.neg{right:75%}
+.gfill.pos{left:25%}
+.snum2{width:52px;flex:none;font-size:12.5px;font-weight:700;text-align:right}
+.axis-note{display:flex;justify-content:space-between;padding-left:129px;padding-right:62px;font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* ---------- compare ---------- */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+@media(max-width:760px){.cmp{grid-template-columns:1fr}}
+.cmp>div{padding:22px 24px}
+.cmp .l{background:#fbfcfd;border-right:1px solid var(--line)}
+.cmp .r{background:#fff}
+.cmph{font-size:15px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.cmph .badge{font-size:10.5px;padding:2px 8px;border-radius:5px;font-weight:700}
+.badge.pos{background:var(--green-soft);color:var(--green)}
+.badge.neg{background:var(--red-soft);color:var(--red)}
+.cmp p{font-size:13.5px;color:var(--ink2);margin-top:8px}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-left:0}
+.tl-item{
+  display:grid;grid-template-columns:64px 1fr;gap:16px;
+  padding:13px 0;border-bottom:1px solid var(--line);
+}
+.tl-item:last-child{border-bottom:none}
+.tl-t{font-size:13px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.tl-c{font-size:14px;color:var(--ink2)}
+.tl-c b{color:var(--ink);font-weight:600}
+.tl-c .flag{color:var(--red);font-size:12px;margin-left:4px}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+.step{
+  border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:#fbfcfd;
+}
+.step .n{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:1px;margin-bottom:8px}
+.step h4{font-size:15px;margin-bottom:7px}
+.step p{font-size:13.5px;color:var(--ink2)}
+.step .ex{
+  margin-top:10px;padding:9px 12px;border-radius:8px;background:var(--gold-soft);
+  font-size:12.5px;color:#3d3423;line-height:1.65;
+}
+.step .ex b{color:var(--gold)}
+
+/* ---------- uses ---------- */
+.uses{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:800px){.uses{grid-template-columns:1fr}}
+.use{border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:#fff}
+.use .n{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:8px;color:var(--author)}
+.use h4{font-size:15px;margin-bottom:7px}
+.use p{font-size:13.5px;color:var(--ink2)}
+
+/* ---------- author (邹佩轩) ---------- */
+.author-c{background:var(--author)}
+.eli5.au{background:var(--author-soft);border-left-color:var(--author)}
+.eli5.au .lbl{color:var(--author)}
+.eli5.au p{color:#1e3f34}
+
+.consensus{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:none}
+.crow>div{padding:15px 20px}
+.crow .a{background:#fafbfc;border-right:1px solid var(--line)}
+.crow .b{background:#fff}
+.who{font-size:11px;font-weight:700;letter-spacing:.6px;margin-bottom:6px;display:block}
+.who.y{color:var(--accent)}
+.who.z{color:var(--author)}
+.crow p{font-size:13.5px;color:var(--ink2)}
+
+.vs{display:grid;grid-template-columns:1fr 46px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:8px}
+@media(max-width:760px){.vs{grid-template-columns:1fr}.vs .vm{display:none}}
+.vs>div{padding:20px 22px}
+.vs .vl{background:#fbfcfd;border-right:1px solid var(--line)}
+.vs .vr{background:var(--author-soft)}
+.vs .vm{
+  display:flex;align-items:center;justify-content:center;background:#f0f2f6;
+  font-size:12px;font-weight:800;color:var(--ink3);letter-spacing:1px;
+}
+.vsh{font-size:14px;font-weight:700;margin-bottom:8px}
+.vsh.y{color:var(--accent)}
+.vsh.z{color:var(--author)}
+.vs p{font-size:13.5px;color:var(--ink2);line-height:1.7}
+
+.addon{
+  border:1px solid var(--line);border-radius:13px;padding:20px 22px;background:#fff;
+  display:flex;flex-direction:column;
+}
+.addon .n{
+  font-size:11px;font-weight:700;color:var(--author);letter-spacing:1px;margin-bottom:8px;
+}
+.addon h4{font-size:15.5px;margin-bottom:9px;line-height:1.45}
+.addon p{font-size:13.5px;color:var(--ink2)}
+.src{font-size:11.5px;color:var(--ink3);margin-top:11px;padding-top:10px;border-top:1px dashed var(--line)}
+.fml{
+  background:#f6f8f7;border:1px solid #dde7e2;border-radius:9px;
+  padding:11px 15px;margin-top:11px;font-size:13px;color:#1e3f34;line-height:1.75;
+}
+.fml b{color:#0f2b23}
+
+/* ---------- essence block ---------- */
+.essence{
+  border:1px solid #cfe0d8;border-radius:16px;background:linear-gradient(135deg,#f3f8f6,#e9f2ee);
+  padding:26px 28px;margin-bottom:20px;
+}
+.essence .tag-e{font-size:11px;font-weight:700;color:var(--author);letter-spacing:1.2px;margin-bottom:8px}
+.essence h3{font-size:19px;line-height:1.45;margin-bottom:10px;color:#0f2b23}
+.essence p{font-size:14px;color:#1e3f34}
+.essence .mini{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0 10px;
+}
+@media(max-width:760px){.essence .mini{grid-template-columns:1fr 1fr}}
+.essence .mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px;text-align:center}
+.essence .mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.5px}
+.essence .mini .v{font-size:17px;font-weight:700;color:#0f2b23;margin-top:2px}
+.essence .mini .v small{font-size:11px;color:var(--ink3);font-weight:500}
+
+/* ---------- details (advanced) ---------- */
+details.adv{border:1px solid var(--line);border-radius:13px;background:#fff;grid-column:1/-1}
+details.adv summary{
+  cursor:pointer;padding:16px 22px;font-weight:700;font-size:15px;list-style:none;
+  display:flex;align-items:center;gap:10px;color:var(--ink);
+}
+details.adv summary::-webkit-details-marker{display:none}
+details.adv summary .lv{font-size:10.5px;padding:2px 8px;border-radius:5px;background:var(--purple-soft);color:var(--purple);font-weight:700;letter-spacing:.5px}
+details.adv summary::after{content:"展开 ▾";margin-left:auto;font-size:12px;color:var(--ink3);font-weight:500}
+details.adv[open] summary::after{content:"收起 ▴"}
+details.adv[open] summary{border-bottom:1px dashed var(--line)}
+details.adv .body{padding:16px 22px 20px}
+details.adv .body p{font-size:13.5px;color:var(--ink2)}
+details.adv .body p+p{margin-top:10px}
+
+/* ---------- Q&A ---------- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.qa{grid-template-columns:1fr}}
+.qa .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:3px solid var(--accent)}
+.qa .item:nth-child(2){border-top-color:var(--author)}
+.qa .item:nth-child(3){border-top-color:var(--gold)}
+.qa .item:nth-child(4){border-top-color:var(--green)}
+.qa .qq{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:1px}
+.qa .qh{font-size:17px;font-weight:700;margin:6px 0 8px}
+.qa p{font-size:14px;color:var(--ink2)}
+.qa p b{color:var(--ink)}
+
+/* ---------- quote ---------- */
+.quotes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.quotes{grid-template-columns:1fr}}
+.q{
+  background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--purple);
+  border-radius:0 11px 11px 0;padding:15px 18px;
+}
+.q p{font-size:14.5px;color:var(--ink);font-weight:500}
+.q span{display:block;font-size:12px;color:var(--ink3);margin-top:6px}
+
+/* ---------- misc ---------- */
+.callout{
+  background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:16px 20px;margin-top:16px;
+}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.blue{background:var(--accent-soft);border-color:#cfe0f0}
+.callout.blue .t{color:var(--accent)}
+.callout.blue p{color:#1f3f5f}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+
+.appendix-h{font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:1.5px;margin:44px 0 14px 2px}
+
+footer{
+  margin-top:44px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);line-height:1.8;
+}
+footer b{color:var(--ink2)}
+
+/* ---------- breadcrumb ---------- */
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body data-page-node-id="sZuyLoj4UlFsGlv4RQ5qjT">
+<div class="wrap" data-page-node-id="4vbIIggLfi8UDbIQF7nvEH">
+
+  <nav class="research-breadcrumb" data-page-node-id="n6NvjD6OX6xrxtPhh6NeD2"><a href="/投资哲学/" data-page-node-id="8z6TwhaHwppSbnffAXF7XI">投资哲学档</a><span data-page-node-id="4cyo5AYoFwReiyRTrwlYZ8">/</span><strong data-page-node-id="dUL0Cb2DGD4UtFKqK8TT4r">DCF</strong></nav>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" data-page-node-id="iiOj896i9wBPQy2CGTMJve">
+    <h1 data-page-node-id="fYH19Z1ANDKiRjGrSpUdEq">DCF 到底怎么用？</h1>
+    <div class="theline" data-page-node-id="id9z25W2lIGv5X5VtOUsL6">
+      买股票这件事，本质是 <b data-page-node-id="BBswzr3SAHGWX0LJGgOjQ9">用你手里今天的现金，去换一家公司未来赚到的现金</b>。<br data-page-node-id="CStz7OEpfF1SLOCAz5gu6o">
+      DCF 就是量这笔交换划不划算的<b data-page-node-id="dFuUhuOYzdqCt2n5XQsrGw">尺子</b>——但恽雷说，它更像<b data-page-node-id="okFcBpt7qM44kqsjEOzkND">一条公理、一种思想</b>，而不是一个要算准的数字。
+    </div>
+    <div class="nav" data-page-node-id="S0pQHQ2nAYVix7uFqxRArM">
+      <span class="nl" data-page-node-id="aTMLJNv4Gu26IHnD7BEkXg">本页回答四个问题</span>
+      <a href="#s1" data-page-node-id="yvFHj2bVpVCjEHNXxDCh4R">① DCF 是什么</a>
+      <a href="#s4" data-page-node-id="GerFvxNZQegXBDKIMV3JQ7">② 本质是什么</a>
+      <a href="#s5" data-page-node-id="ntY3ISS0LmTSIBn4qgKyWt">③ 对投资的意义</a>
+      <a href="#s5b" data-page-node-id="Tqd9xTKKEqNskwDUyvUSUf">④ 怎么用</a>
+      <a href="#s6" style="background:var(--gold-soft);color:var(--gold)" data-page-node-id="cZM2hyxt3K4Uui2gAlwt4C">最后：四问四答</a>
+    </div>
+  </div>
+
+  <!-- ===== 0 先打个预防针 ===== -->
+  <section data-page-node-id="eRRCD39zO17QzH2PsE4tUQ">
+    <div class="card" data-page-node-id="HoOHFG7PFl9P5uAP5jqibn">
+      <div class="shead" style="margin-bottom:10px" data-page-node-id="MGVxXpPlftcZtiBJ5KdUSx">
+        <div class="snum" data-page-node-id="CNBNwEeLj9PtPfDLKmLnOy">0</div>
+        <h2 data-page-node-id="0Na7EpULxzftC4CpBExkQI">DCF 算不准，但你必须会</h2>
+      </div>
+      <div class="eli5" data-page-node-id="WfpWfliI8Q7GRE2HYKumqH">
+        <div class="lbl" data-page-node-id="rzdc3w38flV6KGLDWox8FS">ELI5 · 用一个比喻</div>
+        <p data-page-node-id="jfk508nPUAYBWhEBUzO94g">DCF 像一把锤子。但光会抡锤子没用——你还得找到<em data-page-node-id="546wPfuW6isMVDzY5Ucm2t">自己敲得动的钉子</em>，还得认清<em data-page-node-id="Ou8aoZlFrn21X6xXm9O0rL">自己站在哪个工地上</em>（A股、美股、港股，脾气完全不一样）。</p>
+        <p data-page-node-id="ZMKF2ARhSA6zdobHdcVjCQ">所以它真正的用处不是"算出这公司值 87.3 元"，而是逼你想清楚：<b data-page-node-id="qRY6aJrma5zJhzVFWtxgZu">这生意到底是怎么赚钱的、能赚多久、我凭什么值这个价。</b></p>
+      </div>
+      <div class="claim" data-page-node-id="DsQYBDy3ZNFgfQ33ZP6una">
+        <p class="claim-main" data-page-node-id="QBbd9UNz5R9nd03Aj9GiBl">你得先像研究员一样算够，才能像段永平一样不算。</p>
+        <p class="claim-sub" data-page-node-id="s8TBw75Ke8AXCim5XS2FGv">从"一个参数一个参数地拍"到"拿计算器按两下"，DCF 练到最后会内化成直觉——<b data-page-node-id="LGldrtvVvI9DXBLYGFRYF3">毛估估不是偷懒，是终点</b>。在那之前，别急着跳过计算。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 1 DCF 全貌 ===== -->
+  <section id="s1" data-page-node-id="CzLdbiMcqCvyEvUzlhnkZG">
+    <div class="shead" data-page-node-id="VWmUbWZwOwgSl1WNLpnKKv">
+      <div class="snum" data-page-node-id="QYfv9kxMKMQYdRJp1bwqgh">1</div>
+      <h2 data-page-node-id="gKDFtbjwqoa6tmKX46OzaS">DCF 全貌：一个公式、一个动作、三个阶段</h2>
+      <span class="sub" data-page-node-id="lHqul6n5hnaOL2tEL1SUvw">先把"是什么"说清楚，后面的参数才有地方放</span>
+    </div>
+    <div class="card" data-page-node-id="VAAZVV1sAr1WgtgaBdRaY3">
+      <p style="font-size:14.5px;color:var(--ink2)" data-page-node-id="FCGE1c0N8aDzU09AsnZusy">DCF = <b style="color:var(--ink)" data-page-node-id="qOgV4XTbOTtzIjThECnO8j">D</b>iscounted <b style="color:var(--ink)" data-page-node-id="ZT4GsCGtEAVh6YTzmhLT3W">C</b>ash <b style="color:var(--ink)" data-page-node-id="FGurQuYOXG89N13S0yeET6">F</b>low，现金流折现。一句话：<strong style="color:var(--ink)" data-page-node-id="Gnb07KpfDcAjV07h9Fwzpw">把公司未来每一年能装进兜里的现金，按你要求的回报率"打折"折回今天，再全部加起来。</strong>加出来的数，就叫这家公司的<b data-page-node-id="c65aZv7jX0DGtlOsdqI8Nv">内在价值</b>。</p>
+
+      <div class="formula" data-page-node-id="efhum0XT3bGP7i5ukaoRGq">
+        内在价值 ＝
+        <span class="frac" data-page-node-id="FUdC0QULNltLDdvZBBgBhp"><span data-page-node-id="qUIvfnZ4SHW1xLEq7TRADq">CF<sub data-page-node-id="SM3ouuAJ5NXJgzzxhQvlgQ">1</sub></span><span data-page-node-id="9xe8mSH0rXPuNMFjqVxhIX">(1+r)<sup data-page-node-id="EFEty0UdRneEajFibzA3Pt">1</sup></span></span> ＋
+        <span class="frac" data-page-node-id="YPYlHPacHUUjN9l3UTq21w"><span data-page-node-id="cBdxH7XkM2uUjAitYUWfqa">CF<sub data-page-node-id="iO5SFkSEMCwGwJvPOnH5M8">2</sub></span><span data-page-node-id="aCQGWgdUNg8QoVgUDRBYGH">(1+r)<sup data-page-node-id="pzgQJZMVUOgvbaCtthbiPH">2</sup></span></span> ＋
+        <span class="frac" data-page-node-id="dPtKc5tjEmPHROFeqExB6i"><span data-page-node-id="H7MZ3xVOJCkvKhTrSHzGGZ">CF<sub data-page-node-id="MSUAjeAaJI12gtJOt2pW5E">3</sub></span><span data-page-node-id="nzlNCVvsHteSx6hN1qPjGQ">(1+r)<sup data-page-node-id="q4kDEUf29nq1IMQ7JlaodN">3</sup></span></span> ＋ … ＋
+        <span class="frac" data-page-node-id="HwkGqvoVp3lLKfoEF7L7d6"><span data-page-node-id="bIaR1mRoBzY23nIVVsV7Qi">终值</span><span data-page-node-id="t39jiV79IFt36lY5QQCKVi">(1+r)<sup data-page-node-id="047DeN818xvyGMl2O1EbKF">n</sup></span></span>
+        <span class="small" data-page-node-id="32GPPBKmCezoKfTTV77RaI">CF = 每年的自由现金流（分子）　r = 折现率 / WACC（分母）　终值 = 进入稳定期以后所有年份的价值打包</span>
+      </div>
+
+      <div class="eli5" data-page-node-id="Xr9LwwVPax4Jefo1kxP9gc">
+        <div class="lbl" data-page-node-id="EfqHWvsywO7zKRiDgUa8SG">ELI5 · "折现"这个动作到底是什么</div>
+        <p data-page-node-id="bzGiI17vk7FmIFDfw4ICAQ">你借 100 块给一个靠谱的朋友，说好一年后还你 <em data-page-node-id="XnTmQDDXKZjX00fVuvocce">108</em>。那对你来说，"明年的 108 块"和"今天的 100 块"是<b data-page-node-id="dgpHpwyXa81tOnBHVtaZmV">一回事</b>。这个 8%，就是<b data-page-node-id="rTc3Usaiy5nO3WEZGrRsTh">折现率</b>——你把钱交出去、放弃今天花它，所要求的最低回报。</p>
+        <p data-page-node-id="mWU4zWsNr7zaNLsRY859xq">反过来算就是"折现"：明年的 50 块，今天只值 50 ÷ 1.08 ≈ <em data-page-node-id="3fMbvSTWFEnFCaATQyisAY">46.3</em>；后年的 50 块，今天只值 50 ÷ 1.08² ≈ <em data-page-node-id="g7ePTBoBtQQII2VlEvk8Yl">42.9</em>……<b data-page-node-id="luyk4xOf0B0ZAarGL2Gd1A">越远的钱越"轻"</b>。DCF 就是把未来每一年的钱都称一遍、加起来。</p>
+      </div>
+
+      <div class="eli5" style="background:var(--green-soft);border-left-color:var(--green)" data-page-node-id="kewZbqnQ0VgpmSBJuNkQAO">
+        <div class="lbl" style="color:var(--green)" data-page-node-id="lT2qdnS8xNxH0rD4cFuE58">贯穿全篇的算例 · 柠檬水摊（第一次登场）</div>
+        <p style="color:#1e3f34" data-page-node-id="fFwX6NBvCYkw3WJUoyLBok">你有个柠檬水摊，每年能<em data-page-node-id="TkRBvLOZugtcyAjatSgCSv">装进兜里 50 块</em>（怎么算出这 50 块，见下一节）。假设它永远这样，不增长也不衰退，你要求 8% 的回报。那这个摊子对你值多少？</p>
+        <p style="color:#1e3f34" data-page-node-id="mkewW6vZik7SEwYUyyL72Q"><b data-page-node-id="ijTBDDa3nt4mX3NZDti7Lf">50 ÷ 8% = 625 块。</b>验算一下：花 625 块买下它，每年拿回 50 块，收益率正好 8%。这就是最简单的一次 DCF——它只有两个参数：<em data-page-node-id="XK4hpZr5GwTiREpTfODK3B">每年剩多少钱</em>，和<em data-page-node-id="XFF5mZHnvEAMs0YBVIG2Ta">你要求多少回报</em>。真实公司无非是把"每年 50 块"换成一条会变化的曲线。</p>
+      </div>
+
+      <h4 class="ct" style="margin-top:22px" data-page-node-id="Bgux77pS06ZVekraCorAmS">真实公司的现金流不是一条直线，所以拆成三段来预测</h4>
+      <div class="stages" data-page-node-id="sAvKVrWCJHgQHNhfH3e8YB">
+        <div class="stg s1" data-page-node-id="XL10kFoAuqFLWVvSAZ6A4Z"><div class="t" data-page-node-id="aYeH13K2myX9hD7JCucEbH">第一阶段 · 显性期</div><div class="y" data-page-node-id="UdAwkqLZCVzSDn715aYMdt">未来 1~3 年（最多 5 年）</div>能看清、能算细。翻财报、拆产业链、搭模型——研究员大部分工时花在这里。</div>
+        <div class="stg s2" data-page-node-id="iAEMX2VG0JP6yBVlthts0n"><div class="t" data-page-node-id="oZvULsZPxk6DNC2KqhXELC">第二阶段 · 半显性期</div><div class="y" data-page-node-id="rH7CR2AKcTyHPIxJcyHw6t">大约第 4~10 年</div>看不清具体数字，但能判断方向。要拍两个数：<b data-page-node-id="hzhGd34qqE3xdvWnWMR6r5">增速</b>，以及<b data-page-node-id="UMlAokgsw5vfrsTSamx0i2">增速能持续几年</b>。恽雷说的"第二阶段"、"倒推增速"都发生在这里。</div>
+        <div class="stg s3" data-page-node-id="v70pEhTCi9RGodY66PYTQc"><div class="t" data-page-node-id="w3lJFP0pBSg9Usw3s2MFjp">第三阶段 · 永续期（稳定期）</div><div class="y" data-page-node-id="QQkZGMLWBboIQw3z7oRESp">之后直到永远</div>公司长到天花板、不再高增长。用一个<b data-page-node-id="Hnwp9NwSMUPzSFpyTGaUmW">永续增长率 g</b> 把"以后所有年份"打包成一个数，叫<b data-page-node-id="va7KiCKOe4oDH9Mt25D6z7">终值</b>。这一段的价值往往占大头。</div>
+      </div>
+      <div class="share" data-page-node-id="96VoDgy1mON1OMQJ5vaes0">
+        <div class="a" style="width:4.8%" data-page-node-id="ASieFLmF61qrwxdEDWwiJC">4.8%</div>
+        <div class="b" style="width:15.5%" data-page-node-id="fpI90R6KxH3qBzq4e6KZRf">15.5%</div>
+        <div class="c" style="width:79.7%" data-page-node-id="2ddwzFSQWMqR0WrhrNPnHg">稳定期 ≈ 80%</div>
+      </div>
+      <p class="share-note" data-page-node-id="4bZJrreaRuetJi1AoJuQLp">↑ 三个阶段各占内在价值多少？这是《穿透估值》1.2.3 的算例（折现率取 5%、20% 增速持续 5 年）。折现率越低，永续期占比越高；恽雷按 A 股 7~8% 的经验，给的区间是"至少 1/3 到一半以上"。<b data-page-node-id="IajjIyOCsYe9kis2IwrcNC">结论一致：DCF 算出来的钱，大半压在你看得最不清楚的那一段。</b></p>
+
+      <div class="gloss" data-page-node-id="qzpgV08i9BYdQ4KUwgWFT2">
+        <div data-page-node-id="ItYlHxqfFyG4OVCS9KUnCx"><b data-page-node-id="aeKwS1bwrLxbNUlVmplC94">内在价值</b>DCF 算出来的那个数：你认为公司"应该"值多少钱。和市价（别人认为值多少）经常相差很远。</div>
+        <div data-page-node-id="icjCoCjA7v9o2YGefF6Dmt"><b data-page-node-id="3F6hXRggA3NB8MEO5fdne0">折现率 / WACC</b>分母。你要求的最低回报。用公司整体现金流折现时叫 WACC（加权平均资本成本）。播客里"折现率""贴现率""WACC"是一回事。</div>
+        <div data-page-node-id="nlmiFKjW0mp8jJAODCxdHe"><b data-page-node-id="Ak0icA8yMSpTuNT8E2Y6gm">自由现金流</b>分子。账面利润里真正能装进兜里的那部分——扣掉被占用的、扣掉再投资的。下一节专讲。</div>
+        <div data-page-node-id="n0KFq7Ylg83gDvYUvH9qzY"><b data-page-node-id="bxlwPhewm5G98Fom8kpgLO">永续增长率 g</b>进入稳定期后每年的增长率。终值 = 稳定期现金流 ÷ (r − g)。因为在分母上，稍微一动结果就飞。</div>
+        <div data-page-node-id="JcDEJczZPg1c52E2AdXAAa"><b data-page-node-id="lvJNEDkk0u8EEQDTBpdJrs">终值</b>稳定期以后所有年份价值的打包，再折回今天。DCF 里最大、也最不靠谱的一块。</div>
+        <div data-page-node-id="YyoOzyAWOAljpEBMYFvh03"><b data-page-node-id="9flTj7L7yLdmcEjizIyNGQ">倒推</b>不算"值多少"，而是把当前市价当作合理，反过来问：它隐含了什么假设？这是 DCF 最实用的用法。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2 分子 ===== -->
+  <section id="s2" data-page-node-id="uhwdovz8zOx08dxeZkmEwX">
+    <div class="shead" data-page-node-id="VTNGtCCTJKvh4DxtRoAw4d">
+      <div class="snum" data-page-node-id="vstd3HWHs1SqnHVgUg2mVk">2</div>
+      <h2 data-page-node-id="dQv3bfEk3f0ivq5EkKxkLz">分子：自由现金流是怎么"剩"下来的</h2>
+      <span class="sub" data-page-node-id="Ermtf4xXkthnkH9405VIWC">04:55 营运资本变动 · 08:29 资本开支 · 10:18 创造自由现金流的效率</span>
+    </div>
+    <div class="card" data-page-node-id="EfKDav9UKjM2YDd1PnE5e4">
+      <p style="font-size:14.5px;color:var(--ink2)" data-page-node-id="s1jgYpR1NBnZpY2A1IUpTW">很多年轻研究员做的第一件事是<strong style="color:var(--ink)" data-page-node-id="OwGjWK2arYLEj6sdlN48Ha">把假设往里拍</strong>——恽雷说，<strong style="color:var(--ink)" data-page-node-id="OouRwAFptPgkkIutposBMY">这不是重点</strong>。重点是先看分子的结构：公司是靠什么方式增长的，增长要不要消耗现金？</p>
+
+      <div class="eli5" data-page-node-id="TV2q7pg9PXsYmQ0BYE3x5m">
+        <div class="lbl" data-page-node-id="rafKUEdOJipEWVf2SKaN5K">ELI5 · 柠檬水摊（第二次登场：那 50 块是怎么来的）</div>
+        <p data-page-node-id="t2BnDrHF81hUXqGE9Xj3C5">你的柠檬水摊一年下来<em data-page-node-id="Xmf8MGyzE9OLvDIxhfPJXH">账上赚了 100 块</em>。但你想把这 100 块装进兜里，没那么简单：</p>
+        <p data-page-node-id="1DQX6f89yOUEs58qsEEW5Q">· 隔壁小卖部买了你的水，<em data-page-node-id="hbhwiBGh7ai7FqTuHiEZLx">钱还没给</em>（这叫应收账款，属于营运资本变动）—— 20 块被占住了<br data-page-node-id="zEFRuPKqiNfaWekFkfadgJ">
+           · 你想明年多卖一倍，得<em data-page-node-id="H9U4VWa0vCk3HkB3gxYKM7">再买一台榨汁机</em>（这叫资本开支，Capex）—— 30 块又花出去了</p>
+        <p data-page-node-id="06VCL31QBBFcIcOAkytYQd">最后真正能自由花的，只剩 <em data-page-node-id="myUzusxIeq6PMyybZZLUiu">50 块</em>。这 50 块才叫<b data-page-node-id="cXlvyTHQLKpwVRkKQElnCl">自由现金流</b>——也就是上一节里被折现的那个数。</p>
+        <p data-page-node-id="vAYJAO50vUK8GMQ5TIend6">而<em data-page-node-id="xC8HEStdO4c8CuyxHGmYCh">最好的生意</em>是：这两项都≈0，账上赚 100，兜里就是 100。要是客户还<em data-page-node-id="zNANd5IDpoCxcTtBUeQxIf">抢着先付钱</em>给你——那就是神仙生意。</p>
+      </div>
+
+      <div class="funnel" data-page-node-id="7cHLJM08oTPg41SQ4J4BC2">
+        <div class="frow" data-page-node-id="C2fkVAyxzsjlqQHmAn4pqj">
+          <div class="flabel" data-page-node-id="Bah86UqF1EnN2LgwTUqyQM">EBITDA</div>
+          <div class="fbar-wrap" data-page-node-id="oH1jUa0lb8nTndB7JJuDJn"><div class="fbar b1" style="width:100%" data-page-node-id="AFnMDdgtgtcoty3xZxofHO">经营性现金流（近似）</div></div>
+          <div class="fval" data-page-node-id="ztGf2G0rdSZUYPB99d53dH">100</div>
+        </div>
+        <div class="fnote" data-page-node-id="VqCW0KIbPkl9E3sB17UUSo">↑ 息税折旧摊销前利润。恽雷的口语口径；严格算法（含税、从净利润起算）见 §4 补充 01</div>
+
+        <div class="frow" data-page-node-id="z7IyNDycqsFyltAHIARRnb">
+          <div class="flabel" data-page-node-id="6qh1rKnGjvkGKnBZdStU3o">− 营运资本变动</div>
+          <div class="fbar-wrap" data-page-node-id="xCOaaUcX5vMKwGhAsBgiIX"><div class="fbar b2" style="width:20%" data-page-node-id="4Dx1blvdGMfgcWPQfqrIcX">20</div></div>
+          <div class="fval" data-page-node-id="PZ69mj3cwVB7bE2BTS9HIl">−20</div>
+        </div>
+        <div class="fnote" data-page-node-id="gw11SlX7PlCNLLGuMznDfo">↑ 典型是 to B / to G 的生意：要增长，应收账款就越来越大。<b data-page-node-id="LUvCH2Ul87gPVdjbxFcUyd">账期可能比利润还重要</b></div>
+
+        <div class="frow" data-page-node-id="b9EYY0VU1HpRbRckjcPb1B">
+          <div class="flabel" data-page-node-id="D0ZnrEMY5xlYaZDTg06qVB">− 资本开支</div>
+          <div class="fbar-wrap" data-page-node-id="cK0JYAvjSk4G8M6d2mmYTG"><div class="fbar b3" style="width:30%" data-page-node-id="jGAje64CBEBFH0ZoSmieS7">30</div></div>
+          <div class="fval" data-page-node-id="Jswo19gfHa9aZURLmvH87Y">−30</div>
+        </div>
+        <div class="fnote" data-page-node-id="VFngzvFfhKCthvTkoioAk0">↑ 化工、制造业要增长就得扩产。<b data-page-node-id="hGEI1NQpZNuztwXnrEB7Q0">扩张性</b>资本开支早晚扩完，之后只剩<b data-page-node-id="2NvjMMt35z9OUAegdJDRMc">维持性</b>资本开支（20~30）</div>
+
+        <div class="frow" data-page-node-id="WHjUU3lTbvnzpFb7At4OLx">
+          <div class="flabel" data-page-node-id="ytYSFfkQyvUUGLa1n1Cmzz">＝ 自由现金流</div>
+          <div class="fbar-wrap" data-page-node-id="YTYVzqYg1eRU9QDBqvlIEF"><div class="fbar b4" style="width:50%" data-page-node-id="LnGuFBBGUC0J1KIHaoMGcN">真正能装进兜里的</div></div>
+          <div class="fval" data-page-node-id="rpksW2FiivaMP8WTgFzzOF">50</div>
+        </div>
+      </div>
+
+      <div class="callout" data-page-node-id="C8APpH3oU8dNPo6RN3Om0S">
+        <div class="t" data-page-node-id="XITboMdTD9YEUelQ3EVTkl">⚠ 一个最容易搞混的概念</div>
+        <p data-page-node-id="FZyswVe9vxtGZoCbfjQJmA"><b data-page-node-id="XKKdpLtVjjUtJ7dCCWtGJI">好的商业模式 ≠ 有竞争力的公司。</b>一家制造业公司可以在产业链里当"链主"、对上下游占款、有定价权——它很有竞争力。但它可能要不断扩产、不断压货，<b data-page-node-id="ONYNwDGSLf4kN5gnMLVzcR">赚得多不代表剩得多</b>。恽雷给的定量判据是：<b data-page-node-id="oHYPWZzeyYTQrjbfZWmXA3">它创造自由现金流的效率够不够高。</b></p>
+      </div>
+      <p style="font-size:14px;color:var(--ink2);margin-top:14px" data-page-node-id="TriOCBlGy4MqehpPTyoWsj">而这个效率会直接决定 <strong style="color:var(--ink)" data-page-node-id="UTr2dr2zt9SfgH7btCLspS">估值的中枢水平</strong>：同样 100 块 EBITDA，A 公司全变成自由现金流用 100 折现，B 公司只剩 70 用 70 折现——B 就是该更便宜。回到柠檬水摊：如果那 20 块应收和 30 块榨汁机都省了，摊子的价值就从 625 直接变成 100 ÷ 8% = 1250。</p>
+    </div>
+  </section>
+
+  <!-- ===== 3 四个关键参数 ===== -->
+  <section id="s3" data-page-node-id="zBebHoke4zQWd5wff1y0Yf">
+    <div class="shead" data-page-node-id="SQnOFqnUMvXqZoFJifIlrf">
+      <div class="snum" data-page-node-id="Nu2CDFJheEPhvBMDqrasEd">3</div>
+      <h2 data-page-node-id="YoivBGbcxmeFSpAT8PsOsx">四个关键参数：恽雷认为真正值得花心思的地方</h2>
+      <span class="sub" data-page-node-id="hbKOo2ogH6j0AclO1YcYiH">按他讲的重要程度排序 · 前两个关于分子和终值，第三个关于分母，第四个关于第二阶段</span>
+    </div>
+
+    <div class="grid2" data-page-node-id="AUuaF8yqqL5qW5N3k7uZLz">
+
+      <!-- 参数 1 -->
+      <div class="pcard" data-page-node-id="s7wNotyX7cVNGUOMy97mYf">
+        <div class="pnum" style="background:var(--green)" data-page-node-id="hLxUXHZnDCGlhrLJz5fVyM">1</div>
+        <h3 data-page-node-id="bKbbpD3EJHc0nzqdNpIL5E">自由现金流的创造效率</h3>
+        <div class="pmeta" data-page-node-id="tbed5A15EMfqsG73kQ4va8">10:18 · 决定<b data-page-node-id="XaRzZiIaFKFw83eGpCzEL2">估值中枢</b>在哪 · 对应公式里的分子 CF</div>
+        <div class="eli5" style="margin-top:6px" data-page-node-id="MIEzzDn0WrhHmnUBF0vpB6">
+          <div class="lbl" data-page-node-id="YFwOWWAmZjpEZkmYyJgzGx">ELI5</div>
+          <p data-page-node-id="H8sWqx7yPUK0xaRJXv8qCM">两个人月薪都是 3 万。一个房租 0、通勤 0、全存下来；另一个房租 1 万、应酬 8 千。<b data-page-node-id="YLPrHLBzPGOv3s2A3pPP7l">长期看，第一个人"值钱"得多</b>——不是因为他赚得多，是因为他<em data-page-node-id="MRqZ27YHBIZfVSeqUuACuG">剩得多</em>。</p>
+        </div>
+        <ul data-page-node-id="3UMh66QSDHH2e27CcSCjsJ">
+          <li data-page-node-id="TiDentmr7oxFtFP05qvlCB">定量判据：<b data-page-node-id="hG3Lyw0xENEFLGuxUfqeMZ">EBITDA 减掉两项后还剩多少</b></li>
+          <li data-page-node-id="NqSPgX2eFXFQyRPReTiykR">最好的模型：两项都≈0，甚至客户预付</li>
+          <li data-page-node-id="nLcZqCm8qArJEqd7RDDDHV">它回答的是：<b data-page-node-id="PnqcRxvjKdoeA8kPw9Tj4B">这门生意赚钱费不费劲</b></li>
+        </ul>
+      </div>
+
+      <!-- 参数 2 -->
+      <div class="pcard" data-page-node-id="7M4Vlj31lwkpDh9kMMHXoW">
+        <div class="pnum" style="background:var(--red)" data-page-node-id="loMLCc7mSDjj6RruiKVR74">2</div>
+        <h3 data-page-node-id="N1YirFeuPqd3oMvijRP6KH">永续增长率 <span style="color:var(--red);font-size:13px" data-page-node-id="5Atd2RuIMVtBA34jsc7kwX">🚩 最被低估的一个</span></h3>
+        <div class="pmeta" data-page-node-id="VuUYonezR0ucvjEy09aSj0">12:06 · 永续阶段价值占内在价值 <b data-page-node-id="85BvIgDSBpQrmWwEAti3WN">1/3 ~ 一半以上</b> · 对应公式里的终值</div>
+        <div class="eli5" style="margin-top:6px" data-page-node-id="j8gYBGWjFGIelY4BQfYfGX">
+          <div class="lbl" data-page-node-id="RaYGznKoi69vYG6US4Cxq2">ELI5</div>
+          <p data-page-node-id="7jtGuug5pGJvh1Xu1Wzicx">你有一套房准备一直出租。前 10 年的租金你能一年一年数清楚；但<b data-page-node-id="7VDTtAVenHFEFUHjHMYuaz">第 11 年到"永远"的租金</b>，虽然每一年都不多、还越来越"轻"，可它们加在一起，往往比前 10 年的总和还大。</p>
+          <p data-page-node-id="6LTrrkjVxZwG7dnyr7JeDM">大多数人做 DCF 时，对这一大坨钱的处理是：<em data-page-node-id="X2cdZwfeV877nSzlo1TUMV">永续增长率 = 拍个通胀就完事了</em>。前 10 年算到小数点后两位，后面的"永远"随手一挥——可公司价值的近一半都压在这个数上。</p>
+        </div>
+        <ul data-page-node-id="0zGto3ZMlfjB0XaiVBBxa8">
+          <li data-page-node-id="6sSmj4tDEsUl0XNh7jwxv8"><b data-page-node-id="e7pSamULrnuUF5aI2DDYo3">先问能不能永续，再问拍多少。</b>能长期经营的公司极少 —— 恽雷举了<b data-page-node-id="PB1XG90pmzzsSlbCDsE4Ia">林迪效应</b>（活得越久，预期还能活得越久），以及牌照、地域、特许经营权</li>
+          <li data-page-node-id="F541NVQi9vfX6orgrcvsQK">恽雷的拍法：<b data-page-node-id="FvyAB6D253csj1FV0Tp2jM">按生意模式分档</b>，不是猜增速</li>
+          <li data-page-node-id="TcNLPGeVVvjl0zfOLYH2CW">他倾向保守：绝大多数公司<b data-page-node-id="M17UlBsJRTx49hUvlhcqgU">拍 0 甚至 −1</b></li>
+        </ul>
+        <div class="scale" data-page-node-id="HQn9DyxfCJssxsRd6PLqJE">
+          <div class="scale-t" data-page-node-id="VJW1tZmWmc9Pql82GetPTG">恽雷的永续增长率档位表（单位：%）</div>
+          <div class="srow" data-page-node-id="ORPLYqWrtVIE33IaJuMVro"><div class="sdot" style="background:#8d95a8" data-page-node-id="tCkPoJ9PgT1LO6GwyJnsy2"></div><div class="sname" data-page-node-id="XIlmERCZWQtaiQgX07VBAg">制造业内卷</div><div class="gaxis" data-page-node-id="rRifkDCgIbiDpt1gEwMlBI"><div class="gfill neg" style="width:18%;background:#8d95a8" data-page-node-id="QVi5gcQWjrM82KXyzbmJU7"></div></div><div class="snum2" style="color:#8d95a8" data-page-node-id="NCv7YAwCXCIzf8ulsRAJO1">−1</div></div>
+          <div class="srow" data-page-node-id="gYpKLnD1Hi3azZAddqBCZ8"><div class="sdot" style="background:#c96f5c" data-page-node-id="S8YEkq5bB1QjvFmEga4yQz"></div><div class="sname" data-page-node-id="H1k40gqU9l5yHcB0YpEDyb">绝大多数公司</div><div class="gaxis" data-page-node-id="8AQDhCximL4mzT6F9uXmp4"><div class="gfill pos" style="width:1.5%;background:#c96f5c" data-page-node-id="lVlOtAU3H1sKntznhVM868"></div></div><div class="snum2" style="color:#c96f5c" data-page-node-id="EL25KYvLyDVagtA51wLPj1">0</div></div>
+          <div class="srow" data-page-node-id="9yQRbw6DFYitalreyDTqTZ"><div class="sdot" style="background:#d9a441" data-page-node-id="PyxJcRDfgcEJGmRPVKMOCI"></div><div class="sname" data-page-node-id="gURejAlo22b31IKF6mcF08">食品饮料等</div><div class="gaxis" data-page-node-id="9re6DBjeVEsUZSbs2wdw0C"><div class="gfill pos" style="width:36%;background:#d9a441" data-page-node-id="NKaTwEHhzERNYwDJ6xVpSF"></div></div><div class="snum2" style="color:#a8761a" data-page-node-id="pnzdtvtBu9OOrhb9o9C4si">1~2</div></div>
+          <div class="srow" data-page-node-id="h1RIJc11U8BpemWy5USeUP"><div class="sdot" style="background:var(--green)" data-page-node-id="ylB6w3Wqlqk7A5NaZaLw4j"></div><div class="sname" data-page-node-id="eb5PR4NomuUaUAHBBsmj8P">奢侈品 / 技术进步</div><div class="gaxis" data-page-node-id="78I1aL6yT2UFWu58uKJMYs"><div class="gfill pos" style="width:60%;background:var(--green)" data-page-node-id="G2JNrlkrVJIRlEOdadVukj"></div></div><div class="snum2" style="color:var(--green)" data-page-node-id="3UBX01DnOvWZ5vjrG47VKv">3</div></div>
+          <div class="axis-note" data-page-node-id="0AYgjwGAZNSlnIFYsRkOTm"><span data-page-node-id="GMIvXnpUPY2LQLiy1AuNm6">−1</span><span style="margin-left:-8%" data-page-node-id="CUfPCiyxsHZHNXL4q210LJ">0</span><span data-page-node-id="1Vr1GHHq9waRFjG7BVGVvA">3</span></div>
+          <p style="font-size:12.5px;color:var(--ink3);margin-top:11px" data-page-node-id="fVpzrGPNwmXiHWMnPl8Zdy">注：只有在<b data-page-node-id="dafXpqtBsILUgVaz3GP2Cn">能持续提价</b>（对客户有定价权）或<b data-page-node-id="4gE824g5evyNxvF5jymzAl">技术持续进步</b>时，才可能超过通胀。恽雷自己最多拍到 3%。</p>
+        </div>
+      </div>
+
+      <!-- 参数 3 -->
+      <div class="pcard" data-page-node-id="lAzmTtEHU5HNp4YhpCo2eh">
+        <div class="pnum" style="background:var(--accent)" data-page-node-id="2HfmaeHmNXmGSkR6sElge2">3</div>
+        <h3 data-page-node-id="6lFYG5hPhnzeoM5plYuevz">WACC，也就是折现率 <span style="color:var(--red);font-size:13px" data-page-node-id="6CHDWFCF5rWvsZJF2yyNEf">🚩 均值回归的"均值"</span></h3>
+        <div class="pmeta" data-page-node-id="Mc4fS7Dn3ECUlwXHVSHvoS">21:29 · A股 <b data-page-node-id="rueEOQdNgjyiu6hzHG60Cj">7~8%</b>　美股 <b data-page-node-id="ZdByU3lvqaf8vW8IOA1YvY">9~10%</b> · 对应公式里的分母 r</div>
+        <div class="eli5" style="margin-top:6px" data-page-node-id="W8XokDJhDZUk7ALFwshofQ">
+          <div class="lbl" data-page-node-id="KO2t8xoJNdvldBKifQF9yL">ELI5</div>
+          <p data-page-node-id="M6HnYoFlI3Rq3ygSWMBxtE">把整个市场想成一家大银行，长期给所有储户 <em data-page-node-id="C7Vm6JUCbkUD4MUoLfcXXm">7~8% 的利息</em>。现在有只股票，你按市价买，每年拿回的现金只有 <em data-page-node-id="YfUvtMvAQApoFovQpDubEO">2%</em>——没人会永远接受这个数，钱会往 8% 的地方流。要回到 8%，只有两条路：<b data-page-node-id="gvEeAacAasdDohs5TjzJ4Z">分子涨</b>（利润涨 4 倍）或者<b data-page-node-id="LimqcIPod2YsowFNspdhyZ">分母跌</b>（股价跌到四分之一）。</p>
+          <p data-page-node-id="O7Ql5MpjDc7Yh1xl0oAz9y">反方向也成立：两三年前有些公司股息率 7~8%，远高于大家能接受的水平，钱涌进去，把股息率买到了 3~4%。这就是<b data-page-node-id="5kSrYaqSkOVBdYCEGgSk9F">均值回归</b>：<b data-page-node-id="oeldPTbBqXNTucKOd8GSgx">回归的不是股价，是 WACC</b>。</p>
+        </div>
+        <ul data-page-node-id="vcHJsw4QynDphrCyVQF7Ep">
+          <li data-page-node-id="IoMX5XWHGPYji156kUGwig">折现率的本质：<b data-page-node-id="RML9rekKz4RmoUF0cHAX1R">这个市场系统性地应该给你多少回报</b></li>
+          <li data-page-node-id="KwnQ4AAx5JxwFEbyvhNtDF">算过的公司多了你会发现，它基本就在 <b data-page-node-id="b6s7itG5ze1adG2wZWRpC8">7~8 个点</b> 徘徊</li>
+          <li data-page-node-id="0IU4Gnb1VXWD5SaJzZLlJV">实操算法：20 亿利润 / 1000 亿市值（假设利润≈自由现金流）= <b data-page-node-id="5owzIY2du8cCgmEVvnmBX3">2% 自由现金流收益率</b>。要回到 8%，利润得涨 <b data-page-node-id="X3DUEYUk8fvrV3sHMyo5V2">4 倍</b>到 80 亿。你再问自己：<b data-page-node-id="neMnbaARFHaLMQhrfhjdWe">这公司的经营，真能干到 80 亿吗？</b></li>
+        </ul>
+        <div class="callout blue" data-page-node-id="J2pCj0TBLjRtpK2knVYtWM">
+          <div class="t" data-page-node-id="awwiddu4HNpfzHs1PyGv2T">A股的地形特征</div>
+          <p data-page-node-id="9AnqntuHMmM3owQnasATi3"><b data-page-node-id="aEH4lTiPale0LqY4mKycss">流动性充裕 → 定价特别快。</b>同样一个定价过程，双边市场要 3~5 年，A股可能 <b data-page-node-id="x3BG9BbZ1GC82CcwfDEX4j">1~2 年</b>就走完。所以你容易在最高点冲进去。但<b data-page-node-id="En3wMxAUc7XDxN8HnIXDRJ">定完价之后，它终究还是会收敛回来</b>——过去的新能源、半导体都是这个剧本。</p>
+        </div>
+      </div>
+
+      <!-- 参数 4 -->
+      <div class="pcard" data-page-node-id="42cd59t6kxMd4YgHT7W0E0">
+        <div class="pnum" style="background:var(--purple)" data-page-node-id="mhD2xTFOROzxDpEoEm4HZB">4</div>
+        <h3 data-page-node-id="AJHFJCgABbUgzfzHyJubgl">第二阶段：增速不好猜，那就<b data-page-node-id="Ro9PwUq4CeAecSiH94aLMx">倒着算</b></h3>
+        <div class="pmeta" data-page-node-id="G1mIkeuUA3m1RMXLOXTDVK">29:10 倒推 · 31:47 <span style="color:var(--red);font-weight:700" data-page-node-id="iC9nVsH2zgUefTMBGnCy3i">空间 &gt; 增速 🚩</span> · 对应三阶段里的半显性期</div>
+        <div class="eli5" style="margin-top:6px" data-page-node-id="Md5rU7nzF1j1p0MFHQ5S9D">
+          <div class="lbl" data-page-node-id="R9W0bwf4yLkelIHOdToLxt">ELI5</div>
+          <p data-page-node-id="G17DrLHRUyD6QG0XrvEM9C">猜"这孩子 10 年后能长多高"很难。但反过来问——<em data-page-node-id="jLXplBApHi5H5Ix5ck1M9H">"照现在这个身高，市场已经默认他每年长 5 厘米、连长 10 年了，这可能吗？"</em>——就容易判断多了。</p>
+          <p data-page-node-id="BeGnR2a0Q3MihpRptinvYP">这就是<b data-page-node-id="mPTYtFPmT2wKdoDaxfFwRt">倒推</b>：把今天的市值当成合理的，反算出它<b data-page-node-id="dLAcXhLEpCgpVwHhl3GNIp">隐含了多高的增长假设</b>。</p>
+        </div>
+        <ul data-page-node-id="tj2iNh00RPrgjFGS22hpFv">
+          <li data-page-node-id="Pq7bERgrAGQjDLUDDvnduv">倒推出来 <b data-page-node-id="ARyDVf3fno9cBrIwu7HZkq">未来 10 年每年 40%</b>（≈ 每两年翻一倍）→ 经营上达成概率很低 → <b data-page-node-id="NhNiHe2DRrt7C5jUTQOOdy">市值里塞了过分乐观的预期</b></li>
+          <li data-page-node-id="l6LLAojxxun9i56AHECoOv">倒推出来 <b data-page-node-id="YD7nS481omCq2BFomBNygK">≈0%</b>，但公司实际每年还在长 10% → <b data-page-node-id="AUjpF5OXuX4CnOQWmKD7Xl">被低估</b></li>
+          <li data-page-node-id="RB5Piy0eYH8eQL4IHE2AHh">为什么不正着拍：恽雷调研 100 家公司，<b data-page-node-id="KJNQzLT9u82DFPc5H9ZyqG">90~95 家在行业高点高估自己的增长</b>，老板自己都拍不准，研究员在办公室里更拍不准</li>
+        </ul>
+        <div class="scale" style="border-top-style:dashed" data-page-node-id="o7VWl1MIfdJS8iauh6SWzU">
+          <div class="scale-t" data-page-node-id="has7skk3UiiFeqEEdLZGVg">核心洞察：天花板比速度重要</div>
+          <div class="eli5" style="margin:0;background:var(--purple-soft);border-left-color:var(--purple)" data-page-node-id="ZMNhSroAsNU5mFO1HLQMT2">
+            <p style="color:#3a3050" data-page-node-id="YTJCTuOCuj9SglFyJHM8jY">一家公司现在赚 100，市值 2000（20 倍，看着不便宜）。但如果它未来 10 年内<b data-page-node-id="aN1M2ASXSvbkmGq9vjszii">确定能赚到 1000</b>——<br data-page-node-id="BZHOFXY4SFurX6YnBTCXit"><br data-page-node-id="0nHWVwYdIouNK119zGAUiG">
+            <em data-page-node-id="yRcDn5JqvX2x4MomMqeWDf">第 3 年到？低估。第 5 年？低估。第 8 年？低估。第 10 年？还是低估。</em><br data-page-node-id="B5c2l0IZ5o95XbKReEzmjO"><br data-page-node-id="6Ru4HD04dEB7iOZ4OuSqxu">
+            <b data-page-node-id="UqbDOf1whQCo353Qz49A3y">只要"能到 1000"这件事可信，是哪一年到根本不重要。</b>所以该研究的是<b data-page-node-id="Xj84jZHwThQglpeXKk1XaD">空间</b>，不是<b data-page-node-id="IqHdw7YUjMXVwFlyHPm2Eo">增速</b>。</p>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink3);margin-top:11px" data-page-node-id="ypyyc4BrbftInpWc2Cr7x6">反过来说：一旦市场相信了，它会 <b data-page-node-id="UEyEolMmuUTirZF0tDdi9M">Price in</b> 到终值——A股尤其快。所以如果你算出来值 1000 亿，涨到七八百亿时该想的不是赚最后一枚铜板，而是<b data-page-node-id="IxTkDUrSPDBFPnpr6a9G3h">它是不是已经快到合理估值、该开始减仓了</b>。</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== 4 邹佩轩 ===== -->
+  <section id="s4" data-page-node-id="Z1VGhBK7mhU7mWDLB3t7A9">
+    <div class="shead" data-page-node-id="EyRsDNX3Xsztqz1yAjKrNg">
+      <div class="snum" style="background:var(--author)" data-page-node-id="UhpnqLSudBxZgKKDRsFCjH">4</div>
+      <h2 data-page-node-id="4novE8tls0hFnE8U9j2kMV">本质与对照：邹佩轩在书里讲了、而播客没讲的部分</h2>
+      <span class="sub" data-page-node-id="AqK3uB8SuoqiEBZKIlZggH">《穿透估值》1.2 节、2.3 节 · 与播客视角的对照</span>
+    </div>
+
+    <!-- 本质推论 -->
+    <div class="essence" data-page-node-id="pQriFBZaqPgAMEC0HPvLP2">
+      <div class="tag-e" data-page-node-id="wfGjrcmzuFFVepGDysrBDn">DCF 的本质推论 · 这一条决定了 DCF 对投资到底意味着什么</div>
+      <h3 data-page-node-id="LKGgXeZRQAh5bP9KU0DTcn">只要预期不变，你持有一年的收益率就恒等于折现率——和公司增速多快、利润多好<u data-page-node-id="lNjPi2VjM38RJNvZuHinOc">没有任何关系</u>。</h3>
+      <p data-page-node-id="OfAvciA1cNumilcb7vx7XB">书 1.2.3 的算例：一家公司当前分红 10 元，市场预期它以 20% 的增速长 5 年后进入稳定期，折现率 6%。今天的合理股价是 383.6 元。一年后预期<b data-page-node-id="QOlZtNQLzsqj29TFQX4SGr">完全兑现</b>（分红真的涨到 12 元），坐标轴右移一格，重新折现——</p>
+      <div class="mini" data-page-node-id="hPHYyEkRarGSD4aiA9sq8b">
+        <div data-page-node-id="DTHOd4YK0q1oMBtu5whsN0"><div class="k" data-page-node-id="XbirpXH6RBEwyALFBThzcl">今天合理价</div><div class="v" data-page-node-id="GKAuFgUqYtMsoBjjlejZBM">383.6</div></div>
+        <div data-page-node-id="NHwjxO9ROjAyJ86IcSb2M6"><div class="k" data-page-node-id="GVLIHAFweNjbxMobvG4uj8">一年后合理价</div><div class="v" data-page-node-id="5MF48SAwAwlL1lsX1sYHrJ">394.7 <small data-page-node-id="jmSH5SuAojTCU0n7Cc8TgG">+2.89%</small></div></div>
+        <div data-page-node-id="FeP6o1vAvzn4JUyt1EYa5a"><div class="k" data-page-node-id="FnS4hB2GADnCOaAGqC0xLF">收到分红</div><div class="v" data-page-node-id="aLJFdqhZhOj3L00cxE9qKQ">12 <small data-page-node-id="gwV0FpOepQYsLRbXXFaOOE">3.13%</small></div></div>
+        <div data-page-node-id="6RMhhsSiAB4UvRc1ODxJ5t"><div class="k" data-page-node-id="2dlbOdQp32go097uWFqSj9">持有一年总收益</div><div class="v" data-page-node-id="YACOMQAVEkjE6FNfEzOuWg">≈ 6% <small data-page-node-id="XUSyxLPw7IFQW7ajLL7nMZ">= 折现率</small></div></div>
+      </div>
+      <p data-page-node-id="FZjtLRhEPdPeTsVrXgXYaH">增速 20% 的公司，如果一切如预期，你一年只赚 6%。增速 200% 也一样。在任何时点，股价都<b data-page-node-id="oltVYToV5un0EnpiTMDIaK">已经包含了</b>后面所有年份的现金流预期，时间推移只是让你沿着既定曲线往前挪一格。<b data-page-node-id="o1oBLqaM19Eir2CRFzMjvW">想赚超过折现率的钱，只有一条路：现金流曲线的形状变了，或者折现率变了——也就是"预期差"。</b></p>
+      <p style="margin-top:10px" data-page-node-id="NfkbcnsIa1O9Yick4dbl61">所以书里那句听起来很极端的话："<b data-page-node-id="MxvEUK78tAH3b20VCowhfp">在股权投资层面，一切收益都来自估值</b>"——不是说基本面不重要，而是说：基本面只有在<b data-page-node-id="P54JQuQXoSfgV3mj1yi3Os">改变市场预期</b>的时候才变成你的收益。这也是为什么 DCF 最实用的用法是<b data-page-node-id="BuxYY9NAhChlVNJQf8m2Oe">倒推市场预期</b>（§5），而不是正算一个"目标价"。</p>
+    </div>
+
+    <div class="card" style="margin-bottom:20px" data-page-node-id="l5dDArlAsF19k2BIjHok1D">
+      <h4 class="ct" data-page-node-id="XGRuy9vhTGcAADRApwpGJH">① 两个人隔着媒介撞车了</h4>
+      <div class="consensus" data-page-node-id="p5FkXWvNRhDMqDHc9bIvqz">
+        <div class="crow" data-page-node-id="ipjE3HdeN4piZAhyxGSrF8">
+          <div class="a" data-page-node-id="svSV401jY6VALH8CLBNe3A"><span class="who y" data-page-node-id="eG8pikDYVGzB1l3xD1YZyY">恽雷 · 播客</span><p data-page-node-id="0BDYHxWejty4Z83NoHFMsd">"资本市场上有一些类似于数学几何里面的<b data-page-node-id="4O0sxyAuxy0O9VZEABBOfx">公理</b>，它更多的是一种思想。"</p></div>
+          <div class="b" data-page-node-id="BuexCoT6HCXxZEVkT36xXf"><span class="who z" data-page-node-id="V0rexpDS0BIBaXK4AL18m0">邹佩轩 · 书</span><p data-page-node-id="EiWvtJS6OVkCT28Tgnb4PD">把理论分成三层：<b data-page-node-id="CGxRlfWzPDdD1AWmG9pfgt">公理</b>（DCF）、<b data-page-node-id="L5ToyV4qi46bz1Dv9Gq9oJ">假说</b>（CAPM、有效市场、组合理论）、<b data-page-node-id="JRYmHbDd4vRFkxSdvl3FO5">经验公式</b>（PE、PB）。PE/PB 只是"DCF 在特定条件下的简化"。</p></div>
+        </div>
+        <div class="crow" data-page-node-id="BuCq6Ct3N4rIGEVDH6N2vN">
+          <div class="a" data-page-node-id="cVwtnG9FxZcEdJ19ndneFM"><span class="who y" data-page-node-id="MymEk2pH0prSJspwulGR8F">恽雷 · 播客</span><p data-page-node-id="jgtyAZxbr0hXd7Jb7Ls9OI">永续阶段的价值，占内在价值<b data-page-node-id="rkGlfnDfBdfahfQwGUpdAF">至少要 1/3 到一半以上</b>。</p></div>
+          <div class="b" data-page-node-id="yccO2J3KWNO7AWFxZoAYJr"><span class="who z" data-page-node-id="L69NuEa7DAuGIHx30aOIKE">邹佩轩 · 书</span><p data-page-node-id="XTX56yV4ieZuQAnzme0wXI">三阶段算例里，显性期（前3年）只占 <b data-page-node-id="GxEZxymowluKvcpyGQuzaY">4.8%</b>，半显性期 15.5%，<b data-page-node-id="5tPAGswN4tWu4DlDCCLD7x">稳定期接近 80%</b>。数字比恽雷极端，一部分原因是书例折现率取了 5%——折现率越低，远期越"重"。方向上两人完全一致。</p></div>
+        </div>
+        <div class="crow" data-page-node-id="KrgPAe7RZBRyH5Pvvuv1CF">
+          <div class="a" data-page-node-id="wDvFaKc6mcrrdArEcB0bsv"><span class="who y" data-page-node-id="kF38iEZS86mfkPo1zZkssz">恽雷 · 播客</span><p data-page-node-id="OWLDKH8S1kJRdCCMxmpp38"><b data-page-node-id="fX3q5BurOp4Atq1KSCG2pb">空间（天花板）&gt; 增速</b>。重要的是能不能到 1000，不是哪一年到。</p></div>
+          <div class="b" data-page-node-id="EZyJkvAIj3K4h9v9an2iSk"><span class="who z" data-page-node-id="Gj0CJfWlJ3EmPS4fFr0MOI">邹佩轩 · 书</span><p data-page-node-id="SBOaIFs6oRhBlPwF9JCL9h"><b data-page-node-id="si8BJy32jh6HNoJmJonKMg">增速的持续时间 &gt; 增速本身</b>；"我们不是给业绩估值，而是<b data-page-node-id="3fjYlTK78stKdL1QJgB8No">给终局估值</b>"。理由：增速三个月揭晓一次答案，预期差不大；但"能持续几年"短期无法证伪，预期差最大。同一个洞察，一个强调<b data-page-node-id="RbPXovPKAHBYtQMw3Ds191">高度</b>、一个强调<b data-page-node-id="HFeiDent6maBU7lXq7slmM">长度</b>。</p></div>
+        </div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink3);margin-top:12px" data-page-node-id="ivoio2s2zJDKL4IqJouCq9">※ 两人还都主张<b data-page-node-id="DJN5N7LkrcCYcC0fvoNpDQ">倒推优于正算</b>：恽雷说"把市值当成合理，倒推隐含增速"；邹佩轩说"倒算出的假设在合理区间里的相对位置，比 PE/PB 历史分位数更有效"。</p>
+    </div>
+
+    <h4 style="font-size:16px;margin:0 0 12px 2px" data-page-node-id="H0IFF3mH8Lv1OJj5bybGlx">② 六块播客没展开、但书里讲透了的（后两块是进阶，可跳过）</h4>
+    <div class="grid2" style="margin-bottom:20px" data-page-node-id="aSzSr0hkuoTgiJkJA9eX7z">
+
+      <div class="addon" data-page-node-id="7HutH122V3fwDGzNFJf737">
+        <div class="n" data-page-node-id="BSXQAmwLr5MKuN6yLmIV3i">补充 01 · 分子</div>
+        <h4 data-page-node-id="GYtIFhfTB8YJ1YCRFSeTYE">自由现金流的精确算法，以及为什么不用"分红"</h4>
+        <p data-page-node-id="TGnZYKWzQXp6TdACOzPUDf">恽雷用的是 <b data-page-node-id="EonzGju45sn5Ba04gIHuA3">EBITDA − 营运资本变动 − Capex</b> 的口语口径；书里给了从净利润起算的完整式（税已经在净利润里扣掉了）。</p>
+        <div class="fml" data-page-node-id="pcQJXmpSxDtUqFv6rDiW3x">
+          FCFF = 净利润 <b data-page-node-id="EyxTDaZTyTpD7cjke6wsso">+</b> 折旧 <b data-page-node-id="wWuKMrxM7nwA5BnfMjGZdv">+</b> 财务费用 <b data-page-node-id="A4PuMMHPxmhncLjNte0S2X">−</b> 营运资本净增加 <b data-page-node-id="7viBjLiCznUjCTLmtFGNDF">−</b> 资本开支 <b data-page-node-id="EzZTyd3XAFcRGl4J4WpOZz">−</b> 其他非现金调整<br data-page-node-id="K0yBhwCElqo5KAgdoq1LL2">
+          　　≈ 经营性现金净流入 <b data-page-node-id="64PwRdGYi4wIeFVeiX1Qdo">−</b> 投资性现金净流出
+        </div>
+        <p style="margin-top:10px" data-page-node-id="QA91ypXf9zAZkeIcBRMZPg">书里比较了三种分子：FCFF（公司自由现金流）、FCFE（股权现金流）、分红。<b data-page-node-id="bcq6yhPYoWXEG3YNu65X9A">不用分红</b>的原因很反直觉：分红率是变量不是常数，公司停掉资本开支后分红率可以超过 100%，所以分红增速 ≠ 利润增速，反而更难预测。<b data-page-node-id="mtgFTfSzWSG4IEdTR3TUnv">FCFF 胜过 FCFE</b> 的三条：结果更结构化、分子更稳（不用猜还债节奏）、分母更稳（不考虑税盾时 WACC 不受资本结构影响）。</p>
+        <div class="src" data-page-node-id="e43R3ghIM7u6uEDRDCjhVN">📖 2.3.1</div>
+      </div>
+
+      <div class="addon" data-page-node-id="HGVgzMKDEVsH9G5vJw8ieC">
+        <div class="n" data-page-node-id="DXMtUg0TUtNXTd7qU7oBlS">补充 02 · 分子</div>
+        <h4 data-page-node-id="9ujNkXocdoSIMSARJwbGx6">资本开支多 ≠ 生意差，要看新增投资的 IRR</h4>
+        <p data-page-node-id="ThOrK9nNEB59etMr64Z9L2">恽雷的框架里，Capex 是纯粹的减项。<b data-page-node-id="QrhAfnFH1DIjdF6MNPqhLl">书里补了另一面</b>：追加投资是用今天的自由现金流换明天的经营性现金流，只要新增投资的 IRR（内部收益率）≥ 折现率，它就<b data-page-node-id="XUZxrAHrCd4QzlFU4BGSkD">增厚</b>价值。</p>
+        <div class="fml" data-page-node-id="vdyOhi9nlBdaMSELzpHGBK">
+          只要相信"新增投资 IRR ≥ 折现率"，<br data-page-node-id="Wb9rqyEch28igzD5RrVHMe">就可以直接用<b data-page-node-id="UywYAZfpfXgy6Io78hhVPH">经营性现金流</b>代替自由现金流折现，视为<b data-page-node-id="GhZ8r7CiqhwziI76xiwIQN">公司价值的下限</b>。<br data-page-node-id="qlltvBgw7NBx58DoOsUBVH">
+          <span style="color:#6b7d75" data-page-node-id="We2A3KXK5y1pM6loTeYsGF">反过来：因为当下资本开支多就嫌弃它，其实隐含了"新增投资 IRR 不行"的判断。</span>
+        </div>
+        <p style="margin-top:10px" data-page-node-id="sneFHXBbACRRMqq5pgMvZp">落地做法：<b data-page-node-id="vFSFC9g1PfXZDCkg33GqPw">存量项目按经营性现金流折现 + 增量项目按 NPV 折现</b>，分开算。对资本开支大的公司，分解算优于整体算；且只需考虑未来 3~5 年的对外投资。判断标准是 IRR 与折现率孰高，不是不亏损、也不是高于国债收益率。</p>
+        <div class="src" data-page-node-id="mQVFYjwDmFOHysyRkZsRnW">📖 2.3.1 / 2.3.2</div>
+      </div>
+
+      <div class="addon" data-page-node-id="KMWgU5mlqqHcFx3kU6ZAOj">
+        <div class="n" data-page-node-id="t76dkHOto2ZisyX5FHxZ91">补充 03 · 风险补丁</div>
+        <h4 data-page-node-id="hIdTsky6pazHqpPtKA7kJQ">自由现金流效率这个指标，有一个致命前提</h4>
+        <p data-page-node-id="mDMXs8GFSrGFVfd3otqSXG">恽雷说"自由现金流创造效率"是判别好生意的定量标准。书里补了一句：<b data-page-node-id="HZl2B4vKzXf9eYfQtRDugq">前提是公司不造假、管理层不侵占。</b></p>
+        <p style="margin-top:9px" data-page-node-id="UdLGQY91mherbDxv2eX70v"><b data-page-node-id="qnQjEFt1vq9Sg57sdBthfw">三步循环法</b>：先体外循环虚增利润、把经营性现金流做高，再虚构投资、虚开发票，把现金通过<b data-page-node-id="Ynhh5r7BuRRAzmrC5kjWYn">投资性现金流</b>转出去，形成注水资产。结果是——<b data-page-node-id="e5rFdjTOhtsqxkZAciadpm">经营性现金流虚高，自由现金流很差</b>。</p>
+        <div class="fml" data-page-node-id="v7IvEsKC8YPrNoAAju21Gd">
+          自由现金流效率的另一个用途：<br data-page-node-id="KlyabfRkUAxLrRjJkP0ApG">识别"经营性现金流很好、但自由现金流长期很差"的公司。<br data-page-node-id="093OR5kSWVO7WJx4GV42LR">
+          <span style="color:#6b7d75" data-page-node-id="Olyomr7KyoTO7QkhHrmQlw">舞弊初期很难甄别，根本上取决于对管理层的信任。</span>
+        </div>
+        <div class="src" data-page-node-id="1XnLGjDDTApfcuUGYjeHYE">📖 2.3.1</div>
+      </div>
+
+      <div class="addon" data-page-node-id="h4F1ip3NFbMTIg8zSDfrv7">
+        <div class="n" data-page-node-id="vsDyy2W6QxLDLiEkGYgBur">补充 04 · 价值构成</div>
+        <h4 data-page-node-id="o8JgcE4QWkxREF9Mvu5UpM">市值由三块拼成，拼法决定安全垫厚薄</h4>
+        <p data-page-node-id="lGHkDTKEQ6MA4HdbvBJwT9">书 1.2.2 把公司价值拆成三项：<b data-page-node-id="Aqk9sznLD1AZDyvMYUsk4H">投资本金 + 存量资产的价值增厚 + 未来资产的价值增厚</b>。前两项好算、想象空间小；第三项想象空间最大，也是预期差的主要来源。</p>
+        <div class="fml" data-page-node-id="nOlDrtROwbMjtasvJ8SY3x">
+          看一家公司贵不贵，不是看股价绝对值，<br data-page-node-id="dGr5ATaykMVRzO4dvM1DLx">而是看<b data-page-node-id="zVFgjxRvTD0f4N1cR6Rrw9">现价里有多少是靠"未来资产的价值增厚"撑着的</b>。<br data-page-node-id="GkWx8dO0GO5a6ngVbGNJcM">
+          <span style="color:#6b7d75" data-page-node-id="M9ZLzOocMGO5zkLAxWvGTh">存量资产越值钱，增量故事被证伪后跌幅越可控；市值完全靠第三项支撑的，要时刻警惕故事被证伪。</span>
+        </div>
+        <p style="margin-top:10px" data-page-node-id="XuzFyYQiCB5YP3ugWoTMkC">顺带一个反直觉的点：<b data-page-node-id="q1RnEK80ozmVDlGNbCjNku">沉没成本与估值无关</b>。已经投产的水电站，造价多少都不影响它值多少钱——只看未来现金流。但利润表通过折旧把造价"记"了回来，所以看 PE 时要自己"脑补"回现金流。</p>
+        <div class="src" data-page-node-id="WGyTDTA7gSbXH8CSuDikND">📖 1.2.1 / 1.2.2</div>
+      </div>
+
+      <details class="adv" data-page-node-id="1GyqFuj9aZc0cnNIZEMClJ">
+        <summary data-page-node-id="ZPLXqdf6DHMfOi5ijDzv4T"><span class="lv" data-page-node-id="6HIWBMGciXq8NJE9NCFHls">进阶</span>补充 05 · 分母：折现率不是拍一个"7~8 个点"，它有四层结构——顺带解释了"景气度投资为什么有效"</summary>
+        <div class="body" data-page-node-id="zkyO1gTCjJE8os0EXmhrpC">
+          <p data-page-node-id="JSc6Ry4hf2rtyomWs6Rgrf">恽雷给了经验值（A股 7~8%、美股 9~10%）。书里把它拆开：</p>
+          <div class="fml" data-page-node-id="Q0GB5V55uJaNRtO6BESfMc">
+            折现率 = 无风险实际利率 <b data-page-node-id="I6duf0Y7IxaI5CUWrfmKGG">+</b> 通胀率 <b data-page-node-id="ukII12z4Nefp8LBzyfwB9h">+</b> 固有风险溢价 <b data-page-node-id="1SbykPMtPLGrkDgCk2NPEM">−</b> 市场风险偏好
+          </div>
+          <p data-page-node-id="BdAbSmah3LBFgbZzhXRdNC">前三项相对稳定，最飘的是"市场风险偏好"。书里用数据看它：把沪深300 的隐含 ERP（股权风险溢价）和财新 PMI 画在一起，吻合度极高（2015 牛市除外），创业板对 PMI 更敏感。</p>
+          <p data-page-node-id="8z9L3NczwDZuIFldqEPSLX">关键推论：PMI 本身是环比（相当于实体经济的一阶导），只有 PMI 的<b data-page-node-id="sHD8aP4W6NRHlVyHKxMi3T">边际变化</b>才会引起 ERP 变化——所以<b data-page-node-id="ADoILHS6y8I3whYKto8GFa">隐含 ERP 挂钩的是实体经济的二阶导</b>。翻译成个股语言：<b data-page-node-id="FdyGY5OAcmOxP2f743nydU">业绩增速本身不带来超额收益，但"增速在环比加快"时，股价通常不差。</b>答案不在分子端，在分母端：景气度上升 → 风险偏好上升 → 折现率下降。</p>
+          <p data-page-node-id="hFwRjnmZW3yI90XicPUcFo">这也解释了趋势投资为何难判拐点——风险偏好本身就是情绪，可能要看"导数的导数的导数"。长期看，风险偏好带来的收益大概率留不住，是干扰项而非增益项。</p>
+          <div class="src" data-page-node-id="aXRt350xqG7JtPbz4Zu11k">📖 1.2.3</div>
+        </div>
+      </details>
+
+      <details class="adv" data-page-node-id="TuoUEpFlhbOZm7giPrYLYZ">
+        <summary data-page-node-id="ulYmNpdRAyG2EIwPpXDaxo"><span class="lv" data-page-node-id="gq13cHg1R5QvbtUlYx5CvA">进阶</span>补充 06 · 数学：为什么"正算"不如"倒算"——一个 10 秒能看懂的证明</summary>
+        <div class="body" data-page-node-id="AnfDwdGZSAU8X97q2i2INB">
+          <p data-page-node-id="bA32sgIKCrG7NYp8AJ8JNX">恽雷凭经验说倒推更好用。书 1.2.4 给了数学理由：<b data-page-node-id="pOodRVMW3Opp4a6DwB98QU">参数到结果是非线性的，所以"用参数的均值"算不出"结果的均值"。</b></p>
+          <div class="fml" data-page-node-id="wbVO6ZKMSQnEvKgV6ehPq9">
+            取 y = x²，x 在 {1, 2, 3} 中等概率取值 → y 的取值集合是 {1, 4, 9}，概率也各 1/3。<br data-page-node-id="7cjRmeyTYMyFW6mZ5AnLUr">
+            x 的均值 = 2，代进去得到 y = <b data-page-node-id="JxHoFi5S3LawTJu3INLFNV">4</b>；<br data-page-node-id="ZaEAo8CEq3Flw8n7dlB2TL">
+            但 y 真正的均值 = (1+4+9)/3 = <b data-page-node-id="xNLVNDX1YsMxMYEBIAEzvE">14/3 ≈ 4.67</b>。<br data-page-node-id="O1jovi1eMTBolltiW79nao">
+            <span style="color:#6b7d75" data-page-node-id="jUlpAsCzVX9e6ubajFh5ig">两者不相等。所以你认真挑出的"最可能的增速"，代入后得到的并不是"最可能的估值"。</span>
+          </div>
+          <p data-page-node-id="5vjm7VRSxP1qjaHfwQHaJM">倒算的操作口径（书 1.2.4）：固定市场分歧小的两个参数，倒算分歧大的那个。成长股——给定折现率和增速，倒算<b data-page-node-id="igdz1yweI2GFOlHfyCF60h">增速持续时间</b>；类债股——给定增速，倒算<b data-page-node-id="b7VH8Z0Gs20WHC5VNVdPyf">折现率</b>；周期股——给定折现率，倒算<b data-page-node-id="lxgggLvHHvhyYTvQT5me8O">业绩曲线</b>。</p>
+          <p data-page-node-id="4qTGdD94862gU8Wjb1SC1Z">书 1.2.3 另一处的"山洞竹竿"比喻，解释了为什么股价涨幅有时"看起来"等于业绩增速：你在漆黑山洞里拿 5 米竹竿，以为前面还有 10 米；走了 1 米后，预期没下修到 9 米，还是 10 米——天花板被悄悄抬高了。所谓"赚业绩的钱"，其实是市场没下修"增速持续时间"。每走一步都在积累风险，一旦下修，股价瞬崩。</p>
+          <div class="src" data-page-node-id="tmzrfAFtQM1Yam8lZsfUww">📖 1.2.3 &amp; 1.2.4</div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="card" style="margin-bottom:20px" data-page-node-id="PqxQsGeCOCExxm7mgxcPyt">
+      <h4 class="ct" style="margin-bottom:4px" data-page-node-id="BgqctN1oaTEpzDSsnobDQH">③ 一处真分歧：永续增长率，到底要不要花心思拍？</h4>
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px" data-page-node-id="1V2JPHcG1yp5rNYLHmPq3M">这是两人唯一正面不一致的地方，值得单独拎出来。</p>
+      <div class="vs" data-page-node-id="E8C4JQwwHVrS7b60srcqRU">
+        <div class="vl" data-page-node-id="ZSh5Zc8yZE70JomMmAQAhQ">
+          <div class="vsh y" data-page-node-id="NIvDFcUbKxk0lHpS5thJYB">恽雷：它是<span style="background:#fdeeec;color:var(--red);padding:1px 7px;border-radius:5px;font-size:12px" data-page-node-id="FRNBahGQMOVWFY5fB9GKrZ">最重要的参数</span></div>
+          <p data-page-node-id="yWSkT1nlqebOakCOYJUF8n">永续阶段占价值 1/3~一半以上，所以"我得花心思去想一想这个数字到底应该拍多少"，而不是随手拍个通胀。</p>
+          <p style="margin-top:8px" data-page-node-id="a3umwYYzF8YiWir2Jc4Hcu">但拍的不是增速，是<b data-page-node-id="YXyFk9lBN8HzbFbvz4kReB">商业模式的档位</b>：制造业内卷 −1 ｜ 绝大多数 0 ｜ 食品饮料 1~2 ｜ 奢侈品/技术进步 3。</p>
+        </div>
+        <div class="vm" data-page-node-id="RIsRG7DYGKFXsGub0FCepq">VS</div>
+        <div class="vr" data-page-node-id="VnJX8kbPOvpEBZ7l2HLD0L">
+          <div class="vsh z" data-page-node-id="i3mCMZBePffzMz52hNK0yF">邹佩轩：<span style="background:#fff;border:1px solid #b9d3c8;padding:1px 7px;border-radius:5px;font-size:12px" data-page-node-id="AcZ8EvMcKaMJpGSmWGdNFg">尽量不要用，一律归零再打折</span></div>
+          <p data-page-node-id="6rfw880PgoADiuHRXXi9wX">"永续增长是一个非常强的假设，<b data-page-node-id="ph4TIyz8fpJi0Yb0zo0EF5">基本上只存在于理论模型中</b>。"增长不会是无源之水，它是用资本开支换来的。</p>
+          <p style="margin-top:8px" data-page-node-id="e4zpFnf68IM92Ewhwu2QQC"><b data-page-node-id="CH1p6dbknQdnfMJ85ccums">调分母时必须同步调分子</b>——无资本开支的永续增长，会让 ROE 趋于无限大，这才是结果对 g 极度敏感的根本原因。所以：直接按<b data-page-node-id="ruZfr2T4HYYlhpw1LcH17C">零增长、全分红</b>算终值，反而还算乐观，再按行业属性打个折。</p>
+        </div>
+      </div>
+      <div class="eli5 au" style="margin-bottom:0" data-page-node-id="LyVXmzfsL5Yez0cJPRGGPi">
+        <div class="lbl" data-page-node-id="7IPeRgjtGF6NOygM4RtPx8">怎么理解这个分歧</div>
+        <p data-page-node-id="nkIiohSE4fWaVMXE1DghNW">其实两人实战上<b data-page-node-id="GCeIfUxt66sKq9xRrqf6oY">相距不远</b>——恽雷自己也说"绝大部分公司都是 0 甚至更低"，并反复强调"它更像商业模式的划分，不是猜增速"。<b data-page-node-id="EgHT9srz4t2koTNxNwS6cx">真正的差别在容错率</b>：恽雷允许给真正的好生意 1~3 分；邹佩轩连 0 都嫌宽松，还要再打折，并转引了一句他很欣赏的狠话——</p>
+        <p style="margin-top:8px" data-page-node-id="tMoKZzHFLdrgCyRvayFqFn"><b data-page-node-id="IQF3n7fw0cUKvJTyPijZit">"DCF 模型的估值结果非常容易高估，如果算不出 50% 到 100% 的空间，所谓的目标涨幅可能都是计算误差。"</b></p>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="woCDPelQEer8skAaFsOJYS">
+      <h4 class="ct" data-page-node-id="GLfXYZ6Fd4ONaIj8IvqEav">④ 顺带辟个谣：一种很流行但很糟糕的算法</h4>
+      <p style="font-size:14px;color:var(--ink2)" data-page-node-id="vCZiy1j1nEfftjRpKBSO9a">用<b data-page-node-id="HMLwGW3OscBjCeZxXPdicB">"几年后的业绩 × 一个预期 PE"</b>算出若干年后的"合理市值"，再用 DCF 折现回今天——这个方法在散户中生命力极强，专业投资者里也不乏传播。邹佩轩的评价是：</p>
+      <div class="callout" style="margin-top:12px" data-page-node-id="hEm7ojC27xaI28eZTHBsbd">
+        <div class="t" data-page-node-id="SaVai5hNfoMEpIH5t6IsXj">⚠ 它是绝对估值法和相对估值法"缺点的集大成者"</div>
+        <p data-page-node-id="1Ac6xbECNtYsYQCMiTd56n">当下的 PE 至少还有可比公司作参照，<b data-page-node-id="rXwUiPlXisSKT3upCRIcP1">预期的 PE 则几乎全靠拍脑袋</b>；而折现率衡量的是风险，<b data-page-node-id="Ca9hPgDkh69pQJdexbluFA">对一个拍脑袋出来的估值，要用多少折现率折回来，得再拍一次脑袋</b>。它没有融合两者优点，只是把两边的缺点叠满了。</p>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink2);margin-top:14px" data-page-node-id="1qWDC0ytQPZZtSy6sHdp6t">他认可的替代方案：稳定期直接用<b data-page-node-id="roysLc2OX0DWZmZi2MRvFC">利润 × 低 PE（个位数）</b>估终值——对永续性不强的公司，这比强行假设永续更合理。另外，遇到"短期确定、远期看不清"的公司，<b data-page-node-id="hlpK3mUPNFxE1ChtUIB7D6">不要给不同阶段设不同折现率</b>（非线性、不直观、且说不清多大风险对应多少折现率），直接在<b data-page-node-id="tIc82xovAwMShBqG6Pu7TG">分子端</b>按情景打折更实用：比如乐观/悲观是 140/60，期望值 100，就按 90 参与计算。</p>
+      <div class="src" data-page-node-id="BuesQwuKiuxISTnpSX839w">📖 2.3.2</div>
+    </div>
+  </section>
+
+  <!-- ===== 5 怎么用 ===== -->
+  <section id="s5" data-page-node-id="NjwuE1S606Idf7LLkTcWDH">
+    <div class="shead" data-page-node-id="gb2RWEX7HUFN3UcOf0l0vH">
+      <div class="snum" data-page-node-id="lbajgyK3vIpxVRjomdK1pm">5</div>
+      <h2 data-page-node-id="06ObFqmmDNn9Fn88WTxkNH">这把尺子到底该怎么用：三个用途、六个步骤、一条边界</h2>
+      <span class="sub" data-page-node-id="1PqKGSp8R2xauJpTGnUACN">书 1.2.4 的三大用途 + 恽雷的倒推 + 一路算到底的柠檬水摊</span>
+    </div>
+
+    <div class="card" style="margin-bottom:20px" data-page-node-id="HBp8CIyyzl3ukGBnh8MsrC">
+      <h4 class="ct" data-page-node-id="bw8AmCIv7JTj11WzHnZxxe">DCF 对投资的三个实际用途（邹佩轩，1.2.4）</h4>
+      <div class="uses" data-page-node-id="r0gVZOoc38XogFL4cRPLX8">
+        <div class="use" data-page-node-id="btGFhDKAW8d5X4k53a7P1B">
+          <div class="n" data-page-node-id="CItQ0eYV7BPNasCAIbRbJe">用途 01 · 划区间，管风险</div>
+          <h4 data-page-node-id="sep8CLVXg8icK9q5DwwfKZ">算一个"合理区间"，用来止盈和决定是否坚守</h4>
+          <p data-page-node-id="3D8B80dblTwNegRDO4d7ZH">取极端乐观和极端悲观两组假设，算出上下限。区间一定很宽，不能直接指导买卖；但当市价<b data-page-node-id="WxkydA7yFzZGwqA0KBW0b6">冲出上限、无论怎么调假设都算不出这个价</b>时，就是该下车的时候。纪律：参数只能跟公司实体经营有关，<b data-page-node-id="KFF3uz3yKDjvcRwLkNrkyN">不能因为股价涨了就调参数</b>。</p>
+        </div>
+        <div class="use" data-page-node-id="E4URJCkU3l2hYOp3EgfwJr">
+          <div class="n" data-page-node-id="QQeCq3PlLVSho9vSDHugwA">用途 02 · 倒推，读预期</div>
+          <h4 data-page-node-id="hlDxhzX9XatHWGst3wTkMj">把市价当合理，反算市场在假设什么</h4>
+          <p data-page-node-id="VGFIZvdNHnIDOrGdZnmjJa">这是最常用、也是两人共同推荐的用法。正算永远算不准，但"市场默认这公司要以 40% 增速长 10 年"这种判断，你是能拍板的。倒算出的假设在合理区间里的位置，<b data-page-node-id="rjJDtyhKIA4U0e3tPn7hEx">比 PE/PB 历史分位数更有效</b>。</p>
+        </div>
+        <div class="use" data-page-node-id="dk2EFNel4nacRSUzJNlht0">
+          <div class="n" data-page-node-id="CMU9mjNfefKuSR6cRnHnqh">用途 03 · 抓板块性机会</div>
+          <h4 data-page-node-id="kaukPc8Ts7Z6RMz3n7D3lJ">当行业规则变了，PE/PB 失效，只剩 DCF 能算</h4>
+          <p data-page-node-id="3RahZAADSD1NZq9GwF1yZQ">技术变革、政策导向让行业<b data-page-node-id="OnDFZ8zHiwRN1PV63UChtw">天花板大幅上修</b>（分子端），或利率、风险偏好让<b data-page-node-id="Y4oHFCoyzfSgonOzh7Gf9e">折现率整体变化</b>（分母端）——相对估值的"历史传承"断了，新预期下的空间只能靠 DCF 参数组合来判断。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px" id="s5b" data-page-node-id="F829bx7kpfjNgelePrULHO">
+      <h4 class="ct" data-page-node-id="Xt67UQ0mWeCcTEOvAfQX06">实际做一次 DCF 的六个步骤——用柠檬水摊一路算到底</h4>
+      <p style="font-size:13.5px;color:var(--ink2)" data-page-node-id="nUZGDZ6ZArnumZyPIBkAWl">顺序是恽雷的顺序：<b data-page-node-id="EwE3DFAuaojYARpaxSF66e">先看生意，再拍参数，最后才看价格</b>。每一步下方的黄框是柠檬水摊的对应数字。</p>
+      <div class="steps" data-page-node-id="uMwqAbbQfFYNXBZrJChcGh">
+        <div class="step" data-page-node-id="6DbDn18VLWdfbDTBGzV2Oc">
+          <div class="n" data-page-node-id="49wYdLdQVkeZzIJifzFTIH">STEP 01 · 分子</div>
+          <h4 data-page-node-id="xmiIFtplrWJre7KFCHxlct">看这生意"剩钱"的效率</h4>
+          <p data-page-node-id="MENZQ9P2glA3I4KXLOrs8T">EBITDA 减掉营运资本变动和资本开支，剩多少？这决定估值中枢，也是判断好生意的定量标准。</p>
+          <div class="ex" data-page-node-id="fmfu0uhQiQWVi7TQ3CPdJR"><b data-page-node-id="yFkgeIyMYPs8nR4FfR8DiL">柠檬水摊：</b>账上 100 → 兜里 50。效率 50%，中等。to B 应收占了 20、扩产吃了 30。</div>
+        </div>
+        <div class="step" data-page-node-id="azdp9YOoRWCvPr89pWziNH">
+          <div class="n" data-page-node-id="ojK8dtjw7VY9hS3yS6M0ed">STEP 02 · 终值</div>
+          <h4 data-page-node-id="pN20DNW2jRFlfigCFGNeww">先问能不能永续，再给 g 定档</h4>
+          <p data-page-node-id="KJZpsWFfbwjFofrVKc1uVU">有没有牌照、地域、特许经营权、定价权、技术迭代？没有就别给永续增长。恽雷按商业模式分 −1 / 0 / 1~2 / 3 四档；邹佩轩建议归零再打折。</p>
+          <div class="ex" data-page-node-id="Hd0C9Axn2EKoTlnoSm3pRB"><b data-page-node-id="QJQlMhFAzAG4CqTjoNOSJa">柠檬水摊：</b>没品牌、没牌照、谁都能开——g 取 <b data-page-node-id="4Hn4gM1NfqoaliagmPtEOD">0</b>。按邹的口径还该再打个折。</div>
+        </div>
+        <div class="step" data-page-node-id="EhwqX7V5YtkmQ0kSn2kqjD">
+          <div class="n" data-page-node-id="GH2pFsGpqPjDmO5RTAxfXE">STEP 03 · 分母</div>
+          <h4 data-page-node-id="U1A85ZhXHFBIyb9D2QWHY0">取折现率</h4>
+          <p data-page-node-id="dQkassVmNX70TpH7iOkNay">不用纠结 CAPM。A 股 7~8%、美股 9~10%，算过的公司多了会发现它就在这附近徘徊。它的含义是"这个市场系统性地该给你多少回报"。</p>
+          <div class="ex" data-page-node-id="QAbhavziD1kO5CPxUgE1nB"><b data-page-node-id="D0Vmw1hPNtT4mAzgwgZ7gd">柠檬水摊：</b>取 <b data-page-node-id="DqcWOufr2NktE3yUOCZbD1">8%</b>。</div>
+        </div>
+        <div class="step" data-page-node-id="KbAoif2CJGVldM3IVOt4Zw">
+          <div class="n" data-page-node-id="T3Ip3PCsdyh34lRXU2rhG3">STEP 04 · 正算一次</div>
+          <h4 data-page-node-id="SJDOnoSBNVytSH4g5micmw">算出一个区间，而不是一个点</h4>
+          <p data-page-node-id="XvIVuERpMzI5aadY2pFbiX">中性、悲观、乐观各算一遍。别指望区间窄，它的用途是"边界"不是"目标价"。</p>
+          <div class="ex" data-page-node-id="CxQBLZiTRNIeegcgykaYyp"><b data-page-node-id="KSfVCYhbpRTiJjE2cYrU0V">柠檬水摊：</b>中性 50÷8% = <b data-page-node-id="5aFjrGCDGh9vaTXcVqYXSA">625</b>；悲观（维持性开支上升，FCF 只剩 40）40÷8% = <b data-page-node-id="LdZtx6NHAUFnpURCln0Cak">500</b>；乐观（真能每年提价 1%）50÷(8%−1%) ≈ <b data-page-node-id="gEJZILma1D66a967OMM49T">714</b>。区间 500~714。</div>
+        </div>
+        <div class="step" data-page-node-id="ouPHGuLe126nF4SIDjoCHr">
+          <div class="n" data-page-node-id="aFhoWVfCQw5ELvy9oulIcF">STEP 05 · 倒推</div>
+          <h4 data-page-node-id="WxCdIVnR4nDzlGUvDa8XSQ">市价隐含了什么？可信吗？</h4>
+          <p data-page-node-id="fuK4OLggmjmjEqTBecyRC4">把市价当合理，反算隐含增速或隐含持续年数。然后只问一个问题：<b data-page-node-id="lW3XOg0QpBcaBY81PppdiH">这家公司的经营，真能干到那个数吗？</b>研究的是空间（天花板），不是增速。</p>
+          <div class="ex" data-page-node-id="RRcebratAMPCdVvQ9Rlbel"><b data-page-node-id="eh6PjL181hCQSBBImhsNGs">柠檬水摊：</b>有人出价 <b data-page-node-id="XAPGR2YUbLEpoorEvtf9IB">1250</b>（25 倍 FCF）。1250 = 50÷(8%−g) → 隐含 g = <b data-page-node-id="CelCgUkAErOYViCRBle0cG">4%，永远</b>。换个说法：4% 的现金收益率要回到 8%，兜里的钱得从 50 翻倍到 100。一个柠檬水摊凭什么？</div>
+        </div>
+        <div class="step" data-page-node-id="QqfjH9kmteHEYBgAKDPttj">
+          <div class="n" data-page-node-id="6fWncZuv8IKQoSkWeBzAbS">STEP 06 · 决策 + 纪律</div>
+          <h4 data-page-node-id="gXRFzYwc7PSpx0dZq4102T">对照区间下判断，并且设一条线</h4>
+          <p data-page-node-id="ffbiDNZi20BmTTt1a5uhqD">市价在区间之上：不下注、或减仓，别赚最后一枚铜板。市价在区间之下且倒推出的假设明显过于悲观：这是机会。算不出 50%~100% 的空间，就当作计算误差。</p>
+          <div class="ex" data-page-node-id="i70ozK4BtZWARJ3K6xmH20"><b data-page-node-id="4fZZhm74ZU9NtpJNOZd3nt">柠檬水摊：</b>1250 &gt; 上限 714，隐含假设不可信 → <b data-page-node-id="p4E5GhI28CASJht5wEHgJM">不买</b>。若市价 400 &lt; 下限 500、且倒推出 g ≈ −4.5%（市场认为生意在萎缩）——你觉得没那么糟，才是机会。</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:20px" data-page-node-id="A2MReD8Kh9ndSZqygvcwot">
+        <div class="t" data-page-node-id="yk88CtFCJHkPBZ1wGLekaH">⚠ 边界：DCF 不能干什么（邹佩轩，1.2.4）</div>
+        <p data-page-node-id="lBYiDrPhqfN3movVOwWtTM">① <b data-page-node-id="8wSscNqJHh6pcN64LrPMSj">不能指导短期投资。</b>即便你的预期是对的，市场形成一致预期需要时间，中间可能修正好几次。考核周期短的人，谈 DCF 是一种奢侈。<br data-page-node-id="10LyAbQ4MlScmRC8kDZBHz">
+           ② <b data-page-node-id="z4O7kwpq25gHzUHgn10VNs">在 A 股能靠它赚"舒服钱"的窗口很窄</b>——书里举的典型是 2017 年；2019 年以后是极致结构性行情，上一年有效的策略下一年大概率无效。<br data-page-node-id="BJDjtld0DMHs7Q13EA3tB1">
+           ③ 所以更准确地说，<b data-page-node-id="qwm5HGhgQsKgpp2OQGiviw">DCF 是一种风险控制手段</b>：在极度高估时定一个止盈点，在持续下跌时判断是否还值得坚守。"牛市时不上头"可能比"熊市中不绝望"更难。</p>
+      </div>
+    </div>
+
+    <div class="card" data-page-node-id="adCej2tMMqVlu3R1MCozAm">
+      <h4 class="ct" data-page-node-id="6QgUDr15erbrQN130ATmXo">心法侧栏：恽雷讲的三件事，不属于 DCF，但决定你能不能用好它</h4>
+      <div class="cmp" data-page-node-id="5iEnqqvPM3xadUtRB0Dy5q">
+        <div class="l" data-page-node-id="3Om5rUref1omjocGHGQiE9">
+          <div class="cmph" data-page-node-id="2CLCPDnjcMGhH6FnzP8akL"><span class="badge neg" data-page-node-id="c3gddndfpFQjgEvt2HDpXm">考试 = 有限游戏</span></div>
+          <p data-page-node-id="YAz1AeGdlcvPBxJEz8MTNN">规则固定，多练就能拿高分。努力和结果之间<b data-page-node-id="t6tTiBELu7NKv4oe47qFJw">有稳定的因果关系</b>。</p>
+        </div>
+        <div class="r" data-page-node-id="IlwQn6Xcw7oA75KafSBvec">
+          <div class="cmph" data-page-node-id="EE3ByzlKhI3PMgCS6Liw5x"><span class="badge pos" data-page-node-id="M0QNyqfW7uzhevIKnQm87E">投资 = 无限游戏</span></div>
+          <p data-page-node-id="ZJC7HO2Ner0xkxJt1KU7Ub">规则会变、对手会变、你自己也在变。所以最重要的不是"算得准"，而是<b data-page-node-id="7vf5Z1O5LPICANAPpcaHxQ">纪律和规则</b>——比如超过某一水平的 PE / PB，就不下注了。</p>
+        </div>
+      </div>
+      <div class="steps" data-page-node-id="T4pPkkLgTxWN0MYyQzeToy">
+        <div class="step" data-page-node-id="xZYEAmv5DIBp5MZbjzMH3h">
+          <div class="n" data-page-node-id="zXcE9UK7LUMpbwfkYvdaYW">心法 01</div>
+          <h4 data-page-node-id="CZ9quXOeeFRRb9iz8TDs1j">先问第一性问题</h4>
+          <p data-page-node-id="1C7hWN138a00dpqkA5ZJPh">你这一笔的初心，是<b data-page-node-id="AMW3DMc6H5k8sNgGyS5Tan">获得收益</b>还是<b data-page-node-id="4SoJGt0dH37xhQ6bbaakV2">管控风险</b>？牛市里人人都说前者，熊市里才想起后者。</p>
+        </div>
+        <div class="step" data-page-node-id="kjEvsMGSPzE971PFE9GYKb">
+          <div class="n" data-page-node-id="2JGasW1L5FaKh69Ueel1dA">心法 02</div>
+          <h4 data-page-node-id="J3WA2QFkjmodYUrNFJ1V5V">设一条不能越过的线</h4>
+          <p data-page-node-id="9mZDIrKWLzpwqYGLxDTITW">超过某个 PE / PB 水平就不再下注。这不是技巧问题——<b data-page-node-id="CsBHOJiRbIDEbCDMiMOiMb">是框架问题</b>。</p>
+        </div>
+        <div class="step" data-page-node-id="GFRDSXzSrircu2XnZiCbnl">
+          <div class="n" data-page-node-id="HsbXpumuU2ZDPqBHpSGMYj">心法 03</div>
+          <h4 data-page-node-id="leHTMjBDAB56q7XCYcCOGv">把客户的钱当自己的钱</h4>
+          <p data-page-node-id="hXGYCha3t95HzoIoO2DLXA">市场上有 10 个机会，一年抓到 2~3 个就满意了。想 10 个全抓住的人，其实是在<b data-page-node-id="ExIUGm4Retkq570JeZAC2D">用客户的钱追逐排名和规模</b>。</p>
+        </div>
+      </div>
+      <div class="callout blue" data-page-node-id="sPccJKbP9YwreBKvvbJM6s">
+        <div class="t" data-page-node-id="qbnOAlwn3BBwOOUl2DJuQj">A股这工地，有两个先天特征（厚望开场）</div>
+        <p data-page-node-id="UIQR3GN8nvFVYBUUoo1LXK">① <b data-page-node-id="1De1CXgb4AG4ugPhDWV5qh">缺乏做空工具 + 流动性充裕</b> → 向上定价的能力<b data-page-node-id="DkZjrvmHEezvcFLWiuSpE9">远远强于</b>向下定价。<br data-page-node-id="F6Y4hzQ7u5la8yjYV5tAqz">
+           ② 后果就是：过高的向上定价，得靠一个漫长的过程来消化——<b data-page-node-id="KOotvfnRSEM5HwIUOzhi5C">直接表现就是牛短熊长</b>。所以在 A 股，用途 01（止盈线）比用途 02 更救命。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6 四问四答 ===== -->
+  <section id="s6" data-page-node-id="tcm8tZ0GKJrBFLBwwy4hK8">
+    <div class="shead" data-page-node-id="H8bO5coeA1uhsoLjNiwqV4">
+      <div class="snum" style="background:var(--gold)" data-page-node-id="m8JebVEfrWxy0h7FfAJS7M">6</div>
+      <h2 data-page-node-id="G6tuX1JsEFdCxYNhP8XNgo">读完带走：四问四答</h2>
+      <span class="sub" data-page-node-id="pZ82KEpAGUF0fB3zBsJc3w">如果只记四句话</span>
+    </div>
+    <div class="qa" data-page-node-id="QNQNm3V0zpNJJqNaCorH3t">
+      <div class="item" data-page-node-id="cSus5uCBgvPvcixGJEcnyL">
+        <div class="qq" data-page-node-id="zeVnTIXxfwXgGM6k4B8Hgo">Q1 · DCF 是什么</div>
+        <div class="qh" data-page-node-id="y0atAKKmT1eMpEig1M5Hm1">把公司未来每年能装进兜里的现金，按你要求的回报率折回今天，加起来。</div>
+        <p data-page-node-id="IIUMmv0VW9XW5Bib8FuFUL">分子是<b data-page-node-id="6qtxGM7SKFivWCQ5xatZeW">自由现金流</b>（账上赚的 − 被占的 − 再投的），分母是<b data-page-node-id="YvjFMM6PfvqSeKrBXDjTWu">折现率</b>（市场系统性该给你的回报，A 股约 7~8%）。真实公司拆三段预测：看得清的显性期、看方向的半显性期、打包成终值的永续期。<b data-page-node-id="Rqq4GHmsMkVAjhdCEXV5QQ">大半的价值压在你看得最不清楚的永续期</b>。</p>
+      </div>
+      <div class="item" data-page-node-id="uEsLDB741xoEAAJVbE6Bxw">
+        <div class="qq" data-page-node-id="NAZk0W0bOS2VCbadu21GEo">Q2 · 本质是什么</div>
+        <div class="qh" data-page-node-id="Z7fXSiEgomS8Yr7fxLBTYo">它是一条公理、一种思想，不是一个要算准的数字。</div>
+        <p data-page-node-id="6T9Ap5Puj9j3BNn6Affgqo">它逼你回答三个问题：<b data-page-node-id="OfJ4IM0l9VjFuXYUb8kRE9">这生意怎么赚钱、赚钱费不费劲、能赚多久</b>。它的硬推论是：只要预期不变，你的收益率就等于折现率，和公司增速无关——<b data-page-node-id="WKFBlpYzvgPyM3xvqwEXZV">超额收益只来自预期差</b>。所以 DCF 的价值不在算出答案，在于把"你和市场分别在假设什么"摆到台面上。</p>
+      </div>
+      <div class="item" data-page-node-id="87peQCUZ290nvNrTt2GMGn">
+        <div class="qq" data-page-node-id="64Ai697VwfLBHWX5ENdJb6">Q3 · 对投资的意义</div>
+        <div class="qh" data-page-node-id="XZJrnSVmGXiXEdjAW0rmlf">它是锚、是尺子、是止盈线——不是买入信号，也不是短线工具。</div>
+        <p data-page-node-id="zZBAKiTB3WV13b0aOSIEaR">三个用途：<b data-page-node-id="kKLrH2kFCmwxA2BU8u9Dg1">划合理区间</b>（管风险、定止盈）、<b data-page-node-id="YLtV4aPKo8ETYhBXP0YUHH">倒推市场预期</b>（比 PE/PB 分位数更有效）、<b data-page-node-id="HAZDdU1KKNzs8CqmrVo3D7">抓行业规则改变时的板块机会</b>。边界：不能指导短期；A 股能舒服用它的窗口很窄；本质上是风险控制手段。均值回归回归的是 WACC，不是股价。</p>
+      </div>
+      <div class="item" data-page-node-id="2mPCjH3z744oDY2t8UnrnE">
+        <div class="qq" data-page-node-id="ncL92C7sHGre2WAiYNHdun">Q4 · 怎么用</div>
+        <div class="qh" data-page-node-id="mHbciWI3TpkQEJBGBBWQCt">先看生意，再拍参数，最后才看价格；倒推优于正算；空间重于增速。</div>
+        <p data-page-node-id="khJdvr24liOBrHTSpEVU10">六步：<b data-page-node-id="pw7RbHVeOJoP0AhRv4WbTB">①</b> 算剩钱效率 → <b data-page-node-id="3OtP4uNpB3SiOy6ojRAzWO">②</b> 先问能否永续、再给 g 定档（多数是 0）→ <b data-page-node-id="asBkSdphCJ5Zou1G4ZYdtf">③</b> 取 7~8% → <b data-page-node-id="ctopEcosJpw9s9MOPE4iOp">④</b> 算区间不算点 → <b data-page-node-id="rn9Ng6ubngunSpqacGPRqy">⑤</b> 倒推市价隐含的假设，问"经营真能干到吗" → <b data-page-node-id="xpwCguNRq5BBjO0yLFJntW">⑥</b> 对照区间决策，设一条不下注的线。算不出 50%~100% 的空间，就当计算误差；涨到接近目标别赚最后一枚铜板。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 附录 ===== -->
+  <div class="appendix-h" data-page-node-id="7NGc3yGTLfanled9J7NnTp">附录 · 播客里与 DCF 无直接关系、但值得留档的内容</div>
+
+  <section data-page-node-id="UrPFBQuEzzj3RhLHKaDPZ8">
+    <details class="adv" data-page-node-id="udJ48MxlwmE4qm4dKnoXoB">
+      <summary data-page-node-id="xdWNc6nBop0PqpH8qy6I0O"><span class="lv" style="background:var(--accent-soft);color:var(--accent)" data-page-node-id="WMDix6e7wnfxmECxbtzYEO">附录 A</span>收益型 vs 波动型：恽雷的基金分类法（38:25 · 他不按"主动/被动"分）</summary>
+      <div class="body" data-page-node-id="S9EI6n1AZxokJtTAEV6KW6">
+        <div class="cmp" data-page-node-id="U9AEdsoLN7MpQamAAy0mMU">
+          <div class="l" data-page-node-id="TEOj5RhSQmLCzZHl9uB49R">
+            <div class="cmph" data-page-node-id="UhTBpNlZKr1DAds8Jl9aok">📈 收益型产品 <span class="badge pos" data-page-node-id="qaJqgnQGp8VJ1xvdDn3Cvg">战略配置 · 底仓</span></div>
+            <p data-page-node-id="kTFrtpsgejb2rxuPqPdZ5K">净值曲线不断<b data-page-node-id="9QtBZwbTnelFR6nr7hEUCh">创新高</b>，以 20~30 度的角度慢慢往上爬。老牌基金经理的产品、标普500、纳斯达克100 都属于这类。</p>
+            <p style="color:var(--ink3);font-size:13px" data-page-node-id="PMRF6ci4Tc66oGDKtDcgXy">关键词：<b data-page-node-id="PEhIPD927QbCzwljEjWs1f">boring</b>。它走得不会太快，就是一个缓慢积累的过程。</p>
+          </div>
+          <div class="r" data-page-node-id="zGQUWCP024QuB4APWROXZf">
+            <div class="cmph" data-page-node-id="mXc7P2P7HChdSDq8dMCNTp">🎢 波动型产品 <span class="badge neg" data-page-node-id="CHp9piHaQ1SWR0uCCM9aq1">战术配置 · 增强</span></div>
+            <p data-page-node-id="w7s8CDhmVOADCmlZWKwrAj">赛道型基金、行业 ETF。短期可能翻倍——创新药、新消费就是今年的例子。但它的表现高度依赖<b data-page-node-id="mAiJsPbrCQd27yzAI0A37t">市场情绪、宏观环境、流动性</b>。</p>
+            <p style="color:var(--ink3);font-size:13px" data-page-node-id="Bp7auV2pdN7Z0J1mj3LIlc">关键词：<b data-page-node-id="33qgsGcuUDsr2bsf2eFSDY">交易</b>。既然是交易——<b data-page-node-id="fcArLPdk7ev4cRapfZAmcu">Trade is trade，就得有明确的止盈和止损。</b></p>
+          </div>
+        </div>
+        <div class="eli5" data-page-node-id="aRzUktEwiExmB3xy5Bwl61">
+          <div class="lbl" data-page-node-id="jJTJkcUN9MUeJVEyDhUlqF">ELI5 · 一顿饭的比方</div>
+          <p data-page-node-id="48Si0zO1aU2V2EAZEiYr5L"><em data-page-node-id="QDbBhZyiWhPClhV8npK5sk">收益型是主食</em>，管饱，天天吃，平淡但扛饿。<em data-page-node-id="C2EnHKLFZkvvKzN5SCg2zx">波动型是辣椒</em>，够劲，但没人拿辣椒当饭吃。</p>
+          <p data-page-node-id="H3vrWurN4Y6II4bGpjrLBf">大多数人亏损的原因，不是没买对——而是<em data-page-node-id="JIxHtOaTwN5KEEkywRv6wx">在市场最火热的时候，把大部分仓位买成了辣椒</em>。</p>
+        </div>
+        <div class="callout" data-page-node-id="M9KXF4DrCcUkTFDmf7ltvq">
+          <div class="t" data-page-node-id="vIQbO42DxolWKSLZCbe2Sy">⚠ 战术配置的两个作用（第二个常被忘掉）</div>
+          <p data-page-node-id="fYa2jvK05q6FeitPW360JX">① 给战略配置<b data-page-node-id="c6sqAviHK7qr0ZmX1B1Qtp">做增强</b>：拿出 5%~10% 仓位参与热点，见好就收。<br data-page-node-id="04cjoVbZTXR1PvrL0dzcAz">
+             ② 给战略配置<b data-page-node-id="R1tcoSRhys5BVflMFzQSPZ">降低波动</b>：放一些和底仓<b data-page-node-id="oBN166212ueclO2iWFLqpa">弱相关甚至负相关</b>的资产进去。<br data-page-node-id="nDFMQTZHJyR6GjlS1sI7ty">
+             铁律：别把战略部分挣的钱，通过战术部分全亏回去。</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===== 金句 ===== -->
+  <section data-page-node-id="3I3dd7w8lJtZBxENl5bJlr">
+    <div class="shead" data-page-node-id="L8Z47ypWBcFIo2R7n2K52v">
+      <div class="snum" data-page-node-id="ByK6kVXslaj8hyDZSZie68">“</div>
+      <h2 data-page-node-id="QJR0wof3Xs9rhwyGz5B8av">原话摘录</h2>
+    </div>
+    <div class="quotes" data-page-node-id="mK6vLDI7zrQsUQmsLaDNJi">
+      <div class="q" data-page-node-id="9p1iAkzNcDqX28cngxSFuz"><p data-page-node-id="d01pD9oT0m3y76JXb6pTGm">"DCF 算出来的并不是一个结果，重要的是你用这个思想怎么去分析一家公司。"</p><span data-page-node-id="uxZFEhquirNQRnjZgIVPET">恽雷</span></div>
+      <div class="q" data-page-node-id="8D3cQ9PXNLCBbd4JZmctYz"><p data-page-node-id="1HhgNImP8CHl2HB9iMC162">"账期可能比利润还重要。"</p><span data-page-node-id="h0g1pKDHQb4WIhfgz9SIzV">厚望 · 谈营运资本变动</span></div>
+      <div class="q" data-page-node-id="G7OXmvGnTa753lB5VAzBIQ"><p data-page-node-id="VKHH9yWelhHXUhZkz8aioj">"很多时候，一个企业的长期经营，比它短期爆发出来的增速更重要。"</p><span data-page-node-id="aKfwjRH0HTlddoEN6mwI6c">恽雷 · 谈永续增长率</span></div>
+      <div class="q" data-page-node-id="JFLkhHngV8byDArhObZCjU"><p data-page-node-id="3E41cnyHxDhqHGJOcm58li">"二级市场的均值回归，回归的是 WACC。"</p><span data-page-node-id="jmi4Xh8rZvSa34rUGbUuzB">恽雷 · 谈折现率</span></div>
+      <div class="q" data-page-node-id="04uarEgt5MmUB8EGJ7H1DV"><p data-page-node-id="ntAh2yUGsuHllIvEYuHfJC">"不赚最后一个铜板。"</p><span data-page-node-id="DamjqX7R2GYDDH0LrDNwRh">恽雷 · 引那些在周期高点收缩的老板</span></div>
+      <div class="q" data-page-node-id="eo1tuCZoFuCsLbaxvF2BAA"><p data-page-node-id="32mC9qOx8Et7MUzxOdF2Jh">"能克服的叫缺点，不能克服的就叫弱点。其实我们经常面对的是弱点。"</p><span data-page-node-id="18SipP4cPB7Lmiwr2yuwYd">厚望 · 结尾</span></div>
+      <div class="q" data-page-node-id="2bHc3AYNkqkpGs7nzUwrM6"><p data-page-node-id="BqgC3DEMiq2GEUAu2MNSqv">"我们不是给业绩估值，而是给终局估值。"</p><span data-page-node-id="aqEsUqDQkTFwF29n2si23h">邹佩轩 · 《穿透估值》1.2.3</span></div>
+      <div class="q" data-page-node-id="txwjfVv6wZQAXw1AmcfjIz"><p data-page-node-id="6aU3VGuyQsWC7JmFhHQgS7">"在股权投资层面，一切收益都来自估值。"</p><span data-page-node-id="etklHf84amw42DkOlBEBNJ">邹佩轩 · 《穿透估值》1.2.3</span></div>
+      <div class="q" data-page-node-id="Td5zhuUNJBc67OQpbWbKOg"><p data-page-node-id="kUD8a3GAbgq9KQCVIImenI">"如果算不出 50% 到 100% 的空间，所谓的目标涨幅可能都是计算误差。"</p><span data-page-node-id="szWlZQQjA47cfBFJB2AiPT">邹佩轩转引 · 《穿透估值》2.3.2</span></div>
+      <div class="q" data-page-node-id="rqHfhJYvbEgxKxOc0xltm0"><p data-page-node-id="cD1F8KDk87HDPBpX2Ue8DC">"永远不要相信'这次不一样'，每一个衰退的行业，都有过激情燃烧的岁月。"</p><span data-page-node-id="9rJWArGEGVqGbvQ8U09noP">邹佩轩 · 《穿透估值》1.2.3</span></div>
+    </div>
+  </section>
+
+  <!-- ===== 时间轴 ===== -->
+  <section data-page-node-id="vXJbtCmLHDDg5pWdznJ8xq">
+    <div class="shead" data-page-node-id="HFiFBOemkdBTGOyFSnL1QZ">
+      <div class="snum" data-page-node-id="oomivhCXqddrr3fwnwcLXs">⏱</div>
+      <h2 data-page-node-id="ZKvuhzqsodGzqdAJyHt12y">节目时间轴</h2>
+      <span class="sub" data-page-node-id="t9uO18QrMSJJfT22ATVswn">🚩 = 关键节点</span>
+    </div>
+    <div class="card" data-page-node-id="EqbBuvynaVFK1y20yDV4eF">
+      <div class="tl" data-page-node-id="Lrp5vKkIzz6FzQ25gv0UBk">
+        <div class="tl-item" data-page-node-id="6KhrRv7H2Sbj8vQQ8vYsg1"><div class="tl-t" data-page-node-id="8apw5T2l5mz475DHWd87fc">00:20</div><div class="tl-c" data-page-node-id="g7KXFulyRDet2jPcjMhdGD">一个问题唠了快一个小时</div></div>
+        <div class="tl-item" data-page-node-id="jBl4iG6KVouowUbH56zDix"><div class="tl-t" data-page-node-id="6qSfpb0vu3qsBUGo7kYbeo">03:57</div><div class="tl-c" data-page-node-id="BhJdyJGpCsGtUxPZLpOyAj"><b data-page-node-id="ONUqDMZ4ImV8CBrHV0Godg">这个公式更像是一种思想、一条公理</b></div></div>
+        <div class="tl-item" data-page-node-id="pGBuoCMH4ZbnMEuRf58YPO"><div class="tl-t" data-page-node-id="cQMFmU5i7WBA7X8X8O5f3j">04:55</div><div class="tl-c" data-page-node-id="oEFRmQyPBCIaBLv8DOkOlR">关键指标 · 营运资本变动（Change in Working Capital）<span class="flag" data-page-node-id="8DIC5b4mRYjCs4Yq7qaehh">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="K3bdBGpHJpSycREZGpmEhc"><div class="tl-t" data-page-node-id="9aK833a7408wzx0qeEoonS">08:29</div><div class="tl-c" data-page-node-id="Y4tE0H33lhlWRCZmUnEIuu">关键指标 · 资本开支（Capex）<span class="flag" data-page-node-id="anDpWryeMOBGvd8dYi7FDF">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="F6ghb0BJZgzTwwYs3UzKUP"><div class="tl-t" data-page-node-id="kzXZbQZRrtvMjHoC561wVX">10:18</div><div class="tl-c" data-page-node-id="rAlbXAK5R5jKlr4baDVNTm">两个指标的核心：<b data-page-node-id="uhaUsQ8DAimlvc4wxNRIwU">创造自由现金流的效率是否足够高</b><span class="flag" data-page-node-id="6iZnuGYvJH2YvAYkSgrVfP">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="plHCiFTiMitaSmuJ24Hn4L"><div class="tl-t" data-page-node-id="xVFPEzvbtr7Pqf4hKf3UZc">12:06</div><div class="tl-c" data-page-node-id="enciexXowuhxjTvZoXdMuD">关键参数 · 永续增长率<b data-page-node-id="HKWhStJEkJ4Ud1Qfdt6gyd">，占内在价值接近一半</b><span class="flag" data-page-node-id="aUiyp2XKmkmHVyuTrkDLLY">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="wGOVHYz7JYjSQ96MC3uDUl"><div class="tl-t" data-page-node-id="Q07ZotdCxGnor4S883hQyu">19:09</div><div class="tl-c" data-page-node-id="P1flC4R3UVTp7xOhaxZvZX">所谓<b data-page-node-id="NHbfF6rcUnU18UeDvRQG81">长期主义</b>，更多体现在 DCF 公式的假设上</div></div>
+        <div class="tl-item" data-page-node-id="I3mgjMfCYzAVm6avDBQwg8"><div class="tl-t" data-page-node-id="fHKAAcyaMSVJLsl2u4vevR">21:29</div><div class="tl-c" data-page-node-id="qpr0U4LTNGrXFSCchDMI0z">关键参数 · 折现率（WACC）<b data-page-node-id="GLW5ThIcRZEkQd1B5VBgKp">，市场总有往 WACC 回归的动力</b><span class="flag" data-page-node-id="G1NF2kA0OtbUUNwOB0nqjg">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="KguZ6BZflPKxi9Wae4C7Ca"><div class="tl-t" data-page-node-id="55QBFRLLyEFYW10n5WODnV">29:10</div><div class="tl-c" data-page-node-id="romavMQFC1oQ5EjzF9LWR3"><b data-page-node-id="vLRf0mcPJ77y8yEUNcuMJ8">根据现有参数倒推</b>第二阶段增速</div></div>
+        <div class="tl-item" data-page-node-id="j9YP9HFLL4zQbi7FIiBBmS"><div class="tl-t" data-page-node-id="0OMALOS9kLhWMAhPiIWXLm">31:47</div><div class="tl-c" data-page-node-id="1xNYsxx5easlPgUxCdTxbY"><b data-page-node-id="aGAABBzW95X5c2HClOGCaM">业绩空间天花板 &gt; 业绩增速</b><span class="flag" data-page-node-id="CG1hChLJlAhSKM1dfPx0JI">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="NjZTeBb8JGfGDjeUIGcgnb"><div class="tl-t" data-page-node-id="LezHtnglFYuCF9Fyl3TsSv">35:43</div><div class="tl-c" data-page-node-id="Jx3Emz8IYb196mtUfnkeAQ">在复杂系统里玩<b data-page-node-id="lvvuHWOGdDH99DsO1yLa1b">无限游戏</b>，管控风险最重要<span class="flag" data-page-node-id="cRu2VHQt6PTZ1v0PHtuLlj">🚩</span></div></div>
+        <div class="tl-item" data-page-node-id="Vqijs2MzaSikZNqzOVG7jM"><div class="tl-t" data-page-node-id="2xUgNHGmO207XazgYwiPuv">38:25</div><div class="tl-c" data-page-node-id="5V7v96sEw0e0RIROTRZrIj"><b data-page-node-id="3Am3hDIhFAHaSW7PbRpG76">收益型 vs 波动型</b>：战略配收益型，战术配波动型<span class="flag" data-page-node-id="VDZ98HMnaDPCvi0P3m8LlP">🚩</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-page-node-id="kvAXJsm805oeqLTQJsInNe">
+    <div class="tagrow" style="margin-bottom:12px" data-page-node-id="RA5xqYO50Bq1cgZAIIQPby">
+      <span class="tag" data-page-node-id="o9cCYCKOGkixFbIS7x63fh">播客 E124 知识画布</span>
+      <span class="tag g" data-page-node-id="Ge2poTAFNEdD6s58OyTVJL">ELI5 版 · v2</span>
+      <span class="tag r" data-page-node-id="1H3iePDGvmvpRqByiQo3iQ">嘉宾：恽雷 · 南方基金</span>
+    </div>
+    <b data-page-node-id="Fy4GmN32Lw3BMEf7hLvo6e">素材来源</b>：播客 E124《估值第一性原理 DCF 到底怎么用？》逐字稿（校对版），嘉宾恽雷 @ 南方基金，主播厚望。§0、§2、§3、§5 心法侧栏、附录 A 基于逐字稿；§1 的公式与三阶段框架、§4 全部、§5 的三大用途与边界引自《穿透估值》1.2 节与 2.3 节；柠檬水摊算例为本画布自拟，用于串联各节。未引入其他外部观点。<br data-page-node-id="HCdyIUP8CmoOEwvfGcABIX">
+    <b data-page-node-id="f5CrkdKEqjov8xRtDlQYV9">术语校准提示</b>：逐字稿中 EBITDA、WACC、PE 分别被语音识别转写为"一必达/一比达/EB达""wac/wax""P1"等，本画布已统一为规范写法。<br data-page-node-id="jETA6300XEpvo3ZL9jf2Yd">
+    <b data-page-node-id="NWkXZ4awz4TRDxKGDYuAq5">风险提示</b>：本页内容仅用于知识整理与分享，不构成任何投资建议。Your money, your decision.
+  </footer>
+
+</div>
+</body>
+</html>

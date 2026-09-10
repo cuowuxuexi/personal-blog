@@ -92,6 +92,7 @@ test('research / philosophy / big-question sidebars project from structure decla
     '/投资/投研/医药/研究地图/创新药研发全流程/',
     '/投资/投研/医药/研究地图/CXO与CRDMO/',
     '/投资/投研/医药/研究地图/原研仿制与支付端/',
+    '/投资/投研/医药/研究地图/技术浪潮与投资框架/',
   ])
   const structureNodes = projectStructureFromFs(REPO_ROOT)
   assert.deepEqual(
@@ -108,6 +109,7 @@ test('research / philosophy / big-question sidebars project from structure decla
     '/投资哲学/市场与价格/',
     '/投资哲学/企业与回报/',
     '/投资哲学/个人与研究边界/',
+    '/投资哲学/DCF/',
   ])
   assert.deepEqual(bigQuestionSidebarGroups[0].items.map((i) => i.link), [
     '/大问题/',

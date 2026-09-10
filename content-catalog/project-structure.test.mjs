@@ -139,6 +139,7 @@ test('live structure projection matches current public URLs and hub counts', () 
     '/投资哲学/市场与价格/',
     '/投资哲学/企业与回报/',
     '/投资哲学/个人与研究边界/',
+    '/投资哲学/DCF/',
   ])
   assert.deepEqual(topicCards(nodes, 'big-question').map((item) => item.link), [
     '/大问题/开源与闭源/',
