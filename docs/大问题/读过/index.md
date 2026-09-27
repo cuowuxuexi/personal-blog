@@ -28,4 +28,4 @@ hubLead: 别人写的、读过之后愿意留下的文章。每篇单独一页�
   <span>收这个栏目里留下的文章。点进去是单篇；这里只列目录。</span>
 </div>
 
-<HubTopicList kind="big-question" navGroup="读过" />
+<HubTopicList kind="big-question" navGroup="读过" variant="list" />

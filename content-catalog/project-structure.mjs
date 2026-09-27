@@ -271,6 +271,7 @@ export function topicCards(nodes, kindId, options) {
     .filter((topic) => (topic.navGroup || '') === wanted)
     .map((topic) => ({
       title: topic.title,
+      sidebarText: topic.sidebarText || topic.title,
       link: topic.link,
       hubIndex: topic.hubIndex || '',
       hubLead: topic.hubLead || topic.description || '',
