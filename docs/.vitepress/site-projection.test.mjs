@@ -117,6 +117,7 @@ test('research / philosophy / big-question sidebars project from structure decla
       text: '邹佩轩投资哲学框架',
       link: '/投资哲学/邹佩轩投资哲学框架/',
       items: [
+        '/html/dcf-eli5',
         '/html/zou-endgame',
         '/html/zou-discount-rate',
         '/html/zou-auction',
@@ -125,9 +126,19 @@ test('research / philosophy / big-question sidebars project from structure decla
       ],
     },
   ])
-  assert.deepEqual(bigQuestionSidebarGroups[0].items.map((i) => i.link), [
+  assert.equal(bigQuestionSidebarGroups[0].text, '大问题')
+  assert.deepEqual(bigQuestionSidebarGroups[0].items.map((item) => (
+    item.items
+      ? { text: item.text, link: item.link, items: item.items.map((child) => child.link) }
+      : item.link
+  )), [
     '/大问题/',
     '/大问题/开源与闭源/',
+    {
+      text: '读过',
+      link: '/大问题/读过/',
+      items: ['/大问题/既固执又善变/'],
+    },
   ])
 })
 

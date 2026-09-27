@@ -47,8 +47,8 @@ export function philosophyCards(navGroup?: string) {
   return topicCards(structureNodes, 'philosophy', navGroup ? { navGroup } : undefined)
 }
 
-export function bigQuestionCards() {
-  return topicCards(structureNodes, 'big-question')
+export function bigQuestionCards(navGroup?: string) {
+  return topicCards(structureNodes, 'big-question', navGroup ? { navGroup } : undefined)
 }
 
 export function mapDirectory(industry: string) {

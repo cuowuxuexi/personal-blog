@@ -148,6 +148,7 @@ test('live structure projection matches current public URLs and hub counts', () 
       text: '邹佩轩投资哲学框架',
       link: '/投资哲学/邹佩轩投资哲学框架/',
       items: [
+        '/html/dcf-eli5',
         '/html/zou-endgame',
         '/html/zou-discount-rate',
         '/html/zou-auction',
@@ -188,10 +189,25 @@ test('live structure projection matches current public URLs and hub counts', () 
   )
   assert.deepEqual(topicCards(nodes, 'big-question').map((item) => item.link), [
     '/大问题/开源与闭源/',
+    '/大问题/读过/',
   ])
-  assert.deepEqual(projectBigQuestionSidebar(nodes)[0].items.map((i) => i.text), [
+  assert.deepEqual(
+    topicCards(nodes, 'big-question', { navGroup: '读过' }).map((item) => item.link),
+    ['/大问题/既固执又善变/'],
+  )
+  assert.equal(projectBigQuestionSidebar(nodes)[0].text, '大问题')
+  assert.deepEqual(projectBigQuestionSidebar(nodes)[0].items.map((item) => (
+    item.items
+      ? { text: item.text, link: item.link, items: item.items.map((child) => child.link) }
+      : item.text
+  )), [
     '总览',
     '开源与闭源',
+    {
+      text: '读过',
+      link: '/大问题/读过/',
+      items: ['/大问题/既固执又善变/'],
+    },
   ])
 })
 

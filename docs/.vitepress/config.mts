@@ -75,7 +75,7 @@ export default defineConfig({
         items: philosophyNavItems,
       },
       {
-        text: '大问题的问与答',
+        text: '大问题',
         items: bigQuestionNavItems,
       },
       { text: '知识检索', link: '/html/knowledge-search' },

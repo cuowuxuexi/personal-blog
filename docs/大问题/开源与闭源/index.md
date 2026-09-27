@@ -9,7 +9,7 @@ hubIndex: 01 / OPEN VS CLOSED
 hubLead: 不限大模型：从模型层、中间层到应用层，拆开「谁走得更远」的尺度与证据。
 ---
 
-<nav class="research-breadcrumb"><a href="/大问题/">大问题的问与答</a><span>/</span><strong>开源与闭源</strong></nav>
+<nav class="research-breadcrumb"><a href="/大问题/">大问题</a><span>/</span><strong>开源与闭源</strong></nav>
 
 <section class="subject-masthead">
   <div>

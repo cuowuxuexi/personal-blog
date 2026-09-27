@@ -33,7 +33,11 @@
 
 ## 大问题
 
+顶栏文字是「大问题」，写在 `docs/.vitepress/config.mts` 的 nav 壳上。条目仍由投影生成，不要手改条目。
+
 主题位于 `docs/大问题/<主题>/index.md`，总览在 `docs/大问题/index.md`。新增主题只写主题 `index.md`（`sidebarText` / `order` / `hubIndex` / `hubLead`）与 README；总览卡片、nav 与 `/大问题/` sidebar 由内容目录投影。普通正文修改不动索引，不进入 `posts.ts`。
+
+「读过」是其中一组。组页是 `docs/大问题/读过/index.md`。收入的文章仍是同级目录 `docs/大问题/<篇>/index.md`，文头写 `navGroup: 读过`。顶栏和总览只出现「读过」这一条；单篇在读过页用 `<HubTopicList kind="big-question" navGroup="读过" />` 列出，侧栏在「读过」下展开。文章页记出处并链到原文，正文用原文，不改写成读后记。
 
 ## AI 大事件
 
@@ -43,4 +47,4 @@
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-09-10
+最后更新：2026-09-27

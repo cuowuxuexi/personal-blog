@@ -11,7 +11,7 @@ const props = defineProps<{
 const cards = computed(() => (
   props.kind === 'philosophy'
     ? philosophyCards(props.navGroup)
-    : bigQuestionCards()
+    : bigQuestionCards(props.navGroup)
 ))
 const wrapClass = computed(() => (
   props.kind === 'philosophy' ? 'invest-paths philosophy-paths' : 'invest-paths'

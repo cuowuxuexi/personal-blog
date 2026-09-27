@@ -275,7 +275,7 @@ const KINDS = Object.freeze([
   }),
   Object.freeze({
     id: 'big-question',
-    label: '大问题的问与答',
+    label: '大问题',
     category: '大问题',
     postType: 'big-question',
     pageClass: Object.freeze(['investment-hub', 'subject-index']),
