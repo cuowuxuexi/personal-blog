@@ -128,7 +128,7 @@ hubLead: DCF 是公理；终局、折现率、拍卖机制、叙事变化、方�
     <div><p>CANVAS / 七张画布</p><h2 id="canvases">把每根柱子拆开讲</h2></div>
     <span>每根承重柱一张，DCF 与总览各一张</span>
   </header>
-  <p>七张画布各自独立，可以按需要挑着读。<strong>只有 20 分钟</strong>：读<a href="/html/zou-endgame">终局</a>的解析解表和<a href="/html/zou-alpha">叙事变化</a>的第一节，骨架就立住了。<strong>想直接用来读 A 股</strong>：按终局 → 拍卖机制 → 折现率的顺序。<strong>想先检查自己的研究习惯</strong>：从<a href="/html/zou-method">方法论</a>进。<a href="/html/zou-narrative-map">叙事框架总览</a>不再重复骨架，只放三样东西：把五根柱子画进同一张图、可单独理解的派生概念、作者自己的术语定义。<a href="/html/dcf-eli5">DCF 画布</a>讲工具本身，其第 4 节已含邹佩轩对 DCF 的两条硬推论，五张承重柱画布不再重复，只在需要处链接。</p>
+  <p>七张画布各自独立，可以按需要挑着读。<strong>只有 20 分钟</strong>：读<a href="/html/zou-endgame">终局</a>的解析解表和<a href="/html/zou-alpha">叙事变化</a>的第一节，骨架就立住了。<strong>想直接用来读 A 股</strong>：按终局 → 拍卖机制 → 折现率的顺序。<strong>想先检查自己的研究习惯</strong>：从<a href="/html/zou-method">方法论</a>进。<a href="/html/zou-narrative-map">叙事框架总览</a>不再重复骨架，只放三样东西：把五根柱子画进同一张图、可单独理解的派生概念、作者自己的术语定义。<a href="/html/dcf-eli5">DCF 画布</a>讲工具本身，其第 4 节已含邹佩轩对 DCF 的两条硬推论，五张承重柱画布不再重复，只在需要处链接。<strong>要把整套框架压成一套只读市场的反算</strong>：进<a href="/html/zou-narrative-model">叙事模型</a>，输入市值、利润与一致预期，读出价格隐含的天花板、终局利润和相对截距。</p>
 </section>
 
 <HubTopicList kind="philosophy" navGroup="邹佩轩投资哲学框架" />
@@ -189,6 +189,11 @@ hubLead: DCF 是公理；终局、折现率、拍卖机制、叙事变化、方�
       <tr><th>日期</th><th>修订</th><th>原因</th></tr>
     </thead>
     <tbody>
+      <tr>
+        <td>2026-10-06</td>
+        <td>框架条下增加「叙事模型」：只读市场数据的反算系统，侧栏直达独立画布</td>
+        <td>把第 1 章压成可操作的输入输出，与七张承重柱画布并列，不改骨架正文</td>
+      </tr>
       <tr>
         <td>2026-09-10</td>
         <td>改为自包含版本：六个概念各自给出实质结论与机制，收拢为“公理 → 五根承重柱 → 推导链”；修正折现率与终局两处表述不清、PE 分位的跨页口径；补相关主题</td>

@@ -148,12 +148,12 @@ test('live structure projection matches current public URLs and hub counts', () 
       text: '邹佩轩投资哲学框架',
       link: '/投资哲学/邹佩轩投资哲学框架/',
       items: [
-        '/html/dcf-eli5',
         '/html/zou-endgame',
         '/html/zou-discount-rate',
         '/html/zou-auction',
         '/html/zou-alpha',
         '/html/zou-method',
+        '/html/zou-narrative-model',
       ],
     },
   ])
@@ -185,6 +185,7 @@ test('live structure projection matches current public URLs and hub counts', () 
       '/html/zou-auction',
       '/html/zou-alpha',
       '/html/zou-method',
+      '/html/zou-narrative-model',
     ],
   )
   assert.deepEqual(topicCards(nodes, 'big-question').map((item) => item.link), [

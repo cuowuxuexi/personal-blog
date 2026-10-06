@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-narrative-model/" />
+<title>叙事模型 · 从市场数据反算隐含叙事（邹佩轩投资哲学框架）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;padding:40px 24px 80px;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--author),var(--accent))}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+.tag.fix{background:var(--red-soft);color:var(--red)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.theline{margin-top:22px;padding:18px 22px;border-radius:12px;background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);font-size:17px;color:var(--ink)}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h3{font-size:17px;margin-bottom:10px}
+.card p{font-size:15px;color:var(--ink2)}
+.card p+p{margin-top:10px}
+.card p b{color:var(--ink)}
+.identity{text-align:center;padding:8px 0 18px}
+.identity .lbl{font-size:11.5px;color:var(--ink3);letter-spacing:.4px}
+.identity .eq{font-size:26px;font-weight:650;margin:8px 0;letter-spacing:-.4px}
+.identity .eq em{font-style:normal;color:var(--author)}
+.identity p{color:var(--ink2);font-size:14.5px}
+.formula{margin:14px 0;padding:14px 18px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.85;white-space:pre-wrap;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.part .lbl,.io .lbl{font-size:11.5px;color:var(--ink3);letter-spacing:.3px;margin-bottom:6px;display:block}
+.io ul{margin:8px 0 0 0;padding:0;list-style:none}
+.io li{font-size:13.5px;color:var(--ink2);padding:3px 0 3px 12px;position:relative}
+.io li::before{content:"·";position:absolute;left:0;color:var(--ink3)}
+.claim{margin-top:16px;padding:18px 22px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:18px;font-weight:700;color:var(--ink);line-height:1.5}
+.claim-sub{margin-top:8px;font-size:13.5px;color:var(--ink2)}
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:14px 18px;margin-top:14px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.gold{background:var(--gold-soft);border-color:#ead7a4}
+.callout.gold .t{color:var(--gold)}
+.callout.gold p{color:#3d3423}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+@media(max-width:760px){.mini{grid-template-columns:1fr 1fr}}
+.mini div{background:#fff;border:1px solid #d4e3dc;border-radius:9px;padding:10px 12px}
+.mini .k{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.3px}
+.mini .v{font-size:18px;font-weight:700;color:#0f2b23;margin-top:2px}
+.field{display:flex;align-items:center;gap:10px;margin:7px 0}
+.field label{width:148px;flex:none;font-size:13px;color:var(--ink2)}
+.field input[type=text],.field input[type=number]{width:140px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:14px;background:#fff}
+.field input[type=range]{flex:1;accent-color:var(--author)}
+.field .val{width:56px;text-align:right;font-size:13px;font-weight:650}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pill{font-size:12.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;font-weight:600}
+.pill.on{background:var(--author);color:#fff;border-color:var(--author)}
+.story{background:#f4f7f6;border-radius:10px;padding:14px 16px;margin-top:12px;font-size:14.5px;color:#1e3f34}
+.story .lbl{font-size:11px;color:var(--ink3);letter-spacing:.4px;margin-bottom:6px}
+.src{font-size:12px;color:var(--ink3);margin-top:12px;line-height:1.7}
+.chartbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 10px 6px}
+.chartbox h4{font-size:13.5px;margin:0 4px 6px}
+.chartbox svg{width:100%;height:180px;display:block}
+.chartbox .hint{font-size:12px;color:var(--ink3);padding:4px 4px 2px}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+table.solve{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
+table.solve th,table.solve td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line)}
+table.solve thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700}
+table.solve tbody th{text-align:left;color:var(--ink2);background:#fbfcfd}
+table.solve tr.base td{background:var(--author-soft);font-weight:700}
+table.solve tr.base th{background:#d9e8e1;color:var(--author)}
+.line{display:flex;gap:14px}
+.rail{display:flex;flex-direction:column;align-items:center;width:22px;flex:none}
+.dot{width:22px;height:22px;border-radius:11px;border:1px solid var(--line);font-size:11.5px;line-height:20px;text-align:center;color:var(--ink2)}
+.stem{flex:1;width:1px;background:var(--line);margin-top:4px}
+.step{flex:1;min-width:0;padding-bottom:22px}
+.step h4{font-size:16px;margin-bottom:6px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.tags span{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:650}
+.tags span.fix{background:var(--red-soft);color:var(--red)}
+.tags span.me{background:var(--gold-soft);color:var(--gold)}
+.tags span.plus{background:var(--purple-soft);color:var(--purple)}
+.concl{border-left:3px solid var(--author);padding:8px 0 8px 14px;font-weight:700;margin:8px 0 16px}
+.gloss{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.gloss div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:8px 14px;border-top:1px solid var(--line);font-size:13.5px}
+.gloss div:first-child{border-top:none}
+.gloss b{color:var(--ink)}
+.gloss span{color:var(--ink2)}
+details.note{border-top:1px dashed var(--line);padding:8px 0}
+details.note summary{cursor:pointer;font-size:13.5px;color:var(--ink2);font-weight:650}
+.note-body{padding:10px 0 4px;font-size:14px;color:var(--ink2)}
+.note-body p{margin:8px 0}
+.note-body h4{margin:14px 0 6px;color:var(--ink)}
+.note-body pre{background:#f6f8f7;border:1px solid #dde7e2;border-radius:8px;padding:10px 12px;overflow:auto;font-size:12.5px}
+.note-body table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
+.note-body th,.note-body td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+.note-body blockquote{border-left:2px solid var(--line);padding-left:10px;color:var(--ink3)}
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+footer a{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>叙事模型</strong></nav>
+
+<div class="hero">
+  <div class="tagrow">
+    <span class="tag a">邹佩轩投资哲学框架 · 用</span>
+    <span class="tag">只读市场 · 反算隐含叙事</span>
+    <span class="tag g">第 1 章操作页</span>
+  </div>
+  <h1>叙事模型</h1>
+  <div class="theline">
+    DCF 在这里不是用来算“值多少钱”的，而是远洋航行里的<b>六分仪</b>：测出股价现在的位置，以及价格里写着什么样的叙事。<br>
+    输入全部是市场事实；输出是价格隐含的天花板、终局利润和所需增速。你自己信的终局是几倍，模型不替你填。
+  </div>
+  <div class="nav">
+    <span class="nl">本页</span>
+    <a href="#sec-model">模型总览</a>
+    <a href="#sec-calc">隐含叙事反算器</a>
+    <a href="#sec-auction">截距模拟器</a>
+    <a href="#sec-point">点 · DCF</a>
+    <a href="#line-1">线一 · 收益</a>
+    <a href="#line-2">线二 · 估值</a>
+    <a href="#line-3">线三 · 折现率</a>
+  </div>
+</div>
+
+<section>
+  <div class="card">
+    <div class="shead" style="margin-bottom:10px">
+      <div class="snum">0</div>
+      <h2>这套框架要回答的问题</h2>
+    </div>
+    <p>2021—2024 年，宁德时代的业绩远好于银行，景气度投资看重的三个指标——增速绝对值高、增速在加快、业绩超预期——每一条都满足，股价却在 2021 年 10 月见顶；银行业绩平稳、远称不上高景气，股价却不断创新高。追着业绩增速走的框架只能判断行情的起点，判断不了终点，于是作者回到估值的第一性原理重建框架。</p>
+    <p>为什么从一条公理出发，而不是从历史数据里找规律？因为<b>相关性不能传递，只有因果性能传递</b>；能用逻辑推理，就不用归纳总结。下面的一切都从“股价等于未来现金流的折现值”推出来。</p>
+  </div>
+</section>
+
+<section id="sec-model">
+  <div class="shead">
+    <div class="snum">1</div>
+    <h2>模型总览</h2>
+    <span class="sub">恒等式 · 反算链 · 输入输出</span>
+  </div>
+  <div class="card">
+    <div class="identity">
+      <div class="lbl">恒等式</div>
+      <div class="eq">股价 P = <em>中线 μ</em> + <em>截距 C</em></div>
+      <p>中线是全市场平均预期所在的位置，由基本面决定；截距是交易机制让价格偏离中线的那一段。</p>
+    </div>
+    <p>涨跌取决于新叙事与旧叙事的估值差，所以同一套反算要在不同时点各做一次，比较前后的差。</p>
+    <div class="grid2" style="margin-top:18px">
+      <div class="part">
+        <span class="lbl">反算链 · 从价格读出隐含叙事</span>
+        <div class="formula">动态PE = 市值 ÷ 下一年一致预期利润
+动态PE = f(m*, r)  → 反解出隐含天花板 m*
+隐含终局利润 = m* × 当期利润
+所需增速 = m*^(1/5) − 1  或  m*^(1/10) − 1
+当期没有利润：隐含终局利润 = 市值 ÷ K(n, r)</div>
+        <p>f 就是线二里的动态 PE 公式：年限 n 几乎被对冲掉，动态 PE 只由天花板和折现率决定，所以给定折现率就能从倍数唯一反解出天花板。折现率按纪律取：A 股 10%，成熟的海外龙头 8%，不确定性格外高的 12%。所需增速拿去和一致预期的显性期增速比，差距就是价格比卖方预测多押了多少。</p>
+      </div>
+      <div class="part">
+        <span class="lbl">叙事变化 · 看隐含终局利润怎么动</span>
+        <div class="formula">叙事变化 ≈ 隐含终局利润(t₁) ÷ 隐含终局利润(t₀)
+P₁/P₀ = (1 + r) × 叙事变化 × 截距变化</div>
+        <p>要看终局利润，而不是 m* 本身：m* 是相对当期利润的倍数，公司一边兑现利润，m* 就一边自然下降，叙事不变时真正不动的是终局利润。叙事和截距都不变，收益就是折现率；业绩增速不在式子里。作者举过恒瑞的背离：2025 年三季报后一致预期继续上修，股价却从 9 月初开始回调半年，利润在涨、价格在跌，隐含终局在下降，市场在下修叙事。</p>
+      </div>
+    </div>
+    <div class="part" style="margin-top:16px">
+      <span class="lbl">截距 · 机制与观测</span>
+      <div class="formula">机制：能做空 C = 0；做空受限 C = σ × Φ⁻¹(1 − s/x)
+观测：相对截距 ≈ A 股隐含终局 ÷ 对标隐含终局（H 股，或可做空市场的全球龙头，各用自己的折现率）</div>
+      <p>从单一价格反算出的天花板是中线和截距混在一起的，机器分不开。书里给了现成的分法：兖矿能源 A 股与 H 股走势重合了 20 年，说明两者折现率差不多，H 股更便宜，更可能是因为 A 股缺乏做空、由乐观预期定价，H 股由平均预期定价，A 股的天花板“拍”得更高。所以截距在使用时是一个相对量。作者讲中芯国际时也是这样读的：DeepSeek 发布后中芯 H 股涨了一倍多，A 股岿然不动，因为 A 股价格里的份额和利润率预期已经没有重估空间。</p>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="io">
+        <strong>输入（全部来自市场）</strong>
+        <ul>
+          <li>市值、当期利润、下一年一致预期利润、一致预期的显性期增速</li>
+          <li>折现率纪律：A 股 10%，成熟海外龙头 8%，高不确定性 12%</li>
+          <li>对标：H 股或可做空市场的全球龙头的动态 PE、基期利润、折现率</li>
+          <li>当期没有利润时：市值、到顶年限、折现率</li>
+        </ul>
+      </div>
+      <div class="io">
+        <strong>输出（价格隐含的东西）</strong>
+        <ul>
+          <li>隐含天花板 m* 与隐含终局利润</li>
+          <li>到达终局所需的 5 年、10 年增速，及其与一致预期的差距</li>
+          <li>对标的隐含终局，以及两者之比（相对截距）</li>
+          <li>不同时点之间隐含终局利润的变化，即叙事变化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sec-calc">
+  <div class="shead">
+    <div class="snum">2</div>
+    <h2>隐含叙事反算器</h2>
+    <span class="sub">只读市场数据</span>
+  </div>
+  <div class="card">
+    <div class="pills">
+      <button class="pill on" id="mode-profit" type="button">当期有利润</button>
+      <button class="pill" id="mode-zero" type="button">当期没有利润</button>
+      <button class="pill" id="load-hengrui" type="button">载入路演示例：恒瑞医药（2025 年 9 月初）</button>
+    </div>
+    <div class="grid2">
+      <div>
+        <span class="lbl">本公司（市场数据）</span>
+        <div class="field"><label>名称</label><input id="name" type="text" value="恒瑞医药"></div>
+        <div class="field"><label>市值（亿元）</label><input id="mv" type="text" value="5252"></div>
+        <div id="profit-fields">
+          <div class="field"><label>当期利润（亿元）</label><input id="e0" type="text" value="63.37"></div>
+          <div class="field"><label>下一年一致预期利润</label><input id="e1" type="text" value="87.25"></div>
+          <div class="field"><label>一致预期增速·第 2 年 %</label><input id="g1" type="text" value="14.6"></div>
+          <div class="field"><label>一致预期增速·第 3 年 %</label><input id="g2" type="text" value="16.5"></div>
+        </div>
+        <div class="field"><label>折现率（纪律）</label><input id="r" type="range" min="8" max="15" step="1" value="10"><span class="val" id="r-val">10%</span></div>
+        <div class="field"><label>到顶年限 n</label><input id="n" type="range" min="3" max="20" step="1" value="10"><span class="val" id="n-val">10 年</span></div>
+      </div>
+      <div id="peer-fields">
+        <span class="lbl">对标（可做空市场或 H 股）</span>
+        <div class="field"><label>名称</label><input id="pname" type="text" value="辉瑞"></div>
+        <div class="field"><label>对标动态 PE（倍）</label><input id="ppe" type="text" value="12.38"></div>
+        <div class="field"><label>对标基期利润（亿元）</label><input id="pbase" type="text" value="814"></div>
+        <div class="field"><label>对标折现率</label><input id="pr" type="range" min="6" max="12" step="1" value="8"><span class="val" id="pr-val">8%</span></div>
+      </div>
+    </div>
+    <div class="mini" id="stats"></div>
+    <div id="warn"></div>
+    <div class="story" id="story" hidden></div>
+    <p class="src">折现率纪律：A 股 10%，成熟的海外龙头 8%，不确定性格外高的 12%。恒瑞示例的数字来自作者 2026 年路演：2025 年 9 月初动态 PE 60.2 倍、2025 年一致预期利润 87.25 亿元、2024 年利润 63.37 亿元、2026 与 2027 年一致预期增速 14.6% 与 16.5%；辉瑞动态 PE 12.38 倍、2025 年一致预期利润约 814 亿元人民币。路演把隐含天花板取整为 12 倍、终局约 760 亿元，按公式精算约 13.2 倍、834 亿元，结论相同。仅描述价格隐含的预期，不构成任何判断。</p>
+  </div>
+</section>
+
+<section id="sec-auction">
+  <div class="shead">
+    <div class="snum">3</div>
+    <h2>截距模拟器</h2>
+    <span class="sub">流动性如何把价格推离中线</span>
+  </div>
+  <div class="card">
+    <div class="field"><label>预期离散度 σ</label><input id="sig" type="range" min="5" max="50" step="1" value="20"><span class="val" id="sig-val">20%</span></div>
+    <div class="field"><label>肥尾指数 α（越小越肥）</label><input id="alpha" type="range" min="0.5" max="2.5" step="0.1" value="0.8"><span class="val" id="alpha-val">0.8</span></div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="chartbox">
+        <h4>正态预期（书中假设）</h4>
+        <svg id="chart-normal" viewBox="0 0 360 180" preserveAspectRatio="none"></svg>
+        <p class="hint" id="hint-normal"></p>
+      </div>
+      <div class="chartbox">
+        <h4>肥尾预期（极少数人给出离谱估值）</h4>
+        <svg id="chart-fat" viewBox="0 0 360 180" preserveAspectRatio="none"></svg>
+        <p class="hint" id="hint-fat"></p>
+      </div>
+    </div>
+    <p class="src">横轴：关注这家公司的资金是流通盘容量的几倍（x/s）；纵轴：拍卖出清价，中线记为 100。做空受限时，价格停在“出价高于它的资金正好买光流通盘”的位置。正态版：C = σ × Φ⁻¹(1 − s/x)；肥尾版：右尾按幂律衰减，C = σ × α × [(x/2s)^(1/α) − 1]。关注资金正好是流通盘的 2 倍时价格在中线，低于 2 倍时跌到中线以下。σ 和 x 难以直接观测，所以这只用来理解机制，实际观测截距要用相对截距。</p>
+    <div class="callout gold" style="margin-top:16px">
+      <div class="t">两个建模选择</div>
+      <p>第一，中线只用长期折现率。书里描述流动性行情时，一处说是“降折现率、竖着拔估值”，一处又说“中线没有变化，涨幅全部来自截距”。为了不把同一段上涨算两次，模型规定：中线只用长期稳定的折现率，只允许公司层面的结构性调整；情绪和流动性造成的偏离一律记进截距。中线是称重器，截距是投票器。</p>
+      <p style="margin-top:8px">第二，截距以正态为基准，加速上涨需要肥尾。书里说拍卖价随流动性加速上涨。按书里自己的正态假设严格计算，价格随流动性上升但逐步减速：流通盘需要 100、关注资金从 1000 翻到 2000、4000、8000 时，分位数一项依次是 1.28、1.64、1.96、2.24，每翻一倍的增量从 0.36 缩到 0.28。要得到加速，最乐观的那一端必须是肥尾，也就是极少数人给出离谱的估值，这正是朦胧美的数学含义。</p>
+    </div>
+    <p style="margin-top:14px">模型不告诉你终局是多少，它告诉你价格已经写了多少。你信的终局、把终局拆成市场空间乘份额乘利润率、判断叙事是否已到能自圆其说的上限，都是读完价格之后的事。一致预期是别人的叙事，在这里只当动态 PE 的分母和对照的参照物。模型继承了书里的前提：现金流约等于利润、匀速增长、天花板小于 40 倍、预期大致呈正态分布。</p>
+  </div>
+</section>
+
+<section id="sec-point">
+  <div class="shead">
+    <div class="snum">·</div>
+    <h2>点 · DCF 是什么</h2>
+    <span class="sub">出处：书 1.2 开头、前言</span>
+  </div>
+  <div class="card">
+    <div class="tags"><span>书中原文</span><span class="me">我的延伸</span></div>
+    <p>DCF 的意思是：股价等于目之所及的所有未来现金流，按折现率折算到今天的价值之和。作者把它当作估值的公理，PE、PB、PS 都只是它在特定假设下的简化。</p>
+    <p>举个例子。一栋刚建好的楼，现在空着，租金预计 10 年内从 0 匀速爬到每年 1 亿元，之后每年稳定收 1 亿元。按 10% 折现，前 10 年爬坡期的租金折到今天约值 2.94 亿元，第 10 年以后的永续租金折到今天约值 3.86 亿元，合计约 6.8 亿元。这栋楼今天就值 6.8 亿元，哪怕它今天一分钱租金都没有。</p>
+    <p>那么问题是：未来并没有发生，分子里装的到底是什么？是一段叙事，也就是市场对终局的共识。所以估值的第一步永远是问两件事：这个价格隐含了什么样的终局，又是用多高的折现率折回来的。反过来，先给股票贴上成长股、周期股、价值股的标签，再按标签给倍数，就是用价值判断去判断价值，是循环论证，像地心说给每颗行星各套一组本轮，解释力越补越强，预测力却越来越弱。</p>
+    <p style="margin:16px 0 8px;font-size:12px;color:var(--ink3);letter-spacing:.3px">术语表 · 全篇只用这一套</p>
+    <div class="gloss">
+      <div><b>叙事</b><span>市场对一家公司终局的共识，可以证伪、可以量化，不是讲故事。在模型里落在天花板 m 和折现率 r 上。</span></div>
+      <div><b>天花板 m</b><span>终局时的稳态利润是当前利润的几倍。</span></div>
+      <div><b>到顶年限 n</b><span>从当前利润匀速增长到天花板所用的年数。</span></div>
+      <div><b>折现率 r</b><span>把未来现金流折回今天所用的利率，即投资者愿意长期持有的最低收益率。A 股取 10%。</span></div>
+      <div><b>动态 PE</b><span>当前股价除以下一年的利润。</span></div>
+      <div><b>中线 μ</b><span>全市场平均预期所在的价格，由基本面决定。</span></div>
+      <div><b>截距 C</b><span>实际股价偏离中线的那一段，由交易机制决定。</span></div>
+      <div><b>对冲机制</b><span>可以自由做空，乐观和悲观相互抵消，股价落在中线。</span></div>
+      <div><b>拍卖机制</b><span>做空受限，悲观者无法投票，最乐观的资金依次出价，直到买光流通盘。</span></div>
+      <div><b>朦胧美</b><span>天花板想象空间很大、却凝聚不了共识、短期又无法证伪的状态，即预期离散度 σ 很大。</span></div>
+      <div><b>反算</b><span>给定价格和折现率，倒推价格隐含的天花板或终局利润。</span></div>
+    </div>
+    <div class="notes" data-keys="1.2_01"></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead">
+    <div class="snum">—</div>
+    <h2>线 · 中线的三条推导</h2>
+  </div>
+  <div class="card">
+    <p>从 DCF 这个点出发，有三条推理链，各自回答一个问题，合起来就是中线方程：收益从哪里来，估值由什么决定，折现率怎么定。每条线的终点是一句可以检验的结论。</p>
+    <div class="tags" style="margin-top:12px">
+      <span>书中原文</span><span class="src" style="margin:0">依据书中正文</span>
+      <span class="plus">书中补充</span><span class="src" style="margin:0">书里有、笔记没记，这次补进来</span>
+      <span class="me">我的延伸</span><span class="src" style="margin:0">笔记顺着框架往外推，书里没有</span>
+      <span class="fix">修正</span><span class="src" style="margin:0">笔记或书中印刷有误，已按公式修正</span>
+    </div>
+  </div>
+</section>
+
+<section id="line-1">
+  <div class="shead">
+    <div class="snum">Ⅰ</div>
+    <h2>线一 · 收益从哪里来</h2>
+    <span class="sub">出处：书 1.2</span>
+  </div>
+  <div class="card">
+    <p style="margin-bottom:16px;color:var(--ink)">持有一只股票一年，收益从哪里来？</p>
+    <div class="line">
+      <div class="rail"><div class="dot">1</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>叙事不变，只赚折现率</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <div class="formula">P₁ / P₀ = 1 + r        （t₁ 仍在演绎 t₀ 的叙事时）</div>
+        <p>设 t₀ 时点的叙事对应股价 P₀，t₁ 时点的叙事对应股价 P₁。如果到了 t₁，公司仍在演绎 t₀ 的叙事，那么 P₁ 除以 P₀ 严格等于 1 + r，分子分母全部消掉。持有期收益与业绩曲线的形状无关，业绩增长、下滑还是周期震荡都一样。一家确定增长、一家马上倒闭，两条股价走势可能重合，因为都在兑现自己的叙事。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">2</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>超额收益只来自叙事变化</h4>
+        <div class="tags"><span>书中原文</span><span class="me">我的延伸</span></div>
+        <p>超额收益只能来自 t₁ 展望的未来现金流或折现率与 t₀ 不一样，也就是分子或分母消不掉。所以靠追逐业绩增速赚超额收益的景气度框架缺乏底层逻辑：它暗含市场只看短期、要等业绩一季一季交出来才恍然大悟，这等于否认市场有效。笔记用买房收租讲得很直观：学区房租金如期暴涨 50%，年初 1000 万的房子年末值 1100 万，只赚 10%；只有旁边突然规划了枢纽站、剧本被改写，价格才会跳出 1 + r。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">3</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>超预期不等于叙事变化</h4>
+        <div class="tags"><span class="me">我的延伸</span></div>
+        <p>下一期业绩超出市场一致预期，往往只是在既定剧本上修一下参数，属于短期预期差；只有远期终局的天花板 m 或折现率 r 被修正，才算叙事变化。景气中后段，股价往往早已贴现了极乐观的终局，此后连续的季度超预期只是在偿还被预支的估值，于是出现业绩连续超预期、股价却一路下跌。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">4</div></div>
+      <div class="step" style="padding-bottom:0">
+        <h4>叙事变化的三种形态</h4>
+        <div class="tags"><span class="me">我的延伸</span></div>
+        <p>能让估值中枢跃迁的叙事变化，笔记归纳为三种。第一种是终局容量被打破，比如打开第二增长曲线，天花板 m 上修。第二种是竞争格局和商业模式重构，从扩产压价的周期品变成有定价权的寡头，折现率 r 下降、终局利润率上修。第三种发生在周期底部，定价从“可能破产”回到“回归中枢”。三种都落在 m 或 r 上，没有一种是“增速更快”。</p>
+      </div>
+    </div>
+    <div class="concl">增速本身不产生超额收益，兑现叙事只赚折现率。</div>
+    <div class="notes" data-keys="1.2_02,1.2_03,1.2_04,1.2_05"></div>
+  </div>
+</section>
+
+<section id="line-2">
+  <div class="shead">
+    <div class="snum">Ⅱ</div>
+    <h2>线二 · 估值由什么决定</h2>
+    <span class="sub">出处：书 1.2</span>
+  </div>
+  <div class="card">
+    <p style="margin-bottom:16px;color:var(--ink)">一只股票合理值多少倍 PE，由什么决定？</p>
+    <div class="line">
+      <div class="rail"><div class="dot">1</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>极简 DCF 与动态 PE 公式</h4>
+        <div class="tags"><span>书中原文</span><span class="me">我的延伸</span></div>
+        <div class="formula">现金流：1, m^(1/n), m^(2/n), …, m^((n−1)/n), m, m, m, …
+理论股价 P = m^(1/n) / (1 + r − m^(1/n)) × [1 − m/(1+r)^n] + m / [r(1+r)^n]
+动态 PE = 1 / (1 + r − m^(1/n)) × [1 − m/(1+r)^n] + m / [r(1+r)^n · m^(1/n)]</div>
+        <p>设当前利润为 1，n 年匀速（等比）增长到 m 倍，之后永续持平；不考虑应收应付，权益现金流约等于净利润，折现率为 r。动态 PE 的分母是下一年利润 m^(1/n)，所以动态 PE 就是理论股价除以 m^(1/n)。分母必须是下一年利润，换成当年或后年，下一步的对冲效果就没有了。</p>
+        <p>模型默认账面利润都能变成现金。笔记顺着这一条推到坏账：账期拖延只是现金流的时间错配，坏账却说明确认的利润根本不是现金流，它会同时下修 m、抬升 r，已经不是营运资金的摩擦，而是叙事本身的崩塌。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">2</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>年限 n 被自己对冲</h4>
+        <div class="tags"><span>书中原文</span><span class="fix">修正</span></div>
+        <p>公式里凡是出现 n 的地方，都有 1/n 和 (1+r)^n 互相对冲；而 m 和 r 旁边没有任何参数来对冲，它们才是动态 PE 的主要敞口。代入数字：天花板 2 倍、折现率 10%，10 年到顶时合理市值 16.4、下一年利润 1.07，动态 PE 15.3 倍；5 年到顶时市值 18.1、下一年利润 1.15，动态 PE 15.8 倍，分子分母一起变大，相除几乎不变。天花板 5 倍时，10 年和 5 年分别是 28.8 倍和 30.0 倍；10 倍时是 48.6 倍和 49.9 倍。只要到顶年限在 5 到 15 年之间，误差基本在 ±10% 以内，m 越小误差越小。</p>
+        <div class="card" style="padding:18px 20px;margin-top:12px">
+          <strong style="font-size:14px">年限对合理动态 PE 的影响</strong>
+          <div class="field"><label>天花板 m</label><input id="nm" type="range" min="0" max="12" step="1" value="3"><span class="val" id="nm-val">2 倍</span></div>
+          <div class="field"><label>折现率 r</label><input id="nr" type="range" min="5" max="15" step="0.5" value="10"><span class="val" id="nr-val">10%</span></div>
+          <div class="mini" id="n-stats"></div>
+          <div class="chartbox"><svg id="chart-n" viewBox="0 0 360 180" preserveAspectRatio="none"></svg></div>
+          <p class="src">横轴：到顶年限 n（年）；纵轴：合理动态 PE。年限落在 5 到 15 年时，曲线基本留在 ±10% 带里。</p>
+        </div>
+        <div class="callout">
+          <div class="t">修正</div>
+          <p>书中正文有一句印反了：“10 年 3 倍对应动态 PE 为 20.9 倍，5 年 3 倍对应动态 PE 为 20.1 倍”。按公式重算，折现率 10% 时 10 年 3 倍是 20.1 倍、5 年 3 倍是 20.9 倍，这与书中速查表、以及同一节里“5 年 3 倍对应 20.9 倍”的算例一致。</p>
+        </div>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">3</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>动态 PE 只看天花板和折现率</h4>
+        <div class="tags"><span>书中原文</span><span class="plus">书中补充</span></div>
+        <p>既然年限不重要，给定天花板倍数和折现率，就唯一确定了合理动态 PE；对增速和增速持续时间的所有判断，都只是在不知道天花板多高时用来拟合天花板的工具。下面这张速查表被作者称为全书最重要的一张表。永续增长也能装进来：提高永续增长率 g 与降低折现率 r 在数学上等价，天花板 10 倍再给 2% 永续增长、折现率 10%，就按 8% 查，合理动态 PE 是 66.3 倍。不过作者不建议给任何公司永续增长：终局已经一次性定价，再加永续增长未免太乐观。</p>
+        <div class="tbl-wrap">
+          <table class="solve">
+            <thead><tr><th>折现率 ＼ 天花板</th><th>0.5 倍</th><th>1 倍</th><th>2 倍</th><th>3 倍</th><th>5 倍</th><th>10 倍</th><th>20 倍</th><th>30 倍</th></tr></thead>
+            <tbody>
+              <tr><th>5%</th><td>12.5</td><td>20.0</td><td>33.4</td><td>45.7</td><td>68.9</td><td>122.1</td><td>219.7</td><td>311.2</td></tr>
+              <tr><th>6%</th><td>10.7</td><td>16.7</td><td>27.3</td><td>37.0</td><td>55.2</td><td>97.0</td><td>173.1</td><td>244.3</td></tr>
+              <tr><th>7%</th><td>9.3</td><td>14.3</td><td>23.0</td><td>30.9</td><td>45.6</td><td>79.3</td><td>140.5</td><td>197.6</td></tr>
+              <tr><th>8%</th><td>8.3</td><td>12.5</td><td>19.8</td><td>26.3</td><td>38.6</td><td>66.3</td><td>116.5</td><td>163.3</td></tr>
+              <tr class="base"><th>10%</th><td>6.9</td><td>10.0</td><td>15.3</td><td>20.1</td><td>28.8</td><td>48.6</td><td>84.1</td><td>116.9</td></tr>
+              <tr><th>12%</th><td>5.9</td><td>8.3</td><td>12.4</td><td>16.0</td><td>22.6</td><td>37.3</td><td>63.5</td><td>87.7</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="src">前提：当前利润为 1，10 年匀速增长到天花板，之后永续持平，权益现金流约等于净利润；动态 PE 的分母是下一年利润。数字照录书中，已按公式逐格重算核对。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">4</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>叙事就是终局</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <p>所以，所谓叙事，就是指终局；增速，也就是过程，其实没那么重要。投资在很大程度上是“许诺精彩的未来，拿走现在的全部”，只要未来足够精彩，资本市场对过程的容忍度可以非常高。只要终局是白头偕老，过程波折一点，事后谈起来叫浪漫；如果没有终局的圆满，只有过程的轰轰烈烈，那叫欺骗感情。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">5</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>正确的打开方式是倒过来算</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <p>天花板、折现率、动态 PE 三者知道任意两个就能求第三个：折现率 10% 下动态 PE 20 倍，隐含天花板约是当前利润的 3 倍。常规 DCF 先预测三年业绩，再给增速和持续时间，再折回来，可形如 (1+a)^b 的式子对增速 a、尤其是作为指数的年限 b 极其敏感，持续时间差一点，算出的天花板就天差地别。所以要倒过来：先用价格反算隐含的天花板，再判断这个天花板高不高；增速只是观察公司能不能到顶的窗口。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">6</div></div>
+      <div class="step" style="padding-bottom:0">
+        <h4>当期没有利润的公司</h4>
+        <div class="tags"><span>书中原文</span><span class="fix">修正</span></div>
+        <div class="formula">市值速算倍数 K = Σ(t=1→n) (t/n)/(1+r)^t + (1/r)/(1+r)^n        市值 = K × 终局利润</div>
+        <p>天花板超过 40 倍，或者当期没有利润（相当于天花板无限高）时，年限就不能忽略，上面那张速查表不再适用。换一套假设：当前利润为 0，直接给定终局利润，利润按等差爬坡，n 年到顶后持平，权益现金流约等于净利润。市值除以终局利润就是市值速算倍数：折现率 10% 时，5 年到顶是 8.3 倍，10 年到顶是 6.8 倍。</p>
+        <p>用法同样是倒过来算：当期没有利润、10 年到顶、折现率至少取 10%，市值 1000 亿元，隐含终局利润约 147 亿元；折现率取 12%，则需要 189 亿元。如果权益现金流明显差于净利润，倍数要定性调小，使算出来的终局利润更大。零利润公司的估值不是猜它值多少，而是听懂价格在问什么：你信不信它到了稳态，每年真能拿出这么多利润。</p>
+        <div class="tbl-wrap">
+          <table class="solve">
+            <thead><tr><th>折现率 ＼ 到顶年限</th><th>3 年</th><th>5 年</th><th>10 年</th><th>15 年</th></tr></thead>
+            <tbody>
+              <tr><th>5%</th><td>19.1</td><td>18.2</td><td>16.2</td><td>14.5</td></tr>
+              <tr><th>7%</th><td>13.4</td><td>12.5</td><td>10.7</td><td>9.3</td></tr>
+              <tr><th>8%</th><td>11.6</td><td>10.8</td><td>9.1</td><td>7.7</td></tr>
+              <tr class="base"><th>10%</th><td>9.1</td><td>8.3</td><td>6.8</td><td>5.6</td></tr>
+              <tr><th>12%</th><td>7.5</td><td>6.7</td><td>5.3</td><td>4.2</td></tr>
+              <tr><th>15%</th><td>5.8</td><td>5.1</td><td>3.8</td><td>3.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <div class="t">修正</div>
+          <p>笔记原文说合理市值“大约等于终局稳态年利润的 8 到 10 倍”，并以“500 亿 ÷ 10 倍 = 50 亿”举例。从速算倍数表看，8 到 10 倍只出现在折现率 10%、5 年到顶（8.3 倍）或折现率 8%、10 年到顶（9.1 倍）这两种情形。作者建议这类公司折现率至少取 10%，10 年到顶应除以 6.8，500 亿市值隐含的终局利润约 73.5 亿元。笔记里“轻资产 10 倍、垫资 5 到 7 倍”是笔记自己的归纳，书里只说现金流更差时定性调小倍数。</p>
+          <p style="margin-top:8px">笔记结尾的“立刻避坑”“赶紧买入”改为反算口径：只给出价格隐含的终局利润，判断留给读者。</p>
+        </div>
+      </div>
+    </div>
+    <div class="concl">叙事就是终局，过程不重要；正确的打开方式是倒过来算。</div>
+    <div class="notes" data-keys="1.2_06,1.2_07,1.2_08,1.2_09,1.2_10,1.2_14"></div>
+  </div>
+</section>
+
+<section id="line-3">
+  <div class="shead">
+    <div class="snum">Ⅲ</div>
+    <h2>线三 · 折现率怎么定</h2>
+    <span class="sub">出处：书 1.2</span>
+  </div>
+  <div class="card">
+    <p style="margin-bottom:16px;color:var(--ink)">把未来折回今天，该用多高的折现率？</p>
+    <div class="line">
+      <div class="rail"><div class="dot">1</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>折现率就是必要收益率</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <p>折现率是吸引投资者买入并且长期持有、拿着不动的最低收益率，相当于债券的到期收益率。它不是一个可以随手调低来抬估值的参数，而是投资者愿意持有的门槛。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">2</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>A 股取 10%，长期稳定</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <p>作者复盘大量案例后发现，A 股权益折现率无论在 21 世纪的 00 年代、10 年代还是 20 年代，大多取 10% 时估值倍数拟合得最好，这也差不多是 A 股主动权益基金的长期复合回报率。美股约 8%，同样长期稳定、有均值回归倾向：标普 500 过去百年的点位取对数后近乎一条直线，同期美国 10 年期国债收益率从一度超过 15% 到接近 0，对这条线的斜率影响并不大。具体公司可以按业绩确定性和风险等级上下调整。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">3</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>无风险利率下行，不等于利好权益</h4>
+        <div class="tags"><span>书中原文</span><span class="me">我的延伸</span></div>
+        <p>权益折现率等于无风险利率加风险溢价，但两者有内生性：恰恰是投资者不愿意冒险、转去增配固收，才把无风险利率压低，这时风险溢价可能升得更多，两者对冲，合计长期稳定，甚至反而利空权益。2022—2024 年我国国债收益率几乎直线下降，权益资产并没有迎来大时代；在全球范围内，股债跷跷板也比同涨同跌更常见。笔记补了一层机制：国债是被避险资金买贵的，收益率才会下来，所以利率低往往是“大家不敢冒险”的信号。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">4</div><div class="stem"></div></div>
+      <div class="step">
+        <h4>CAPM 是一个精确的错误</h4>
+        <div class="tags"><span>书中原文</span><span class="me">我的延伸</span></div>
+        <p>资本资产定价模型（CAPM）把全市场平均风险溢价当成固定常数，于是算出的折现率随无风险利率等额变化，数字精确，方向却错了。笔记用表哥给包子铺投钱讲过这件事：国债利率从 3% 降到 1.5%，可街对面三家饭店刚倒闭，表哥要的回报只会更高，不会更低。</p>
+      </div>
+    </div>
+    <div class="line">
+      <div class="rail"><div class="dot">5</div></div>
+      <div class="step" style="padding-bottom:0">
+        <h4>要降折现率，得降协方差</h4>
+        <div class="tags"><span>书中原文</span></div>
+        <p>无风险利率的变化带来的往往不是指数行情，而是板块分化：只有与宏观经济协方差足够小、业绩能穿越周期的公司，才可能受益于利率下降，这是红利资产拔估值的主要路径。证明自己有出海能力是一个特例，它既抬高天花板，又降低对单一经济体的依赖，作者称之为“斜着拔估值”。</p>
+      </div>
+    </div>
+    <div class="concl">中线用长期稳定的 10%；情绪带来的折现率波动，交给截距去记账。</div>
+    <div class="notes" data-keys="1.2_11,1.2_12,1.2_13"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="tagrow" style="margin-bottom:12px">
+    <span class="tag a">邹佩轩投资哲学框架 · 用</span>
+    <span class="tag">叙事模型</span>
+    <span class="tag g">只读市场 · 反算</span>
+  </div>
+  <b>本页职责</b>：把前言与第 1 章压成一个只读市场数据的反算系统。柱子的展开仍在同组七张画布：<a href="/html/dcf-eli5">DCF</a>、<a href="/html/zou-endgame">空间叙事与终局</a>、<a href="/html/zou-discount-rate">折现率与分母端</a>、<a href="/html/zou-auction">拍卖机制</a>、<a href="/html/zou-alpha">叙事变化与超额收益</a>、<a href="/html/zou-method">研究方法论</a>，以及<a href="/html/zou-narrative-map">叙事框架总览</a>。<br>
+  <b>素材来源</b>：《穿透叙事：寻找 A 股投资解析解》（2026.05）第 1 章；华源证券《叙事经济学（2026 版）》恒瑞 / 中芯案例；播客《面基》「财报的根 + 估值的茎 = 叙事的果实」。<br>
+  <b>数字核对</b>：动态 PE 与市值速算倍数按本页公式重算。书稿正文一处将“10 年 3 倍 20.1 倍 / 5 年 3 倍 20.9 倍”两数互换，本页以复算结果为准。恒瑞路演取整 12 倍 / 760 亿，公式精算约 13.2 倍 / 834 亿。<br>
+  <b>风险提示</b>：本页只描述价格隐含的预期，不构成任何投资建议。判断留给读者。
+</footer>
+
+</div>
+
+<script>window.NOTES={
+  "1.2_01": {
+    "file": "1.2_01_DCF模型是所有估值方法的第一性原理",
+    "text": "从公理出发，DCF模型是所有估值方法的源头，是估值的第一性原理。而DCF模型的含义是，股价等于目之所及的所有未来的现金流折现值"
+  },
+  "1.2_02": {
+    "file": "1.2_02_关于DCF模型隐含叙事变化例子",
+    "text": "可以用一个“买房收租”的大白话例子，来直观理解这段话的数学逻辑与投资含义。\n\n---\n\n### 1. 什么是“分子分母消掉了”？\n\n假设市场上现在有两套房子正在挂牌出售，设定基础折现率（你要求的无风险收益率 + 风险补偿 r）为 **10%**：\n\n#### 场景 A：一套“高景气、确定增长”的学区房\n\n* **t_0 时刻（年初）：**\n房东和所有买家都知道，这套房子今年能收租 10 万，因为周边好学校刚建好，未来每年租金都会以 50% 爆发式增长，以后还能长期收租。\n* 根据这套完美的“增长叙事”，大家在年初把未来所有租金折现，市场公允定价为 **1000 万**（P_0）。\n\n* **t_1 时刻（年末）：**\n一年过去了，房租果然如期暴增到 15 万（完全兑现了高景气），未来也依然按预期每年递增。\n* 叙事一点没变，未来的租金还是那批租金，只是时间往前走了一年。\n* 重新折现计算这套房子在年末的价格，它自然会变成 **1100 万**（P_1 = P_0 × (1 + r)）。\n\n* **你的收益率是多少？**\n\n§F§P_1/P_0 = 1100/1000 = 1 + 10%\n\n这就是书中说的“分子分母全消掉了，持有期收益率严格等于折现率 1+r”。\n虽然这家公司业绩暴增 50%（高景气度），但因为市场一开始就全知道了，并在 P_0 里把这个高增长算进去了，你持有一年下来，**只能拿到按风险定价的 10% 基准收益，根本没有哪怕 1 分钱的“超额收益（Alpha）”**。\n\n#### 场景 B：一套“确定下滑、马上要拆迁/报废”的老破小\n\n* **t_0 时刻（年初）：**\n大家都知道这破房子只能再收 2 年租金（今年收 10 万，明年收 5 万），然后就要被无偿收回拆毁（确定性下滑、倒闭叙事）。\n* 市场不傻，折现下来年初给它定价只有 **13.6 万**（P_0）。\n\n* **t_1 时刻（年末）：**\n一年后，它确实只收到了 10 万租金，只剩最后一年的 5 万租金了（完全兑现了衰退叙事）。\n* 年末这套房的剩余价值加上已收租金，总回报折算下来，相比于年初投入的 13.6 万，收益率依然严格等于 **10%**（1+r）。\n\n**结论：**\n只要**未来的剧本（叙事）没有变**，无论是年赚千亿的巨头，还是明天就破产的垃圾股，市场如果足够有效，P_0 早就把这两种命运算到了骨子里。持有它们一年的理论回报率没有任何区别，全都是资本成本 r。所谓的“业绩高增长带来超额收益”，在数学公理上是不成立的。\n\n---\n\n### 2. 为什么景气度框架“本质上在否认市场有效性”？\n\n如果景气度投资想要靠“行业增速高”赚到超额收益（比如赚 50%、100%），它在潜意识里其实隐含了一个前提假设：\n\n> **“市场是极度低效和弱智的，当前给 P_0 定价时只看了眼前的静态利润，完全不知道它未来一年会高速增长；只有等我看着它把高利润一个月一个月交出来时，市场才恍然大悟去给它涨价。”**\n\n但凡市场是一个由无数聪明资金和机构组成的有效市场，未来的高增长早就被算得干干净净并反映在当前股价中了。\n\n---\n\n### 3. 那所谓的“超额收益”到底从哪里来？——“分子分母消不掉”\n\n超额收益只有一种来源：**t_1 时刻人们脑子里的剧本，和 t_0 时刻彻底不一样了。**\n\n* **分子变了（未来现金流期望大改）：**\n还是那套老破小，年初大家以为它只能再收 2 年租金（旧叙事，定价 13.6 万）。结果到了年中，政府突然宣布这里要建超级枢纽站，房子不拆了，而且未来 20 年租金翻倍（新叙事）。\n此时 t_1 展望的未来现金流（分子）发生了爆炸性剧变，与 t_0 完全对不上，**分子消不掉了**，P_1 瞬间暴涨到 200 万，这就诞生了巨大的超额收益。\n* **分母变了（折现率/风险溢价大改）：**\n市场原本觉得这家公司随时可能政策暴雷、资金链断裂，所以用了极其苛刻的 20% 折现率来压低股价。后来公司拿到了国资入股，风险彻底解除，市场改用 8% 的折现率去折现，分母大幅缩小，股价同样凭空重估。\n\n---\n\n### 一句话总结\n\n**如果你赚到了超额收益，绝不是因为“它长得很快”，而是因为“它长成了一个市场在买入时完全没想到的样子”；如果它只是按照原本的蓝图长快了，你所拿到的回报，早在你买入的第一天就被数学公式锁死在基准折现率里了。**"
+  },
+  "1.2_03": {
+    "file": "1.2_03_A股市场，负向投资性价比高于正向景气投资",
+    "text": "由于A股市场做空相对困难，如果没有叙事的变化，强行要在“确定增长”和“确定下滑”中二选一，“确定下滑”的投资性价比甚至可能高于“确定增长”。因为A股市场是乐观资金定价，预期“确定下滑”的公司，大概率真的下滑，能赚到折现率；而预期“确定增长”的公司，不一定有那么确定，未必能赚到折现率。由此也就解释了，2021年以来，绩优股指数［滚动选取全A样本净资产收益率(Return onEquity，ROE)最高的100家公司］始终没跑赢亏损股指数，2024年9月以来，说亏损股指数“遥遥领先”并不过分。"
+  },
+  "1.2_04": {
+    "file": "1.2_04_延伸_景气度投资的超预期不算叙事变化",
+    "text": "景气度投资中“不断的超预期”当然也是一种变化，但它往往**只是“参数维度的战术修正”，而不是 DCF 框架下决定长周期估值跃迁的“结构性叙事重构”**。\n\n混淆这两者，正是景气度投资“知其始而不知其终”的根源：\n\n---\n\n### 1. 战术修参数 vs. 战略换叙事\n\n* **景气度的“超预期”（参数微调）：**\n大多数景气度投资追踪的超预期，本质上是在**既有叙事模型不变的前提下，对近端分子项（现金流/EPS）做微调**。\n* 例如：市场原来预计公司今年赚 100 亿，实际交付 115 亿。\n* 这叫**预期差修复**，它并没有改变公司的商业天花板、远期终局格局或折现率。它只是在同一张航海图上，把当前这艘船的当期航速往上调了一点点。\n\n* **真正的“叙事重构”（模型重写）：**\n改变估值中枢的“新叙事”，必须改变 DCF 的**深层底层结构**：\n* **远期自由现金流空间（天花板打破）：** 从国内制造业卷王，一跃成为全球技术垄断者；或者像苹果从纯硬件组装，演进为高粘性互联网服务生态平台。\n* **竞争终局假设（护城河跃迁）：** 从“产能过剩价格战的周期品”，重构为“具备终局定价权的垄断者”。\n* **折现率（分母风险溢价）：** 商业模式的脆弱性消失，确定性大幅提升，使得市场愿意给予极低的股权风险溢价。\n\n---\n\n### 2. 为什么“不断的超预期”会突然失效甚至变成负债？\n\n在景气周期的中后程，投资者经常会看到“连续超预期、股价却一路阴跌”的怪象。结合“自身位置与新旧叙事”的框架，原因有二：\n\n#### ① 借来的预期，迟早要还（提前贴现的终局陷阱）\n\n当全市场情绪在泡沫期达到高潮时，**当下的股价位置其实已经隐含了一个极其离谱、跨越数十年的“超级叙事”**。\n\n* 比如在股价巅峰时，市场给出的估值不仅隐含了“今年赚 100 亿”，实际上还默认了“未来 5 年复合增长 50%、全球渗透率打满到 80%、且没有任何对手扩产砸价”。\n* 此时，哪怕接下来的每一个季度财报都比卖方分析师的短期数字高一点（表面上“季度超预期”），但它距离股价巅峰所贴现的那个“神话叙事”其实还差得太远。**近端的每一次超预期交付，本质上只是在痛苦地“偿还”之前被狂热预支的估值债务。**\n\n#### ② 终局天花板的硬约束（物理与数学规律）\n\n一个行业的终端市场总容量是客观存在的。\n\n* 如果渗透率从 1% 到 10%，每一个超预期都可能让市场相信“渗透率能到 50%”，这时超预期确实能驱动叙事上修；\n* 但当渗透率已经达到 35%–40%，全行业产能开工拉满，**物理规律决定了增速的二阶导必然衰减**。此时的任何超预期，都只是“把原本属于明年的出货量提前透支到了今年”。\n* 市场深知这是脉冲而非永续，因此即便当期报表靓丽，估值倍数（PE/PB）也会同步腰斩，抵消掉所有利润的增长。\n\n---\n\n如果把 DCF 比作对一家公司命运的“长期剧本设定”，那么**景气度投资中的“单季超预期”，大多只是演员在某一幕跑得稍微快了几秒；但如果整个剧本的结局早已被观众知晓并定价完毕，演员跑得再卖力，也无法改变散场灯光的亮起。**"
+  },
+  "1.2_05": {
+    "file": "1.2_05_延伸_景气度投资的叙事变化",
+    "text": "**是的，“打破天花板”是景气度投资能进化为持续大行情的最核心动力，但更严谨地说，叙事的跃迁通常来自三个层面的重构。**\n\n天花板的抬升只是最直观的一种，在 DCF 与叙事定价的框架下，能推动估值体系质变的“叙事变化”主要包括以下三种形态：\n\n---\n\n### 1. 终局容量被打破（TAM 跃迁 / 第二增长曲线）\n\n这就是你提到的**打破天花板**。\n\n* **从“内卷存量”到“无限蓝海”：**\n当一家企业原本在既定赛道的渗透率接近饱和时，如果它突然证明了自己能切入一个数倍于主业的新市场，或者原产品的适用场景被指数级泛化，天花板被彻底掀开。\n* **典型案例：**\n* **英伟达：** 原本天花板是全球几千万 PC 游戏玩家的独显市场（有顶的消费电子周期品）；生成式 AI 爆发后，叙事被重塑为“全球数据中心数万亿美元计算架构的算力基建底座”，天花板被拔高了数十倍。\n* **光伏逆变器切入储能：** 逆变器厂商如果只卖光伏逆变器，很容易撞到电站装机天花板；一旦“储能PCS + 户储电池”成为第二曲线，估值模型的天花板便被重新打开。\n\n---\n\n### 2. 终局格局与商业模式被重构（从“周期卷王”到“护城河壁垒”）\n\n天花板不一定变大，但“终局利润率和竞争格局的假设”发生了质变：\n\n* **从制造业加工费到垄断定价权：**\n如果一个行业打到最后，市场发现这不是一轮“扩产—过剩—降价”的恶性循环，而是形成了极高进入壁垒的寡头垄断，甚至能像公用事业或消费品一样掌握长期提价权。\n* **折现率（风险溢价）大幅下降：**\n在 DCF 模型的终局（Terminal Value）里，市场原本按 8%–10% 的高风险折现率和 5% 的低净利率去定价；若叙事演变为“无可替代的产业链核心卡点”，市场就会按更低的风险折现率和更高的稳定净利率去算终局，带来巨大的估值跃迁。\n\n---\n\n### 3. “周期反转”中的叙事重估（从“破产清算”到“恢复常态”）\n\n景气度投资不仅发生在成长股身上，也发生在周期品从底部爬坡的阶段：\n\n* 在行业极度萧条、深度亏损的至暗时刻，股价隐含的旧叙事往往是极其悲观的——“全行业可能大面积违约、长期停滞、资产归零”。\n* 此时**哪怕天花板没有变大，只要出现一个能证伪“破产/归零”的边际高频拐点**，叙事就会从“危机定价”切换回“周期中枢均值回归定价”，同样能释放巨大的新旧估值差。\n\n---\n\n景气度投资的绝大多数平庸阶段，都只是在“旧叙事给定的轨道上狂奔”**，跑得越快，油箱见底得越早；只有当新的技术、新的场景或新的垄断格局**将整张地图的边界向外推开时，所谓的景气与超预期才不再是预支未来，而是真正开启新一轮戴维斯双击的起点。"
+  },
+  "1.2_06": {
+    "file": "1.2_06_用公式来描述叙事变化",
+    "text": "继续用一个极简的DCF模型说明，假设某公司的业绩预期增速为n年m倍，即当前利润为1，业绩天花板（也就是终局）为m，匀速增长，达到天花板后业绩维持不变直至永续。不考虑应收应付，假设权益现金流约等于净利润，折现率取r。化简后，可得公司的预期现金流、理论股价以及动态PE（市盈率，当前股价除以下一年业绩）分别为：\n\n当前利润记为 1，终局是 n 年涨到 m 倍后永续稳住，折现率是 r，权益现金流约等于净利润。\n\n书里的说法是，叙事变化要用这组极简 DCF 来写，而不是用增速本身来写。式①先把未来现金流排出来，式②折成理论股价 P，式③再用当前股价除以下一年利润，得到动态 PE₁。三个式子如下：\n\n① 现金流：1， m^(1/n)， m^(2/n)， m^(3/n)， …， m^((n−1)/n)， m， m， m， …\n\n② 理论股价：P = [ m^(1/n) / (1 + r − m^(1/n)) ] × [ 1 − m / (1+r)^n ] + m / [ r (1+r)^n ]\n\n③ 动态 PE₁ = [ 1 / (1 + r − m^(1/n)) ] × [ 1 − m / (1+r)^n ] + m / [ r (1+r)^n × m^(1/n) ]\n\n式①最左边那个 1 是当下已经在手的利润，后面才是要折现的未来。下一年利润是 m 的 1/n 次方，所以式③就是式②除以 m^(1/n)。动态 PE 的分母必须是下一年利润，换成当年或者再往后两年，书里说后面那个“年限几乎消掉”的效果就没有了。\n\n案例里看到的是，书里把式③拆成两截来标风险敞口。前半截分母里的 m^(1/n)，和括号里 (1+r)^n 对着干，后半截分母里的 (1+r)^n 又和 m^(1/n) 对着干，所以所有带着 n 的地方都在自己对冲自己，n 消不干净，但大部分被对冲掉了。反过来，两处露在外面的 m，以及后半截分母里的 r，旁边没有东西来对冲。书里标注的箭头就是在说这件事：没有参数对冲 m，也没有参数对冲 r。\n\n按这个框架推，所谓用公式描述叙事变化，指的就是改 m 或者改 r。n 是过程，是你还不知道天花板有多高时拿来拟合终局的工具；终局高度给定以后，动态 PE 几乎只跟着业绩天花板 m 和折现率 r 走。叙事就是终局，过程不重要。超额收益只出现在 t1 展望的未来现金流或折现率，已经和 t0 不一样、分子或者分母消不掉的时候。\n\n可以看到，在式③中，动态PE由三个参数构成：n年，m倍，折现率r。然而，三个参数的敏感性完全不同，所有出现n的地方，都有 m^(1/n) 和 (1+r)^n 形成对冲，n无法消掉，但可以对冲掉很大一部分，可是没有参数对冲分子端的m以及分母端的r。借用风险敞口的概念，业绩天花板m和折现率r才是动态PE的主要风险敞口，n的影响并不大。由此，我们可以得出一个初步结论：当业绩天花板高度给定时，动态PE几乎只与业绩天花板m和折现率r有关，与n的关系比较有限，也就是多久到达天花板并不重要。\n\n如果“应收账款变成坏账”**，在作者的这套 DCF 极简模型和叙事定价逻辑中，它就**不再是一个单纯的营运资金摩擦问题，而是直接构成了“叙事的崩塌与下修”。\n\n具体可以从以下三个层次来理解：\n\n### 1. 坏账是对“净利润折现”假设的直接刺穿\n\n模型之所以假设“权益现金流 ≈ 净利润”，底层有一个默认条件：**权责发生制下确认的每一分利润，未来都会变成真金白银流回公司。**\n\n- **如果是正常的账期拖延：** 钱今年没收回来，明年收回来，在永续长周期里只是现金流时间的轻微错配，对总折现影响极小（这也是模型可以忽略应收应付的前提）。\n- **如果彻底变成坏账：** 意味着当初确认的这笔“净利润”根本不是现金流，而是**会计虚增的假象**。\n  在 DCF 视角下，这笔钱的分子项不是“推迟折现”，而是直接归零。\n\n### 2. 坏账会直接下修模型的两大约束参数：m 与 r\n\n书中强调，对动态 PE 真正起决定性作用的核心风险敞口是**业绩天花板 m** 和**折现率 r**。一旦出现实质性坏账，它会同时重创这两个参数：\n\n- **天花板 m 被迫下修（商业模式伪成长）：**\n  很多在景气度阶段冲得极猛的公司（如垫资建电站的光伏 EPC、垫资做集成项目的软件商、向高风险客户放账期的硬件厂），其“高增长”往往是靠**牺牲资产质量、主动放宽信用政策放水冲出来的**。\n  坏账爆发意味着：市场之前以为的那个终局天花板 m（比如年赚 100 亿）根本立不住，如果剔除这部分收不回来的虚假需求，真实的稳态天花板可能只有 50 亿。\n- **折现率 r 大幅跳升（风险溢价惩罚）：**\n  公司不仅要把坏账一次性计提资产减值损失，市场还会给它贴上“财务不透明”、“商业模式脆弱”、“下游客户资质差”的标签。投资者要求的必要回报率（分母 r）会显著上升，导致乘数效应下的杀估值。\n\n### 3. 在“叙事变化”视角下：坏账是新旧叙事的估值差坍塌\n\n回到作者最核心的命题——**“新叙事与旧叙事的估值差决定股价”**：\n\n- **t_0 时刻的旧叙事：** 市场看着靓丽的利润表，相信公司处于高景气扩张期，默认所有利润都能百分之百兑现为自由现金流，给出了很高的定价 P_0。\n- **t_1 时刻的新叙事：** 坏账暴雷，全市场发现“原来赚的都是假钱”，未来现金流展望被腰斩，同时商业模式的确定性破裂。\n- 此时，t_1 展望的现金流和 t_0 完全对不上，**分子断崖式下跌、分母风险溢价飙升，新旧叙事之间出现巨大的负估值差**，必然引发惨烈的戴维斯双杀。\n\n因此，模型之所以敢写“不考虑应收应付”，前提是把研究对象限定在**商业模式成熟、真能把账面利润转化为自由现金流的健康企业**。如果一家公司的商业模式本身就极度依赖应收账款堆积，那么坏账的出现，就从“会计科目的变动”上升为了“公司底层生存叙事的直接颠覆”。"
+  },
+  "1.2_07": {
+    "file": "1.2_07_DCF模型只与天花板m相关的前提",
+    "text": "根据书中的推导与阐述，这部分内容的核心论点可以完整复述如下：\n\n---\n\n### 一、 核心前提与模型假设\n\n在建立简化版 DCF 解析解时，作者预设了以下 6 个边界条件与前提：\n\n1. **现金流等于净利润：** 不考虑应收账款、应付账款和存货等营运资金的拖累，也不考虑资本开支与折旧的缺口，假设账面净利润 100% 能转化为可自由分配的现金流。\n2. **给定明确的业绩天花板倍数 m：** 公司的长期利润天花板是固定的。以当期利润为基准 1，最终稳态净利润为 m（例如 m=2, 5, 10 倍）。\n3. **线性平滑增长至天花板：** 业绩从当期增长到天花板 m 的过程是匀速的，耗时为 n 年。\n4. **永续经营假设：** 达到天花板后，公司不再增长，但能将该利润水平一直维持至永续（∞）。\n5. **固定基准折现率 r：** 基准测算中统一设定全市场的必要回报率 r = 10%。\n6. **动态 PE 的定义（极其关键）：** 这里的动态 PE 严格对应 **“下一年业绩（Forward 1Y）”**，即：\n\n§F§动态 PE = (DCF 计算出的理论合理市值)/(未来第一年的净利润)\n\n*(注：当年 PE 或未来第二年 PE 都没有这种对冲效果)*。\n\n---\n\n### 二、 核心适用区间与边界条件（关键约束）\n\n**“动态 PE 与年限 n 几乎无关”并不是一个无条件的绝对真理，而是严格限定在常态成长期内：**\n\n* **有效适用区间（n ∈ [5, 15] 年）：**\n商业世界中绝大多数正常企业的成长期都落在 **5 到 15 年** 之间。书中的量化测算显示，在这一区间内，n 对动态 PE 的影响误差基本在 ± 10% 以内，且天花板倍数 m 越小，误差越微弱，**年限差别几乎可以完全忽略**。\n* **失效的极端区间（n 极小或极大）：**\n* **n 极小（2 sim 3 年暴利见顶）：** 利润瞬间兑现，短期分母暴增与离散折现的步长偏差会导致估值产生明显偏离；\n* **n 极大（20 sim 30 年极慢长牛）：** 跨度长达数十年，折现率分母 (1+r)^n 的长周期复利压制开始占主导，远期现金流被大幅稀释，估值会出现实质性下降。\n\n---\n\n### 三、 白话逻辑：为什么在 5～15 年内，“冲刺快慢”不影响合理估值倍数？\n\n常识往往认为：“5年翻倍”的爆发力远强于“10年翻倍”，市场理应给前者更高的估值倍数。但在数学上，这个直觉是错误的，因为“分子与分母同向变大，形成了完美对冲”：\n\n* **看分子（合理市值）：**\n跑得更快（n=5），现金流更早赚到手，DCF 折现出来的理论市值确实更高；\n* **看分母（明年净利润）：**\n跑得更快，意味着公司第一年的增速也大幅飙升，明年能拿出来的实际利润基数同步大幅变大；\n* **两者相除（动态 PE）：**\n分子变大的比例与分母变大的比例几乎刚好抵消。\n\n以 m=2 倍为例：\n\n* **10 年到 2 倍（慢跑）：** 年化增速约 7.2%，明年利润 1.07，合理市值 16.4 → **动态 PE = 15.3 倍**；\n* **5 年到 2 倍（快跑）：** 年化增速达 14.9%，明年利润 1.15，合理市值 18.1 → **动态 PE = 15.8 倍**。\n两者的估值倍数仅相差 0.5 倍，在二级市场的实际波动中完全可以忽略不计。\n\n---\n\n### 四、 本质结论：所谓“叙事”，就是指终局\n\n通过这套推导，作者得出了对二级市场极具穿透力的定论：\n\n1. **过程与速度并不重要：**\n只要公司最终能在 5～15 年内抵达设定的业绩终局，它是疾风骤雨般快速跑完，还是波折缓慢地跑完，合理的动态 PE 锚点几乎是一样的。市场所谓的“高增速溢价”，在底层数学上并不成立。\n2. **终局才是定价的一切（“许诺精彩的未来，拿走现在的全部”）：**\n决定股票能享受多少倍动态 PE 的唯一命门，是**终局天花板到底有多高（m）** 以及 **确定性/折现率到底是多少（r）**。只要未来足够精彩、终局能够白头偕老，资本市场对过程的波折容忍度极高；反之，若没有终局的圆满，过程中的高频超预期和轰轰烈烈，在长周期视角下都只是一场透支未来的欺骗。"
+  },
+  "1.2_08": {
+    "file": "1.2_08_DCF模型下的动态PE是",
+    "text": "在《穿透叙事：寻找A股投资解析解》中，“DCF 视角下的动态 PE”指的是：**以现金流折现（DCF）作为估值的第一性原理，通过对企业未来生命周期的全部自由现金流进行贴现，反导出来的“前瞻第一年合理估值倍数”（Forward 1Y PE）。**\n\n它不是看盘软件上随股价和单季利润跳动的行情指标，而是一个**将“远期终局叙事”与“当下合理定价”相连接的理论锚点**。\n\n---\n\n### 一、 核心定义与公式构成\n\n在模型中，动态 PE 严格定义为：\n\n§F§动态 PE = (理论合理市值（由未来全部自由现金流折现求得）)/(未来第一年的净利润（Next Year Earnings）)\n\n它由三个底层商业与金融要素共同决定：\n\n1. **业绩天花板倍数（m）：** 企业在达到成熟稳态时，终局利润相对于当期利润的倍数（即成长空间）。\n2. **基准折现率（r）：** 无风险利率加上市场对该商业模式要求的股权风险溢价（通常基准取 10%）。\n3. **达峰年限（n）：** 从当期匀速成长至天花板所需的年数。\n\n---\n\n### 二、 核心性质：对冲效应与“唯一确定性”\n\n作者通过数学推导和数值测算，揭示了 DCF 动态 PE 最重要的两个运行规律：\n\n* **n 的钝化对冲：**\n当企业达峰年限处于常态成长期（n ∈ [5, 15] 年）时，**时间快慢对动态 PE 的影响几乎可以忽略不计**。因为冲刺越快，虽然贴现市值（分子）变大，但第一年的业绩基数（分母）也同步变大，两者相互对冲。\n* **双变量唯一映射：**\n在排除了 n 的干扰后，动态 PE 简化为一个只取决于天花板 m 和折现率 r 的函数。**只要给定折现率与终局天花板，理论上就唯一确定了当前合理的动态 PE。**\n\n---\n\n### 三、 经典对照表（基准折现率 r = 10%）\n\n以书中最重要的测算表（统一取 10 年到顶）为例：\n\n| 终局天花板倍数 (m) | 对应隐含的长期叙事 | 理论合理动态 PE（Forward 1Y） |\n| --- | --- | --- |\n| **1 倍** | 业绩不再增长，完全维持常态分红 | **10.0 倍**（严格等于 1/r） |\n| **2 倍** | 稳态利润能翻一倍 | **15.3 倍** |\n| **3 倍** | 稳态利润达到现在的 3 倍 | **20.1 倍** |\n| **5 倍** | 具备较强的渗透率扩张，稳态利润翻 5 倍 | **28.8 倍** |\n| **10 倍** | 行业级大空间爆发，稳态利润达到 10 倍 | **48.6 倍** |\n\n---\n\n### 四、 实操中的核心意义：正算与反算的“透视尺”\n\nDCF 动态 PE 在实操中最大的价值不是“精确计算目标价”，而是**作为透视市场预期、测定自身位置的“测谎仪”**：\n\n* **正算（寻找理论锚点）：**\n如果你通过产业链格局与 TAM（潜在市场空间）推算出某龙头企业未来稳态利润大概是当下的 3 倍，在 10% 的折现率下，你心里就会有一个清晰的锚：**20 倍前瞻 PE 才是它的中枢合理定价**。如果市场因恐慌砸到 10 倍，就是巨大的超额预期差；如果炒到了 40 倍，就是严重透支。\n* **反算（解构市场隐含叙事）：**\n当市场给某家成长股交易在 **48 倍动态 PE** 时，你无需争论这个估值贵不贵，反算公式直接告诉你：**“市场当前的股价已经默认它这辈子能把净利润干到现在的 10 倍”**。此时你的决策只需要聚焦于常识判断：这家公司到底有没有能力把利润做到 10 倍。\n\nDCF 动态 PE 的本质，就是**把抽象复杂的“未来全部现金流折现”，翻译成二级市场最熟悉、最便于横向比较的一年期 PE 语言**，从而彻底打通“终局叙事”与“当下定价”。"
+  },
+  "1.2_09": {
+    "file": "1.2_09_投资买预期，卖事实",
+    "text": "因此，所谓的“叙事”，就是指终局。增速，也就是过程，其实并没有那么重要。这就是信仰的力量：只要相信，无惧遥远；只要心中有光，就有春潮浩荡。投资在很大程度上是“许诺精彩的未来，拿走现在的全部”，只要未来足够精彩，资本市场对过程的容忍度可以非常高。换言之，只要终局是白头偕老，过程即使波折一点，事后谈起来，甚至可以称之为浪漫。但是，如果没有终局的幸福圆满，只有过程的轰轰烈烈，这便是欺骗感情。"
+  },
+  "1.2_10": {
+    "file": "1.2_10_为什么有些公司进入爆发期，股价反而跌了",
+    "text": "上述景气度陷阱在A股市场比比皆是，同时还解释了一个经典困惑——很多公司进入业绩爆发期后，股价反而跌了。这是因为当公司没进入爆发期时，市场对公司的判断有一种“朦胧美”，对业绩天花板高度的预期较高。在公司进入爆发期后，业绩天花板能算清楚了，市场有可能进行了一次性上修，也有可能下修，还有可能不修正。因此，景气度投资就是时而有效、时而无效的。"
+  },
+  "1.2_11": {
+    "file": "1.2_11_什么是折现率",
+    "text": "在底层逻辑上，折现率就是必要收益率，是吸引投资者买入并且长期持有、拿着不动的最低收益率，相当于债券中的“到期收益率”。"
+  },
+  "1.2_12": {
+    "file": "1.2_12_无风险收益率与风险类资产关系",
+    "text": "**对，你抓得非常准确，这正是作者所揭示的“反常识真相”。**\n\n在传统的金融教科书（如经典估值模型）中，人们往往有一个机械的直觉：**“无风险利率下调 → DCF 分母变小 → 利好权益资产（股票大涨）”**。\n\n但作者用一段极其透彻的逻辑反驳了这种教条，你可以从“债券价格机制”和“宏观风险溢价”两个层面来完整理顺：\n\n---\n\n### 1. 为什么“大家都去买无风险资产”会导致其利率下调？\n\n在金融市场上，**无风险收益率（如 10 年期国债收益率）与国债价格是严格反向变动的**：\n\n* 当经济增长放缓、投资回报率变差、实体和股市风险变大时，资金因为**避险本能（Risk-Off）**，不愿意再承担商业风险，选择全副武装买入国债；\n* 买国债的资金泛滥（涌入固定收益类资产），疯狂抬高了国债的交易价格；\n* **国债价格被买得越来越贵，其隐含的到期收益率（无风险利率）就被硬生生“打下来了”**。\n* 所以，无风险利率暴跌的本质，正是全社会资金极度厌恶风险、拼命追逐绝对安全的**避险交易结果**。\n\n---\n\n### 2. 为什么无风险利率下调，股票不仅没涨，反而可能打折？\n\n权益资产的折现率由两部分组成：\n\n§F§权益折现率 r = 无风险利率 + 股权风险溢价（ERP）\n\n教科书只看到了第一项（无风险利率下降），却忽视了**两者的强内生性（跷跷板效应）**：\n\n* **无风险利率下降的宏观暗号：**\n利率大幅下行往往意味着**全社会的商业增长机会在锐减、投资回报率在下降、经济面临通缩或需求疲软**。\n* **风险溢价（ERP）大幅飙升：**\n面对一个充满不确定性、企业盈利面临下行压力的宏观环境，投资者对风险变得极其敏感与苛刻，要求的**风险补偿（风险溢价）会大幅上升**。\n* **对冲甚至恶化：**\n* 比如国债利率虽然下降了 1%（无风险利率降），但市场因为对未来企业盈利和经济环境担忧，要求多加 1.5% 甚至 2% 的风险溢价；\n* 一增一减，**总的折现率 r 不仅没有下降，反而变大了**，导致股票估值被压低（杀估值）；\n* 与此同时，宏观变差还会导致未来的盈利现金流预期（分子）大幅下修，最终呈现出惨烈的“盈利下行 + 杀估值”戴维斯双杀。\n\n---\n\n### 3. 这就是“股债跷跷板”的叙事内核\n\n正如书中指出的：\n\n> *2022—2024 年，我国国债收益率几乎是“直线下降”的，但权益资产并没有迎来“大时代”……沪深 300 走势与无风险利率大部分时候都是同向变化的。*\n\n无风险利率不是凭空由央行调降的数学符号，它背后连接着全社会的风险偏好。**利率低不是因为资金成本便宜了股票就能飞，而是因为大家都不敢冒风险了，才把无风险资产买到了极贵（利率极低）。** 这种“不敢冒风险”的暗黑叙事一旦蔓延，作为纯风险资产的股票，自然就会面临估值与盈利的双重折价。"
+  },
+  "1.2_13": {
+    "file": "1.2_13_CAPM模型解析",
+    "text": "可以用“开包子铺找朋友借钱”的例子，把 CAPM 模型以及为什么书上说它是“精确的错误”彻底讲透。\n\n---\n\n### 一、 CAPM 是在算什么？——“借钱该给多少利息”\n\n假设你想开一家包子铺，找你表哥投资入股。表哥在心里盘算“我到底该管你要多高的年化回报率（折现率 r）”，CAPM 模型就是表哥心里的算盘：\n\n§F§E(R) = R_f + β × (ERP)\n\n表哥的算盘分三步打：\n\n1. **起跑线（无风险利率 R_f）：**\n表哥如果不借给你，把钱存银行大额存单或者买国债，每年稳拿 **3%**，没有任何暴雷风险。所以，借给你的回报**绝对不能低于 3%**。\n2. **大盘平均加价（风险溢价 ERP）：**\n做生意总是有风险的。如果表哥去全城投资各种普通小生意（相当于大盘），大家平均要求在国债基础上**再多给 5% 的风险补偿**。\n3. **你家铺子的特殊体质（β 系数）：**\n* **情况 A（β = 0.5，避险型）：** 如果你开的是最普通的平价早餐包子铺，不管经济好坏大家都要吃早饭，风吹雨打都不受影响，波动极小。表哥觉得风险低，加价打对折，只要求：\n\n§F§3% + 0.5 × 5% = 5.5%\n\n* **情况 B（β = 1.5，进攻型）：** 如果你开的是高端和牛蟹黄包，经济好时大家排队吃，经济一差大家都不吃了，业绩大起大落。表哥觉得风险大，加价上浮 1.5 倍：\n\n§F§3% + 1.5 × 5% = 10.5%\n\n**这就是 CAPM 的本质：无风险收益保底 + 根据你这门生意的风险波动大小，找你要额外的风险补偿。**\n\n---\n\n### 二、 为什么在真实世界里，CAPM 算出来的往往是“精确的错误”？\n\n按大学教科书和投行研报的常规操作，分析师会把“全市场平均风险溢价（ERP）”**死板地设定为一个固定数字（比如永远定成 5%）**。\n\n现在我们看看现实中发生了什么，就会明白为什么会“翻车”：\n\n#### 1. 现实中的情况：狂风暴雨来了\n\n突发大萧条，大家都不敢出门消费了，街上的小商铺纷纷关门破产。\n\n* **第一步：无风险利率暴跌**\n所有人吓破了胆，不敢做生意也不敢炒股，全把钱抢着存银行、买国债。\n因为买国债的人快把门槛踩烂了，国债价格暴涨，**无风险收益率从 3% 一路被买到了 1.5%（直线下降）**。\n* **第二步：教科书按 CAPM 机械计算（“精确的错误”）**\n分析师拿出电脑跑公式，因为无风险利率降了 1.5%，而他把风险溢价死板地固定在 5%：\n> “既然国债利率从 3% 降到了 1.5%，折现率分母直接从 8% 降到 6.5%！\n> **重大利好！降息了，资金成本便宜了，我们赶紧给包子铺和股票大幅调高估值吧！**”\n\n* **第三步：现实中表哥的真实反应（人类的真实本能）**\n这时候你去找表哥要钱，表哥会因为国债利率降到了 1.5%，就更便宜地把钱借给你吗？\n表哥会指着满大街关门的铺子对你吼：\n> “你疯了吗？！街对面三家饭店昨天都倒闭了！\n> 平时我敢要 5% 的风险补偿，**现在这个鬼世道，你如果不承诺给我 10% 甚至 15% 的回报来补偿我承担的破产风险，我宁可去拿 1.5% 的国债，也绝不借给你一分钱！**”\n\n---\n\n### 三、 总结：错在哪里？\n\n这就是书里所点破的致命误区：\n\n* **数学公式以为无风险利率和风险溢价是两个各走各的齿轮**，所以利率降了，折现率就跟着降；\n* **但现实中它们是一个强关联的“跷跷板”**：无风险利率跌得越凶，往往说明经济和商业环境越凶险，资金的避险情绪越极度亢奋。投资者心里要求的“风险补偿”（ERP）早已像坐火箭一样飙升上去了。\n* 风险补偿的飙升，不仅把降息的那点收益吃得一干二净，甚至让真正的权益资本成本变得更高。\n\n所以在 A 股实际做投资时，千万别看国债利率从 3% 降到 2% 就兴奋地觉得“估值要起飞了”；**直接抓取全市场主动权益基金长期沉淀下来的 10% 复合回报作为基准锚点，远比用 CAPM 公式抠那些僵化参数要务实、深刻得多。**"
+  },
+  "1.2_14": {
+    "file": "1.2_14_没有业绩或为负，增长天花板极高的DCF模型计算方法",
+    "text": "如果一家公司现在**利润是 0，甚至是巨额亏损**（比如早期的创新药企、AI 独角兽、造车新势力），但**天花板极高**，我们无法像成熟公司那样用“当期利润 × 几倍 PE”去算，因为任何数除以 0 都没有意义。\n\n作者给出了这套 DCF 解析解在实操中极其实用、极度接地气的做法：**“别算现在，直接看终局；别正着猜市值，拿现在的市值反过来测谎。”**\n\n用大白话可以总结为四个步骤：\n\n---\n\n### 第一步：放弃当下的利润，直接跳到“大结局”\n\n既然公司现在还在烧钱研发、铺渠道，看当下的报表纯属浪费时间。\n\n* DCF 的底层逻辑是看“企业这辈子能赚回来的所有现金”。\n* 既然现在没有现金，我们就**直接假设它 10 年后长大成人、进入稳定状态的那一年**。\n* 问自己：等到这个行业格局尘埃落定，它每年能稳稳赚多少净利润？（这就是**终局利润**）。\n\n---\n\n### 第二步：给它一条“等差爬坡”的梯子\n\n从现在的 0 利润，爬到 10 年后的终局利润，利润不是瞬间变出来的。\n\n* 模型做了一个最简单自然的假设：**利润每年匀速往上爬（等差增长）**。\n* 比如 10 年后每年稳赚 100 亿，那就假设它第 1 年赚 10 亿、第 2 年赚 20 亿……第 10 年赚到 100 亿，之后永远保持每年 100 亿。\n* 然后把这 10 年爬坡期赚的钱，加上 10 年后永续赚的钱，全部按 10% 的标准折现率折现到今天。\n\n---\n\n### 第三步：得到一个神奇的“打包折算系数”\n\n经过严谨的 DCF 数学积分折现后，会得出一个极其优美、好记的常数结论：\n\n> **如果一家企业花大约 10 年从 0 爬到稳态天花板，它今天在理论上的合理总市值，大约就等于它“终局稳态年利润”的 8 到 10 倍！**\n\n* 如果它是一家轻资产、赚真金白银现金流的好生意，这个系数大概是 **10 倍**；\n* 如果它平时需要不断垫资、买设备、赚的很多是应收账款（现金流质量打折），这个系数就得打折，降到 **5 到 7 倍**。\n\n```python\ndef calc_multiple(n, r):\n    # n years arithmetic growth from 0 to 1\n    # year t profit: t / n\n    # year n+1 onwards: 1\n    pv_growth = sum((t / n) / ((1 + r) ** t) for t in range(1, n + 1))\n    pv_terminal = (1 / r) / ((1 + r) ** n)\n    return pv_growth + pv_terminal\n\nfor r in [0.05, 0.07, 0.08, 0.10, 0.12, 0.15]:\n    row = [round(calc_multiple(n, r), 1) for n in [3, 5, 10, 15]]\n    print(f\"r={int(r*100)}%: {row}\")\n\n```\n\n```text\nr=5%: [19.1, 18.2, 16.2, 14.5]\nr=7%: [13.4, 12.5, 10.7, 9.3]\nr=8%: [11.6, 10.8, 9.1, 7.7]\nr=10%: [9.1, 8.3, 6.8, 5.6]\nr=12%: [7.5, 6.7, 5.3, 4.2]\nr=15%: [5.8, 5.1, 3.8, 3.0]\n\n```\n\n这个折算系数并非经验拍脑袋得出的，而是根据下面的 **DCF 现金流两段式折现公式**严密计算出来的。\n\n---\n\n### 一、 数学建模：两段式折现\n\n假设某公司终局稳态净利润为 E，耗时 n = 10 年从 0 匀速（等差）爬坡到 E：\n\n1. **第一阶段：前 10 年爬坡期的现金流折现**\n第 t 年的净利润为 t/10 × E。把前 10 年逐年按折现率 r 贴现：\n\n§F§PV_(爬坡) = Σ[t=1→10] (t/10 × E)/((1+r)^t)\n\n2. **第二阶段：第 10 年后的永续稳态折现**\n从第 11 年起，每年稳定赚 E（永续年金价值为 E / r），再贴现回当前时刻（贴现 10 年）：\n\n§F§PV_(永续) = (E / r)/((1+r)^10)\n\n3. **理论总市值：**\n\n§F§市值 = PV_(爬坡) + PV_(永续) = E × [ Σ[t=1→10] (t/10)/((1+r)^t) + (1/r)/((1+r)^10) ]〔这就是“市值速算倍数”〕\n\n---\n\n### 二、 为什么会有“8 到 10 倍”和“5 到 7 倍”？\n\n取 10 年到顶，直接代入不同折现率 r 计算：\n\n| 资产类型 / 商业模式特征 | 适用折现率 r | 爬坡折现值 | 永续折现值 | 理论市值速算倍数 |\n| --- | --- | --- | --- | --- |\n| **优质资产（轻资产、确定性高）** | **r = 8%** | 3.23 倍 | 4.82 倍 | **9.1 倍（约 8–10 倍）** |\n| **标准基准（书中建议底线）** | **r = 10%** | 2.94 倍 | 3.86 倍 | **6.8 倍（约 7 倍）** |\n| **中高风险（现金流差、不确定性大）** | **r = 12%** | 2.68 倍 | 2.68 倍 | **5.3 倍（约 5 倍）** |\n| **极高风险（商业模式脆弱）** | **r = 15%** | 2.35 倍 | 1.49 倍 | **3.8 倍** |\n\n#### 1. 为什么“轻资产、真金白银”给到 8 到 10 倍？\n\n* 如果企业商业模式极佳、壁垒深厚，市场对其确定性给予更低风险溢价（如 r = 8%）；\n* 并且其**净利润 100% 对应真现金流**，没有坏账垫资损耗；\n* 带入公式直接算出：市值倍数约为 **9.1 倍**（即大约 8～10 倍）。\n\n#### 2. 为什么“垫资、买设备、现金流差”要打折到 5 到 7 倍？\n\n重资产、垫资严重的商业模式，会从两个渠道直接压缩倍数：\n\n* **折现率惩罚（r 抬升）：**\n当期没利润又缺现金流，不确定性大，市场要求更高的风险补偿（r 提升到 10% sim 12%），查表可知对应倍数直接掉到 **5.3～6.8 倍**。\n* **自由现金流真实折价：**\n如果账面赚 1 元净利润，扣除应收款和资本开支后只能分出 0.7 元真现金，那么原本 9 倍的市值倍数还要再乘上 70%，实际有效倍数同样落在 **5 到 6 倍多**。\n\n因此，这个倍数本质上就是**前 10 年等差现金流加上第 10 年后的永续现金流，在不同资本成本（8%～12%）下的闭式折现代数和**。\n可以用一个“买房收租”的接地气场景，把这段公式拆解为两个人人都能听懂的常识。\n\n假设你现在投资了一栋刚建好的新大楼，目前是空的（利润为 0）。开发商承诺：**“未来通过招租，10 年内租金会一步一步爬到每年 1 亿元的顶峰，之后每年永远稳收 1 亿元。”**\n\n你把这栋楼一辈子能收到的所有租金折合成今天的现金（假设你的及格线折现率是 **10%**），这栋楼今天到底值多少钱？\n\n公式本质上就是把这个过程切成了**两截**：\n\n---\n\n### 第一截：前 10 年的“爬坡期”（边招租边收钱）\n\n大楼不是明天就能收 1 个亿，它是慢慢爬上去的（等差增长）：\n\n* 第 1 年收 1000 万，第 2 年收 2000 万……第 10 年收 1 亿元。\n* 这 10 年陆陆续续收进来的钱，总额其实有 5.5 亿元。\n* 但“未来的钱不如今天的钱值钱”，所以每笔钱要按 10% 打折（第 1 年除以 1.1，第 2 年除以 1.1 的平方……）。\n* **算下来：**\n这 10 年收到的所有租金，打包折算到今天，相当于**不到 3 年的满租租金（约 2.94 倍）**。也就是说，这爬坡的 10 年大概值 **2.94 亿元**。\n\n---\n\n### 第二截：第 10 年之后的“躺平时光”（永远每年收 1 亿）\n\n从第 11 年开始，大楼满租了，这辈子每一年都雷打不动给你交 1 亿元：\n\n* **在第 10 年那个时间点看：**\n每年稳拿 1 亿，按 10% 的回报率，在第 10 年末它相当于一张价值 **10 亿元**（1 div 10%）的永续饭票。\n* **但别忘了，这是 10 年后的 10 亿元：**\n10 年后的 10 亿元拿到今天值多少钱？要按 10% 的复利打折打 10 次（除以 1.1^10 ≈ 2.59）。\n* **算下来：**\n10 div 2.59 ≈ 3.86。也就是说，第 10 年之后那一辈子的永续租金，折算到今天值 **3.86 倍（约 3.86 亿元）**。\n\n---\n\n### 合并在一起：两截相加，得出“速算倍数”\n\n§F§今天的总价值 = 前 10 年爬坡赚的（2.94 倍） + 10 年后躺平永续赚的（3.86 倍） = 6.8倍\n\n对照速算倍数：折现率 10%、10 年到顶，算出来正是 **6.8**。\n\n这就是 6.8 这个数字的来历——**它代表“前 10 年等差爬坡”加上“后续永续维持”，全部现金流折现到今天打包算出来的总倍数。**\n\n---\n\n### 那为什么前面会提到“8 到 10 倍”和“5 到 7 倍”？\n\n换成其他折现率，原因非常简单：\n\n1. **为什么轻资产能给到 8～10 倍？**\n如果你的商业模式极具确定性、不需要垫资，全市场觉得你很稳，要求的折现率就会降低（比如只要求 **8%**）。\n折现率 8%、10 年到顶：数字立刻变成了 **9.1**（正好在 8～10 倍区间）。\n2. **为什么重资产、垫资差的只能给 5～7 倍？**\n因为天天垫资、赚应收账款，风险很大，全市场要求的折现率就会上升到 **10%～12%**。\n10 年到顶时，折现率 10% 对应 **6.8**，12% 对应 **5.3**（正好在 5～7 倍区间）。\n\n所以，这个公式不需要去死记符号，你只要记住两句话：\n**前 10 年慢慢爬坡值 3 倍左右，10 年后一辈子躺平值 4 倍左右，加起来就是 7 倍左右；确定性高就往 9–10 倍走，风险大就往 5–6 倍退。**\n---\n\n### 第四步：实操的核心——“逆向测谎仪”（反算终局利润）\n\n在二级市场里，我们根本不需要去神机妙算它值多少钱，**因为市场天天都在用真金白银给它报出市值！**\n\n假设某只当期一分钱不赚的科技股，现在的总市值被市场炒到了 **500 亿元**。\n\n这时候，拿着上面的工具，你只需要做一道小学除法：\n\n1. **反推市场期望：**\n\n§F§市场隐含的终局利润 = (当前市值 500 亿)/(折算倍数 10 倍) = 50亿元\n\n2. **直面商业常识：**\n当前 500 亿的股价在数学上其实是市场在逼问你一句话：\n> **“你相不相信这家公司在 10 年后，每年能稳稳掏出 50 亿元的纯现金利润给你？”**\n\n* **如果你经过深度产业调研发现：**\n这个细分市场全中国一年的总需求也就 100 亿，全行业加起来一年利润都不到 20 亿，它就算做到 100% 垄断也绝不可能赚到 50 亿。\n→ **结论：立刻避坑！** 当前股价被严重泡沫化，估值完全吹爆了。\n* **反过来，如果你调研发现：**\n这是一家能吃下全球市场的超级龙头，未来稳态年利润大概率能干到 200 亿。\n→ **结论：赶紧买入！** 哪怕它现在一分钱不赚，现在的 500 亿市值相对它未来的天花板依然是打折贱卖。\n\n---\n\n### 总结\n\n对 0 利润但高天花板的企业做 DCF，精髓绝不是在 Excel 里做复杂的表格，而是：\n**用当下的市值除以 10 倍（现金流差的除以 5 倍），直接算出市场押注它大结局时必须赚到的年利润；然后拿这个数字，去跟行业空间的物理天花板进行常识对碰。**"
+  }
+};</script>
+<script>
+const M_STEPS = [0.5,1,1.5,2,3,4,5,7,10,15,20,30,40];
+const HENGRUI = {name:"恒瑞医药",mv:"5252",e0:"63.37",e1:"87.25",g1:"14.6",g2:"16.5",r:10,pname:"辉瑞",ppe:"12.38",pr:8,pbase:"814"};
+
+function dynPE(m,n,r){
+  const g=Math.pow(m,1/n);
+  let pv=0;
+  for(let t=1;t<=n;t++) pv+=Math.pow(g,t)/Math.pow(1+r,t);
+  pv+=m/(r*Math.pow(1+r,n));
+  return pv/g;
+}
+function impliedM(pe,n,r){
+  let lo=0.05,hi=500;
+  if(pe<dynPE(lo,n,r)||pe>dynPE(hi,n,r)) return null;
+  for(let i=0;i<80;i++){
+    const mid=(lo+hi)/2;
+    if(dynPE(mid,n,r)<pe) lo=mid; else hi=mid;
+  }
+  return (lo+hi)/2;
+}
+function capMultiple(n,r){
+  let s=0;
+  for(let t=1;t<=n;t++) s+=t/n/Math.pow(1+r,t);
+  return s+1/r/Math.pow(1+r,n);
+}
+function invNorm(p){
+  const a=[-39.69683028665376,220.9460984245205,-275.9285104469687,138.357751867269,-30.66479806614716,2.506628277459239];
+  const b=[-54.47609879822406,161.5858368580409,-155.6989798598866,66.80131188771972,-13.28068155288572];
+  const c=[-0.007784894002430293,-0.3223964580411365,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783];
+  const d=[0.007784695709041462,0.3224671290700397,2.445134137142996,3.754408661907416];
+  const pl=0.02425;
+  if(p<pl){const q=Math.sqrt(-2*Math.log(p));return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+  if(p<=1-pl){const q=p-0.5,rr=q*q;return ((((((a[0]*rr+a[1])*rr+a[2])*rr+a[3])*rr+a[4])*rr+a[5])*q)/(((((b[0]*rr+b[1])*rr+b[2])*rr+b[3])*rr+b[4])*rr+1)}
+  const q=Math.sqrt(-2*Math.log(1-p));
+  return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+}
+function zNormal(ratio){return invNorm(1-1/ratio)}
+function zFat(ratio,alpha){return alpha*(Math.pow(ratio/2,1/alpha)-1)}
+function num(s){const v=parseFloat(s);return isFinite(v)&&v>0?v:null}
+function fmt(v,d=1){return v.toFixed(d)}
+function $(id){return document.getElementById(id)}
+
+let mode="profit";
+function setMode(next){
+  mode=next;
+  $("mode-profit").classList.toggle("on",mode==="profit");
+  $("mode-zero").classList.toggle("on",mode==="zero");
+  $("profit-fields").hidden=mode!=="profit";
+  $("peer-fields").hidden=mode!=="profit";
+  renderCalc();
+}
+function loadHengrui(){
+  mode="profit";
+  $("name").value=HENGRUI.name;$("mv").value=HENGRUI.mv;$("e0").value=HENGRUI.e0;$("e1").value=HENGRUI.e1;
+  $("g1").value=HENGRUI.g1;$("g2").value=HENGRUI.g2;$("r").value=HENGRUI.r;$("n").value=10;
+  $("pname").value=HENGRUI.pname;$("ppe").value=HENGRUI.ppe;$("pbase").value=HENGRUI.pbase;$("pr").value=HENGRUI.pr;
+  setMode("profit");
+}
+function renderCalc(){
+  const rPct=+$("r").value,n=+$("n").value,r=rPct/100;
+  $("r-val").textContent=rPct+"%";$("n-val").textContent=n+" 年";$("pr-val").textContent=+$("pr").value+"%";
+  const name=$("name").value,mv=num($("mv").value);
+  const stats=$("stats"),warn=$("warn"),story=$("story");
+  stats.innerHTML="";warn.innerHTML="";story.hidden=true;
+  const cell=(v,k)=>{const d=document.createElement("div");d.innerHTML=`<div class="k">${k}</div><div class="v">${v}</div>`;stats.appendChild(d)};
+  if(mode==="profit"){
+    const E0=num($("e0").value),E1=num($("e1").value),G1=parseFloat($("g1").value),G2=parseFloat($("g2").value);
+    const pe=mv&&E1?mv/E1:null,m=pe?impliedM(pe,n,r):null,term=m&&E0?m*E0:null;
+    const req5=m?Math.pow(m,1/5)-1:null,req10=m?Math.pow(m,1/10)-1:null;
+    const PPE=num($("ppe").value),PB=num($("pbase").value),prPct=+$("pr").value;
+    const pm=PPE?impliedM(PPE,n,prPct/100):null,pterm=pm&&PB?pm*PB:null,ratio=term&&pterm?term/pterm:null;
+    const pname=$("pname").value||"对标";
+    cell(pe?fmt(pe)+" 倍":"—","动态 PE = 市值 ÷ 下一年一致预期利润");
+    cell(m?fmt(m)+" 倍":"超出范围","隐含天花板 m*");
+    cell(term?fmt(term,0)+" 亿":"—","隐含终局利润 = m* × 当期利润");
+    cell(req5!=null&&req10!=null?`${fmt(req5*100,0)}% / ${fmt(req10*100,0)}%`:"—","所需增速：5 年到顶 / 10 年到顶");
+    cell(pterm?fmt(pterm,0)+" 亿":"—",`对标隐含终局（${pname}）`);
+    cell(ratio?fmt(ratio*100,0)+"%":"—","本公司隐含终局 ÷ 对标隐含终局");
+    if(m&&m>40) warn.innerHTML='<div class="callout"><div class="t">边界</div><p>隐含天花板超过 40 倍，动态 PE 公式的前提不再成立，结论只能当量级看。</p></div>';
+    if(pe&&m&&term&&req5!=null&&req10!=null){
+      const cons=isFinite(G1)&&isFinite(G2)?(G1+G2)/2:null;
+      const consText=cons==null?"":`；而一致预期未来两年的增速是 ${fmt(G1)}% 和 ${fmt(G2)}%，${cons/100<req10?"低于两种口径的所需增速":cons/100<req5?"高于 10 年口径、低于 5 年口径的所需增速":"高于两种口径的所需增速"}`;
+      const peerText=pm&&pterm&&ratio?`对标${pname}动态 PE ${fmt(PPE)} 倍，按 ${prPct}% 的折现率反算，隐含天花板约 ${fmt(pm)} 倍${pm<1.3?"，基本上“现在就是天花板”":""}，隐含终局利润约 ${fmt(pterm,0)} 亿元。因此，${name}当前股价隐含的叙事，是终局利润达到${pname}隐含终局的 ${fmt(ratio*100,0)}%${Math.abs(ratio-1)<0.15?"，也就是若干年后变成现在的"+pname:""}。`:"";
+      story.hidden=false;
+      story.innerHTML=`<div class="lbl">自动生成 · 按路演的句式</div>落实到叙事：${name}动态 PE 约为 ${fmt(pe)} 倍，按 ${rPct}% 的折现率反算，股价隐含的天花板是当前业绩的 ${fmt(m)} 倍，隐含终局利润约 ${fmt(term,0)} 亿元。需要 ${fmt(req5*100,0)}% 的增速连续增长 5 年然后达峰、维持至永续，或者 ${fmt(req10*100,0)}% 的增速持续 10 年${consText}。${peerText}`;
+    }
+  }else{
+    const k=capMultiple(n,r),term=mv?mv/k:null;
+    cell(fmt(k)+" 倍","市值速算倍数 K（等差爬坡）");
+    cell(term?fmt(term)+" 亿":"—","隐含终局利润 = 市值 ÷ K");
+    cell(mv?fmt(mv/capMultiple(n,r+0.02))+" 亿":"—",`若折现率取 ${rPct+2}%`);
+    if(rPct<10) warn.innerHTML='<div class="callout"><div class="t">纪律</div><p>当期没有利润的公司，作者建议折现率至少取 10%。</p></div>';
+    if(term){
+      story.hidden=false;
+      story.innerHTML=`<div class="lbl">自动生成 · 按路演的句式</div>落实到叙事：${name}当期没有利润，假设 ${n} 年等差爬坡到稳态，按 ${rPct}% 的折现率，市值速算倍数约 ${fmt(k)} 倍；当前市值 ${fmt(mv,0)} 亿元，股价隐含的终局利润约 ${fmt(term)} 亿元。价格在问的是：到了稳态，它每年真能拿出这么多利润吗？`;
+    }
+  }
+}
+
+function drawLine(svg,values,mid){
+  const w=360,h=180,pad=16;
+  const min=Math.min(...values,mid),max=Math.max(...values,mid);
+  const span=max-min||1;
+  const x=i=>pad+i*(w-2*pad)/Math.max(values.length-1,1);
+  const y=v=>h-pad-(v-min)*(h-2*pad)/span;
+  const pts=values.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const midY=y(mid);
+  svg.innerHTML=`<line x1="${pad}" y1="${midY.toFixed(1)}" x2="${w-pad}" y2="${midY.toFixed(1)}" stroke="#c9ded5" stroke-dasharray="4 3"/>
+    <polyline fill="none" stroke="#1f5c4a" stroke-width="2" points="${pts}"/>`;
+}
+function renderAuction(){
+  const sig=+$("sig").value,alpha=+$("alpha").value;
+  $("sig-val").textContent=sig+"%";$("alpha-val").textContent=alpha.toFixed(1);
+  const ratios=Array.from({length:20},(_,k)=>2*(k+1));
+  const normal=ratios.map(x=>100+sig*zNormal(x));
+  const fat=ratios.map(x=>100+sig*zFat(x,alpha));
+  drawLine($("chart-normal"),normal,100);
+  drawLine($("chart-fat"),fat,100);
+  const dN=(zNormal(20)-zNormal(10))*sig,dN2=(zNormal(40)-zNormal(20))*sig;
+  const dF=(zFat(20,alpha)-zFat(10,alpha))*sig,dF2=(zFat(40,alpha)-zFat(20,alpha))*sig;
+  $("hint-normal").textContent=`关注资金每翻一倍（10→20→40 倍流通盘）价格上升 ${dN.toFixed(1)}、${dN2.toFixed(1)}：上升但减速。`;
+  $("hint-fat").textContent=`同样翻倍，价格上升 ${dF.toFixed(1)}、${dF2.toFixed(1)}：${alpha<1?"加速上涨，α 小于 1 时才会出现":"α 不小于 1，仍然减速"}。`;
+}
+function renderN(){
+  const m=M_STEPS[+$("nm").value],r=+$("nr").value/100;
+  $("nm-val").textContent=m+" 倍";$("nr-val").textContent=(r*100)+"%";
+  const pe5=dynPE(m,5,r),pe10=dynPE(m,10,r),pe15=dynPE(m,15,r);
+  $("n-stats").innerHTML=`<div><div class="k">5 年到顶</div><div class="v">${pe5.toFixed(1)} 倍</div></div>
+    <div><div class="k">10 年到顶</div><div class="v">${pe10.toFixed(1)} 倍</div></div>
+    <div><div class="k">15 年到顶</div><div class="v">${pe15.toFixed(1)} 倍</div></div>`;
+  const ns=Array.from({length:29},(_,k)=>k+2);
+  drawLine($("chart-n"),ns.map(x=>dynPE(m,x,r)),pe10);
+}
+
+function inline(s){
+  return String(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+}
+function renderNoteText(text){
+  const lines=String(text).split("\n");
+  let html="",i=0,buf=[];
+  const flush=()=>{if(buf.length){html+=`<p>${inline(buf.join(" "))}</p>`;buf=[]}};
+  while(i<lines.length){
+    const raw=lines[i],line=raw.trim();
+    if(!line){flush();i++;continue}
+    if(line.startsWith("```")){
+      flush();i++;const code=[];
+      while(i<lines.length&&!lines[i].trim().startsWith("```")) code.push(lines[i++]);
+      i++;html+=`<pre>${code.join("\n").replace(/</g,"&lt;")}</pre>`;continue;
+    }
+    if(line.startsWith("|")){
+      flush();const rows=[];
+      while(i<lines.length&&lines[i].trim().startsWith("|")){
+        const cells=lines[i].trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+        if(!cells.every(c=>/^:?-{2,}:?$/.test(c))) rows.push(cells);
+        i++;
+      }
+      if(rows.length>1){
+        html+="<table><thead><tr>"+rows[0].map(c=>`<th>${inline(c)}</th>`).join("")+"</tr></thead><tbody>"+
+          rows.slice(1).map(r=>"<tr>"+r.map(c=>`<td>${inline(c)}</td>`).join("")+"</tr>").join("")+"</tbody></table>";
+      }
+      continue;
+    }
+    if(line.startsWith("§F§")){flush();html+=`<pre>${line.slice(3)}</pre>`;i++;continue}
+    if(/^(-{3,}|\*{3,})$/.test(line)){flush();i++;continue}
+    if(/^#{1,6}\s/.test(line)){flush();html+=`<h4>${inline(line.replace(/^#{1,6}\s+/,""))}</h4>`;i++;continue}
+    if(line.startsWith(">")){flush();html+=`<blockquote>${inline(line.replace(/^>\s?/,""))}</blockquote>`;i++;continue}
+    const bullet=raw.match(/^(\s*)[*-]\s+(.*)$/);
+    if(bullet){flush();html+=`<p>· ${inline(bullet[2])}</p>`;i++;continue}
+    buf.push(line);i++;
+  }
+  flush();
+  return html;
+}
+function mountNotes(NOTES){
+  document.querySelectorAll(".notes").forEach(box=>{
+    const keys=(box.getAttribute("data-keys")||"").split(",").map(s=>s.trim()).filter(Boolean);
+    box.innerHTML=keys.map(key=>{
+      const doc=NOTES[key];if(!doc) return "";
+      return `<details class="note"><summary>原笔记 · ${doc.file} · ${doc.text.length} 字</summary><div class="note-body">${renderNoteText(doc.text)}</div></details>`;
+    }).join("");
+  });
+}
+
+$("mode-profit").onclick=()=>setMode("profit");
+$("mode-zero").onclick=()=>setMode("zero");
+$("load-hengrui").onclick=loadHengrui;
+["name","mv","e0","e1","g1","g2","r","n","pname","ppe","pbase","pr"].forEach(id=>$ (id).addEventListener("input",renderCalc));
+["sig","alpha"].forEach(id=>$ (id).addEventListener("input",renderAuction));
+["nm","nr"].forEach(id=>$ (id).addEventListener("input",renderN));
+renderCalc();renderAuction();renderN();
+
+if(window.NOTES) mountNotes(window.NOTES);
+</script>
+</body>
+</html>
