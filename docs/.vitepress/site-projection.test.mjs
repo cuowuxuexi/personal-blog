@@ -123,6 +123,7 @@ test('research / philosophy / big-question sidebars project from structure decla
         '/html/zou-auction',
         '/html/zou-alpha',
         '/html/zou-method',
+        '/html/zou-research-system',
       ],
     },
   ])

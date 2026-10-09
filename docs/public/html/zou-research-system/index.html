@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/html/zou-research-system/" />
+<title>研究系统 · 叙事坐标系 v0.2（邹佩轩投资哲学框架）</title>
+<style>
+:root{
+  --bg:#f5f6f8;
+  --card:#ffffff;
+  --ink:#161b26;
+  --ink2:#4b5468;
+  --ink3:#8d95a8;
+  --line:#e4e7ee;
+  --accent:#2b5c8a;
+  --accent-soft:#eaf1f8;
+  --red:#c0392b;
+  --red-soft:#fdeeec;
+  --gold:#a8761a;
+  --gold-soft:#fdf5e3;
+  --green:#2d7a5f;
+  --green-soft:#e9f4ef;
+  --purple:#5b4b8a;
+  --purple-soft:#f0edf8;
+  --author:#1f5c4a;
+  --author-soft:#e9f2ee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.7;padding:40px 24px 80px;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto}
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:6px;font-size:12px;line-height:16px;color:var(--ink3);margin-bottom:16px}
+.research-breadcrumb a{color:var(--ink2);text-decoration:none}
+.research-breadcrumb a:hover{color:var(--accent)}
+.research-breadcrumb strong{font-weight:600;color:var(--ink)}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:38px 40px 32px;margin-bottom:26px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--author),var(--accent))}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tag{font-size:12px;padding:4px 11px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.3px}
+.tag.g{background:var(--gold-soft);color:var(--gold)}
+.tag.a{background:var(--author-soft);color:var(--author)}
+h1{font-size:31px;line-height:1.35;letter-spacing:-.5px;margin-bottom:12px}
+.lead{font-size:15.5px;color:var(--ink2)}
+.theline{margin-top:22px;padding:18px 22px;border-radius:12px;background:linear-gradient(135deg,#f6faf8,#eaf2ee);border:1px solid var(--line);font-size:17px;color:var(--ink)}
+.theline b{color:var(--author)}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.nav .nl{font-size:12px;color:var(--ink3);font-weight:700;letter-spacing:1px;margin-right:4px}
+.nav a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:var(--author-soft);color:var(--author);text-decoration:none;font-weight:600}
+.nav a:hover{background:#d8e8e0}
+section{margin-bottom:34px}
+.shead{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;padding-left:2px;flex-wrap:wrap}
+.snum{font-size:12px;font-weight:700;color:#fff;background:var(--author);min-width:24px;height:24px;padding:0 6px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;align-self:center}
+.shead h2{font-size:20px;letter-spacing:-.2px}
+.shead .sub{font-size:13px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 28px}
+.card+.card{margin-top:16px}
+.card h3{font-size:17px;margin-bottom:10px}
+.card p{font-size:15px;color:var(--ink2)}
+.card p+p{margin-top:10px}
+.card p b{color:var(--ink)}
+.quote{margin:14px 0;padding:14px 18px;border-left:3px solid var(--author);background:#f7faf9;border-radius:0 10px 10px 0;font-size:14.5px;color:#1e3f34}
+.quote .who{display:block;margin-top:6px;font-size:12px;color:var(--ink3)}
+.formula{margin:12px 0;padding:12px 16px;border-radius:10px;background:#fbfcfd;border:1px solid var(--line);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.8px;line-height:1.85;white-space:pre-wrap;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:960px){.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+@media(max-width:640px){.grid3{grid-template-columns:1fr}}
+.claim{margin-top:16px;padding:16px 20px;border-radius:13px;background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--author)}
+.claim-main{font-size:17px;font-weight:700;color:var(--ink);line-height:1.5}
+.claim-sub{margin-top:6px;font-size:13.5px;color:var(--ink2)}
+.callout{background:var(--red-soft);border:1px solid #f3d3ce;border-radius:12px;padding:14px 18px;margin-top:14px}
+.callout .t{font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px}
+.callout p{font-size:14px;color:#6d2b23}
+.callout.green{background:var(--author-soft);border-color:#c9ded5}
+.callout.green .t{color:var(--author)}
+.callout.green p{color:#1e3f34}
+.callout.gold{background:var(--gold-soft);border-color:#ead7a4}
+.callout.gold .t{color:var(--gold)}
+.callout.gold p{color:#3d3423}
+.src{font-size:12px;color:var(--ink3);margin-top:12px;line-height:1.7}
+
+/* 架构图 */
+.arch{display:flex;flex-direction:column;gap:12px}
+.band{border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+.band .bt{font-size:12px;font-weight:700;letter-spacing:.6px;margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.band .bt span{font-weight:500;color:var(--ink3);letter-spacing:0}
+.band.loop{background:var(--gold-soft);border-color:#ead7a4}
+.band.loop .bt{color:var(--gold)}
+.band.kernel{background:#eef3f8;border-color:#d3e0ec}
+.band.kernel .bt{color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;padding:6px 10px;border-radius:9px;background:#fff;border:1px solid var(--line);color:var(--ink2)}
+.chip b{color:var(--ink);margin-right:4px}
+.scales{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;position:relative}
+@media(max-width:900px){.scales{grid-template-columns:1fr 1fr}}
+.sc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative}
+.sc:hover{border-color:var(--author);box-shadow:0 2px 10px rgba(31,92,74,.08)}
+.sc .sn{font-size:11px;font-weight:700;color:var(--author);letter-spacing:.6px}
+.sc h4{font-size:17px;margin:2px 0 6px}
+.sc .kv{font-size:12.5px;color:var(--ink2);line-height:1.6}
+.sc .kv i{font-style:normal;color:var(--ink3);margin-right:4px}
+.strip{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:10px}
+.strip span{font-size:10.5px;text-align:center;padding:4px 0;border-radius:6px;font-weight:700}
+.w-m{background:var(--accent-soft);color:var(--accent)}
+.w-hm{background:var(--purple-soft);color:var(--purple)}
+.w-h{background:var(--gold-soft);color:var(--gold)}
+.sc .up{position:absolute;right:-9px;top:50%;transform:translateY(-50%);z-index:2;width:18px;height:18px;border-radius:9px;background:var(--author);color:#fff;font-size:11px;line-height:18px;text-align:center}
+@media(max-width:900px){.sc .up{display:none}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin-top:4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px}
+
+/* 单元 */
+.line{display:flex;gap:14px}
+.rail{display:flex;flex-direction:column;align-items:center;width:30px;flex:none}
+.dot{min-width:30px;height:24px;border-radius:12px;font-size:11.5px;line-height:24px;text-align:center;font-weight:700}
+.stem{flex:1;width:1px;background:var(--line);margin-top:4px}
+.step{flex:1;min-width:0;padding-bottom:24px}
+.step h4{font-size:16px;margin-bottom:4px}
+.step .ask{font-size:14.5px;color:var(--ink);margin-bottom:8px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.tags span{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:650}
+.kvrow{display:grid;grid-template-columns:76px 1fr;gap:4px 12px;font-size:13.5px;color:var(--ink2);margin-top:4px}
+.kvrow dt{color:var(--ink3);font-size:12px;padding-top:2px}
+.kvrow dd b{color:var(--ink)}
+.posbar{margin:12px 0 4px;position:relative;height:56px}
+.posbar .track{position:absolute;left:4%;right:4%;top:22px;height:6px;border-radius:3px;background:linear-gradient(90deg,#d9e8e1,#eaf1f8 50%,#fdeeec)}
+.posbar .tick{position:absolute;top:10px;width:2px;height:30px;background:var(--ink2)}
+.posbar .tl{position:absolute;top:40px;font-size:11.5px;color:var(--ink2);transform:translateX(-50%);white-space:nowrap}
+.posbar .mk{position:absolute;top:0;font-size:11px;color:var(--red);font-weight:700;transform:translateX(-50%);white-space:nowrap}
+.zone{font-size:13px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+.zone div{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:3px 0}
+.zone b{color:var(--ink)}
+
+/* 尺度切换 */
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pill{font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;font-weight:650;font-family:inherit}
+.pill.on{background:var(--author);color:#fff;border-color:var(--author)}
+.sgrid{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sgrid .r{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line)}
+.sgrid .r:first-child{border-top:none}
+.sgrid .r>div{padding:10px 14px;font-size:13.8px}
+.sgrid .r>div:first-child{background:#fbfcfd;color:var(--ink2);font-weight:650;font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.sgrid .r>div:last-child{color:var(--ink)}
+.sgrid .r.meta>div:first-child{background:#f4f7f6;color:var(--author)}
+@media(max-width:640px){.sgrid .r{grid-template-columns:1fr}}
+.mini-tag{font-size:10.5px;padding:1px 6px;border-radius:999px;font-weight:700;flex:none}
+.rec{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:10px 0}
+.rec .from,.rec .to{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;color:var(--ink2)}
+.rec .from b,.rec .to b{color:var(--ink)}
+.rec .arr{font-size:18px;color:var(--author);font-weight:700}
+@media(max-width:640px){.rec{grid-template-columns:1fr}.rec .arr{transform:rotate(90deg);justify-self:center}}
+
+/* 回路 */
+.lc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.lc .ln{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.6px}
+.lc h4{font-size:16px;margin:2px 0 6px}
+.lc p{font-size:13.5px;color:var(--ink2)}
+.lc .fields{margin-top:8px;font-size:12.5px;color:var(--ink2);background:#fbfcfd;border:1px solid var(--line);border-radius:8px;padding:8px 10px;line-height:1.7}
+.lc .cad{margin-top:8px;font-size:12px;color:var(--gold);font-weight:650}
+
+/* 施工清单 */
+.phase{border:1px solid var(--line);border-radius:14px;background:#fff;margin-top:14px;overflow:hidden}
+.phase-h{display:flex;align-items:center;gap:12px;padding:14px 18px;background:#fbfcfd;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.phase-h .pn{font-size:12px;font-weight:700;color:#fff;background:var(--author);border-radius:7px;padding:3px 9px}
+.phase-h h4{font-size:16px}
+.phase-h .pg{margin-left:auto;font-size:12px;color:var(--ink3)}
+.phase-h .why{flex-basis:100%;font-size:13px;color:var(--ink2)}
+.todo{display:grid;grid-template-columns:28px 1fr 74px;gap:10px;padding:11px 18px;border-top:1px solid var(--line);align-items:start}
+.todo:first-of-type{border-top:none}
+.todo input{margin-top:5px;width:16px;height:16px;accent-color:var(--author);cursor:pointer}
+.todo .tt{font-size:14.5px;color:var(--ink)}
+.todo .dn{font-size:12.5px;color:var(--ink3);margin-top:2px}
+.todo .dn b{color:var(--ink2);font-weight:650}
+.st{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;text-align:center;white-space:nowrap}
+.st.done{background:var(--green-soft);color:var(--green)}
+.st.here{background:var(--accent-soft);color:var(--accent)}
+.st.todo-s{background:#f1f2f5;color:var(--ink3)}
+.todo.checked .tt{color:var(--ink3);text-decoration:line-through}
+.progress{height:6px;border-radius:3px;background:#eef0f4;overflow:hidden;margin-top:12px}
+.progress i{display:block;height:100%;background:var(--author);width:0;transition:width .2s}
+.ptxt{font-size:12px;color:var(--ink3);margin-top:6px}
+
+/* 对照表 */
+.tbl-wrap{overflow-x:auto}
+table.map{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px}
+table.map th,table.map td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.map thead th{background:#fbfcfd;color:var(--ink2);font-size:12px;font-weight:700}
+table.map td:first-child{color:var(--ink2);white-space:nowrap}
+table.map td:nth-child(2){font-weight:650;color:var(--author);white-space:nowrap}
+table.map td:last-child{color:var(--ink2)}
+
+.nots{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:6px}
+@media(max-width:760px){.nots{grid-template-columns:1fr}}
+.nots div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--ink2)}
+.nots b{display:block;color:var(--red);font-size:13px;margin-bottom:4px}
+footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+footer b{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><a href="/投资哲学/邹佩轩投资哲学框架/">邹佩轩投资哲学框架</a><span>/</span><strong>研究系统</strong></nav>
+
+<div class="hero">
+  <div class="tagrow">
+    <span class="tag a">邹佩轩投资哲学框架 · 用</span>
+    <span class="tag">架构图 + 施工清单</span>
+    <span class="tag g">v0.2 · 2026-10-09</span>
+  </div>
+  <h1>研究系统 · 叙事坐标系</h1>
+  <p class="lead">把一套以 DCF 为第一性原理的投研框架，收成一个内核、一个单元、四个尺度、一条回路。这一页既是整套体系的架构图，也是接下来要做的事情的清单。</p>
+  <div class="theline" data-kg="concept">
+    同一个反算单元，在<b>公司、行业、市场、历史</b>四种比例尺上一遍遍问同一个问题：价格信的是什么终局，我信的是什么终局。<br>
+    <b>坐标交给机器，信不信留给自己。</b>
+  </div>
+  <div class="nav">
+    <span class="nl">本页</span>
+    <a href="#sec-why">为什么是这个形状</a>
+    <a href="#sec-arch">架构图</a>
+    <a href="#sec-k">K 内核</a>
+    <a href="#sec-u">U 单元</a>
+    <a href="#sec-s">S 尺度</a>
+    <a href="#sec-l">L 回路</a>
+    <a href="#sec-todo">施工清单</a>
+    <a href="#sec-map">旧编号对照</a>
+  </div>
+</div>
+
+<!-- 0 为什么 -->
+<section id="sec-why">
+  <div class="shead"><div class="snum">0</div><h2>为什么是这个形状</h2><span class="sub">后记给目标，前言给路径</span></div>
+  <div class="card">
+    <div class="quote" data-kg="quote">当信息过载成为常态时，分析师基于公开信息的“定价能力”才是终极阿尔法。市场的分歧，或者说更宏大的叙事变化，往往并不是来自信息差，而是对相同的信息，因处理方式、观察角度乃至方法框架的不同，得出差异巨大甚至截然相反的结论。<span class="who">《穿透叙事》后记</span></div>
+    <p>那么这套系统要产出的是什么？不是更多信息，也不是更快的信息，而是对同一份公开信息的一种处理方式。落到纸面上，就是一句话：<b>价格信的终局是 X，我信的是 Y，凭的是 Z。</b>X 可以由机器从价格里读出来，Y 和 Z 只能由人给出，系统的全部工作，是让 X 读得准、让 Y 和 Z 说得清，并且让每一次说出的 Y 都能被时间检验、被下一次复用。</p>
+    <div class="quote" data-kg="quote">从理解公司到理解行业，再到理解市场，最后到理解历史。估值始终存在源于第一性原理的脉络，但是在不同的市场环境下，同一套体系会有不同的表象，市场永远奖励理解规则迭代的人。<span class="who">《穿透叙事》作者前言</span></div>
+    <p>问题是，公司、行业、市场、历史，要搭四套系统吗？前言同一篇里给了答案：用统一的框架解释尽可能多的现象，切忌为细分场景量身定做，否则就是地心说的均轮套本轮，解释力越来越强，预测力越来越弱。所以这四层不是四套方法，而是同一个研究单元在四种比例尺上的复用。这就像看地图：城市图和全国图用的是同一套图例，城市图上一条路的出口写着“通往某省”，你翻到省图接着读就是了，不需要另学一套读图法。公司页里写着“市场空间要到多少”，那就是通往行业页的出口；写着“折现率该取几”，那就是通往市场页的出口；写着“这次不一样”，那就该去历史页里找一段同构的叙事。</p>
+    <div class="claim">
+      <div class="claim-main">一个内核，一个单元，四个尺度，一条回路。</div>
+      <div class="claim-sub">内核定义什么可以用来解释价格；单元规定研究的六步；尺度决定单元作用在什么对象上；回路把每一次裁决变成下一次的起点，也就是研究资本化。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 1 架构图 -->
+<section id="sec-arch">
+  <div class="shead"><div class="snum">1</div><h2>架构图</h2><span class="sub">点击任一尺度，跳到它的单元展开</span></div>
+  <div class="card">
+    <div class="arch">
+      <div class="band loop">
+        <div class="bt">L 回路 · 研究资本化 <span>每一次裁决带日期入账，到期回来对照；对的错的都变成下一次的起点</span></div>
+        <div class="chips">
+          <span class="chip"><b>L1</b>裁决台账</span>
+          <span class="chip"><b>L2</b>历史测试集</span>
+          <span class="chip"><b>L3</b>补丁登记</span>
+          <span class="chip"><b>L4</b>误读清单</span>
+        </div>
+      </div>
+
+      <div class="scales">
+        <div class="sc" data-go="company"><span class="up">→</span>
+          <div class="sn">S1</div><h4>公司</h4>
+          <div class="kv"><i>对象</i>一家公司<br><i>价格</i>市值<br><i>读出</i>隐含终局利润、m</div>
+          <div class="strip"><span class="w-m">U1</span><span class="w-m">U2</span><span class="w-hm">U3</span><span class="w-h">U4</span><span class="w-hm">U5</span><span class="w-hm">U6</span></div>
+        </div>
+        <div class="sc" data-go="industry"><span class="up">→</span>
+          <div class="sn">S2</div><h4>行业</h4>
+          <div class="kv"><i>对象</i>一个利润池<br><i>价格</i>板块市值<br><i>读出</i>隐含利润池、格局</div>
+          <div class="strip"><span class="w-m">U1</span><span class="w-m">U2</span><span class="w-hm">U3</span><span class="w-h">U4</span><span class="w-hm">U5</span><span class="w-hm">U6</span></div>
+        </div>
+        <div class="sc" data-go="market"><span class="up">→</span>
+          <div class="sn">S3</div><h4>市场</h4>
+          <div class="kv"><i>对象</i>全 A / 宽基<br><i>价格</i>指数<br><i>读出</i>折现率中枢、截距</div>
+          <div class="strip"><span class="w-m">U1</span><span class="w-m">U2</span><span class="w-hm">U3</span><span class="w-h">U4</span><span class="w-hm">U5</span><span class="w-hm">U6</span></div>
+        </div>
+        <div class="sc" data-go="history">
+          <div class="sn">S4</div><h4>历史</h4>
+          <div class="kv"><i>对象</i>一段叙事<br><i>价格</i>当时的价<br><i>读出</i>叙事段与节点信号</div>
+          <div class="strip"><span class="w-m">U1</span><span class="w-m">U2</span><span class="w-hm">U3</span><span class="w-h">U4</span><span class="w-hm">U5</span><span class="w-hm">U6</span></div>
+        </div>
+      </div>
+
+      <div class="band kernel">
+        <div class="bt">K 内核 · 只读，不随对象变 <span>出处：作者前言、第 1 章</span></div>
+        <div class="chips">
+          <span class="chip"><b>K1</b>公理：价格 = 未来现金流折现</span>
+          <span class="chip"><b>K2</b>解析解：{m, r, 动态PE} 知二得三</span>
+          <span class="chip"><b>K3</b>叙事不变 ⇒ 收益 = r</span>
+          <span class="chip"><b>K4</b>超额 ⇔ m 或 r 被修正</span>
+          <span class="chip"><b>K5</b>成交价 = 中线 + 截距</span>
+          <span class="chip"><b>K6</b>方法纪律</span>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i class="w-m"></i>机器做（可复算）</span>
+        <span><i class="w-hm"></i>人机一起</span>
+        <span><i class="w-h"></i>只能人做</span>
+        <span>→ 下一尺度：下层单元里的条件，就是上层的单元</span>
+      </div>
+    </div>
+    <p class="src">读法：从下往上，越往上判断越多、越难复算。内核几乎不改；四个尺度共用同一条 U1–U6；U4 那一格在每个尺度上都是金色的，因为超额收益恰好就在那一格。</p>
+  </div>
+</section>
+
+<!-- 2 内核 -->
+<section id="sec-k">
+  <div class="shead"><div class="snum">K</div><h2>内核</h2><span class="sub">什么可以用来解释价格，什么不可以</span></div>
+  <div class="card">
+    <p>内核是关系，不是观点。它由一条公理和几个恒等式锁死，约束下面所有的计算和判断；任何分析和内核冲突，先怀疑分析。这里只放六条，原 <code>00_投资框架.md</code> 的 I1–I13 全部归并进来，对照见文末。</p>
+    <div class="grid3" style="margin-top:16px">
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K1 · 公理</div><h4>价格 = 目之所及的未来现金流折现值</h4><p>PE、PB、PS 都是它在特定假设下的简化，不是估值的本源。从标签往上贴倍数是循环论证。</p></div>
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K2 · 解析解</div><h4>{终局倍数 m, 折现率 r, 动态PE} 知二得三</h4><p>有利润、匀速、到顶年限在合理区间时，年限几乎被对冲，动态 PE 只由 m 和 r 决定。分母必须是下一年利润。正算和反算是同一张表。</p></div>
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K3 · 收益恒等式</div><h4>叙事不变 ⇒ 持有期收益 = r</h4><p>与业绩曲线是增长、下滑还是震荡无关。兑现叙事只赚折现率，增速本身不产生超额收益。</p></div>
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K4 · 超额定义</div><h4>alpha ≠ 0 ⇔ m 或 r 被市场修正</h4><p>横着拔是上修天花板，竖着拔是压低折现率。下一期业绩超预期只是短期预期差，远期终局的修正才是叙事变化。</p></div>
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K5 · 两套定价</div><h4>成交价 = 中线 + 截距</h4><p>中线是基本面画出的平均预期；A 股做空受限，定价从最乐观的资金开始出清，截距随预期分歧和流动性变厚。应然与实然分开记账。</p></div>
+      <div class="lc" data-kg="concept"><div class="ln" style="color:var(--accent)">K6 · 方法纪律</div><h4>推理优先，统一框架，不开后视镜</h4><p>能用逻辑推理就不用归纳；做反方观点的最佳辩手；贝叶斯链拓展为贝叶斯网；按当时的信息复盘；不为细分场景打补丁。</p></div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="callout green">
+        <div class="t">允许的解释变量（只有三个，不加）</div>
+        <p><b>Δm</b> 空间叙事的修正，动的是中线；<b>Δr</b> 分母端的修正，动的也是中线；<b>分歧 × 流动性</b> 动的是截距。折现率纪律：A 股 10%，美股 8%，反算时同时给 8% / 10% / 12% 三档看敏感度，不在折现率上做文章；不靠调永续增长硬造空间。</p>
+      </div>
+      <div class="callout">
+        <div class="t">禁因子：可以观测，不许当作涨跌的原因</div>
+        <p>景气度三要素（增速、边际变化、超预期）；当期增速与 PEG；PE 历史分位数单独使用；“利率下行利好权益”；成长 / 周期 / 价值标签；一阶、二阶、三阶导。碰到它们，先当作待检验的对象拆开，再回到 Δm、Δr、截距。</p>
+      </div>
+    </div>
+    <div class="callout gold">
+      <div class="t">分工纪律（两条隔离 + 一条边界）</div>
+      <p>公式引擎只吃观测数据和内核，不读公告、研报、纪要；动态分析可以提假设和证伪条件，不许改已经锁定口径的数字；裁决只能由人填，空着合法，AI 代填非法。不输出目标价、买卖、仓位。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 单元 -->
+<section id="sec-u">
+  <div class="shead"><div class="snum">U</div><h2>单元</h2><span class="sub">六步，四个尺度通用</span></div>
+  <div class="card">
+    <p>研究的起点是价格，不是公司；终点是你信不信，不是值多少钱。所以单元的顺序和卖方习惯是反着的：先读价格里写了什么，再去翻译它、裁决它。单元有两个入口：顶层入口是你自己的选题触发，递归入口是上一层单元里的一条条件。</p>
+    <div class="formula">入口：选题触发（为什么是它、为什么是现在）  或  父单元 U3 里指过来的一条条件
+U1 观测 → U2 反算 → U3 翻译 → U4 裁决 → U5 对照 → U6 收口
+                                         └─ 打架 → 升格为一条窄命题 → 递归进入下一个单元
+                                         └─ 不打架 → 停</div>
+
+    <div style="margin-top:20px">
+      <div class="line">
+        <div class="rail"><div class="dot w-m">U1</div><div class="stem"></div></div>
+        <div class="step" data-kg="concept">
+          <h4>观测与体检</h4>
+          <div class="ask">报表和价格此刻写着什么？现状撑得住多少？报表有没有雷？</div>
+          <div class="tags"><span class="w-m">机器算</span><span class="w-hm">人读一句结论</span></div>
+          <dl class="kvrow">
+            <dt>输入</dt><dd>价格、股本、三张报表、财务指标、下一年一致预期、宽基指数历史</dd>
+            <dt>产出</dt><dd>观测记录（每条带时点、来源、口径）；财报画像四指标；排雷旗标；底线锚 = 基期利润 ÷ r</dd>
+            <dt>完成标准</dt><dd>每个数可回放到来源；一致预期标记为<b>别人的叙事</b>，只做分母</dd>
+            <dt>常见误读</dt><dd>用 TTM 口径代替下一年；把一致预期当企业事实；把财报当成挖向上预期差的工具（它是根，用来验证和看错时少亏多少）</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="line">
+        <div class="rail"><div class="dot w-m">U2</div><div class="stem"></div></div>
+        <div class="step" data-kg="concept">
+          <h4>反算</h4>
+          <div class="ask">这个价格隐含的终局是什么？</div>
+          <div class="tags"><span class="w-m">机器算，只做闭式计算</span></div>
+          <div class="formula">有利润且下一年不剧变  →  动态PE = 市值 ÷ 下一年利润  →  按 K2 反解 m（r = 8 / 10 / 12%）
+                          隐含终局利润 = 基期利润 × m；所需增速 = m^(1/5) − 1 或 m^(1/10) − 1
+周期 / 拐点（下一年剧变）→  不读 m，读隐含稳态利润 = 市值 × r，再 ÷ 历史中枢
+无利润或亏损            →  隐含终局利润 = 市值 ÷ 速算倍数(n, r)</div>
+          <dl class="kvrow">
+            <dt>产出</dt><dd>m_implied、隐含终局利润、所需增速 vs 一致预期显性期增速；对标同口径</dd>
+            <dt>完成标准</dt><dd>三档 r 都有结果；走哪条路径写明理由</dd>
+            <dt>常见误读</dt><dd>把 m_implied 当估值结论（它是市场事实）；争论 r 该取几（看敏感度，不争取值）</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="line">
+        <div class="rail"><div class="dot w-hm">U3</div><div class="stem"></div></div>
+        <div class="step" data-kg="concept">
+          <h4>翻译</h4>
+          <div class="ask">这个终局用商业语言说是什么？要成立需要哪些条件？</div>
+          <div class="tags"><span class="w-hm">AI 搭分解式、拉数据</span><span class="w-h">你执笔</span></div>
+          <div class="formula">隐含终局 = 终局空间 × 终局份额 × 终局利润率     （周期股：终局产量 × 单位利润）
+每一项：现在多少 → 隐含要多少 → 中间需要什么条件（3–5 条，可证伪）→ 对标现状</div>
+          <dl class="kvrow">
+            <dt>产出</dt><dd>条件清单，<b>每条标明指向哪个尺度</b>：空间与格局指向 S2，折现率与流动性指向 S3，“这次不一样”指向 S4</dd>
+            <dt>定性</dt><dd>兑现型（与一致预期一致）/ 展望型（为还没进报表的终局付费）/ 打折型（m &lt; 1）；技术是内生还是外生</dd>
+            <dt>常见误读</dt><dd>拿研报的目标空间当终局；把“赋能”当利好（公平赋能每一家会拉平成本曲线）</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="line">
+        <div class="rail"><div class="dot w-h">U4</div><div class="stem"></div></div>
+        <div class="step" data-kg="concept">
+          <h4>裁决</h4>
+          <div class="ask">我信的终局是几倍？凭什么？</div>
+          <div class="tags"><span class="w-h">只能你填，AI 不代填</span></div>
+          <dl class="kvrow">
+            <dt>三档</dt><dd><b>底线</b>：现有资产或高置信业绩可支撑；<b>理性</b>：最可能发生；<b>极限</b>：无容错、能自圆其说的上限。每档写 m、概率、条件、证伪信号</dd>
+            <dt>四问</dt><dd>生死：靠什么活、什么会杀死它；更好：增长来源与再投资回报；轮到它：竞争位置与成本曲线；反方：最强反方是什么，展望凭什么还站得住</dd>
+            <dt>贝叶斯网</dt><dd>每个节点写“需要什么成立、看到什么信号算成立”；链越长兑现概率越低，0.8 的四次方只剩约 0.41</dd>
+            <dt>完成标准</dt><dd>三个 m 都有数字，允许粗糙；<b>写上日期</b>；不知道的写为什么不知道、等什么能知道</dd>
+            <dt>常见误读</dt><dd>先看 m_implied 再找理由（先写裁决再看对照，至少标明写作顺序）；把极限写成理性</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="line">
+        <div class="rail"><div class="dot w-hm">U5</div><div class="stem"></div></div>
+        <div class="step" data-kg="concept">
+          <h4>对照</h4>
+          <div class="ask">隐含和我信的差在哪？叙事在哪一段？打不打架？</div>
+          <div class="tags"><span class="w-m">机器给位置与阶段</span><span class="w-h">你判</span></div>
+          <div class="posbar" aria-hidden="true">
+            <div class="track"></div>
+            <div class="tick" style="left:12%"></div><div class="tl" style="left:12%">底线 m</div>
+            <div class="tick" style="left:50%"></div><div class="tl" style="left:50%">理性 m</div>
+            <div class="tick" style="left:88%"></div><div class="tl" style="left:88%">极限 m</div>
+            <div class="mk" style="left:66%">▼ m_implied 落在这里</div>
+          </div>
+          <div class="zone">
+            <div><b>≤ 底线</b><span>市场比你的底线还悲观：检查底线是否真的高置信</span></div>
+            <div><b>底线 – 理性</b><span>市场比你保守：问它为什么不信，是信息差还是认知差</span></div>
+            <div><b>≈ 理性</b><span>不打架，停。只赚折现率，等下一个叙事</span></div>
+            <div><b>理性 – 极限</b><span>市场比你乐观：多出来的是中线还是截距</span></div>
+            <div><b>≥ 极限</b><span>贴近想象力上限：利好只够维持预期</span></div>
+          </div>
+          <dl class="kvrow" style="margin-top:10px">
+            <dt>叙事段</dt><dd>相对宽基：仍有超额 = 正反馈未结束；突然重合 = 天花板上修到位；重合超过 6 个月 = 可轻装上阵；阴跌未重合 = 利空未出清</dd>
+            <dt>打架</dt><dd>隐含与理性 m 差距超过三成，或财报画像趋势与叙事方向相反</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="line">
+        <div class="rail"><div class="dot w-hm">U6</div></div>
+        <div class="step" data-kg="concept" style="padding-bottom:4px">
+          <h4>收口</h4>
+          <div class="ask">这次研究留下了什么，下次从哪接着做？</div>
+          <div class="tags"><span class="w-hm">AI 整理</span><span class="w-h">你确认</span></div>
+          <dl class="kvrow">
+            <dt>产出</dt><dd>状态页；五段人话（问了什么、学到的、改了哪处认识、还不知道的、要你决定的）；裁决入 L1 台账</dd>
+            <dt>刷新条件</dt><dd>新财报（基期或分母变）、一致预期显著修正、与宽基关系变化。刷新只重跑 U1–U2，U4 只在有新证据时改</dd>
+            <dt>完成标准</dt><dd>能被同尺度的下一个对象直接复用（对标、分解式、条件清单）</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 尺度 -->
+<section id="sec-s">
+  <div class="shead"><div class="snum">S</div><h2>尺度</h2><span class="sub">同一个单元，换一个对象</span></div>
+  <div class="card">
+    <div class="pills" role="tablist">
+      <button class="pill on" data-scale="company">S1 公司</button>
+      <button class="pill" data-scale="industry">S2 行业</button>
+      <button class="pill" data-scale="market">S3 市场</button>
+      <button class="pill" data-scale="history">S4 历史</button>
+    </div>
+    <div class="sgrid" id="scale-grid"></div>
+    <p class="src">书中章节与尺度的对位是整理者的归类，不是原书结构；原书是第 1 章理论、第 2–7 章案例，每个案例同时触及几个尺度。</p>
+  </div>
+
+  <div class="card" data-kg="concept">
+    <h3>递归规则：下层的条件，就是上层的单元</h3>
+    <p>公司页 U3 里列出的每一条条件，只有三种去向。能直接观测的，留在本页；需要判断的，按它说的是什么，指向另一个尺度的单元。指过去以后，那边的单元一样走 U1–U6，做完把结论写回来。</p>
+    <div class="rec"><div class="from"><b>公司 U3</b> · “终局空间要到多少、格局怎么分”</div><div class="arr">→</div><div class="to"><b>S2 行业单元</b> · 板块市值反算的隐含利润池；你信的利润池</div></div>
+    <div class="rec"><div class="from"><b>公司 / 行业 U3</b> · “折现率该取几、有多少是截距”</div><div class="arr">→</div><div class="to"><b>S3 市场单元</b> · 折现率中枢与截距状态</div></div>
+    <div class="rec"><div class="from"><b>任一尺度 U3</b> · “这次不一样”</div><div class="arr">→</div><div class="to"><b>S4 历史单元</b> · 同构的叙事段，当时信什么、后来怎样</div></div>
+    <div class="callout green">
+      <div class="t">终止条件（满足任一就不再往下递归）</div>
+      <p>条件可以直接观测；隐含与你信的不打架；你承认在这一条上没有超额认知。第三条最常被忽略：天花板完全算不清又没有超额认知的对象，反算完看看市场在信什么，然后停，不要硬凑裁决。</p>
+    </div>
+    <p style="margin-top:12px">递归的好处，不只是让体系看起来整齐。子单元一旦做完，所有兄弟节点都能直接复用：光伏的行业单元做一次，每一家光伏公司的公司页都引用它；市场单元一页，所有关于折现率和截距的判断都指向它。研究资本化在结构上就是这个样子，费用化的支出做完就没了，资本化的研究会一层层垒起来。</p>
+  </div>
+</section>
+
+<!-- 5 回路 -->
+<section id="sec-l">
+  <div class="shead"><div class="snum">L</div><h2>回路</h2><span class="sub">让裁决可检验、可积累</span></div>
+  <div class="card">
+    <p>没有回路，裁决就是一次性的费用支出：填了，过了，忘了，半年后没有任何东西告诉你填得对不对。回路做的事很朴素，就是给每一次裁决记上日期，到期回来对照，再把对照的结果送回内核和单元。</p>
+    <div class="grid2" style="margin-top:14px">
+      <div class="lc" data-kg="concept"><div class="ln">L1</div><h4>裁决台账</h4><p>所有尺度的 U4 集中一处。它是这套系统真正的资产，记的是你自己的定价记录。</p>
+        <div class="fields">日期 · 对象 · 尺度 · 三档 m 与概率 · 关键条件 · 证伪信号 · 当时的 m_implied · 刷新条件 · 回看日期 · 回看结论</div>
+        <div class="cad">每次 U4 入账；每季度回看一次到期项</div></div>
+      <div class="lc" data-kg="concept"><div class="ln">L2</div><h4>历史测试集</h4><p>书里第 2–7 章的案例，按“当时可知”回放，检验内核和单元能不能在不开后视镜、不加新规则的前提下指出叙事变化的节点。</p>
+        <div class="fields">通过：内核不加规则即复现书中节点 · 不通过：进 L3 登记，不进内核</div>
+        <div class="cad">先做第 2 章光伏，它是书里定位的叙事变化标准模板</div></div>
+      <div class="lc" data-kg="caveat"><div class="ln">L3</div><h4>补丁登记</h4><p>任何需要新加一条规则才能解释的现象，先登记为“本轮候选”。只有当它在测试集上提高了预测力，而不只是解释力，才允许进内核。</p>
+        <div class="fields">现象 · 想加的规则 · 能否改写为 Δm / Δr / 截距 · 测试集结果 · 处置</div>
+        <div class="cad">遇到就记；半年清理一次</div></div>
+      <div class="lc" data-kg="caveat"><div class="ln">L4</div><h4>误读清单</h4><p>碰到一次误读记一次，每条指回内核编号。“业绩涨了估值为什么不涨”回 K2、K3；“PE 分位低所以便宜”回禁因子；“优质公司长期持有就有超额”回 K3。</p>
+        <div class="fields">误读 · 回哪条 · 在哪个对象上碰到</div>
+        <div class="cad">随研究增长</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 施工清单 -->
+<section id="sec-todo">
+  <div class="shead"><div class="snum">6</div><h2>施工清单</h2><span class="sub">勾选状态保存在本机浏览器</span></div>
+  <div class="card">
+    <p>顺序只有一条原则：<b>先让一个单元在一个尺度上完整闭环，再往上递归一层。</b>不要四层同时铺开，也不要在闭环之前继续打磨内核。阶段 1 排在阶段 4 前面，是因为公司尺度的机器部分已经能跑，差的只是 U4 那一格；先在活的对象上填一次，才知道历史回放到底要校准什么。阶段 4 可以与阶段 2、3 并行，但不排在阶段 1 之前。</p>
+    <div class="progress"><i id="prog"></i></div>
+    <div class="ptxt" id="prog-txt"></div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 0</span><h4>内核定稿</h4><span class="pg" data-pg="p0"></span><div class="why">内核、单元、尺度、回路四块定稿，md 与本页编号一致。</div></div>
+      <label class="todo" data-id="p0-1"><input type="checkbox"><div><div class="tt">不变量与禁因子收为 K1–K6</div><div class="dn"><b>完成标准</b>：原 I1–I13 每条都能在 K 中找到归属（见文末对照）</div></div><span class="st done">已有</span></label>
+      <label class="todo" data-id="p0-2"><input type="checkbox"><div><div class="tt">单元模板 U1–U6</div><div class="dn"><b>完成标准</b>：原 S0–S7 每步都有归属，入口区分“选题”与“父单元条件”</div></div><span class="st done">已有</span></label>
+      <label class="todo" data-id="p0-3"><input type="checkbox"><div><div class="tt">尺度与递归规则</div><div class="dn"><b>完成标准</b>：四个尺度各自写清对象、价格、读出什么、产出页；递归去向与终止条件</div></div><span class="st done">已有</span></label>
+      <label class="todo" data-id="p0-4"><input type="checkbox"><div><div class="tt">把 <code>00_投资框架.md</code>、<code>01_研究协议.md</code> 按 K / U / S / L 重排</div><div class="dn"><b>完成标准</b>：md 与本页编号一致；管道生成的状态页标题改为 U1–U6；v0.1 原件归档</div></div><span class="st done">已有</span></label>
+    </div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 1</span><h4>公司尺度闭环一次</h4><span class="pg" data-pg="p1"></span><div class="why">S1 × U1–U6 全部走完一遍，重点是 U4 第一次落笔。</div></div>
+      <label class="todo" data-id="p1-1"><input type="checkbox"><div><div class="tt">U1 观测、U2 反算、财报体检的管道</div><div class="dn"><b>完成标准</b>：一条命令生成状态页的机器部分；已有两份对象页</div></div><span class="st done">已有</span></label>
+      <label class="todo" data-id="p1-2"><input type="checkbox"><div><div class="tt">选一家你真有体感的公司</div><div class="dn"><b>完成标准</b>：能写出 5 行认知快照；不必沿用天花板最难算清的周期股</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p1-3"><input type="checkbox"><div><div class="tt">U3 翻译由你执笔，AI 只搭分解式</div><div class="dn"><b>完成标准</b>：3–5 条可证伪条件，每条标明指向哪个尺度</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p1-4"><input type="checkbox"><div><div class="tt">U4 裁决：三个 m、概率、四问</div><div class="dn"><b>完成标准</b>：全部有数字，允许粗糙，写上日期，入 L1 台账</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p1-5"><input type="checkbox"><div><div class="tt">U5 对照</div><div class="dn"><b>完成标准</b>：一句话说清 m_implied 落在哪一格、打不打架、停还是加深</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p1-6"><input type="checkbox"><div><div class="tt">U6 收口</div><div class="dn"><b>完成标准</b>：写明“看到什么就回来改”，定下回看日期</div></div><span class="st todo-s">待做</span></label>
+    </div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 2</span><h4>向上递归到行业</h4><span class="pg" data-pg="p2"></span><div class="why">从阶段 1 里指向“空间与格局”的那条条件出发，建第一个行业单元。</div></div>
+      <label class="todo" data-id="p2-1"><input type="checkbox"><div><div class="tt">行业 U1–U2：板块市值反算隐含利润池</div><div class="dn"><b>完成标准</b>：三档 r 下的隐含利润池，与行业历史利润中枢对照</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p2-2"><input type="checkbox"><div><div class="tt">行业叙事段：板块 vs 宽基</div><div class="dn"><b>完成标准</b>：判定仍有超额 / 刚重合 / 重合超过 6 个月 / 阴跌未重合</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p2-3"><input type="checkbox"><div><div class="tt">行业 U3–U4：利润池、格局、技术内生还是外生</div><div class="dn"><b>完成标准</b>：你信的利润池三档 + 谁拿走多少</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p2-4"><input type="checkbox"><div><div class="tt">公司页那条条件改为引用行业页</div><div class="dn"><b>完成标准</b>：行业页能被同行业第二家公司直接复用</div></div><span class="st todo-s">待做</span></label>
+    </div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 3</span><h4>市场尺度，一页，低频更新</h4><span class="pg" data-pg="p3"></span><div class="why">所有关于折现率和截距的判断，都指向同一页，不在各个公司页里各说各话。</div></div>
+      <label class="todo" data-id="p3-1"><input type="checkbox"><div><div class="tt">折现率纪律的当前状态</div><div class="dn"><b>完成标准</b>：中枢取值与个股上下调的理由写成一段</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p3-2"><input type="checkbox"><div><div class="tt">截距状态：分歧、流动性、哪些板块在被竖着拔</div><div class="dn"><b>完成标准</b>：能指出当前截距最厚的几个方向，并写明这是涨跌同源的部分</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p3-3"><input type="checkbox"><div><div class="tt">分母端：谁与宏观的协方差低</div><div class="dn"><b>完成标准</b>：阶段 1、2 里所有关于 r 的判断都改为引用本页</div></div><span class="st todo-s">待做</span></label>
+    </div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 4</span><h4>历史尺度 = 测试集</h4><span class="pg" data-pg="p4"></span><div class="why">用书里有答案的案例校准内核和单元，同时练“站在当时”填 U4。</div></div>
+      <label class="todo" data-id="p4-1"><input type="checkbox"><div><div class="tt">回放第 2 章光伏，切成叙事段</div><div class="dn"><b>完成标准</b>：每段写起点、触发信号、结束标志（与宽基重合或证伪）</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p4-2"><input type="checkbox"><div><div class="tt">每段只用当时可知的信息填 U4，再与书中复盘对照</div><div class="dn"><b>完成标准</b>：当时可知层与事后判定层分开写，事后层不改写当时层</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p4-3"><input type="checkbox"><div><div class="tt">依次回放第 3–7 章</div><div class="dn"><b>完成标准</b>：内核不加新规则即可复现书中节点；需要加的进 L3</div></div><span class="st todo-s">待做</span></label>
+    </div>
+
+    <div class="phase">
+      <div class="phase-h"><span class="pn">阶段 5</span><h4>回路闭合</h4><span class="pg" data-pg="p5"></span><div class="why">从这一步起，研究开始复利。</div></div>
+      <label class="todo" data-id="p5-1"><input type="checkbox"><div><div class="tt">建 L1 裁决台账，收拢所有 U4</div><div class="dn"><b>完成标准</b>：每条都有日期、刷新条件、回看日期</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p5-2"><input type="checkbox"><div><div class="tt">第一次季度回看</div><div class="dn"><b>完成标准</b>：到期项逐条写对或错、以及原因</div></div><span class="st todo-s">待做</span></label>
+      <label class="todo" data-id="p5-3"><input type="checkbox"><div><div class="tt">L3 补丁登记、L4 误读清单各开一页</div><div class="dn"><b>完成标准</b>：第二次研究同类对象时，能直接复用上一次的东西</div></div><span class="st todo-s">待做</span></label>
+    </div>
+
+    <div class="nots" style="margin-top:18px">
+      <div><b>不做 · 目标价、买卖、仓位</b>系统禁止的是行动，不是看见市场叙事。</div>
+      <div><b>不做 · 景气度与高频数据模块</b>后记已经说了，基于短期高频数据的框架，那块阵地迟早让给量化。</div>
+      <div><b>不做 · 未过测试集的新规则进内核</b>补丁先进 L3，过了 L2 才谈。</div>
+      <div><b>不做 · AI 代填 U4</b>那一格是超额收益所在的位置，代填等于把阿尔法外包给中线。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 对照 -->
+<section id="sec-map">
+  <div class="shead"><div class="snum">7</div><h2>旧编号对照</h2><span class="sub">v0.1（00 / 01）→ v0.2（K / U / S / L）</span></div>
+  <div class="card">
+    <p>这一版是重构，不是补充：内容基本沿用 v0.1，组织方式换成了内核、单元、尺度、回路四块。下表保证旧文件里的每一节都有去处，没有东西丢失。</p>
+    <div class="tbl-wrap" style="margin-top:12px">
+      <table class="map">
+        <thead><tr><th>v0.1 位置</th><th>v0.2 归属</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>00 §1 一句话三推论</td><td>K2 · K3 · K4</td><td>叙事就是终局 → K2；兑现只赚折现率 → K3、K4；反算比正算容易 → U2</td></tr>
+          <tr><td>00 §2 根 · 茎 · 果</td><td>U1 · U2 · U3–U5</td><td>财报是根，进 U1 体检；估值是茎，就是 U2 反算；叙事是果，落在翻译、裁决、对照</td></tr>
+          <tr><td>00 §3 I1、I5、I6</td><td>K1 · K2</td><td>公理；解析解、知二得三</td></tr>
+          <tr><td>00 §3 I2、I9</td><td>K3 · K4</td><td>收益恒等式；超额定义</td></tr>
+          <tr><td>00 §3 I3、I4、I7、I11、I12</td><td>K2.1–K2.5</td><td>P ≡ EPS × PE、PB ≡ ROE × PE、永续增长 ≡ 降折现率、PE 看顶 PB 托底、权益收益不来自公司优质本身</td></tr>
+          <tr><td>00 §3 I8</td><td>K5</td><td>成交价 = 中线 + 截距</td></tr>
+          <tr><td>00 §3 I10、§9 折现率纪律</td><td>K2.6 · S3</td><td>取值纪律留在内核，当前状态放市场单元</td></tr>
+          <tr><td>00 §3 I13、§5 三栏、§6 两条隔离</td><td>D1–D3 · U 标签</td><td>机器 / 人机 / 人三色，即原观测、反推、裁决三栏</td></tr>
+          <tr><td>00 §4 因子与禁因子</td><td>K 允许变量 · 禁因子</td><td>原样保留</td></tr>
+          <tr><td>00 §7 叙事周期与三种走势</td><td>U5 · S4</td><td>相对宽基判叙事段进 U5；叙事段记录进历史单元</td></tr>
+          <tr><td>00 §8 拍卖机制</td><td>K5 · S3</td><td>机制在内核，截距状态在市场单元</td></tr>
+          <tr><td>00 §10 研究定义与停止条件</td><td>U5 · U6 · 递归终止条件</td><td>“不打架就停”即递归的终止条件</td></tr>
+          <tr><td>00 §11 研究元规则</td><td>K6</td><td>推理优先、统一框架、做反方、不开后视镜、贝叶斯网、惩罚机制</td></tr>
+          <tr><td>01 S0 选题</td><td>单元入口</td><td>顶层入口；递归入口是父单元的一条条件</td></tr>
+          <tr><td>01 S1 观测 · S2 财报根</td><td>U1</td><td>观测与体检合为一步</td></tr>
+          <tr><td>01 S3 反推</td><td>U2</td><td>三条路径：表 1-3、稳态利润、表 1-8</td></tr>
+          <tr><td>01 S4 翻译 · S5 裁决 · S6 对照</td><td>U3 · U4 · U5</td><td>U3 新增：每条条件标明指向哪个尺度</td></tr>
+          <tr><td>01 S7 收口 · 研究资本化</td><td>U6 · L</td><td>资本化从一句提醒，升格为独立的回路</td></tr>
+          <tr><td>01 附 常见误读清单</td><td>L4</td><td>原样迁入，随研究增长</td></tr>
+          <tr><td>（v0.1 没有）</td><td>S2 · S3 · S4 · L1–L3</td><td>本版新增：行业、市场、历史三个尺度；裁决台账、测试集、补丁登记</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer data-kg="source">
+  <b>素材与口径</b>：邹佩轩《穿透叙事：寻找A股投资解析解》（人民邮电出版社，2026.05）作者前言、第 1 章（尤其 1.2 解析解、1.3 拍卖机制、1.4 复盘方法论）、后记；第 2–7 章用作历史测试集，章节与尺度的对位为整理者归类。v0.1 的不变量与研究协议整理自三本书、华源证券《叙事经济学（2026 版）》路演与播客《面基》，冲突时以时间靠后者为准。<br>
+  <b>本页性质</b>：整理者基于该框架搭建的研究系统架构 v0.2，不是原书结构，不构成任何投资建议；系统本身不输出目标价、买卖或仓位。
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var TAG = {m:['w-m','机器'], hm:['w-hm','人机'], h:['w-h','人']};
+  var SCALES = {
+    company: {
+      rows: [
+        ['U1 观测', 'm', '价格、股本、三张报表、财务指标；下一年一致预期（别人的叙事，只做分母）；财报画像与排雷旗标'],
+        ['U2 反算', 'm', '动态 PE → m_implied（r = 8 / 10 / 12%）、隐含终局利润、所需增速；周期股读隐含稳态利润；无利润走速算倍数'],
+        ['U3 翻译', 'hm', '隐含终局利润 = 空间 × 份额 × 利润率；每一项写现在多少、隐含要多少、需要什么条件、对标现状'],
+        ['U4 裁决', 'h', '底线 / 理性 / 极限三个 m 与概率；四问：生死、更好、轮到它、反方'],
+        ['U5 对照', 'hm', 'm_implied 落在三档哪一格；个股 vs 宽基判叙事段；财报画像与叙事是否同向'],
+        ['U6 收口', 'hm', '状态页与五段人话；刷新条件：新财报、一致预期显著修正、与宽基重合或背离']
+      ],
+      book: '第 5 章乐视（对标逻辑的缺陷）、第 7 章腾讯；方法见 1.2',
+      page: '对象/&lt;代码&gt;_&lt;名称&gt;/状态.md（已有管道）',
+      up: '空间与格局 → S2；折现率与截距 → S3；“这次不一样” → S4'
+    },
+    industry: {
+      rows: [
+        ['U1 观测', 'm', '板块指数或成分股市值合计；行业利润池的历史序列；供给、需求、成本的公开数据'],
+        ['U2 反算', 'm', '板块市值 × r = 隐含稳态利润池；有稳定利润时按 K2 反算行业隐含终局利润池；与历史中枢对照'],
+        ['U3 翻译', 'hm', '利润池 = 需求空间 × 单位利润；格局 = 谁拿走多少；技术是内生（先降本再激发需求）还是外生（先给需求再倒逼降本）'],
+        ['U4 裁决', 'h', '你信的行业终局利润池与格局，三档'],
+        ['U5 对照', 'hm', '板块 vs 宽基：仍有超额 / 刚重合 / 重合超过 6 个月 / 阴跌未重合；细分板块比个股更少交易性干扰'],
+        ['U6 收口', 'hm', '行业页，被同行业所有公司页引用']
+      ],
+      book: '第 2 章光伏（叙事变化的标准模板）、第 3 章煤炭与银行、第 4 章白酒',
+      page: '行业/&lt;名称&gt;.md（待建）',
+      up: '折现率与截距 → S3；“这次不一样” → S4'
+    },
+    market: {
+      rows: [
+        ['U1 观测', 'm', '宽基指数、全 A 成交额、无风险利率；可做空市场的对标价格（H 股、美股）'],
+        ['U2 反算', 'm', '折现率中枢（A 股 10%，美股 8%）；实际 PE 相对理论 PE 的偏离读出非中线成分；A / H 隐含终局之比 = 相对截距'],
+        ['U3 翻译', 'hm', '截距来自预期分歧 × 关注资金量；分母端：谁与宏观的协方差低，谁在利率变化中受益'],
+        ['U4 裁决', 'h', '当前截距厚不厚；哪些方向在被竖着拔（涨跌同源，最终会吐回）'],
+        ['U5 对照', 'hm', '公司页、行业页里所有关于 r 与截距的判断是否与本页一致'],
+        ['U6 收口', 'hm', '市场页，按季度低频更新']
+      ],
+      book: '1.3 拍卖机制、第 5 章乐视（极致的流动性冲击）、第 6 章杠铃与分母端',
+      page: '市场.md（待建）',
+      up: '“这次不一样” → S4'
+    },
+    history: {
+      rows: [
+        ['U1 观测', 'm', '当时的价格、当时的一致预期、当时的公开文档；只引当时，不引事后评论'],
+        ['U2 反算', 'm', '每个叙事段起点与终点的隐含终局；段边界 = 相对宽基超额的起止'],
+        ['U3 翻译', 'hm', '当时市场信的终局是什么，正反两个版本各是什么，分歧在哪'],
+        ['U4 裁决', 'h', '只用当时可知的信息，你会填哪个 m'],
+        ['U5 对照', 'hm', '你当时的裁决 vs 书中复盘 vs 事后结果'],
+        ['U6 收口', 'hm', '叙事段记录：当时可知层不改写，事后判定层另写；教训进 L4 误读清单，补丁进 L3']
+      ],
+      book: '第 7 章（从时代产物到定义时代）、1.4 复盘方法论；第 2–7 章全部案例作测试集',
+      page: '案例/&lt;公司&gt;_&lt;叙事段&gt;.md（待建）',
+      up: '历史层是递归的顶端，也是 L2 测试集，反过来校准下面三层'
+    }
+  };
+  var grid = document.getElementById('scale-grid');
+  function render(key){
+    var s = SCALES[key], html = '';
+    s.rows.forEach(function(r){
+      var t = TAG[r[1]];
+      html += '<div class="r"><div><span class="mini-tag '+t[0]+'">'+t[1]+'</span>'+r[0]+'</div><div>'+r[2]+'</div></div>';
+    });
+    html += '<div class="r meta"><div>书中对位</div><div>'+s.book+'</div></div>';
+    html += '<div class="r meta"><div>产出页</div><div>'+s.page+'</div></div>';
+    html += '<div class="r meta"><div>条件指向</div><div>'+s.up+'</div></div>';
+    grid.innerHTML = html;
+    document.querySelectorAll('.pill').forEach(function(p){ p.classList.toggle('on', p.dataset.scale === key); });
+  }
+  document.querySelectorAll('.pill').forEach(function(p){
+    p.addEventListener('click', function(){ render(p.dataset.scale); });
+  });
+  document.querySelectorAll('.sc[data-go]').forEach(function(c){
+    c.addEventListener('click', function(){
+      render(c.dataset.go);
+      document.getElementById('sec-s').scrollIntoView({behavior:'smooth'});
+    });
+  });
+  render('company');
+
+  var KEY = 'zou-research-system:todo';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
+  var items = Array.prototype.slice.call(document.querySelectorAll('.todo'));
+  items.forEach(function(el){
+    var cb = el.querySelector('input');
+    var id = el.dataset.id;
+    var initial = el.querySelector('.st.done') ? true : false;
+    cb.checked = (id in state) ? state[id] : initial;
+    el.classList.toggle('checked', cb.checked);
+    cb.addEventListener('change', function(){
+      state[id] = cb.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
+      el.classList.toggle('checked', cb.checked);
+      update();
+    });
+  });
+  function update(){
+    var done = items.filter(function(el){ return el.querySelector('input').checked; }).length;
+    document.getElementById('prog').style.width = (done / items.length * 100) + '%';
+    document.getElementById('prog-txt').textContent = '已完成 ' + done + ' / ' + items.length + ' 项';
+    document.querySelectorAll('[data-pg]').forEach(function(pg){
+      var group = items.filter(function(el){ return el.dataset.id.indexOf(pg.dataset.pg + '-') === 0; });
+      var d = group.filter(function(el){ return el.querySelector('input').checked; }).length;
+      pg.textContent = d + ' / ' + group.length;
+    });
+  }
+  update();
+})();
+</script>
+</body>
+</html>
