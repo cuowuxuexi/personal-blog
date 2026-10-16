@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -20,7 +21,7 @@ import { projectManagedPostsFromFs, projectStructureFromFs } from '../../content
 import { normalizePostIdentity, researchSubjects } from '../../content-catalog/index.mjs'
 import { checkBrowserSafeImportGraph } from '../../content-catalog/verify/import-graph.mjs'
 import { inspectManagedSidebarWiring } from '../../content-catalog/verify/sidebar-wiring.mjs'
-import { publicGuideIndexPath, standaloneHtmlFile } from './standalone-html.mjs'
+import { emitStandaloneCoverPages, publicGuideIndexPath, standaloneHtmlFile } from './standalone-html.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = path.resolve(HERE, '../..')
@@ -184,6 +185,22 @@ test('standalone HTML URLs resolve to on-disk files', () => {
   assert.equal(publicGuideIndexPath('/journey-guides/missing'), null)
   assert.equal(standaloneHtmlFile('/html'), null)
   assert.equal(standaloneHtmlFile('/AI与生活/我的AI历程/cli篇'), null)
+  const covered = standaloneHtmlFile('/投资/投研/白酒/五粮液/')
+  assert.ok(covered && covered.cover && fs.existsSync(covered.file))
+  assert.equal(standaloneHtmlFile('/html/wuliangye-canvas')?.file, covered.file)
+  assert.match(fs.readFileSync(covered.file, 'utf8'), /五粮液 · 研究画布/)
+})
+
+test('emitStandaloneCoverPages copies canvas onto the 五粮液 archive URL', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wuliangye-cover-'))
+  try {
+    emitStandaloneCoverPages(dir)
+    const dest = path.join(dir, '投资', '投研', '白酒', '五粮液', 'index.html')
+    assert.equal(fs.existsSync(dest), true)
+    assert.match(fs.readFileSync(dest, 'utf8'), /五粮液 · 研究画布/)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
 })
 
 test('config.mts Wave C + live sidebar wiring: import and three section spreads', () => {

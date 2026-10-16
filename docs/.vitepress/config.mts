@@ -13,7 +13,7 @@ import {
 } from './managed-sidebar-fs.mjs'
 import { normalizeDisplayMath } from './normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
-import { serveStandaloneHtmlPlugin, standaloneHtmlFile } from './standalone-html.mjs'
+import { emitStandaloneCoverPages, serveStandaloneHtmlPlugin, standaloneHtmlFile } from './standalone-html.mjs'
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
@@ -59,6 +59,10 @@ export default defineConfig({
     if (pageData.frontmatter?.type === 'weekly') {
       pageData.frontmatter.outline = [2, 6]
     }
+  },
+
+  async buildEnd(siteConfig) {
+    emitStandaloneCoverPages(siteConfig.outDir)
   },
 
   head: [

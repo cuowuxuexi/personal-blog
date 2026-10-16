@@ -262,6 +262,66 @@ order: 1
   ])
 })
 
+test('subject publicHref covers archive URL; sidebar stays on markdown link', () => {
+  const company = structureNodeFromMarkdown({
+    kindId: 'research',
+    relativePath: 'docs/投资/投研/白酒/五粮液/index.md',
+    raw: `---
+title: 五粮液
+pageClass: subject-index
+order: 1
+ticker: 000858.SZ
+publicHref: /html/wuliangye-canvas
+---
+`,
+  })
+  assert.equal(company?.role, 'subject')
+  assert.equal(company?.link, '/投资/投研/白酒/五粮液/')
+  assert.equal(company?.coverHref, '/html/wuliangye-canvas')
+
+  const missing = structureNodeFromMarkdown({
+    kindId: 'research',
+    relativePath: 'docs/投资/投研/白酒/五粮液/index.md',
+    raw: `---
+title: 五粮液
+pageClass: subject-index
+---
+`,
+  })
+  assert.equal(missing?.link, '/投资/投研/白酒/五粮液/')
+  assert.equal(missing?.coverHref, undefined)
+
+  const nodes = structureNodesFromSources([
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/白酒/index.md',
+      raw: `---
+title: 白酒行业
+pageClass: industry-index
+order: 1
+---
+`,
+    },
+    {
+      kindId: 'research',
+      relativePath: 'docs/投资/投研/白酒/五粮液/index.md',
+      raw: `---
+title: 五粮液
+pageClass: subject-index
+order: 1
+publicHref: /html/wuliangye-canvas
+---
+`,
+    },
+  ])
+  const wuliangye = projectResearchSidebar(nodes)[0].items[2].items[0]
+  assert.equal(wuliangye.text, '五粮液')
+  assert.equal(wuliangye.link, '/投资/投研/白酒/五粮液/')
+  assert.deepEqual(industrySubjectDirectory(nodes, '白酒').items.map((item) => item.link), [
+    '/投资/投研/白酒/五粮液/',
+  ])
+})
+
 test('subject chapter publicHref becomes sidebar link; invalid fails closed', () => {
   const base = (extra = '') => `---
 title: 生意模型

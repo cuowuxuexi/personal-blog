@@ -38,7 +38,7 @@ hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地�
   </header>
   <a class="subject-row" href="/投资/投研/白酒/五粮液/">
     <div><span class="subject-row__ticker">000858.SZ</span><strong>五粮液</strong></div>
-    <p>准备阶段写在标的档案里：先验证洗澡是不是轻装上阵。行业地图仍空，不把五粮液页冒充可复用产业结论。</p>
+    <p>公司研究画布写在标的页：先反算价格隐含要求，再看经营供给与现金。行业地图仍空，不把五粮液页冒充可复用产业结论。</p>
     <span class="subject-row__status">学习中</span>
     <span class="subject-row__arrow">→</span>
   </a>

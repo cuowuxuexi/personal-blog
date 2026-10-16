@@ -5,6 +5,12 @@
 
 const STANDALONE_HTML_PREFIXES = ['/html/', '/journey-guides/']
 
+declare const __STANDALONE_COVER_PATHS__: string[] | undefined
+
+function standaloneCoverPathnames(): string[] {
+  return typeof __STANDALONE_COVER_PATHS__ === 'undefined' ? [] : __STANDALONE_COVER_PATHS__
+}
+
 function sitePathname(href: string, base: string): string | null {
   try {
     const url = new URL(href, 'http://vitepress.local')
@@ -24,7 +30,13 @@ export function isStandaloneHtmlPath(href: string, base = '/'): boolean {
   const pathname = sitePathname(href, base)
   if (!pathname) return false
   const asDir = `${pathname}/`
-  return STANDALONE_HTML_PREFIXES.some((prefix) => asDir.startsWith(prefix) && asDir !== prefix)
+  if (STANDALONE_HTML_PREFIXES.some((prefix) => asDir.startsWith(prefix) && asDir !== prefix)) {
+    return true
+  }
+  return standaloneCoverPathnames().some((cover) => {
+    const normalized = String(cover || '').replace(/\/+$/, '') || '/'
+    return normalized === pathname
+  })
 }
 
 /** @deprecated use isStandaloneHtmlPath */

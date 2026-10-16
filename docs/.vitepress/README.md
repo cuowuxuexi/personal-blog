@@ -10,7 +10,7 @@
 | `posts.ts` | `PostItem`、周记/历程 glob 投影、Hermes 合并、查询 API（无 `manualPosts` 副本） |
 | `content-catalog-adapter.mjs` | 站点窄 adapter：recent 可见性 + `siteManagedPostsFromGlob`（无 fs） |
 | `managed-sidebar-fs.mjs` | Node-only：config 受管 sidebar 投影；勿进客户端 |
-| `standalone-html.mjs` | 开发/预览/构建直出 `public/html/` 与 `public/journey-guides/` 下的独立 HTML |
+| `standalone-html.mjs` | 开发/预览/构建直出 `public/html/` 与 `public/journey-guides/` 下的独立 HTML；投研档案根 `publicHref` 覆盖到对应标的 URL |
 | `site-projection.test.mjs` | 站点接线与 bundle 边界测试 |
 | `recent-posts.test.mjs` | 当前 posts 快照与 research 不可见的定向测试 |
 | `hermes-diary-core.mjs` | Hermes 纯解析/排序；posts glob、fs 扫描与 verifier 共用 |

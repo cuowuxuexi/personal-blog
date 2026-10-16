@@ -123,9 +123,10 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
   if (!inferred) return null
 
   const { fm } = parseFrontmatter(raw)
+  const standaloneHref = standalonePublicHref(fm)
   let link
   const hrefOverride = (inferred.role === 'subject-chapter' || inferred.role === 'topic')
-    ? standalonePublicHref(fm)
+    ? standaloneHref
     : undefined
   if (hrefOverride === null) {
     link = null
@@ -138,6 +139,8 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
       link = null
     }
   }
+
+  const coverHref = inferred.role === 'subject' && standaloneHref ? standaloneHref : undefined
 
   const title = fmString(fm, 'title') || stemOf(basename(rel))
   const node = {
@@ -159,6 +162,7 @@ export function structureNodeFromMarkdown({ kindId, relativePath, raw }) {
       ? fmCollapsed(fm.sidebarCollapsed, kind.defaultIndustryCollapsed !== false)
       : undefined,
     link,
+    coverHref,
     relativePath: rel,
     pageClassOk: pageClassOk(kind, inferred.role, fm.pageClass),
     navGroup: fmString(fm, 'navGroup') || null,

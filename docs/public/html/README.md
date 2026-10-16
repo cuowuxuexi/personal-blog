@@ -22,7 +22,7 @@ docs/public/html/<名字>/
 <StandaloneHtml src="/html/<名字>" title="说明" />
 ```
 
-「单独打开完整页」会新开标签打开这份 HTML。侧栏或标题要直达完整页时，在对应篇章 frontmatter 写 `publicHref: /html/<名字>`（历程具名篇章、投研 HTML 章节和投资哲学 HTML 主题都走这条）。不要把 `/html/...` 当成普通 Markdown 文章路由，也不要再套一层 iframe。
+「单独打开完整页」会新开标签打开这份 HTML。侧栏或标题要直达完整页时，在对应篇章 frontmatter 写 `publicHref: /html/<名字>`（历程具名篇章、投研 HTML 章节和投资哲学 HTML 主题都走这条）。投研档案根写了 `publicHref` 时，标的公开 URL 覆盖为这份 HTML，侧栏仍指向该标的地址。不要把 `/html/...` 当成普通 Markdown 文章路由，也不要再套一层 iframe。
 
 ## 约定
 
@@ -56,6 +56,6 @@ docs/public/html/<名字>/
 | `zou-method/` | 邹佩轩叙事框架 5/5 · 研究方法论（推理 vs 归纳、三圆五偏误、显著性、贝叶斯）；同组 `研究方法论` 直达 `/html/zou-method` |
 | `zou-narrative-model/` | 邹佩轩叙事框架 · 叙事模型（只读市场数据反算隐含叙事；恒等式、反算器、截距模拟器、中线三条推导）；侧栏条目已由 `研究系统` 取代，仅从框架总页正文链接 |
 | `zou-research-system/` | 邹佩轩叙事框架 · 研究系统 v0.2（内核 / 单元 / 四尺度 / 回路架构图 + 施工清单，勾选存本机）；同组 `研究系统`（占原 `叙事模型` 位置）直达 `/html/zou-research-system` |
-| `wuliangye-canvas/` | 五粮液渠道压力与洗澡画布；章节标题直达 `/html/wuliangye-canvas` |
+| `wuliangye-canvas/` | 五粮液研究画布：价格要求、经营供给与现金价值；`/投资/投研/白酒/五粮液/` 覆盖为这份 HTML |
 
-最后更新：2026-10-12
+最后更新：2026-10-16
