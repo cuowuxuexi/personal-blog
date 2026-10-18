@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>贵州茅台 · 研究画布（2026-10-18）</title><style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#161b26;--ink2:#4b5468;--ink3:#8d95a8;
+--line:#e4e7ee;--accent:#2b5c8a;--accent-soft:#eaf1f8;--gold-soft:#fdf5e3;--warn:#8a5a12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.85;padding:24px 18px 80px}
+.wrap{max-width:1080px;margin:0 auto}h1{font-size:26px}h2{font-size:20px}h3{font-size:18px}
+.lead{color:var(--ink2);font-size:14px}.nav{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 18px;position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0}
+.nav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink2)}
+.nav button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.page{display:none}.page.on{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+footer{font-size:12px;color:var(--ink3);margin-top:20px}a{color:var(--accent)}
+
+/* current-view:start */
+#current,#valuation{line-height:1.85}#current p,#valuation p{margin:8px 0 14px}
+#current a,#valuation a{color:var(--accent);overflow-wrap:anywhere}
+.current-meta{font-size:13px;color:var(--ink2)}
+.current-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.current-box{border:1px solid var(--line);padding:14px 16px;border-radius:10px;margin:14px 0}
+.current-box h3{margin-top:0}.current-questions{padding-left:24px}
+.current-questions li{margin-bottom:8px}.current-table{overflow-x:auto}
+.current-table table{min-width:620px;width:100%;border-collapse:collapse;font-size:13.5px}
+.current-table th,.current-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.current-table th{text-align:left;color:var(--ink2);background:#f3f6fa}
+.current-table .num{text-align:right;white-space:nowrap}
+.current-table caption{text-align:left;color:var(--ink2);margin:8px 0;font-size:13px}
+.history-nav{margin:0 0 18px;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.history-nav summary{cursor:pointer;color:var(--ink2);font-size:14px}.history-nav .nav{margin-bottom:0}
+.canvas-history-note{font-size:13px;line-height:1.8}
+@media(max-width:820px){.current-columns{grid-template-columns:1fr}}
+
+.citation{font:inherit;font-size:12px;color:var(--accent);background:#edf3f9;border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-left:6px;cursor:pointer}
+.citation-dialog{width:min(720px,calc(100vw - 40px));max-height:calc(100dvh - 48px);margin:auto;padding:0;border:1px solid var(--line);border-radius:14px;color:var(--ink);background:var(--card);box-shadow:0 24px 90px #172c4650}
+.citation-dialog::backdrop{background:#172c4666}.citation-dialog[open]{display:flex;flex-direction:column}
+.citation-head{display:flex;align-items:center;gap:16px;padding:16px 22px;border-bottom:1px solid var(--line)}
+.citation-head h2{font-size:18px;flex:1;margin:0}.citation-head button{font:inherit;padding:5px 12px;cursor:pointer}
+.citation-body{overflow:auto;padding:8px 22px 22px;line-height:1.9;overscroll-behavior:contain}
+.citation-body p{margin:10px 0}.citation-body a{overflow-wrap:anywhere}.citation-body pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+.citation-body table{width:100%;border-collapse:collapse}.citation-body td,.citation-body th{padding:6px;border-bottom:1px solid var(--line)}
+
+/* current-view:end */
+
+html:has(.canvas-lesson){scrollbar-gutter:stable}
+.canvas-lesson .wrap{max-width:960px}
+.canvas-lesson section{scroll-margin-top:16px;font-size:16px;line-height:1.85}
+.canvas-lesson .top{margin-bottom:20px}.canvas-lesson .top .meta{line-height:1.8}
+.canvas-lesson .reading-nav{display:flex;flex-wrap:wrap;gap:10px 22px;margin:18px 0 24px;font-size:15px}
+.canvas-lesson .reading-nav a{padding:4px 0}
+.canvas-lesson h2{font-size:20px}.canvas-lesson h3{font-size:17px;margin:18px 0 8px}
+.canvas-lesson p{margin:8px 0 14px;overflow-wrap:anywhere}
+.canvas-lesson .source-note{vertical-align:baseline;white-space:nowrap;padding:2px 7px}
+.canvas-lesson .citation-head button{flex-shrink:0}
+.reading-overview{border-left:3px solid var(--accent);padding-left:18px}
+.reading-label{font-size:14px;color:var(--ink2);display:block;margin-bottom:4px}
+.reading-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.reading-item:last-child{border-bottom:0}
+.reading-fold{border-bottom:1px solid var(--line);padding:12px 0}
+.reading-fold>summary{font-size:16px;font-weight:600;padding:8px 0;cursor:pointer;overflow-wrap:anywhere}
+.reading-fold>summary small{display:block;margin:4px 0 0 20px;font-size:14px;color:var(--ink2);font-weight:400}
+.reading-fold-body{padding:8px 0 10px 18px}
+.reading-formula{border-left:2px solid var(--accent);padding:10px 16px;font-size:16px}
+.reading-links{font-size:14px;display:flex;flex-wrap:wrap;gap:14px}
+.plan-story{background:var(--bg);border-left:3px solid var(--accent);border-radius:10px;padding:16px 22px;margin:4px 0 22px}
+.plan-story p{margin:0 0 12px}.plan-story p:last-child{margin-bottom:0}
+.clue-group-title{margin:24px 0 6px!important}
+.clue-card{border:1px solid var(--line);border-radius:12px;padding:14px 20px;margin:12px 0}
+.clue-card h4{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 8px;font-size:16px}
+.clue-card p{margin:0 0 10px}.clue-card p:last-child{margin-bottom:0}
+.clue-status{font-size:13px;font-weight:400;color:var(--ink2);background:var(--bg);border-radius:10px;padding:2px 10px;white-space:nowrap}
+@media(max-width:640px){.plan-story,.clue-card{padding:12px 14px}}
+.reading-muted{font-size:14px;color:var(--ink2)}
+.reading-table{overflow-x:auto;margin:14px 0}.reading-table table{width:100%;border-collapse:collapse;min-width:500px;font-size:14px}
+.reading-table th,.reading-table td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+.reading-table th{font-weight:600;color:var(--ink2)}
+.reading-history section{border:0;padding:10px 0;margin:0}
+.reading-history .round{margin:0;padding:12px 0;border:0;border-bottom:1px solid var(--line);border-radius:0}
+.reading-history .note{font-size:14px}.reading-history .round-map{font-size:16px}
+.reading-history>.reading-fold>summary{color:var(--ink2)}
+.canvas-lesson .round-map-branch>summary{cursor:pointer}
+.canvas-lesson #u1 svg,.canvas-lesson #u5 svg{max-width:100%}
+.foundation-progress{font-size:14px;color:var(--accent);margin:0 0 10px!important}
+.foundation-basis{padding-bottom:22px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.basis-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.basis-stat{background:var(--bg);border-radius:10px;padding:14px;min-width:0}
+.basis-label,.basis-note{display:block;color:var(--ink2);font-size:12px;line-height:1.6}
+.basis-value{display:block;font-size:23px;font-weight:600;line-height:1.4;margin:7px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.basis-value small{font-size:13px;font-weight:400;margin-left:4px}
+.basis-dates{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:12px;color:var(--ink2);font-size:13px}
+.foundation-basis .reading-fold{padding:4px 0 0;border:0}
+.foundation-basis .reading-fold>summary{font-size:14px;font-weight:400}
+.foundation-example{margin-top:20px;border:1px solid var(--line);border-radius:12px;padding:12px 18px}
+.foundation-example>summary{font-weight:600;cursor:pointer;padding:6px 0}
+.foundation-example>.reading-fold-body{padding:10px 0 0}
+.foundation-example .foundation-node{border:0;padding:4px 0}
+.foundation-node .reading-table table{min-width:0}
+.foundation-node .reading-table td{overflow-wrap:anywhere}
+.foundation-intro{color:var(--ink2)}
+.foundation-parts{display:grid;grid-template-columns:1fr 24px 1fr;align-items:stretch;gap:12px;margin:22px 0 16px}
+.foundation-part,.foundation-node{border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.foundation-part h3,.foundation-node h3{margin:0 0 10px;font-size:18px}
+.foundation-part p,.foundation-node p{margin:8px 0 0}
+.foundation-plus{align-self:center;text-align:center;font-size:24px;color:var(--accent)}
+.foundation-equation{background:var(--bg);border-left:3px solid var(--accent);padding:14px 18px;font-size:17px;overflow-wrap:anywhere}
+.foundation-edge{text-align:center;font-size:14px;color:var(--ink2);padding:16px 8px}
+.foundation-node .reading-fold{margin-top:12px;padding-bottom:0;border:0}
+.foundation-node .reading-fold-body{padding-left:0}
+.foundation-pause{margin-top:24px;border-top:1px solid var(--line);padding-top:16px}
+.foundation-preface{margin:8px 0 28px;padding-bottom:8px}
+.foundation-preface>h2{font-size:20px;margin:0 0 16px}
+.foundation-preface-block{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:0 0 16px}
+.foundation-preface-block h3{margin:0 0 10px;font-size:18px}
+.foundation-preface-item{margin:14px 0 0;font-weight:600}
+.foundation-preface-item+p,.foundation-preface-item+.foundation-diagram{margin-top:6px}
+.foundation-diagram{margin:12px 0 0;padding:14px 16px;overflow-x:auto;white-space:pre;font:13px/1.4 ui-monospace,SFMono-Regular,"Cascadia Mono",Consolas,monospace;background:var(--bg);border-radius:8px}
+.lesson-diagram{margin:18px 0 24px;padding:22px;background:#f7f9fc;border:1px solid #dce4ee;border-radius:14px;overflow-wrap:anywhere}
+.lesson-diagram>figcaption{font-size:15px;font-weight:600;color:var(--accent);margin-bottom:22px;line-height:1.6}
+.diagram-stage{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;position:relative}
+.diagram-card{flex:1 1 0;min-width:0;max-width:600px;border:1px solid #d6e0ec;border-top:3px solid #6b8eb2;border-radius:10px;padding:16px;background:white;position:relative;z-index:1;box-shadow:0 3px 10px #253e5b05}
+.canvas-lesson .diagram-card h4{font-size:16px;line-height:1.6;margin:0 0 12px;color:var(--ink)}
+.diagram-card ul{padding-left:18px;margin:0;font-size:14px;line-height:1.85}
+.diagram-card li+li{margin-top:6px}
+.diagram-stage:last-child .diagram-card{background:#edf3f9;border-color:#b9cbdf;border-top-color:var(--accent)}
+.diagram-connector{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent);font-size:12px;line-height:1.5;padding:10px 0;min-height:48px;text-align:center}
+.diagram-connector::before{content:'';height:16px;width:1px;background:#9fb3ca}
+.diagram-connector::after{content:'';width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:6px solid #6b8eb2}
+.diagram-connector span{padding:4px 12px}
+.diagram-stage:has(.diagram-card:nth-child(2))::before,.diagram-stage:has(.diagram-card:nth-child(2))::after{content:'';position:absolute;left:calc(50% / var(--branches));right:calc(50% / var(--branches));border-top:1px solid #9fb3ca}
+.diagram-stage:has(.diagram-card:nth-child(2))::before{top:-10px}
+.diagram-stage:has(.diagram-card:nth-child(2))::after{bottom:-10px}
+.diagram-stage:has(.diagram-card:nth-child(2)) .diagram-card::before{content:'';position:absolute;width:1px;height:10px;background:#9fb3ca;top:-13px;left:50%}
+.diagram-stage:has(.diagram-card:nth-child(2)) .diagram-card::after{content:'';position:absolute;width:1px;height:10px;background:#9fb3ca;bottom:-11px;left:50%}
+.diagram-stage:first-of-type::before,.diagram-stage:first-of-type .diagram-card::before{display:none}
+@media(max-width:700px){.lesson-diagram{padding:16px 12px}.diagram-stage{flex-direction:column;gap:12px;padding-left:14px;border-left:1px solid #b8c9dc;margin-left:4px}.diagram-stage .diagram-card{flex:auto;max-width:none}.diagram-card{padding:14px}.diagram-stage:has(.diagram-card:nth-child(2))::before,.diagram-stage:has(.diagram-card:nth-child(2))::after,.diagram-stage:has(.diagram-card:nth-child(2)) .diagram-card::before{display:none}.diagram-stage .diagram-card::after,.diagram-stage:has(.diagram-card:nth-child(2)) .diagram-card::after{content:'';position:absolute;left:-15px;top:22px;width:14px;height:1px;background:#b8c9dc}.diagram-card ul{font-size:14px}}
+.foundation-reverse{margin:14px 0}
+.foundation-reverse table{width:100%;border-collapse:collapse;font-size:16px}
+.foundation-reverse th,.foundation-reverse td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right}
+.foundation-reverse th:first-child,.foundation-reverse td:first-child{text-align:left}
+.foundation-reverse caption{text-align:left;font-size:14px;color:var(--ink2);margin-bottom:8px}
+.foundation-reverse small{display:block;font-weight:400;font-size:13px;color:var(--ink2)}
+.reading-previous{padding:18px 24px;background:white;border:1px solid var(--line);border-radius:14px;margin-top:20px}
+.reading-previous>summary{font-size:15px}
+.reading-previous-body{padding-top:16px}
+@media(max-width:600px){.foundation-parts{grid-template-columns:1fr;gap:8px}.foundation-part,.foundation-node{padding:16px}.foundation-plus{line-height:1.2}.reading-previous{padding:14px}.reading-previous-body>section{padding-left:6px;padding-right:6px}}
+@media(max-width:760px){.basis-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.canvas-lesson section{padding:18px 16px}.reading-fold-body{padding-left:8px}.reading-overview{padding-left:12px}.canvas-lesson .top h1{font-size:23px}}
+
+.research-breadcrumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 18px;font-size:13px;color:var(--ink2)}
+.research-breadcrumb a,footer a{color:var(--accent);text-decoration:none}
+.research-breadcrumb a:hover,footer a:hover{text-decoration:underline}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style><meta content="贵州茅台研究画布：1329元要求什么，历史上它要求过什么。研究更新于2026年10月18日。" name="description"/><noscript><style>.page{display:block}.nav{display:none}</style></noscript></head><body><div class="wrap">
+<nav aria-label="面包屑" class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/白酒/">白酒行业</a><span>/</span><strong>茅台</strong></nav>
+<h1>贵州茅台 · 研究画布</h1><p class="lead">按研究问题阅读 · 更新于2026-10-18。</p><nav class="nav" aria-label="当前研究"><button data-p="current" onclick="show('current')">价格坐标</button><button data-p="ceiling" onclick="show('ceiling')">天花板还是折现率</button><button data-p="p0" onclick="show('p0')">准备与进度</button></nav><section class="page card canvas-lesson" data-citation-processed="true" data-research-version="c466dec33c73ab11" id="current"><p class="foundation-progress">第一步 · 价格坐标 · DCF反算、历史轨迹与分析师预期对照</p><h2>1329元要求茅台什么？历史上它要求过什么？</h2><p>DCF是估值的第一性原理：股价等于目之所及的未来现金流折现值。本页先反算价格要求的终局，再看这个要求十二年来怎样变化，最后与分析师预期对照，拉出后续要检验的线索。读数只看档位与方向。</p><div class="foundation-equation">总市值 = 未来归母股东可分配现金的折现值（基期利润等比变化10年后永续）</div><p>本页采用 C=0、q=100%、n=10；r列8%、10%、12%。这些是研究工作假设，尚非用户采纳参数，也不是对市场唯一预期的断言。</p><div class="foundation-node"><h3>问题与现实输入</h3><p>行情输入：2026年10月16日日线收盘1329.00元，与同次快照最新价一致；20:55为接口快照装配时间，非交易发生时间。<button aria-haspopup="dialog" aria-label="查看备注：行情快照原始响应" class="citation source-note" data-citation="current-source-0" type="button">依据</button></p><p>股本输入：采用2026年6月30日登记总股本1,250,081,601股，公司6月董事会决议亦确认5月注销后的股本。<button aria-haspopup="dialog" aria-label="查看备注：公司2026半年度报告" class="citation source-note" data-citation="current-source-1" type="button">依据</button></p><p>利润输入：2025全年合并归母净利润823.200671亿元，来自公司年报；不取2026全年一致预期作基期。<button aria-haspopup="dialog" aria-label="查看备注：公司2025年度报告" class="citation source-note" data-citation="current-source-2" type="button">依据</button></p><div class="reading-table"><table><thead><tr><th>输入</th><th>数值与口径</th></tr></thead><tbody><tr><td>价格与日期</td><td>1329.00元；2026-10-16日线收盘</td></tr><tr><td>计价股本</td><td>12.50081601亿股；2026H1登记总股本</td></tr><tr><td>市值 V</td><td>16,613.58亿元＝价格×计价股本</td></tr><tr><td>起点利润 E0</td><td>823.20亿元；2025全年归母净利润</td></tr></tbody></table></div></div><div class="foundation-edge">↓ 把已知价格放入写明条件的模型</div><div class="foundation-node"><h3>今天的坐标：价格要求多少利润</h3><p>反算规则：起点利润按等比路径变化10年，第10个模型年度达到终局，此后每年保持终局利润；第一笔现金在估值日一年后。立即稳态所需利润＝市值×r。<button aria-haspopup="dialog" aria-label="查看备注：项目研究方法：价格反算" class="citation source-note" data-citation="current-source-3" type="button">依据</button></p><p>复算与结果：下表单位为亿元/年，倍数相对2025年823.20亿元。<button aria-haspopup="dialog" aria-label="查看备注：价格坐标冻结数据" class="citation source-note" data-citation="current-source-4" type="button">依据</button></p><p>读法：利润不再增长时，长期回报约5%（823÷16614）；同日10年期国债约1.64%。要拿10%，利润须在10年内涨到约2.6倍，相当于每年约10%；8%则每年约6.5%。<button aria-haspopup="dialog" aria-label="查看备注：21世纪经济网债市日报（2026-10-16）" class="citation source-note" data-citation="current-source-5" type="button">依据</button></p><div class="foundation-equation">V = q × {Σ[t=1…10] E0×m^(t/10)/(1+r)^t + E0×m/[r×(1+r)^10]}</div><div class="reading-table"><table><thead><tr><th>回报要求 r</th><th>10年后的终局利润</th><th>倍数</th><th>立即稳态所需利润</th><th>倍数</th></tr></thead><tbody><tr><td>8%</td><td>1,549.8</td><td>1.9</td><td>1,329.1</td><td>1.6</td></tr><tr><td>10%</td><td>2,160.2</td><td>2.6</td><td>1,661.4</td><td>2.0</td></tr><tr><td>12%</td><td>2,901.0</td><td>3.5</td><td>1,993.6</td><td>2.4</td></tr></tbody></table></div></div><div class="foundation-edge">↓ 用同一模型逐年反算</div><div class="foundation-node"><h3>历史轨迹：价格隐含的终局怎样变化</h3><p>逐年反算：每年取最后一个交易日的收盘价与当年归母净利润，股本取当年末；2026行取10月16日与2025年利润。<button aria-haspopup="dialog" aria-label="查看备注：茅台历史日线（不复权）" class="citation source-note" data-citation="current-source-6" type="button">依据</button></p><p>读法：2016、2019年各有一次上修；2021年后隐含终局连续四年下修，r=10%时从约4,070亿降到约2,160亿，同期利润从525亿涨到823亿。2018年也下修过一次，但次年即反弹。</p><div class="reading-table"><table><thead><tr><th>时点</th><th>股价</th><th>当年利润</th><th>静态PE</th><th>利润回报</th><th>隐含终局 r=8%</th><th>隐含终局 r=10%</th><th>倍数 r=10%</th></tr></thead><tbody><tr><td>2014年末</td><td>190</td><td>154</td><td>14.1</td><td>7.1%</td><td>181</td><td>250</td><td>1.6</td></tr><tr><td>2015年末</td><td>218</td><td>155</td><td>17.7</td><td>5.7%</td><td>246</td><td>342</td><td>2.2</td></tr><tr><td>2016年末</td><td>334</td><td>167</td><td>25.1</td><td>4.0%</td><td>414</td><td>579</td><td>3.5</td></tr><tr><td>2017年末</td><td>697</td><td>271</td><td>32.4</td><td>3.1%</td><td>911</td><td>1,281</td><td>4.7</td></tr><tr><td>2018年末</td><td>590</td><td>352</td><td>21.1</td><td>4.8%</td><td>699</td><td>975</td><td>2.8</td></tr><tr><td>2019年末</td><td>1,183</td><td>412</td><td>36.1</td><td>2.8%</td><td>1,578</td><td>2,221</td><td>5.4</td></tr><tr><td>2020年末</td><td>1,998</td><td>467</td><td>53.7</td><td>1.9%</td><td>2,844</td><td>4,024</td><td>8.6</td></tr><tr><td>2021年末</td><td>2,050</td><td>525</td><td>49.1</td><td>2.0%</td><td>2,879</td><td>4,069</td><td>7.8</td></tr><tr><td>2022年末</td><td>1,727</td><td>627</td><td>34.6</td><td>2.9%</td><td>2,286</td><td>3,215</td><td>5.1</td></tr><tr><td>2023年末</td><td>1,726</td><td>747</td><td>29.0</td><td>3.5%</td><td>2,206</td><td>3,094</td><td>4.1</td></tr><tr><td>2024年末</td><td>1,524</td><td>862</td><td>22.2</td><td>4.5%</td><td>1,831</td><td>2,557</td><td>3.0</td></tr><tr><td>2025年末</td><td>1,377</td><td>823</td><td>20.9</td><td>4.8%</td><td>1,625</td><td>2,266</td><td>2.8</td></tr><tr><td>2026-10-16</td><td>1,329</td><td>823</td><td>20.2</td><td>5.0%</td><td>1,550</td><td>2,160</td><td>2.6</td></tr></tbody></table></div><details class="reading-fold"><summary>这一组读数的边界</summary><div class="reading-fold-body"><p>r固定时，价格变化全部被归到天花板上；折现率是否变化须另行检验。</p><p>年末读数用当年实际利润，当年年末时尚未正式披露，带有后视。</p></div></details></div><div class="foundation-edge">↓ 价格之外，看分析师看得见的业绩</div><div class="foundation-node"><h3>分析师预期：年初预期与最终兑现</h3><p>逐年预期：每个年度在年初（上年12月31日）、各季度末与年末对当年归母净利润的万得一致预期，对照当年实际；读法同书中图4-14，看年内修正方向与兑现度。单位亿元。<button aria-haspopup="dialog" aria-label="查看备注：万得一致预期原始返回" class="citation source-note" data-citation="current-source-7" type="button">依据</button></p><p>读法：2024年以前，年初预期与最终实际多在一成误差以内，大例外只有2017年；书中所说茅台“目之所及的业绩都已算清”大体成立。2025年兑现度86%，且差距在年末才暴露；2026年至9月末已下调13%，为2014年以来年内最大下调。<button aria-haspopup="dialog" aria-label="查看备注：《穿透叙事》第4章 白酒的周期轮回" class="citation source-note" data-citation="current-source-8" type="button">依据</button></p><div class="reading-table"><table><thead><tr><th>年度</th><th>年初</th><th>Q1末</th><th>Q2末</th><th>Q3末</th><th>年末</th><th>实际</th><th>实际÷年初</th></tr></thead><tbody><tr><td>2014</td><td>161</td><td>164</td><td>161</td><td>157</td><td>152</td><td>154</td><td>95%</td></tr><tr><td>2015</td><td>165</td><td>162</td><td>168</td><td>168</td><td>166</td><td>155</td><td>94%</td></tr><tr><td>2016</td><td>183</td><td>172</td><td>172</td><td>174</td><td>172</td><td>167</td><td>91%</td></tr><tr><td>2017</td><td>200</td><td>204</td><td>208</td><td>213</td><td>253</td><td>271</td><td>135%</td></tr><tr><td>2018</td><td>332</td><td>356</td><td>365</td><td>366</td><td>346</td><td>352</td><td>106%</td></tr><tr><td>2019</td><td>406</td><td>419</td><td>428</td><td>433</td><td>433</td><td>412</td><td>101%</td></tr><tr><td>2020</td><td>517</td><td>490</td><td>472</td><td>471</td><td>466</td><td>467</td><td>90%</td></tr><tr><td>2021</td><td>554</td><td>541</td><td>538</td><td>533</td><td>527</td><td>525</td><td>95%</td></tr><tr><td>2022</td><td>613</td><td>618</td><td>624</td><td>626</td><td>624</td><td>627</td><td>102%</td></tr><tr><td>2023</td><td>731</td><td>735</td><td>738</td><td>745</td><td>742</td><td>747</td><td>102%</td></tr><tr><td>2024</td><td>881</td><td>880</td><td>877</td><td>869</td><td>861</td><td>862</td><td>98%</td></tr><tr><td>2025</td><td>962</td><td>949</td><td>942</td><td>937</td><td>914</td><td>823</td><td>86%</td></tr><tr><td>2026</td><td>969</td><td>944</td><td>863</td><td>845</td><td>—</td><td>—</td><td>9月末已较年初下调13%</td></tr></tbody></table></div></div><div class="foundation-edge">↓ 把两种增长放在同一时点比较</div><div class="foundation-node"><h3>价格要求的增速 vs 分析师预期的增速</h3><p>增速对照：每个年末，分析师预期未来两年的年均增速，与价格要求的年增速（r=10%、10年）并列；末列为若预期增速延续10年，按当时股价所得的回报。<button aria-haspopup="dialog" aria-label="查看备注：价格坐标冻结数据" class="citation source-note" data-citation="current-source-4" type="button">依据</button></p><p>读法：2014—2019年价格要求低于分析师预期，其后是主升浪；2020—2021年价格要求明显高于预期，对应回报只剩约7%，其后四年下修；2022—2025年两者大致贴合；今天又回到价格要求约10%、预期不到5%的状态。按这一口径，现价相对分析师预期的程度与2020—2021年相近。</p><div class="reading-table"><table><thead><tr><th>时点</th><th>分析师预期年增</th><th>价格要求年增 r=10%</th><th>预期增速延续10年的回报</th></tr></thead><tbody><tr><td>2014年末</td><td>9.5%</td><td>5.0%</td><td>13.0%</td></tr><tr><td>2015年末</td><td>14.4%</td><td>8.2%</td><td>14.0%</td></tr><tr><td>2016年末</td><td>17.0%</td><td>13.2%</td><td>12.2%</td></tr><tr><td>2017年末</td><td>23.0%</td><td>16.8%</td><td>13.5%</td></tr><tr><td>2018年末</td><td>16.5%</td><td>10.7%</td><td>13.6%</td></tr><tr><td>2019年末</td><td>21.7%</td><td>18.3%</td><td>11.8%</td></tr><tr><td>2020年末</td><td>17.8%</td><td>24.0%</td><td>7.1%</td></tr><tr><td>2021年末</td><td>15.9%</td><td>22.7%</td><td>6.8%</td></tr><tr><td>2022年末</td><td>16.2%</td><td>17.8%</td><td>9.2%</td></tr><tr><td>2023年末</td><td>17.1%</td><td>15.3%</td><td>11.0%</td></tr><tr><td>2024年末</td><td>11.4%</td><td>11.5%</td><td>10.0%</td></tr><tr><td>2025年末</td><td>12.0%</td><td>10.7%</td><td>10.8%</td></tr><tr><td>2026-10-16</td><td>4.8%（三年）</td><td>10.1%</td><td>7.1%</td></tr></tbody></table></div><details class="reading-fold"><summary>这一组读数的边界</summary><div class="reading-fold-body"><p>把两三年的预期外推10年非常粗，只用于比较档位。2025年末一行以事后披露的823亿元作基期，当时市场预期约914亿元。</p><p>万得一致预期经wind-mcp-skill的自然语言查询取得，一致预期不在该工具官方描述范围内；45条返回带日期证据，7条无日期证据者以前后时点连贯性核对；2条判定日期被误解而作废；未取得预测机构家数。</p></div></details></div><div class="foundation-edge">↓ 把数字交给“为什么”</div><div class="foundation-node"><h3>条件结论与验证信号</h3><p>价格今天要求每年约10%的增长（r=10%），或接受约5%的类债回报；分析师看得见的增长不到5%。</p><p>十二年来，价格隐含的终局经历上修、2021年见顶、连续四年下修；2025—2026年，分析师预期首次出现大幅落空与年内大幅下调。</p><p>临时判断（AI候选，非用户采纳）：看不懂，暂无方向性优势。按预期外推口径，现价不便宜；若市场已按更低的折现率给茅台定价，结论会改变。须检验“天花板下修还是折现率上升”后再定方向。</p><p>验证信号：批价与出厂价的比值、相对沪深300的超额收益形态、利率与股价的关系，以及2026年三季报的量价拆分。</p></div><div class="foundation-pause"><p>本页得到价格坐标与七条待检验线索；线索清单与检验顺序见本页「研究计划与进度」。</p><p>用户2026-10-18明确继续后，“天花板下修还是折现率上升”的第一段检验见下一页；当前没有用户已采纳的情景或概率。</p></div><template id="current-source-0"><h2>行情快照原始响应</h2><p>hithink-finance 0.1.5 market.snapshot，600519.SH；最新价1329；时间戳为响应装配时间。日线末行2026-10-16收盘同为1329。</p></template><template id="current-source-1"><h2>公司2026半年度报告</h2><p>公司2026半年度报告第二节七（一）列期末总股本1,250,081,601股；6月董事会决议确认5月回购注销后的股本。</p></template><template id="current-source-2"><h2>公司2025年度报告</h2><p>公司2025年度报告第二节七（一），2025全年归属于上市公司股东的净利润82,320,067,101.68元，除以1亿元得到823.200671亿元。</p></template><template id="current-source-3"><h2>项目研究方法：价格反算</h2><p>采用归母股东口径的等比变化后永续模型；默认C=0、q=1、n=10，各档r=8%、10%、12%，另报n=0锚点。</p></template><template id="current-source-4"><h2>价格坐标冻结数据</h2><p>今天坐标、逐年反算、一致预期逐年路径与增速对照的全部数值，由同目录 价格坐标_20261017.py 从 _raw 原始数据重算；页面仅做显示舍入。</p></template><template id="current-source-5"><h2>21世纪经济网债市日报（2026-10-16）</h2><p>媒体报道10年期国债活跃券收益率约1.6375%（新华财经）至1.6385%（财联社16:30）。本页只取约1.64%档位。</p><p><a href="https://www.21jingji.com/article/20261016/herald/6232abec5a52523a9107b260068a8611.html" rel="noopener noreferrer" target="_blank">查看原始资料 · 21世纪经济网债市日报（2026-10-16）</a></p></template><template id="current-source-6"><h2>茅台历史日线（不复权）</h2><p>hithink-finance market history，不复权收盘；年末取当年最后交易日。利润取 _raw/em_income.json 年报归母净利润，股本取 _raw/em_balance.json 年报期末股本。</p></template><template id="current-source-7"><h2>万得一致预期原始返回</h2><p>数据来源于万得Wind金融数据服务：wind-mcp-skill stock_data.get_stock_fundamentals，2013年末至2026-10-16各季度末逐次查询，保存原始返回与请求编号；作废与空值记录见价格坐标数据文件。</p></template><template id="current-source-8"><h2>《穿透叙事》第4章 白酒的周期轮回</h2><p>4.2节图4-14：茅台历年Wind一致预期年内基本走平、兑现度很高，除2017年上修一次；作者据此认为3~5年短期业绩已被算清。作者观察，本页用新数据检验。</p></template></section>
+<section class="page card canvas-lesson" data-citation-processed="true" data-research-version="c466dec33c73ab11" id="ceiling"><p class="foundation-progress">第二步 · 课题 T1 · 批价比值与相对表现的分段对照（第一段）</p><h2>2021年后价格隐含终局砍半，是天花板下修还是折现率上升？</h2><p>价格只给一个方程，里面有两个未知数：天花板 m 和折现率 r。要把它们分开，需要一个只反映商品市场、不反映资本市场的信号。本页用批价除以出厂价代表商品市场看到的提价空间，用茅台相对沪深300的表现代表资本市场的态度，把两条线按时段并排：同向下是天花板下修，商品稳而股价独立跌是折现率上升。读数只看档位与方向。</p><div class="foundation-equation">天花板信号 = 散瓶批价 ÷ 当月生效的出厂价或合同价；资本市场信号 = 茅台后复权价 ÷ 沪深300</div><p>批价取每月散瓶报价的中位数，2019年以前报道多不分散瓶原箱，按未注明口径取；出厂价按当月生效的出厂价，2026年起按经销商合同价。茅台用新浪乘法后复权，分红按再投入计入；沪深300是价格指数不含分红，因此相对比值每年略偏向茅台一至三个百分点，不影响方向读数。</p><div class="foundation-edge">↓ 把一个问题拆成两条可观察的线</div><div class="foundation-node"><h3>两个市场各自的信号</h3><p>批价序列来自券商周报、行业媒体与财经媒体对今日酒价等平台的引用，2014年1月至2026年10月共533条，只有2015年11月没有记录。<button aria-haspopup="dialog" aria-label="查看备注：飞天茅台批价月度序列与出厂价调整" class="citation source-note" data-citation="ceiling-source-0" type="button">依据</button></p><p>出厂价历次调整：2012年9月819元，2018年1月969元，2023年11月1169元；2026年3月合同价1269元，7月1369元。<button aria-haspopup="dialog" aria-label="查看备注：飞天茅台批价月度序列与出厂价调整" class="citation source-note" data-citation="ceiling-source-0" type="button">依据</button></p><p>读法：比值在2023年年中见顶于2.9，2026年降到1.25，是2016年以来最低；也就是说，商品市场眼中出厂价还能提的空间，从接近两倍缩到两成多。<button aria-haspopup="dialog" aria-label="查看备注：茅台相对沪深300与同行的月末比值" class="citation source-note" data-citation="ceiling-source-1" type="button">依据</button></p><div class="reading-table"><table><thead><tr><th>时点</th><th>散瓶批价</th><th>出厂价或合同价</th><th>比值</th><th>茅台相对沪深300（2014年1月＝1）</th></tr></thead><tbody><tr><td>2017年12月</td><td>1565</td><td>819</td><td>1.91</td><td>3.78</td></tr><tr><td>2018年10月</td><td>1700</td><td>969</td><td>1.75</td><td>3.86</td></tr><tr><td>2019年12月</td><td>2400</td><td>969</td><td>2.48</td><td>6.50</td></tr><tr><td>2021年1月</td><td>2450</td><td>969</td><td>2.53</td><td>9.00</td></tr><tr><td>2023年6月</td><td>2808</td><td>969</td><td>2.90</td><td>10.51</td></tr><tr><td>2023年12月</td><td>2715</td><td>1169</td><td>2.32</td><td>12.15</td></tr><tr><td>2024年6月</td><td>2155</td><td>1169</td><td>1.84</td><td>10.45</td></tr><tr><td>2024年9月</td><td>2308</td><td>1169</td><td>1.97</td><td>10.73</td></tr><tr><td>2026年6月</td><td>1623</td><td>1269</td><td>1.28</td><td>6.33</td></tr><tr><td>2026年10月</td><td>1715</td><td>1369</td><td>1.25</td><td>8.47</td></tr></tbody></table></div></div><div class="foundation-edge">↓ 天花板下修时两条线同向，折现率上升时两条线分离</div><div class="foundation-node"><h3>分段对照：同向还是分离</h3><p>2021年初到2023年年中，批价与股价同向，茅台没有跑输沪深300，作者说那段只是被大盘带下来，数据支持。<button aria-haspopup="dialog" aria-label="查看备注：《穿透叙事》第4章 白酒的周期轮回" class="citation source-note" data-citation="ceiling-source-2" type="button">依据</button></p><p>2024年起的两段主跌，批价跌得与股价一样狠：2023年12月到2024年6月批价跌两成，相对指数跌一成多；2024年9月到2026年6月批价再跌三成，相对指数跌四成。两条线同向，这是天花板下修的形态。<button aria-haspopup="dialog" aria-label="查看备注：茅台相对沪深300与同行的月末比值" class="citation source-note" data-citation="ceiling-source-1" type="button">依据</button></p><div class="reading-table"><table><thead><tr><th>时段</th><th>批价变化</th><th>比值变化</th><th>茅台相对沪深300</th><th>读法</th></tr></thead><tbody><tr><td>2021年1月至2023年6月</td><td>+15%</td><td>2.53 → 2.90</td><td>+17%</td><td>同向上，叙事兑现期</td></tr><tr><td>2023年6月至12月</td><td>−3%</td><td>2.90 → 2.32</td><td>+16%</td><td>比值因提价下降，股价未跌</td></tr><tr><td>2023年12月至2024年6月</td><td>−21%</td><td>2.32 → 1.84</td><td>−14%</td><td>同向下</td></tr><tr><td>2024年6月至9月</td><td>+7%</td><td>1.84 → 1.97</td><td>+3%</td><td>同向，小幅</td></tr><tr><td>2024年9月至2026年6月</td><td>−30%</td><td>1.97 → 1.28</td><td>−41%</td><td>同向下，主跌段</td></tr><tr><td>2026年6月至10月</td><td>+6%</td><td>1.28 → 1.25</td><td>+34%</td><td>分离：股价涨，比值没动</td></tr></tbody></table></div></div><div class="foundation-edge">↓ 用历史样本定形态</div><div class="foundation-node"><h3>2018年对照：折现率上升长什么样</h3><p>2017年12月到2018年10月，批价从1565元涨到1700元，比值因1月提价从1.91降到1.75；同期茅台相对沪深300持平，上涨2%。股价跌是整个市场在跌，商品市场没有变，这是作者所说“资本市场预期远低于商品市场”的样本。<button aria-haspopup="dialog" aria-label="查看备注：《穿透叙事》第4章 白酒的周期轮回" class="citation source-note" data-citation="ceiling-source-2" type="button">依据</button></p><p>但要注意一点：2018年茅台并没有独立跑输，那一轮是市场整体的折现率上升。今天的下修是茅台相对指数跑输四成，若要归为折现率，只能是茅台特有的风险溢价上升，这比2018年的解释苛刻得多。</p></div><div class="foundation-edge">↓ 找反例</div><div class="foundation-node"><h3>今年6月以来的反弹：没有商品市场支撑的超额收益</h3><p>2026年6月到10月，茅台相对沪深300上涨34%，批价只涨6%，合同价7月上调后比值反而从1.28降到1.25。按本页的框架，这段超额收益不来自天花板。它要么是资金与风格，要么是市场重新接受更低的回报把茅台当类债资产。前者是本课题要排除的第三种解释，后者是课题T2的问题。</p></div><div class="foundation-edge">↓ 回到价格</div><div class="foundation-node"><h3>条件结论与验证信号</h3><p>2024年到2026年的下修，主要是天花板下修，不是资本市场先悲观：批价与股价同向下跌，比值从2.3降到1.25，形态与2018年不同。</p><p>价格今天要求十年后利润翻2.6倍，对着一个提价空间只剩两成多的商品市场。临时判断（AI候选，非用户采纳）：从看不懂移向偏看空。成立条件：批价与出厂价的比值不回到1.6以上，即2025年年中的水平。</p><p>推翻信号：散瓶批价站回2200元以上并持续三个月；或外资持股与ETF份额数据证明2024年9月以来的主跌段是资金撤出而非预期下修。</p></div><div class="foundation-pause"><p>本页只闭合了课题T1的第一条判据。第三种解释（资金与风格）尚未排除，需补外资持股与白酒板块内相对表现；T2“市场在为什么付钱”接着回答6月以来的反弹。</p><p>先停在这一页。用户明确继续后，再排除第三种解释并进入T2。</p></div><template id="ceiling-source-0"><h2>飞天茅台批价月度序列与出厂价调整</h2><p>2014年1月至2026年10月533条带来源、链接、发布日期与原句的批价记录，散瓶、原箱、未注明三种口径；同一月多条来源并存不平均，矛盾52条、剔除弱来源21条另列；出厂价与合同价五次调整各附公告或报道出处。取证代理2026-10-18整理，主线程核对年度中位数轨迹与结构，单条引文未逐一复核。</p></template><template id="ceiling-source-1"><h2>茅台相对沪深300与同行的月末比值</h2><p>由同目录 T1超额收益_20261018.py 从 _raw 重算：茅台等六只股票用新浪乘法后复权（_raw/akshare_hfq_*.json），沪深300用新浪价格指数（_raw/akshare_index_000300_2014_2026.json），取月末收盘；本页分段起止按月末，比值与批价的并列在脚本之外按同一文件计算。</p></template><template id="ceiling-source-2"><h2>《穿透叙事》第4章 白酒的周期轮回</h2><p>作者的两处观察：2018年年底估值被大幅压低而批价稳定，资本市场预期远低于商品市场，分歧成为上涨动力；2021年高点后直到2023年年中走势与沪深300大致同步，2024年年中起才独立跑输。本页用数据检验，前者成立，后者的断点按月末数据略早于2024年年中。</p></template></section><section class="page card canvas-lesson" data-citation-processed="true" data-research-version="c466dec33c73ab11" id="p0"><span></span><h2>研究计划与进度</h2><nav aria-label="研究问题" class="reading-nav"><a href="#current">价格坐标</a><a href="#ceiling">天花板还是折现率</a></nav><div class="plan-story"><p>茅台过去四年很反常。2021年底到2025年，利润从525亿涨到823亿，多了57%；股价却从2050元跌到1329元。业绩在涨，股价在跌，这是研究的出发点。</p><p>我们先用DCF反算1329元：按10%的回报要求，这个价格要求茅台10年后每年赚约2160亿，是今天的2.6倍。把同样的反算做到过去每一年，问题就清楚了——2021年底，价格要求的终局约4069亿，今天只剩2160亿，砍掉了将近一半。业绩在涨，市场写给茅台的天花板却在缩，而且缩得比业绩涨得快。</p><p>与此同时还有一件反常的事。过去十年，茅台的业绩最好算，年初分析师猜多少，年底基本就是多少；可2025年实际只有年初预期的86%，2026年到9月底，预期又比年初下调了13%。</p><p>所以眼下要回答的只有一个问题：天花板被砍，是商品市场不再相信茅台能继续提价，还是资本市场自己变悲观了、要求更高的回报？前一种会看到批价下跌、批价与出厂价的比值收窄；后一种会看到批价没怎么动，股价先跌——2018年底就是这样。在分清之前，判断只能是看不懂。</p><p>下一步是把两样东西放在一起看：茅台相对沪深300从什么时候开始独立跑输，以及同期批价与出厂价的比值。</p></div><h3 class="clue-group-title">天花板被砍，还是资本市场先悲观</h3><article class="clue-card"><h4><span>线索1　利润在涨，价格隐含的天花板在缩</span><span class="clue-status">现象已确认</span></h4><p>2021年底到2025年，茅台利润从525亿涨到823亿，多了57%；同一算法下，价格隐含的终局却从约4069亿降到2160亿，少了47%。如果终局还是2021年底的水平，现价意味着市场要求约14.5%的回报。</p><p>这只有两种可能：商品市场不再相信茅台还能提价，天花板真的低了；或者资本市场自己变悲观，要求更高的回报，天花板其实没变。</p><p>分辨的办法是把茅台相对沪深300的走势和同期批价与出厂价的比值放在一起看。两者一起往下，是天花板在下修；股价跌而批价稳，是资本市场先悲观了。书中认为茅台到2023年年中都只是跟着大盘跌，2024年年中起才独立跑输，这个断点需要用数据确认。目前还缺这两组序列。</p></article><article class="clue-card"><h4><span>线索2　2018年：一次很快被修回的下修</span><span class="clue-status">现象已确认</span></h4><p>2018年底，价格隐含的终局从上年底的约1281亿降到975亿，一年后就回到2221亿。</p><p>书里把那一次读作资本市场先悲观：股价大跌，批价却很稳，资本市场的预期远低于商品市场，后来证明是资本市场错了。</p><p>它是线索1现成的对照样本：今天的形态如果和2018年一样，更像折现率的问题；如果不一样，就更像天花板的问题。需要补2018年前后的批价月度数据来确认。</p></article><h3 class="clue-group-title">资本市场要求的回报变了吗</h3><article class="clue-card"><h4><span>线索3　今年6月以来的反弹，利润一分没变</span><span class="clue-status">现象已确认</span></h4><p>从2026年6月26日的低点1169元到10月16日的1329元，股价涨了14%，利润没变，价格隐含的倍数从约2.2回到2.6。</p><p>推动它的可能是批价回升、7月18日合同价上调到1369元、利率下行，也可能只是资金和风格。</p><p>按书的框架，只有批价上行才应该带来跑赢大盘的收益，提价只是兑现已有的预期。把这几件事的时间点和相对沪深300的走势逐一对齐，就能看出是谁在推。</p></article><article class="clue-card"><h4><span>线索4　利润回报比国债高出三个多点</span><span class="clue-status">待取数</span></h4><p>按今天的价格，利润回报约5%，同日10年期国债约1.64%，相差约3.3个百分点；2020年底这一回报只有约1.9%，比当时的国债收益率还低（历史国债数据待补）。</p><p>差距拉开，可能是市场对茅台要求的风险补偿变高了，也可能只是同一价格对应的增长预期变低了，后者其实就是线索1的另一面。</p><p>如果是前者，股价应该对利率和风险偏好敏感，走势接近长江电力这类稳定资产；如果是后者，股价对利率不敏感，而是跟着批价和业绩预期走。需要先补10年期国债的历史序列。</p></article><h3 class="clue-group-title">价格要求的增长，看得见吗</h3><article class="clue-card"><h4><span>线索5　价格要求10%的增长，分析师只看到不到5%</span><span class="clue-status">现象已确认</span></h4><p>今天的价格要求茅台未来10年每年增长约10%（按10%的回报要求），而从2025年到2028年，分析师预期的年均增长只有约4.8%。如果只按这个速度增长10年，现价的回报约7.1%，和2020、2021年底差不多。</p><p>这说明市场要么已经接受更低的回报，把茅台当成类债资产；要么相信几年之后增长会重新加快，远期仍有提价空间。</p><p>前一种情况下，估值会跟着利率和稳定类资产走；后一种需要看到远期的证据，比如批价与出厂价的比值重新打开、提价能被市场接受。</p></article><article class="clue-card"><h4><span>线索6　价格仍在为增长付钱</span><span class="clue-status">现象已确认</span></h4><p>即使立刻停止增长，现价也要求茅台每年稳定赚约1661亿（按10%的回报要求），是近5年平均利润的2.3倍、2024年峰值的1.9倍。</p><p>所以现价不是按历史利润中枢给一只周期股定价，而仍然在为增长付钱。这一条不单独检验，和线索5一起回答。</p></article><article class="clue-card"><h4><span>线索7　最好算的公司开始算不准了</span><span class="clue-status">现象已确认</span></h4><p>2024年以前，分析师年初对茅台当年利润的预期，和最终结果多在一成以内。2025年实际只有年初预期的86%，差距直到年底才暴露；2026年到9月底，预期又比年初下调了13%，是2014年以来最大的一次。</p><p>这可能说明书里“量透明、短期业绩早已算清”的前提不再成立，叙事在变；也可能只是渠道去库存、直营调整之类的一次性冲击，之后会回到可预期。</p><p>分辨要靠季度利润的拆分：落空如果来自量或产品结构，就是书的前提出了问题；如果集中在个别季度、能指认一次性原因，就是冲击。再看三季报后预期是继续下调还是企稳。</p></article></section><footer>研究更新：2026-10-18 · 行情基准：2026-10-16<br/><a href="https://beian.miit.gov.cn/" rel="noopener noreferrer" target="_blank">闽ICP备2026032381号-1</a></footer></div><script>function show(id){location.hash=id;routeCanvasHash();}</script><script id="canvas-navigation-script">
+function routeCanvasHash(){
+  const defaultId=document.getElementById('foreword')?'foreword':'current';
+  const id=decodeURIComponent((location.hash||('#'+defaultId)).slice(1));
+  const target=document.getElementById(id),page=target&&target.closest('.page');
+  const selected=page?page.id:defaultId;
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id===selected));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===selected));
+  const history=document.getElementById('canvas-history-nav');
+  if(history&&page&&page.dataset.history==='true')history.open=true;
+  if(page&&['foreword','current','operations','cash'].includes(id))window.scrollTo(0,0);
+  else if(page&&page.id!==id)target.scrollIntoView();
+}
+window.addEventListener('hashchange',routeCanvasHash);
+window.addEventListener('pageshow',routeCanvasHash);
+
+routeCanvasHash();</script><div id="shared-citation-runtime"><dialog class="citation-dialog" id="citation-dialog" aria-labelledby="citation-title">
+<div class="citation-head"><h2 id="citation-title"></h2><button type="button" autofocus>关闭</button></div>
+<div class="citation-body"></div></dialog>
+<script>(() => {
+const dialog = document.getElementById('citation-dialog');
+const body = dialog.querySelector('.citation-body');
+let origin, position, overflow;
+document.addEventListener('click', event => {
+  const trigger = event.target.closest('button[data-citation]');
+  if (!trigger) return;
+  const source = document.getElementById(trigger.dataset.citation);
+  const content = source.content.cloneNode(true);
+  const heading = content.querySelector('h2');
+  document.getElementById('citation-title').textContent = heading.textContent;
+  heading.remove();
+  content.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+  body.replaceChildren(content);
+  origin = trigger;
+  position = {x:window.scrollX,y:window.scrollY};
+  overflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+  dialog.showModal();
+  body.scrollTop = 0;
+});
+dialog.querySelector('button').addEventListener('click', () => dialog.close());
+body.addEventListener('click', event => {
+  if (event.target.closest('a')) dialog.close();
+});
+dialog.addEventListener('click', event => {
+  if (event.target !== dialog) return;
+  const rect = dialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+});
+dialog.addEventListener('close', () => {
+  document.body.style.overflow = overflow;
+  origin.focus({preventScroll:true});
+  window.scrollTo(position.x,position.y);
+});
+})();</script></div></body></html>
