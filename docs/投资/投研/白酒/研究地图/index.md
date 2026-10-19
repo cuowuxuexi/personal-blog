@@ -38,7 +38,7 @@ hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地�
   </header>
   <a class="subject-row" href="/投资/投研/白酒/茅台/">
     <div><span class="subject-row__ticker">600519.SH</span><strong>茅台</strong></div>
-    <p>公司研究画布写在标的页：先反算1329元要求的终局，再分辨天花板下修还是折现率上升。行业地图仍空，不把茅台页冒充可复用产业结论。</p>
+    <p>公司研究画布写在标的页：先反算1329元要求的终局，再看天花板、市场付钱的信念、利润兑现与现金垫底。行业地图仍空，不把茅台页冒充可复用产业结论。</p>
     <span class="subject-row__status">学习中</span>
     <span class="subject-row__arrow">→</span>
   </a>
