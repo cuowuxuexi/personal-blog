@@ -4,7 +4,7 @@ description: 硬件制造行业可复用的产业与商业知识入口
 pageClass: map-index
 outline: false
 order: 0
-hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图。
+hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地图；公司底图先写在标的档案里。
 ---
 
 <nav class="research-breadcrumb"><a href="/投资/投研/">投研标的</a><span>/</span><a href="/投资/投研/硬件制造/">硬件制造行业</a><span>/</span><strong>研究地图</strong></nav>
@@ -36,8 +36,10 @@ hubLead: 可复用的产业与商业知识入口。当前尚未建立具体地�
   <header class="research-section-head">
     <div><p>RELATED / 相关档案</p><h2 id="map-related">相关档案</h2></div>
   </header>
-  <div class="research-note">
-    <strong>空状态</strong>
-    <span>尚无关联标的档案。</span>
-  </div>
+  <a class="subject-row" href="/投资/投研/硬件制造/宁德时代/">
+    <div><span class="subject-row__ticker">300750.SZ</span><strong>宁德时代</strong></div>
+    <p>公司研究画布写在标的页：先拆生意与每度电，再沿现金、起点利润、天花板与回报要求检验价格要求。行业地图仍空，不把宁德时代页冒充可复用产业结论。</p>
+    <span class="subject-row__status">学习中</span>
+    <span class="subject-row__arrow">→</span>
+  </a>
 </section>
