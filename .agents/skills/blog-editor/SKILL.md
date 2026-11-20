@@ -38,8 +38,8 @@ description: >-
 
 | Mode | Trigger | Start here | Required branch reference / side effects |
 | --- | --- | --- | --- |
-| `content.weekly-investment` | 新增或修改投资周记 | `docs/投资/周记/*.md` | `templates/weekly-invest.md` + `references/weekly-and-journey.md`；再读 `CONTEXT.md` 与 `docs/agents/research-publishing.md` |
-| `content.weekly-life` | 新增或修改 AI与生活周记 | `docs/AI与生活/*.md`（不含子目录） | `templates/weekly-life.md` + `references/weekly-and-journey.md` |
+| `content.weekly-investment` | 作者明确要求恢复或修改已冻结的投资周记 | `docs/投资/周记/*.md` | `templates/weekly-invest.md` + `references/weekly-and-journey.md`；再读 `CONTEXT.md` 与 `docs/agents/research-publishing.md`。默认冻结，不新开、不挂导航 |
+| `content.weekly-life` | 作者明确要求恢复或修改已冻结的 AI与生活周记 | `docs/AI与生活/*.md`（不含子目录） | `templates/weekly-life.md` + `references/weekly-and-journey.md`。默认冻结，不新开、不挂导航 |
 | `content.journey` | 我的AI历程篇章/日期期数 | `docs/AI与生活/我的AI历程/` | `references/weekly-and-journey.md`；只有用户明确指定面板时才转面板 |
 | `content.research-*` | 行业、研究地图、标的档案；「写入博客」 | `docs/投资/投研/**` | `references/content-domains.md` + `docs/agents/research-publishing.md`。「写入博客」按交稿落页，不回源；交来 HTML 则标题直达 `/html/<名字>`，不嵌 iframe；「按投资系统改认识」才回源；「上传」走 `pnpm publish:guonei` |
 | `content.philosophy` | 投资哲学内容 | `docs/投资哲学/**` | `references/content-domains.md` |
@@ -62,7 +62,7 @@ description: >-
 - 内部链接不写 `.md`；`index.md` 路由保留尾斜杠。
 - 公开资源位于 `docs/public/`，正文引用以 `/` 开头。先做好的独立 HTML 放到 `docs/public/html/<名字>/index.html`。周记正文可嵌 `<StandaloneHtml>`；投研 HTML 章节、历程和投资哲学 HTML 主题的 `publicHref` 标题直达该页，不要再套 iframe。
 - `docs/agents/**`、`docs/adr/**` 和所有 `README.md` 不进入站点构建。
-- 周记 / 历程登记靠构建期投影；索引副作用以 `references/weekly-and-journey.md` 为准，不要手改 `posts.ts` 或受管 sidebar 字面量。
+- 周记 / 历程登记靠构建期投影；索引副作用以 `references/weekly-and-journey.md` 为准，不要手改 `posts.ts` 或受管 sidebar 字面量。两类周记默认冻结隐藏：保留既有页面与直达 URL，不进导航、最近更新或年份侧栏；作者未明确恢复时不要新开。
 - 投研 / 哲学 / 大问题侧栏由内容目录投影；新标的或章节不要手改 `config.mts`。投研档案根默认是完整档案页；档案根写了 `publicHref` 则该标的 URL 覆盖为这份 HTML。作者交来的 HTML 章节用 `publicHref` 直达，不嵌 iframe。
 
 ## Content policy
@@ -107,4 +107,4 @@ description: >-
 
 只有当路径、能力边界、内容类型或编辑工作流发生变化时才更新本 Skill；普通正文和局部样式任务不要顺手改它。
 
-最后更新：2026-10-16
+最后更新：2026-11-20

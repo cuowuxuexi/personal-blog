@@ -159,7 +159,7 @@ test('journey capability is explicit and allows create', () => {
   assert.equal(capability.wechatTheme, 'life')
   assert.equal(capability.publishScope, 'journey')
   assert.equal(allowsCreate(kind), true)
-  assert.equal(allowsCreate(paths.KINDS.life), true)
+  assert.equal(allowsCreate(paths.KINDS.life), false)
 })
 
 test('lists journey chapters in content-catalog typed IA order and starts issue numbers at 1', () => {

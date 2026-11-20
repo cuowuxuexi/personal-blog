@@ -7,9 +7,7 @@ import {
 } from './verify/sidebar-wiring.mjs'
 
 const LIVE_SHAPED = `import {
-  investYearSidebarGroups,
   journeySidebarGroups,
-  lifeYearSidebarGroups,
   researchIndustrySidebarGroups,
   philosophySidebarGroups,
   bigQuestionSidebarGroups,
@@ -18,13 +16,6 @@ const LIVE_SHAPED = `import {
 export default {
   themeConfig: {
     sidebar: {
-      '/投资/周记/': [
-        { text: '投研', items: [] },
-        ...investYearSidebarGroups,
-      ],
-      '/AI与生活/': [
-        ...lifeYearSidebarGroups,
-      ],
       '/AI与生活/我的AI历程/': [
         ...journeySidebarGroups,
       ],
@@ -82,8 +73,8 @@ test('duplicate own spread fails; exact-once live-shaped passes', () => {
   assert.equal(green.ok, true, green.failures.map((f) => f.message).join('\n'))
 
   const dup = LIVE_SHAPED.replace(
-    '...investYearSidebarGroups,',
-    '...investYearSidebarGroups,\n        ...investYearSidebarGroups,',
+    '...journeySidebarGroups,',
+    '...journeySidebarGroups,\n        ...journeySidebarGroups,',
   )
   const red = inspectManagedSidebarWiring(dup)
   assert.equal(red.ok, false)
@@ -92,9 +83,8 @@ test('duplicate own spread fails; exact-once live-shaped passes', () => {
 
 test('comment-only live spreads/import go red', () => {
   const commentSpreads = LIVE_SHAPED
-    .replace('...investYearSidebarGroups,', '// ...investYearSidebarGroups,')
-    .replace('...lifeYearSidebarGroups,', '/* ...lifeYearSidebarGroups, */')
     .replace('...journeySidebarGroups,', '// ...journeySidebarGroups,')
+    .replace('...researchIndustrySidebarGroups,', '/* ...researchIndustrySidebarGroups, */')
   const redSpread = inspectManagedSidebarWiring(commentSpreads)
   assert.equal(redSpread.ok, false)
   assert.ok(redSpread.failures.some((f) => f.code === 'sidebar-wiring-spread'))

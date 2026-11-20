@@ -81,7 +81,7 @@ export function postsByCategory(posts, category, type) {
 
 /**
  * 最近更新列表：仅 recentVisible 种类；按 revisionDate ?? date 降序。
- * research 永不进入；Hermes 不消费 revisionDate。
+ * 冻结周记 / research / philosophy / big-question 不进入；Hermes 不消费 revisionDate。
  */
 export function selectRecentPosts(posts, limit = 6) {
   return (posts || [])

@@ -94,9 +94,14 @@ test('one fixture goes red then green for the six contract violations', () => {
   })
 })
 
-test('R1 markdown title drift goes red; markdown-only issue stays green under projection authority', () => {
+test('R1 frozen weekly markdown title follows projection; markdown-only issue stays green', () => {
   withFixture((dir) => {
-    assertRedThenGreen(dir, mutateMarkdownTitleOnly, 'triple-write-drift')
+    mutateMarkdownTitleOnly(dir)
+    const title = checkContentParity(dir)
+    assert.equal(title.ok, true, title.failures.map((item) => item.message).join('\n'))
+    fs.rmSync(dir, { recursive: true, force: true })
+    fs.mkdirSync(dir, { recursive: true })
+    writeGoodFixture(dir)
     mutateMarkdownIssueOnly(dir)
     const stillGreen = checkContentParity(dir)
     assert.equal(

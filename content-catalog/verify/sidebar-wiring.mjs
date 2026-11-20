@@ -1,17 +1,7 @@
 import { matchBracket } from './brackets.mjs'
 
-/** Live / live-shaped config 受管 sidebar 接线：import + 三处 section 各自对应 spread。 */
+/** Live / live-shaped config 受管 sidebar 接线：import + 仍公开的 section 各自对应 spread。周记已冻结，不再要求年份组接入。 */
 export const MANAGED_SIDEBAR_SPREADS = Object.freeze([
-  {
-    kindId: 'weekly-investment',
-    sidebarKey: '/投资/周记/',
-    spread: 'investYearSidebarGroups',
-  },
-  {
-    kindId: 'weekly-life',
-    sidebarKey: '/AI与生活/',
-    spread: 'lifeYearSidebarGroups',
-  },
   {
     kindId: 'journey',
     sidebarKey: '/AI与生活/我的AI历程/',
@@ -130,8 +120,6 @@ export function inspectManagedSidebarWiring(configSource) {
   const mode = detectSidebarWiringMode(raw)
   const failures = []
   const okByKind = {
-    'weekly-investment': false,
-    'weekly-life': false,
     journey: false,
     research: false,
     philosophy: false,
@@ -147,7 +135,7 @@ export function inspectManagedSidebarWiring(configSource) {
   if (!hasImport) {
     failures.push({
       code: 'sidebar-wiring-import',
-      kindId: 'weekly-life',
+      kindId: 'journey',
       message: 'live sidebar 必须 import ./managed-sidebar-fs.mjs',
     })
   }

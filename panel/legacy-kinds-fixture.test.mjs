@@ -25,7 +25,7 @@ const LEGACY_KINDS = Object.freeze({
     siteLink: '/AI与生活/2026-08-17',
     capability: Object.freeze({
       contentType: 'weekly',
-      allowCreate: true,
+      allowCreate: false,
       selectorLabel: '期数',
       emptyHint: '没有当期周记，请先开新一期。',
       appendHint: '这次会追加到所选期数末尾，已有条目不会动。',
@@ -52,7 +52,7 @@ const LEGACY_KINDS = Object.freeze({
     siteLink: '/投资/周记/2026-08-17-那是抓不住的月亮',
     capability: Object.freeze({
       contentType: 'weekly',
-      allowCreate: true,
+      allowCreate: false,
       selectorLabel: '期数',
       emptyHint: '没有当期周记，请先开新一期。',
       appendHint: '这次会追加到所选期数末尾，已有条目不会动。',
@@ -124,7 +124,7 @@ test('frozen legacy fixture locks life/invest/journey observable KINDS without r
   assert.deepEqual(observableKind(paths.KINDS.invest, '2026-08-17'), { ...LEGACY_KINDS.invest })
   assert.deepEqual(observableKind(paths.KINDS.journey, '2026-08-20'), { ...LEGACY_KINDS.journey })
 
-  assert.equal(allowsCreate(paths.KINDS.life), true)
-  assert.equal(allowsCreate(paths.KINDS.invest), true)
+  assert.equal(allowsCreate(paths.KINDS.life), false)
+  assert.equal(allowsCreate(paths.KINDS.invest), false)
   assert.equal(allowsCreate(paths.KINDS.journey), true)
 })

@@ -89,9 +89,7 @@ ${itemLines(chapterSource)}
 /** Live-shaped：字面量为空，靠 managed-sidebar-fs spread 接线（与现网同构）。 */
 function configMtsLiveShaped() {
   return `import {
-  investYearSidebarGroups,
   journeySidebarGroups,
-  lifeYearSidebarGroups,
   researchIndustrySidebarGroups,
   philosophySidebarGroups,
   bigQuestionSidebarGroups,
@@ -102,17 +100,15 @@ export default {
     sidebar: {
       '/投资/周记/': [
         { text: '投研', items: [] },
-        ...investYearSidebarGroups,
       ],
       '/AI与生活/': [
         {
           text: 'AI与生活',
           items: [
-            { text: '最新周记', link: '/AI与生活/' },
+            { text: '首页', link: '/AI与生活/' },
             { text: '我的AI历程', link: '/AI与生活/我的AI历程/' },
           ],
         },
-        ...lifeYearSidebarGroups,
       ],
       '/AI与生活/我的AI历程/': [
         {
@@ -247,19 +243,19 @@ export function writeLiveShapedFixture(root) {
 export function mutateRemoveInvestSidebarSpread(root) {
   const file = path.join(root, 'docs', '.vitepress', 'config.mts')
   const source = fs.readFileSync(file, 'utf8')
-  if (!source.includes('...investYearSidebarGroups')) {
-    throw new Error('expected investYearSidebarGroups spread')
+  if (!source.includes('...journeySidebarGroups')) {
+    throw new Error('expected journeySidebarGroups spread')
   }
-  fs.writeFileSync(file, source.replace('...investYearSidebarGroups,', ''))
+  fs.writeFileSync(file, source.replace('...journeySidebarGroups,', ''))
 }
 
 export function mutateMisplaceJourneySidebarSpread(root) {
   const file = path.join(root, 'docs', '.vitepress', 'config.mts')
   let source = fs.readFileSync(file, 'utf8')
-  if (!source.includes('...lifeYearSidebarGroups') || !source.includes('...journeySidebarGroups')) {
-    throw new Error('expected life and journey spreads')
+  if (!source.includes('...researchIndustrySidebarGroups') || !source.includes('...journeySidebarGroups')) {
+    throw new Error('expected research and journey spreads')
   }
-  // Strip from journey section first, then plant into life section.
+  // Strip from journey section first, then plant into research section.
   const journeyNeedle = "'/AI与生活/我的AI历程/': ["
   const start = source.indexOf(journeyNeedle)
   if (start < 0) throw new Error('missing journey sidebar section')
@@ -267,7 +263,7 @@ export function mutateMisplaceJourneySidebarSpread(root) {
   const close = matchBracket(source, open)
   const section = source.slice(start, close + 1).replace(/\s*\.\.\.journeySidebarGroups,?\n?/, '\n')
   source = source.slice(0, start) + section + source.slice(close + 1)
-  source = source.replace('...lifeYearSidebarGroups,', '...journeySidebarGroups,')
+  source = source.replace('...researchIndustrySidebarGroups,', '...journeySidebarGroups,')
   fs.writeFileSync(file, source)
 }
 
@@ -287,14 +283,14 @@ export function mutateRemoveManagedSidebarImport(root) {
 export function mutateDuplicateInvestSidebarSpread(root) {
   const file = path.join(root, 'docs', '.vitepress', 'config.mts')
   const source = fs.readFileSync(file, 'utf8')
-  if (!source.includes('...investYearSidebarGroups')) {
-    throw new Error('expected investYearSidebarGroups spread')
+  if (!source.includes('...journeySidebarGroups')) {
+    throw new Error('expected journeySidebarGroups spread')
   }
   fs.writeFileSync(
     file,
     source.replace(
-      '...investYearSidebarGroups,',
-      '...investYearSidebarGroups,\n        ...investYearSidebarGroups,',
+      '...journeySidebarGroups,',
+      '...journeySidebarGroups,\n        ...journeySidebarGroups,',
     ),
   )
 }
@@ -303,9 +299,8 @@ export function mutateDuplicateInvestSidebarSpread(root) {
 export function mutateCommentOnlySidebarSpread(root) {
   const file = path.join(root, 'docs', '.vitepress', 'config.mts')
   let source = fs.readFileSync(file, 'utf8')
-  source = source.replace('...investYearSidebarGroups,', '// ...investYearSidebarGroups,')
-  source = source.replace('...lifeYearSidebarGroups,', '/* ...lifeYearSidebarGroups, */')
   source = source.replace('...journeySidebarGroups,', '// ...journeySidebarGroups,')
+  source = source.replace('...researchIndustrySidebarGroups,', '/* ...researchIndustrySidebarGroups, */')
   fs.writeFileSync(file, source)
 }
 
@@ -346,7 +341,7 @@ export function mutateWeeklyLifeMissingCategory(root) {
 export function mutateTripleWriteDrift(root) {
   const file = path.join(root, 'docs', '.vitepress', 'config.mts')
   const source = fs.readFileSync(file, 'utf8')
-  fs.writeFileSync(file, source.replace('第001期-生活', '侧栏漂了'))
+  fs.writeFileSync(file, source.replace("text: '工具篇'", "text: '侧栏漂了'"))
 }
 
 export function mutateDuplicateIssue(root) {

@@ -412,14 +412,16 @@ export function collectParityFindings(repoRoot) {
       })
     }
 
-    if (kind.validation.pairWithManualPosts && kind.validation.pairWithYearSidebar) {
+    if (kind.validation.pairWithManualPosts) {
       const datedFiles = kind.id === 'journey'
         ? kindFiles.filter((item) => item.dated)
         : kindFiles
       const datedPosts = kind.id === 'journey'
         ? kindPosts.filter((post) => /\/\d{4}-\d{2}-\d{2}$/.test(post.link))
         : kindPosts.filter((post) => post.type !== 'journey' || /\/\d{4}-\d{2}-\d{2}$/.test(post.link))
-      const yearItems = resolvedYearSidebarItems(repoRoot, configSource, kind.id, wiring)
+      const yearItems = kind.validation.pairWithYearSidebar
+        ? resolvedYearSidebarItems(repoRoot, configSource, kind.id, wiring)
+        : datedPosts.map((post) => ({ text: post.title, link: post.link }))
       pairTitleLink(datedFiles, datedPosts, yearItems, kind.id, failures, `${kind.id} 日期条目`)
     }
 

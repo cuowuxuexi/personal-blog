@@ -70,13 +70,15 @@ test('research recent updates stay invisible; other current feed kinds stay visi
   assert.equal(getContentKind('research').recentVisible, false)
   assert.equal(getContentKind('philosophy').recentVisible, false)
   assert.equal(getContentKind('big-question').recentVisible, false)
+  assert.equal(getContentKind('weekly-life').recentVisible, false)
+  assert.equal(getContentKind('weekly-investment').recentVisible, false)
   assert.equal(isRecentVisible('research'), false)
   assert.ok(!recentVisibleKindIds().includes('research'))
   assert.ok(!recentVisibleKindIds().includes('philosophy'))
   assert.ok(!recentVisibleKindIds().includes('big-question'))
+  assert.ok(!recentVisibleKindIds().includes('weekly-life'))
+  assert.ok(!recentVisibleKindIds().includes('weekly-investment'))
   assert.deepEqual(recentVisibleKindIds(), [
-    'weekly-life',
-    'weekly-investment',
     'journey',
     'hermes',
   ])
@@ -107,6 +109,8 @@ test('live weekly/journey path and asset rules stay aligned with repo-paths', ()
   assert.equal(life.pageClass, LIVE.KINDS.life.pageClass)
   assert.equal(life.assets.directory, LIVE.KINDS.life.capability.assetDirectory)
   assert.equal(life.assets.urlPrefix, LIVE.KINDS.life.capability.assetUrlPrefix)
+  assert.equal(life.lifecycle, 'retired')
+  assert.equal(life.creation.allowCreate, false)
   assert.equal(life.creation.allowCreate, LIVE.KINDS.life.capability.allowCreate)
   assert.equal(contentFileName('weekly-life', { date: '2026-08-17' }), LIVE.KINDS.life.fileName('2026-08-17'))
   assert.equal(contentSiteLink('weekly-life', { date: '2026-08-17' }), LIVE.KINDS.life.siteLink('2026-08-17'))
@@ -119,6 +123,8 @@ test('live weekly/journey path and asset rules stay aligned with repo-paths', ()
   assert.equal(contentFileName('weekly-investment', { date: '2026-08-17', theme: '那是抓不住的月亮' }), LIVE.KINDS.invest.fileName('2026-08-17', '那是抓不住的月亮'))
   assert.equal(contentSiteLink('weekly-investment', { date: '2026-08-17', theme: '那是抓不住的月亮' }), LIVE.KINDS.invest.siteLink('2026-08-17', '那是抓不住的月亮'))
   assert.equal(yearGroupTitle('weekly-investment', 2026), LIVE.KINDS.invest.yearText(2026))
+  assert.equal(getContentKind('weekly-investment').lifecycle, 'retired')
+  assert.equal(getContentKind('weekly-investment').creation.allowCreate, false)
   assert.equal(invest.validation.issueOptionalForOpening, true)
   assert.equal(invest.openingWithoutIssueLink, '/投资/周记/2026-08-08-写在投资笔记开始之前')
   assert.deepEqual(invest.scan.excludeBasenames, ['index.md', 'README.md'])
@@ -245,10 +251,11 @@ test('post query helpers classify kinds and hide research from recent', () => {
   assert.equal(kindIdForPost(items[3]), 'journey')
   assert.equal(kindIdForPost(items[4]), 'hermes')
   assert.equal(isRecentVisiblePost(items[0]), false)
-  assert.equal(isRecentVisiblePost(items[1]), true)
+  assert.equal(isRecentVisiblePost(items[1]), false)
+  assert.equal(isRecentVisiblePost(items[2]), false)
 
   const recent = selectRecentPosts(items, 8)
-  assert.deepEqual(recent.map((item) => item.title), ['journey', 'life', 'invest', 'hermes'])
+  assert.deepEqual(recent.map((item) => item.title), ['journey', 'hermes'])
   assert.ok(recent.every((item) => item.type !== 'research'))
 
   const investArchive = postsByCategory(items, '投资', 'weekly')
@@ -297,9 +304,7 @@ test('recent sorts by revisionDate ?? date; latest issue stays on date only', ()
 
   const recent = selectRecentPosts(items, 8)
   assert.deepEqual(recent.map((item) => item.title), [
-    'old-weekly-revised',
     'journey-plain',
-    'newer-weekly',
     'hermes-with-bogus-revision',
   ])
 

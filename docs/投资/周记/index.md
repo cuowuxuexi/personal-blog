@@ -1,8 +1,9 @@
 ---
 title: 投资周记
-description: 按时间记录市场观察、判断变化与复盘；打开即进入最新一期周记
-pageClass: weekly-archive weekly-archive--invest
+description: 已冻结，不再公开更新
+pageClass: investment-hub
 outline: false
+search: false
 ---
 
-<LatestWeeklyRedirect category="投资" />
+这段时间线已冻结，不再列入导航和最近更新。请从 [投研](/投资/) 进入标的档案。

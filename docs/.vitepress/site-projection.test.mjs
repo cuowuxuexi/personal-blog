@@ -203,13 +203,13 @@ test('emitStandaloneCoverPages copies canvas onto the 五粮液 archive URL', ()
   }
 })
 
-test('config.mts Wave C + live sidebar wiring: import and three section spreads', () => {
+test('config.mts Wave C + live sidebar wiring: import and public section spreads', () => {
   const source = fs.readFileSync(path.join(HERE, 'config.mts'), 'utf8')
   const wiring = inspectManagedSidebarWiring(source)
   assert.equal(wiring.mode, 'spread')
   assert.equal(wiring.ok, true, wiring.failures.map((item) => item.message).join('\n'))
-  assert.match(source, /\.\.\.investYearSidebarGroups/)
-  assert.match(source, /\.\.\.lifeYearSidebarGroups/)
+  assert.doesNotMatch(source, /\.\.\.investYearSidebarGroups/)
+  assert.doesNotMatch(source, /\.\.\.lifeYearSidebarGroups/)
   assert.match(source, /\.\.\.journeySidebarGroups/)
   assert.match(source, /\.\.\.researchIndustrySidebarGroups/)
   assert.match(source, /\.\.\.philosophySidebarGroups/)
@@ -227,6 +227,8 @@ test('config.mts Wave C + live sidebar wiring: import and three section spreads'
   assert.doesNotMatch(source, /认识与证据/)
   assert.doesNotMatch(source, /text: '2026年'/)
   assert.doesNotMatch(source, /text: '周记 · 2026年'/)
+  assert.doesNotMatch(source, /最新周记/)
+  assert.doesNotMatch(source, /link: '\/投资\/周记\/'/)
 })
 
 test('postsByCategoryFromCatalog uses shared stable sort; revisionDate ignored for latest', () => {

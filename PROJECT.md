@@ -30,7 +30,7 @@
 | 能力 | 对外接口 | 当前源码入口 | 拥有的事实 |
 | --- | --- | --- | --- |
 | **内容创作** | 新增或修改一种公开内容 | `docs/**/*.md`、`.agents/skills/blog-editor/`、`docs/agents/research-publishing.md` | 正文、frontmatter、作者叙事、发布门禁 |
-| **内容目录 / 信息架构** | 按内容类型查询列表、最新一期、导航和结构关系 | `content-catalog/`（共享合同）、`docs/.vitepress/posts.ts`、`docs/.vitepress/config.mts`、`panel/lib/repo-paths.mjs` | 内容类型、导航分组、顺序、可见性；周记/历程已按 ADR 0002 接入构建期投影 |
+| **内容目录 / 信息架构** | 按内容类型查询列表、最新一期、导航和结构关系 | `content-catalog/`（共享合同）、`docs/.vitepress/posts.ts`、`docs/.vitepress/config.mts`、`panel/lib/repo-paths.mjs` | 内容类型、导航分组、顺序、可见性；历程/投研已按 ADR 0002 接入构建期投影；两类周记冻结隐藏 |
 | **站点呈现** | 把内容目录和 Markdown 渲染为公开页面 | `docs/.vitepress/theme/index.ts`、`Layout.vue`、`theme/components/`、`theme/style.css` | 页面组件、布局、交互、视觉与响应式 |
 | **发布面板** | 作者在本地编辑周记/历程并准备、确认发布 | `panel/start.mjs`、`panel/server.mjs`、`panel/public/`、`panel/lib/` | 编辑会话、工作区内容变更、发布任务交互 |
 | **发布部署** | 从已确认快照提交、推送、部署并校验生产 SHA | `panel/lib/publish-job.mjs`、`probes.mjs`、`guonei.mjs`、`scripts/publish-guonei.mjs`、`.github/workflows/`、`ops/` | 发布状态、Git/构建/网络副作用、双站部署。投研说「上传」后走 `pnpm publish:guonei` |
@@ -42,7 +42,7 @@
 
 | 用户意图 | 首读 | 常见实现入口 | 最小验证 |
 | --- | --- | --- | --- |
-| 新增/修改周记、历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；周记/历程/投研目录自动投影 | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
+| 新增/修改历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；历程/投研目录自动投影。两类周记默认冻结，须作者明确恢复 | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
 | 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
 | 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；周记嵌 `<StandaloneHtml>`；投研 HTML 章写 `publicHref` 直达 | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
 | 修改某类页面样式 | 目标页面 `pageClass` | `docs/.vitepress/theme/style.css` 对应段 | `pnpm docs:build` + 1440/768/390 检查 |

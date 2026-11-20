@@ -19,10 +19,10 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const managedPosts = projectManagedPostsFromFs(REPO_ROOT)
 const structureNodes = projectStructureFromFs(REPO_ROOT)
 
-/** `/投资/周记/` 年份组（含开篇无 issue 项） */
+/** `/投资/周记/` 年份组（含开篇无 issue 项）。周记已冻结，config 不再接入。 */
 export const investYearSidebarGroups = projectInvestSidebarManagedParts(managedPosts)
 
-/** `/AI与生活/` 周记年份组（不含具名历程叶子；历程仅经系列入口进入生活壳） */
+/** `/AI与生活/` 周记年份组。周记已冻结，config 不再接入；历程仅经系列入口进入生活壳。 */
 export const lifeYearSidebarGroups = projectLifeSidebarManagedParts(managedPosts)
 
 /** `/AI与生活/我的AI历程/` 具名篇章组 + 日期期数年份组 */

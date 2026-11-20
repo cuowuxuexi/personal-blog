@@ -20,6 +20,8 @@ Before drafting investment weekly notes or research content under `docs/投资/`
 
 Hermes diary is retired. Keep existing pages; create a new day only if the author explicitly reopens `docs/agents/hermes-diary.md`.
 
+Investment weekly notes and AI与生活 weekly notes are frozen. Keep existing pages unlisted; do not add them to nav, homepage recent, or sidebars. Create a new issue only if the author explicitly reopens them.
+
 ## Project operations
 
 - GitHub Issues workflow: `docs/agents/issue-tracker.md`.

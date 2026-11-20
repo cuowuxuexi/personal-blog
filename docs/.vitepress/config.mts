@@ -4,9 +4,7 @@ import { hermesSidebarItems } from './hermes-diary'
 import {
   bigQuestionNavItems,
   bigQuestionSidebarGroups,
-  investYearSidebarGroups,
   journeySidebarGroups,
-  lifeYearSidebarGroups,
   philosophyNavItems,
   philosophySidebarGroups,
   researchIndustrySidebarGroups,
@@ -17,9 +15,9 @@ import { emitStandaloneCoverPages, serveStandaloneHtmlPlugin, standaloneHtmlFile
 
 /**
  * 误君在脑海里放烟花 — VitePress 站点配置
- * 侧栏：静态壳手写；周记/历程/投研/哲学/大问题受管组由构建期投影注入。
- * - 投资周记年份组、生活周记年份组、历程具名篇章+日期年份组 → managed-sidebar-fs
- * - 投研行业树、哲学主题、大问题条目 → managed-sidebar-fs
+ * 侧栏：静态壳手写；历程/投研/哲学/大问题受管组由构建期投影注入。
+ * - 两类周记已冻结：不进 nav/recent/年份侧栏，页面仍保留直达 URL
+ * - 历程具名篇章+日期年份组、投研行业树、哲学主题、大问题条目 → managed-sidebar-fs
  * - Wave C：生活侧栏只保留历程系列入口，不再枚举具名叶子
  * - 面板只写 Markdown（+引用图）；受管 posts/sidebar 由投影生成
  */
@@ -58,6 +56,9 @@ export default defineConfig({
   transformPageData(pageData) {
     if (pageData.frontmatter?.type === 'weekly') {
       pageData.frontmatter.outline = [2, 6]
+      pageData.frontmatter.search = false
+      pageData.frontmatter.prev = false
+      pageData.frontmatter.next = false
     }
   },
 
@@ -100,7 +101,6 @@ export default defineConfig({
           text: '投研',
           items: [
             { text: '投研首页', link: '/投资/' },
-            { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
@@ -111,18 +111,15 @@ export default defineConfig({
           text: '投研',
           items: [
             { text: '投研首页', link: '/投资/' },
-            { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
-        ...investYearSidebarGroups,
       ],
       '/投资/': [
         {
           text: '投研',
           items: [
             { text: '投研首页', link: '/投资/' },
-            { text: '周记', link: '/投资/周记/' },
             { text: '投研标的', link: '/投资/投研/' },
           ],
         },
@@ -131,14 +128,13 @@ export default defineConfig({
         {
           text: 'AI与生活',
           items: [
-            { text: '最新周记', link: '/AI与生活/' },
+            { text: '首页', link: '/AI与生活/' },
             {
               text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
             },
           ],
         },
-        ...lifeYearSidebarGroups,
         {
           text: '大事件记录区',
           collapsed: false,
@@ -151,7 +147,7 @@ export default defineConfig({
         {
           text: 'AI与生活',
           items: [
-            { text: '最新周记', link: '/AI与生活/' },
+            { text: '首页', link: '/AI与生活/' },
             {
               text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
@@ -164,7 +160,7 @@ export default defineConfig({
         {
           text: 'AI与生活',
           items: [
-            { text: '最新周记', link: '/AI与生活/' },
+            { text: '首页', link: '/AI与生活/' },
             {
               text: '我的AI历程',
               link: '/AI与生活/我的AI历程/',
@@ -187,6 +183,10 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        async _render(src, env, md) {
+          if (env.frontmatter?.search === false || env.frontmatter?.type === 'weekly') return ''
+          return md.render(src, env)
+        },
         translations: {
           button: {
             buttonText: '搜索文档',

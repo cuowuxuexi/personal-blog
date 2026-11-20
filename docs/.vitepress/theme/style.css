@@ -1842,6 +1842,10 @@
   border: 1px solid var(--section-line);
 }
 
+.invest-paths:has(> .invest-path:only-child) {
+  grid-template-columns: 1fr;
+}
+
 .invest-path {
   display: block;
   min-width: 0;

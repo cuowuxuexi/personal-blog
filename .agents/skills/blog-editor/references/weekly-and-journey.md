@@ -2,6 +2,8 @@
 
 仅在 `content.weekly-investment`、`content.weekly-life` 或 `content.journey` 分支读取。可复制的周记 DOM 骨架以 `../templates/weekly-invest.md` 和 `../templates/weekly-life.md` 为准，本文件只记录分支、当前副作用与非模板规则。
 
+投资周记与 AI与生活周记默认冻结：保留 Markdown 与直达 URL，不进首页最近更新、顶栏、侧栏年份组或栏目入口。不要新开期数，除非作者明确要求恢复。历程系列仍活跃。
+
 ## 创作入口
 
 | 意图 | 首选入口 | Agent 行为 |
@@ -61,4 +63,4 @@ Markdown/frontmatter 是周记与历程的身份真源。`posts` 与受管年份
 
 用户手打内容默认轻度加工：修正错字、标点、病句和产品名称大小写；保留观点、即时语气与 `💡`。投资周记先过研究内容 Gate 1，持仓、成本和交易可按作者意愿写入。
 
-最后更新：2026-08-24
+最后更新：2026-11-20
