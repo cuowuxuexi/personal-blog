@@ -50,6 +50,11 @@ test('取到终审价', () => {
   assert.equal(extractReportFields(INTRO, 'report-000001-sz').finalPrice, '44.85')
 })
 
+test('价格标签写作「收盘价」时也取到终审价', () => {
+  const html = INTRO.replace('<span class="badge">终审价 ', '<span class="badge">收盘价 ')
+  assert.equal(extractReportFields(html, 'report-000001-sz').finalPrice, '44.85')
+})
+
 test('取到总市值', () => {
   assert.equal(extractReportFields(INTRO, 'report-000001-sz').marketCap, '2,589')
 })
