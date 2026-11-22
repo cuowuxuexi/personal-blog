@@ -22,6 +22,9 @@ panel/.local-backups/
 
 # Local Chrome debug profile and UI snapshots (cookies / login data)
 scratch/chrome-debug/
+
+# Agent 本地草稿：可能含本机路径与未公开稿件，不入公开仓库（已跟踪的旧文件不受影响）
+scratch/
 chrome-state.json
 
 # Accidental VitePress cache at repo root
