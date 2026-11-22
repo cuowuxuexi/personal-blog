@@ -9,6 +9,8 @@ import { fileURLToPath } from 'node:url'
 import { listContentKinds } from '../content-catalog/index.mjs'
 import { projectManagedPostsFromFs, projectStructureFromFs } from '../content-catalog/project-fs.mjs'
 import { standaloneHtmlFile } from '../docs/.vitepress/standalone-html.mjs'
+import { listReportDirs, readReport } from '../docs/.vitepress/research-reports.mjs'
+import { scanSetForPrivateTraces } from './land-report.mjs'
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PAGE_HASH = new Set(['', 'hub'])
@@ -67,15 +69,19 @@ export function listStandaloneHtmlFiles(repoRoot) {
   for (const rel of ['docs/public/html', 'docs/public/journey-guides']) {
     const root = path.join(repoRoot, ...rel.split('/'))
     if (!fs.existsSync(root)) continue
-    walkIndexHtml(root, out)
+    walkIndexHtml(root, out, true)
   }
   return out.sort()
 }
 
-function walkIndexHtml(dir, out) {
+// 研报集（docs/public/html/report-*）只走 checkReportSets，不进旧检查
+function walkIndexHtml(dir, out, isRoot = false) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const abs = path.join(dir, entry.name)
-    if (entry.isDirectory()) walkIndexHtml(abs, out)
+    if (entry.isDirectory()) {
+      if (isRoot && /^.?report-/.test(entry.name)) continue
+      walkIndexHtml(abs, out)
+    }
     else if (entry.isFile() && entry.name === 'index.html') out.push(abs)
   }
 }
@@ -84,9 +90,18 @@ function stripTags(html) {
   return String(html || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
 }
 
+// 属性名前必须是空白（或串首）：href/src/id/class 不会误中 data-href、data-id
 function attr(attrs, name) {
-  const match = String(attrs || '').match(new RegExp(`${name}\\s*=\\s*["']([^"']*)["']`, 'i'))
+  const match = String(attrs || '').match(new RegExp(`(?<=^|\\s)${name}\\s*=\\s*["']([^"']*)["']`, 'i'))
   return match ? match[1] : ''
+}
+
+function hasAttr(attrs, name) {
+  return new RegExp(`(?<=^|\\s)${name}\\s*=`, 'i').test(String(attrs || ''))
+}
+
+function stripComments(html) {
+  return String(html || '').replace(/<!--[\s\S]*?-->/g, '')
 }
 
 function extractBaseHref(html) {
@@ -96,7 +111,7 @@ function extractBaseHref(html) {
 
 function extractIds(html) {
   const ids = new Set()
-  for (const match of String(html || '').matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)) {
+  for (const match of stripComments(html).matchAll(/(?<=\s)id\s*=\s*["']([^"']+)["']/gi)) {
     ids.add(match[1])
   }
   return ids
@@ -241,6 +256,138 @@ export function checkHtmlSource(html, options = {}) {
   return failures
 }
 
+function listHtmlFiles(root, rel = '') {
+  const out = []
+  for (const e of fs.readdirSync(path.join(root, rel), { withFileTypes: true })) {
+    const r = rel ? `${rel}/${e.name}` : e.name
+    if (e.isDirectory()) out.push(...listHtmlFiles(root, r))
+    else if (e.isFile() && e.name.toLowerCase().endsWith('.html')) out.push(r)
+  }
+  return out.sort()
+}
+
+function isFile(abs) {
+  return fs.existsSync(abs) && fs.statSync(abs).isFile()
+}
+
+// 站内已知路径：catalog links，加上 docs/<路径>/index.md、docs/<路径>.md 或 public 下的文件
+function isKnownSitePath(repoRoot, catalog, pathname) {
+  if (catalog.links.has(pathname)) return true
+  const parts = pathname.replace(/^\/+/, '').split('/').filter(Boolean)
+  if (!parts.length || parts.includes('..')) return false
+  const docs = path.join(repoRoot, 'docs')
+  return (
+    isFile(path.join(docs, ...parts, 'index.md'))
+    || isFile(`${path.join(docs, ...parts)}.md`)
+    || isFile(path.join(docs, 'public', ...parts))
+  )
+}
+
+function extractReportRefs(html) {
+  const refs = []
+  for (const m of String(html).matchAll(/<(a|link|script|img)\b([^>]*)>/gi)) {
+    const tag = m[1].toLowerCase()
+    const key = tag === 'script' || tag === 'img' ? 'src' : 'href'
+    if (hasAttr(m[2], key)) refs.push({ tag, value: attr(m[2], key) })
+  }
+  return refs
+}
+
+function extractBackLinks(html) {
+  const out = []
+  for (const m of String(html).matchAll(/<a\b([^>]*)>/gi)) {
+    if (/\bback-link\b/.test(attr(m[1], 'class'))) out.push(attr(m[1], 'href'))
+  }
+  return out
+}
+
+/** 研报集检查：对象是 docs/public/html/report-<slug>/ 下的一整套页面。 */
+export function checkReportSet(repoRoot, setDir, catalog) {
+  const slug = path.basename(setDir)
+  const failures = []
+  const fail = (file, msg) => failures.push(`${slug}${file ? `/${file}` : ''}: ${msg}`)
+  const htmlFiles = listHtmlFiles(setDir)
+  const idCache = new Map()
+  const idsOf = (rel) => {
+    if (!idCache.has(rel)) idCache.set(rel, extractIds(fs.readFileSync(path.join(setDir, rel), 'utf8')))
+    return idCache.get(rel)
+  }
+  if (!htmlFiles.includes('index.html')) fail('', '缺少 index.html')
+
+  for (const rel of htmlFiles) {
+    const html = stripComments(fs.readFileSync(path.join(setDir, rel), 'utf8'))
+    for (const { tag, value } of extractReportRefs(html)) {
+      const raw = value.trim()
+      if (!raw) {
+        fail(rel, `<${tag}> 的链接为空`)
+        continue
+      }
+      if (/^(https?:|mailto:|data:)/i.test(raw)) continue
+      // 以该 HTML 的实际公开 URL 为基准解析，再按落点判
+      let pathname
+      let hash
+      try {
+        const url = new URL(raw, `http://site.local/html/${slug}/${rel}`)
+        hash = decodeURIComponent(url.hash.replace(/^#/, ''))
+        pathname = decodeURIComponent(url.pathname)
+      } catch {
+        fail(rel, `无法解析链接 ${raw}`)
+        continue
+      }
+      const setPrefix = `/html/${slug}/`
+      if (pathname.startsWith(setPrefix)) {
+        let targetRel = pathname.slice(setPrefix.length)
+        if (!targetRel || targetRel.endsWith('/')) targetRel += 'index.html'
+        const target = path.resolve(setDir, ...targetRel.split('/'))
+        const within = path.relative(setDir, target)
+        if (within.startsWith('..') || path.isAbsolute(within) || !isFile(target)) {
+          fail(rel, `集内不存在的文件 ${raw}`)
+          continue
+        }
+        const withinPosix = within.split(path.sep).join('/')
+        if (hash && target.toLowerCase().endsWith('.html') && !idsOf(withinPosix).has(hash)) {
+          fail(rel, `hash #${hash} 在 ${withinPosix} 中没有对应 id`)
+        }
+        continue
+      }
+      const normalized = pathname.replace(/\/+$/, '') || '/'
+      if (!isKnownSitePath(repoRoot, catalog, normalized)) fail(rel, `未知站内路径 ${raw}`)
+    }
+    const backs = extractBackLinks(html)
+    if (!backs.length) fail(rel, '缺少 .back-link')
+    for (const href of backs) if (href !== '/投资/') fail(rel, `.back-link 必须是 /投资/，实际 ${href}`)
+  }
+
+  for (const hit of scanSetForPrivateTraces(setDir)) fail(hit, '私有痕迹')
+
+  let industryOk = false
+  try {
+    const meta = JSON.parse(fs.readFileSync(path.join(setDir, 'blog-meta.json'), 'utf8'))
+    industryOk = typeof meta.industry === 'string' && meta.industry.trim() !== ''
+  } catch {
+    industryOk = false
+  }
+  if (!industryOk) fail('blog-meta.json', '缺少，或 industry 不是非空字符串')
+
+  if (htmlFiles.includes('index.html')) {
+    try {
+      readReport(setDir)
+    } catch (err) {
+      // readReport 缺 blog-meta.json 的行业时已由上面报过，这里只补元数据提取失败
+      if (industryOk || !String(err.message).includes('「行业」')) failures.push(err.message)
+    }
+  }
+  return failures
+}
+
+export function checkReportSets(repoRoot, catalog = buildCatalogTitleLinks(repoRoot)) {
+  const failures = []
+  for (const dir of listReportDirs(path.join(repoRoot, 'docs', 'public', 'html'))) {
+    failures.push(...checkReportSet(repoRoot, dir, catalog))
+  }
+  return failures
+}
+
 export function checkStandaloneHtml(repoRoot = REPO_ROOT) {
   const catalog = buildCatalogTitleLinks(repoRoot)
   const failures = []
@@ -257,6 +404,7 @@ export function checkStandaloneHtml(repoRoot = REPO_ROOT) {
       }),
     )
   }
+  failures.push(...checkReportSets(repoRoot, catalog))
   return { ok: failures.length === 0, failures }
 }
 

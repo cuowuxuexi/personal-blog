@@ -8,7 +8,7 @@ hubIndex: 02 / MARKET
 hubLead: 异质参与者、反身性、路径依赖；价格的事实地位与认知警报权。
 ---
 
-<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>市场与价格</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资哲学/">方法</a><span>/</span><strong>市场与价格</strong></nav>
 
 <section class="subject-masthead">
   <div>

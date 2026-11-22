@@ -21,7 +21,7 @@ The **publishing panel** is the author's local, non-coding tool for 我的AI历�
 ## Date fields
 
 - `date` is the first-publication / issue date. Ordinary panel edits (typos, polish) must not change it.
-- Optional `revisionDate` is only for important revisions the author explicitly wants reflected in homepage「最近更新」(`revisionDate ?? date`). Do not auto-set it from save time, Git, or mtime. Hermes is out of panel scope and does not use the field. Series「最新一期」still follows issue `date`, not `revisionDate`.
+- Optional `revisionDate` is only for important revisions the author explicitly wants reflected in homepage「最近更新」(`revisionDate ?? date`)（首页已不展示最近更新，此字段目前只影响 `recentPosts` 查询）. Do not auto-set it from save time, Git, or mtime. Hermes is out of panel scope and does not use the field. Series「最新一期」still follows issue `date`, not `revisionDate`.
 
 ## Who does what
 

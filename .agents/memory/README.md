@@ -9,6 +9,7 @@
 | `MEMORY.md` | 共享记忆索引 |
 | `project_arch-deepen-open.md` | 架构加深与 agent-speed 已进 origin；旧 worktree 仍保留 |
 | `project_weekly-frozen.md` | 两类周记冻结隐藏；历程仍活跃 |
+| `project_life-bigquestion-frozen.md` | 旧版投研、AI下的生活、大问题冻结归档，只从 /归档 进入 |
 | `project_cuowo-cn-domestic.md` | 国内站 cuowo.cn、双上传口与备案现役指针 |
 | `project_journey-panel-live.md` | 我的AI历程发布面板现行协议指针 |
 | `project_pharma-maps-frontend.md` | 医药研究地图前端投影与构建门 |
@@ -24,4 +25,4 @@
 | --- | --- |
 | （无） | 当前无子目录 |
 
-最后更新：2026-11-20
+最后更新：2026-11-21

@@ -38,6 +38,13 @@ function resolvePublicStandalone(pathname) {
   }
   const rel = pathname.slice(1)
   if (!rel || rel.includes('..')) return null
+  if (rel.endsWith('.html')) {
+    const direct = resolvedUnderPublic(rel)
+    if (direct && fs.existsSync(direct) && fs.statSync(direct).isFile()) {
+      // <base> 取文件自身的 URL：#锚点留在当前页，相对资源仍按所在目录解析
+      return { file: direct, basePath: pathname, cover: false }
+    }
+  }
   const indexFile = resolvedUnderPublic(`${rel}/index.html`)
   if (indexFile && fs.existsSync(indexFile)) {
     return { file: indexFile, basePath: `${pathname}/`, cover: false }
@@ -117,6 +124,8 @@ function emitSiblingHtml(outDir) {
     const root = path.join(outDir, prefix)
     if (!fs.existsSync(root)) continue
     for (const name of fs.readdirSync(root)) {
+      // 研报集多页自带相对链接，生成同名 .html 副本会让无尾斜杠访问把相对路径解析到 /html/assets/
+      if (/^\.?report-/.test(name)) continue
       const indexFile = path.join(root, name, 'index.html')
       if (!fs.statSync(path.join(root, name)).isDirectory() || !fs.existsSync(indexFile)) continue
       fs.copyFileSync(indexFile, path.join(root, `${name}.html`))

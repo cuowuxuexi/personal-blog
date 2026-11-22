@@ -17,7 +17,9 @@ const GENERATED_OVERVIEWS = Object.freeze([
   { rel: 'docs/投资/投研/index.md', marker: 'ResearchDirectory' },
   { rel: 'docs/投资哲学/index.md', marker: 'HubTopicList' },
   { rel: 'docs/大问题/index.md', marker: 'HubTopicList' },
-  { rel: 'docs/投资/index.md', marker: 'TrackedSubjectList' },
+  { rel: 'docs/index.md', marker: 'ResearchDesk' },
+  { rel: 'docs/投资/index.md', marker: 'ResearchDesk' },
+  { rel: 'docs/归档.md', marker: 'ArchiveIndex' },
   { rel: 'docs/投资/投研/互联网/index.md', marker: 'IndustryDirectory' },
   { rel: 'docs/投资/投研/猪肉养殖/index.md', marker: 'IndustryDirectory' },
   { rel: 'docs/投资/投研/白酒/index.md', marker: 'IndustryDirectory' },
@@ -156,13 +158,14 @@ export function checkOverviewLists(repoRoot, nodes) {
   }
 
   const tracked = trackedSubjects(nodes).map((item) => item.link)
-  const investHub = readRepo(repoRoot, 'docs/投资/index.md')
-  if (investHub.includes('class="tracked-subject"')) {
-    fail(failures, 'overview-handwritten', {
-      kindId: 'research',
-      file: 'docs/投资/index.md',
-      message: '投资总览跟踪标的必须由 TrackedSubjectList 生成',
-    })
+  for (const rel of ['docs/index.md', 'docs/投资/index.md', 'docs/归档.md']) {
+    if (readRepo(repoRoot, rel).includes('data-row="')) {
+      fail(failures, 'overview-handwritten', {
+        kindId: 'research',
+        file: rel,
+        message: `${rel} 的清单行必须由组件生成，不得手写 data-row`,
+      })
+    }
   }
   if (tracked.length !== summary.subjectCount) {
     fail(failures, 'overview-count', {

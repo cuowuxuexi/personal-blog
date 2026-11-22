@@ -3,8 +3,6 @@ import { onMounted, watch, nextTick } from 'vue'
 import Theme from 'vitepress/theme-without-fonts'
 import { useRoute, inBrowser } from 'vitepress'
 import PostMeta from './components/PostMeta.vue'
-import HomeHeroCta from './components/HomeHeroCta.vue'
-import HomeRecent from './components/HomeRecent.vue'
 import SiteTitleMenu from './components/SiteTitleMenu.vue'
 import SiteBeian from './components/SiteBeian.vue'
 
@@ -50,6 +48,7 @@ function setupImageZoom() {
       target.closest('.vp-doc') &&
       !target.closest('.blog-zoom-overlay') &&
       !target.closest('.post-cover') &&
+      !target.closest('.video-shelf') &&
       !target.closest('.weekly-entry__badge') &&
       !target.classList.contains('weekly-section-icon') &&
       !target.classList.contains('weekly-entry__badge-image')
@@ -200,12 +199,6 @@ watch(
     </template>
     <template #doc-before>
       <PostMeta />
-    </template>
-    <template #home-hero-actions-after>
-      <HomeHeroCta />
-    </template>
-    <template #home-features-after>
-      <HomeRecent />
     </template>
     <template #layout-bottom>
       <SiteBeian />

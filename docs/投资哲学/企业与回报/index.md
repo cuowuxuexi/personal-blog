@@ -8,7 +8,7 @@ hubIndex: 03 / ENTERPRISE
 hubLead: 企业生存、经营成果、股东利益传导；企业质量、买入价格与投资回报分开判断。
 ---
 
-<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>企业与回报</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资哲学/">方法</a><span>/</span><strong>企业与回报</strong></nav>
 
 <section class="subject-masthead">
   <div>

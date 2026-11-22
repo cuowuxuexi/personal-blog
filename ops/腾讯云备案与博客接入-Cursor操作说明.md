@@ -18,7 +18,7 @@
 | 站点目录 | `/var/www/blog` |
 | Nginx | `/etc/nginx/conf.d/cuowo.cn.conf`（80→301，443） |
 | 证书 | `/etc/letsencrypt/live/cuowo.cn/`，至 2026-11-19；certbot 自动续期 |
-| 页脚代码 | `docs/.vitepress/config.mts` 的 `footer.copyright`；内页 `SiteBeian.vue`；图标 `/images/beian-mps.png` |
+| 页脚代码 | `SiteBeian.vue`（全站，含首页）；图标 `/images/beian-mps.png` |
 | 海外备份 | `https://blog.cuowo.win`（Cloudflare Pages）。`push main` **只更新 Pages** |
 | 日常国内更新 | 发布面板确认发布：push 之后本机构建并上传 guonei，轮询 `https://cuowo.cn/build.json` |
 | 公安联网备案 | 已通过；个人主体；属地 **闽侯**（非常住地≠接入商海淀） |
@@ -66,7 +66,7 @@ ssh -i $KEY root@100.88.115.43
 | 语种 | 中文简体 |
 | 域名证书 | 腾讯云「我的域名」→ `cuowo.cn` → 更多 → 下载域名证书 → 转 png/jpg 上传 |
 
-2026-08-24 已写入页脚（`SiteBeian.vue` + 首页 footer），链 `https://beian.mps.gov.cn/#/query/webSearch?code=35018302000421`。不要再当「等审未挂」。
+2026-08-24 已写入页脚（`SiteBeian.vue`（全站）），链 `https://beian.mps.gov.cn/#/query/webSearch?code=35018302000421`。不要再当「等审未挂」。
 
 ## 验收
 

@@ -2,15 +2,15 @@ import { defineConfig } from 'vitepress'
 import { loadHermesDiaryPostsFromFs } from './hermes-diary-fs'
 import { hermesSidebarItems } from './hermes-diary'
 import {
-  bigQuestionNavItems,
   bigQuestionSidebarGroups,
   journeySidebarGroups,
-  philosophyNavItems,
   philosophySidebarGroups,
   researchIndustrySidebarGroups,
 } from './managed-sidebar-fs.mjs'
 import { normalizeDisplayMath } from './normalize-math.mjs'
 import { normalizeWeeklyEntryHeadings } from './normalize-weekly-headings.mjs'
+import { loadReports, siteTokenCss } from './research-reports.mjs'
+import { loadVideos } from './videos.mjs'
 import { emitStandaloneCoverPages, serveStandaloneHtmlPlugin, standaloneHtmlFile } from './standalone-html.mjs'
 
 /**
@@ -22,11 +22,24 @@ import { emitStandaloneCoverPages, serveStandaloneHtmlPlugin, standaloneHtmlFile
  * - 面板只写 Markdown（+引用图）；受管 posts/sidebar 由投影生成
  */
 const hermesDiaryNav = hermesSidebarItems(loadHermesDiaryPostsFromFs())
+const { cssVars } = loadReports()
+const siteTokens = siteTokenCss(cssVars)
+const hasVideos = loadVideos().length > 0
+const themeColor = cssVars.find(([name]) => name === '--primary')?.[1] || '#2949a4'
+
+function pageClassFor(relativePath: string): string {
+  if (['index.md', '投资/index.md', '归档.md', '视频/index.md'].includes(relativePath)) return 'site-list'
+  if (relativePath.startsWith('投资哲学/') || relativePath === '关于.md') return 'site-article'
+  if (['投资/投研/', '投资/周记/', 'AI与生活/', '大问题/'].some((p) => relativePath.startsWith(p))) {
+    return 'site-archive'
+  }
+  return ''
+}
 
 export default defineConfig({
   lang: 'zh-CN',
   title: '误君在脑海里放烟花',
-  description: '投资观察与 AI 生活随笔',
+  description: '一个人的投研笔记',
   base: process.env.VITEPRESS_BASE || '/',
   cleanUrls: true,
   lastUpdated: true,
@@ -60,6 +73,12 @@ export default defineConfig({
       pageData.frontmatter.prev = false
       pageData.frontmatter.next = false
     }
+    const pageClass = pageClassFor(pageData.relativePath)
+    if (pageClass) {
+      pageData.frontmatter ??= {}
+      const prev = pageData.frontmatter.pageClass
+      pageData.frontmatter.pageClass = prev ? `${prev} ${pageClass}` : pageClass
+    }
   },
 
   async buildEnd(siteConfig) {
@@ -67,7 +86,8 @@ export default defineConfig({
   },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#2949a4' }],
+    ['meta', { name: 'theme-color', content: themeColor }],
+    ...(siteTokens ? [['style', { id: 'site-tokens' }, siteTokens] as [string, Record<string, string>, string]] : []),
   ],
 
   themeConfig: {
@@ -75,15 +95,10 @@ export default defineConfig({
     logo: undefined,
 
     nav: [
-      {
-        text: '投资哲学档',
-        items: philosophyNavItems,
-      },
-      {
-        text: '大问题',
-        items: bigQuestionNavItems,
-      },
-      { text: '知识检索', link: '/html/knowledge-search' },
+      { text: '研报', link: '/', activeMatch: '^/(投资/)?$' },
+      ...(hasVideos ? [{ text: '视频', link: '/视频/', activeMatch: '^/视频/' }] : []),
+      { text: '方法', link: '/投资哲学/', activeMatch: '^/投资哲学/' },
+      { text: '归档', link: '/归档', activeMatch: '^/(归档$|投资/投研/|投资/周记/|AI与生活/|大问题/)' },
       { text: '关于', link: '/关于' },
     ],
 
@@ -98,29 +113,26 @@ export default defineConfig({
       // 投研侧栏：行业树由投影注入；静态壳只留投研三入口。
       '/投资/投研/': [
         {
-          text: '投研',
+          text: '旧版投研',
           items: [
-            { text: '投研首页', link: '/投资/' },
-            { text: '投研标的', link: '/投资/投研/' },
+            { text: '归档', link: '/归档' },
+            { text: '旧版目录', link: '/投资/投研/' },
           ],
         },
         ...researchIndustrySidebarGroups,
       ],
       '/投资/周记/': [
         {
-          text: '投研',
-          items: [
-            { text: '投研首页', link: '/投资/' },
-            { text: '投研标的', link: '/投资/投研/' },
-          ],
+          text: '归档',
+          items: [{ text: '归档', link: '/归档' }],
         },
       ],
       '/投资/': [
         {
-          text: '投研',
+          text: '研报',
           items: [
-            { text: '投研首页', link: '/投资/' },
-            { text: '投研标的', link: '/投资/投研/' },
+            { text: '研报', link: '/' },
+            { text: '归档', link: '/归档' },
           ],
         },
       ],
@@ -206,12 +218,6 @@ export default defineConfig({
     },
 
     socialLinks: [],
-
-    footer: {
-      message: '个人笔记分享 · <strong>非投资建议</strong>，据此决策风险自负',
-      copyright:
-        '© 2026 误君在脑海里放烟花 · <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">闽ICP备2026032381号-1</a>',
-    },
 
     docFooter: {
       prev: '上一篇',

@@ -1,5 +1,5 @@
 ---
-title: 投资哲学档
+title: 方法
 description: 可错性、市场与研究边界的长期立场
 pageClass: investment-hub
 outline: false
@@ -8,13 +8,13 @@ order: 0
 
 <section class="invest-hub-masthead">
   <p>PHILOSOPHY / 投资哲学</p>
-  <h1>投资哲学档</h1>
+  <h1>方法</h1>
   <p>记录我如何认识市场、企业与自身判断边界——前提可错，结论可修。</p>
 </section>
 
 <div class="invest-hub-disclaimer">
   <strong>边界</strong>
-  <span>本页是立场与方法的档案，不是量化模型、评分卡、买卖手册或自动决策规则，也不构成投资建议。公开整理自个人投研基座；具体判断仍须回到具体企业、价格与事实。</span>
+  <span>本页是立场与方法的档案，不是量化模型、评分卡、买卖手册或自动决策规则。公开整理自个人投研基座；具体判断仍须回到具体企业、价格与事实。</span>
 </div>
 
 <section class="invest-hub-section" aria-labelledby="philo-core">

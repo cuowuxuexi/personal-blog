@@ -237,7 +237,7 @@ const KINDS = Object.freeze([
   }),
   Object.freeze({
     id: 'philosophy',
-    label: '投资哲学档',
+    label: '方法',
     category: '投资哲学',
     postType: 'philosophy',
     pageClass: Object.freeze(['investment-hub', 'subject-index']),

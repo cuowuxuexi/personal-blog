@@ -8,7 +8,7 @@ hubIndex: 05 / FRAMEWORK
 hubLead: DCF 是公理；终局、折现率、拍卖机制、叙事变化、方法论是五根承重柱。本页把骨架一次讲完，七张画布分别讲透。
 ---
 
-<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>邹佩轩投资哲学框架</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资哲学/">方法</a><span>/</span><strong>邹佩轩投资哲学框架</strong></nav>
 
 <section class="subject-masthead">
   <div>

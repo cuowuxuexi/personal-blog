@@ -43,7 +43,7 @@
 | 用户意图 | 首读 | 常见实现入口 | 最小验证 |
 | --- | --- | --- | --- |
 | 新增/修改历程、投研或其它正文 | blog-editor Skill 的 Routing；投资内容再读对应协议 | 目标 Markdown；历程/投研目录自动投影。两类周记默认冻结，须作者明确恢复 | `pnpm test:content` + `pnpm docs:build`；面板相关再跑 `pnpm test:panel` |
-| 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
+| 修改首页、文章布局或组件 | blog-editor Skill 的 design 路由 | `docs/index.md`、`SiteMasthead.vue` / `ResearchDesk.vue`、`theme/components/`、`Layout.vue` | `pnpm docs:build` + 目标视口检查 |
 | 先做好独立 HTML 再嵌进文章/单独打开 | `docs/public/html/README.md` | 拷进 `docs/public/html/<名字>/`；周记嵌 `<StandaloneHtml>`；投研 HTML 章写 `publicHref` 直达 | `pnpm check:html`；直开 `/html/<名字>` 应是完整 HTML，不是 VitePress 404 |
 | 修改某类页面样式 | 目标页面 `pageClass` | `docs/.vitepress/theme/style.css` 对应段 | `pnpm docs:build` + 1440/768/390 检查 |
 | 修改栏目、侧栏、最近更新或最新一期 | 内容目录 / 信息架构能力 | 先读 `content-catalog/`；`posts.ts` / `config.mts` 是站点消费者，面板经 adapter 消费同一合同 | `pnpm test:content`；接线后还要 `pnpm docs:build` + 相关面板测试 |
@@ -87,9 +87,9 @@ pnpm docs:build
 ## 不变量
 
 - 公开 URL、正文观点、整体视觉、发布门禁和双站部署模型默认保持不变。
-- 「我的AI历程」是 AI与生活下的独立系列：生活侧栏只保留系列入口，历程侧栏由 typed IA 投影具名篇章和日期期数。
+- 已冻结：「我的AI历程」是 AI与生活下的独立系列：生活侧栏只保留系列入口，历程侧栏由 typed IA 投影具名篇章和日期期数。
 - 面板发布、commit、push、部署始终需要作者显式确认。
 - 私有绝对路径、凭据、工作底稿和不可再分发材料不进入公开文档。
 - 当前工作区存在未提交功能修改时，结构迁移先等待该功能基线稳定，不覆盖或整理无关改动。
 
-最后更新：2026-08-27
+最后更新：2026-11-21

@@ -16,6 +16,23 @@ docs/public/html/<名字>/
 
 已有的 Pi / Grok 图解仍在 `docs/public/journey-guides/`，地址保持 `/journey-guides/...`。新作品用本目录。
 
+### 研报集
+
+一家一套多页研报，原样托管：
+
+```text
+docs/public/html/report-<slug>/
+  index.html
+  *.html
+  assets/
+  blog-meta.json
+```
+
+- 目录名 `report-<slug>`：代码小写、`.` 换 `-`，如 `002714.SZ` → `report-002714-sz`。
+- `blog-meta.json` 内容 `{"industry":"<行业>","updatedAt":"<落页时间>"}`；`updatedAt` 由 `land-report.mjs` 每次落页写入（北京时间 `YYYY-MM-DDTHH:mm:ss+08:00`），研报清单按它降序排，缺省时按价格时点排；这是博客侧唯一附加文件，研报文件本身不改。
+- 入口链接写显式文件名 `/html/report-<slug>/index.html`；构建不生成 `/html/report-<slug>.html` 同名副本。
+- 由 `scripts/land-report.mjs` 落页，`pnpm check:html` 的研报集检查把关。步骤见 `docs/agents/research-publishing.md` 的「研报集约定」。该标的旧页原样留在入口页「旧版」段，与研报并存。
+
 ## 怎么嵌进文章
 
 ```md
@@ -59,5 +76,6 @@ docs/public/html/<名字>/
 | `wuliangye-canvas/` | 五粮液研究画布：价格要求、经营供给与现金价值；`/投资/投研/白酒/五粮液/` 覆盖为这份 HTML |
 | `maotai-canvas/` | 贵州茅台研究画布：1329元要求什么、天花板、付钱信念、利润兑现与现金垫底；`/投资/投研/白酒/茅台/` 覆盖为这份 HTML |
 | `catl-canvas/` | 宁德时代研究画布：生意、现金、起点利润、天花板、回报要求与判决出口；`/投资/投研/硬件制造/宁德时代/` 覆盖为这份 HTML |
+| `report-002714-sz/` | 牧原股份研报（六页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 
-最后更新：2026-10-27
+最后更新：2026-11-22

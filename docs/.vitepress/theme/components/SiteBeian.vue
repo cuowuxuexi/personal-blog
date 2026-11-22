@@ -1,13 +1,6 @@
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useData } from 'vitepress'
-
-const { frontmatter } = useData()
-const isHome = computed(() => frontmatter.value.layout === 'home')
-</script>
-
 <template>
-  <p v-if="!isHome" class="site-beian">
+  <p class="site-beian">
+    <span class="site-beian__copyright">© 2026 误君在脑海里放烟花</span>
     <a
       href="https://beian.miit.gov.cn/"
       target="_blank"

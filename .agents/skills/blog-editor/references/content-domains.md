@@ -10,6 +10,8 @@
 
 作者说「写入博客」时按交来的稿落页，不回源、不重走 Gate 1。作者说「按投资系统改认识」才执行 `docs/agents/research-publishing.md` 的 Gate 1 与本地回源。发布前执行 Gate 2；作者说「上传」后只提交这次投研文件，`push main`，再跑 `pnpm publish:guonei`。
 
+研报集：作者交来的多页研报目录托管在 `docs/public/html/report-<slug>/`（公开 URL `/html/report-<slug>/index.html`）。首页 `/` 与 `/投资/` 的研报清单由构建期从研报与 `blog-meta.json` 提取，不手抄。旧版 `/投资/投研/` 的旧页原样保留，归档页 `/归档` 的旧版投研段对已有研报的标的标「已有研报」；研报与旧版并存是正常状态，旧页删除由作者另行下达。操作步骤只看 `docs/agents/research-publishing.md` 的「研报集约定」一节。
+
 ### 公开正文合同
 
 投研正文可以记录研究对象、证据边界、当前理解、开放问题、后续需要核验的事实，以及真正改变认识的重要修订。第一人称判断可以保留，但必须帮助读者理解对象或判断边界。
@@ -33,7 +35,7 @@
 
 ## 大问题
 
-顶栏文字是「大问题」，写在 `docs/.vitepress/config.mts` 的 nav 壳上。条目仍由投影生成，不要手改条目。
+大问题已冻结：保留页面与地址，作者明确重开才新增。已不在顶栏，从 `/归档` 进入。条目仍由投影生成，不要手改条目。
 
 主题位于 `docs/大问题/<主题>/index.md`，总览在 `docs/大问题/index.md`。新增主题只写主题 `index.md`（`sidebarText` / `order` / `hubIndex` / `hubLead`）与 README；总览卡片、nav 与 `/大问题/` sidebar 由内容目录投影。普通正文修改不动索引，不进入 `posts.ts`。
 
@@ -41,10 +43,10 @@
 
 ## AI 大事件
 
-大事件写在 `docs/AI与生活/大事件/YYYY.md`。在已有年份追加事件只改该年文件；新增年份才同步 `config.mts` 的 AI与生活 sidebar。大事件不写进周记正文，也不进入 `posts.ts`。
+大事件已冻结，作者明确重开才新增。大事件写在 `docs/AI与生活/大事件/YYYY.md`。在已有年份追加事件只改该年文件；新增年份才同步 `config.mts` 的 AI与生活 sidebar。大事件不写进周记正文，也不进入 `posts.ts`。
 
 ## Verification
 
 以上公开内容或索引变化至少运行 `pnpm docs:build`。视觉结构变化再按 `references/site-design.md` 选代表页检查；投研内容还必须满足研究协议的两道人闸。
 
-最后更新：2026-10-16
+最后更新：2026-11-21

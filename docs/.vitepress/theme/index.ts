@@ -10,7 +10,10 @@ import IndustryDirectory from './components/IndustryDirectory.vue'
 import LatestWeeklyRedirect from './components/LatestWeeklyRedirect.vue'
 import ResearchCount from './components/ResearchCount.vue'
 import ResearchDirectory from './components/ResearchDirectory.vue'
-import TrackedSubjectList from './components/TrackedSubjectList.vue'
+import ResearchDesk from './components/ResearchDesk.vue'
+import SiteMasthead from './components/SiteMasthead.vue'
+import VideoShelf from './components/VideoShelf.vue'
+import ArchiveIndex from './components/ArchiveIndex.vue'
 import WeeklyEntry from './components/WeeklyEntry.vue'
 import StandaloneHtml from './components/StandaloneHtml.vue'
 import JumpToStandalone from './components/JumpToStandalone.vue'
@@ -30,7 +33,10 @@ export default {
     app.component('LatestWeeklyRedirect', LatestWeeklyRedirect)
     app.component('ResearchCount', ResearchCount)
     app.component('ResearchDirectory', ResearchDirectory)
-    app.component('TrackedSubjectList', TrackedSubjectList)
+    app.component('ResearchDesk', ResearchDesk)
+    app.component('SiteMasthead', SiteMasthead)
+    app.component('VideoShelf', VideoShelf)
+    app.component('ArchiveIndex', ArchiveIndex)
     app.component('WeeklyEntry', WeeklyEntry)
     app.component('StandaloneHtml', StandaloneHtml)
     app.component('JumpToStandalone', JumpToStandalone)

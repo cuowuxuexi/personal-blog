@@ -102,15 +102,55 @@
 .VPNav .content .content-body {
   backdrop-filter: saturate(180%) blur(36px);
   -webkit-backdrop-filter: saturate(180%) blur(36px);
-  background-color: rgba(255, 255, 255, 0.72) !important;
+  background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent) !important;
 }
 
 .dark .VPNav .content .content-body {
-  background-color: rgba(26, 26, 30, 0.72) !important;
+  background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent) !important;
 }
 
 .VPNavBar:not(.top) {
   border-bottom-color: var(--vp-c-divider);
+}
+
+/* 接缝：分隔线改由 .VPNavBar 的下边线承担，.divider 不再填色；汉堡图标用上边线画，顶栏内没有任何异色底块 */
+.VPNav .VPNavBar.VPNavBar {
+  border-bottom-width: 0;
+}
+
+/* .content-body 的毛玻璃底会盖住 .VPNavBar 自身的下边线，造成中段断口；线改画在 .VPNav 外侧 */
+.VPNav {
+  box-shadow: 0 1px 0 var(--vp-c-divider);
+}
+
+.VPNav .VPNavBar .VPNavBarTitle.has-sidebar,
+.VPNav .VPNavBar .VPNavBarTitle.has-sidebar .title {
+  border-bottom-color: transparent;
+}
+
+/* 移动菜单展开时 .VPNavScreen 从栏底开始绘制，会盖住 .VPNav 外侧的线；在面板顶端补一条 */
+.VPNav .VPNavScreen {
+  box-shadow: inset 0 1px 0 var(--vp-c-divider);
+}
+
+.VPNav .VPNavBar .divider,
+.VPNav .VPNavBar .divider-line {
+  background-color: transparent !important;
+}
+
+.VPNav .VPNavBar .VPNavBarHamburger .top,
+.VPNav .VPNavBar .VPNavBarHamburger .middle,
+.VPNav .VPNavBar .VPNavBarHamburger .bottom {
+  height: 0;
+  border-top: 2px solid var(--vp-c-text-1);
+  background-color: transparent !important;
+  transition: top 0.25s, border-color 0.5s, transform 0.25s;
+}
+
+.VPNav .VPNavBar .VPNavBarHamburger.active:hover .top,
+.VPNav .VPNavBar .VPNavBarHamburger.active:hover .middle,
+.VPNav .VPNavBar .VPNavBarHamburger.active:hover .bottom {
+  border-top-color: var(--vp-c-text-2);
 }
 
 /* 站名：仅回首页；阻断父级默认 <a> 抢点击 */
@@ -299,9 +339,36 @@
   max-width: 800px;
 }
 
+/* 方法页 / 关于页：正文收成一条研报版心 */
+/* .VPDoc.VPDoc 抬高特异性：压过 VitePress 的 .has-aside[data-v] 688px 与 .investment-hub / .subject-index 的 760px */
+.site-article .VPContent .VPDoc.VPDoc .content-container {
+  max-width: var(--prose-max, 740px);
+}
+
+/* 清单页：VitePress 各层不再限宽，由根元素自己定版心 */
+/* 多挂一层 .VPContent：VitePress 在 ≥960/1440px 的 :not(.has-sidebar) 规则特异性相同且后加载 */
+.site-list .VPContent .VPDoc .container,
+.site-list .VPContent .VPDoc .content,
+.site-list .VPContent .VPDoc .content-container {
+  max-width: none;
+}
+
+.research-desk-root,
+.archive-index-root {
+  max-width: var(--content-max, 900px);
+  margin: 0 auto;
+}
+
 .vp-doc {
-  line-height: 1.85;
-  font-size: 16.5px;
+  font-size: 16px;
+  line-height: 1.84;
+}
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  font-family: var(--font-serif, inherit);
+  font-weight: 500;
 }
 
 .vp-doc p {
@@ -311,13 +378,8 @@
 .vp-doc h2 {
   margin: 2.1rem 0 0.85rem;
   padding-top: 0.35rem;
-  border-top: 1px solid var(--vp-c-divider);
-  letter-spacing: 0.01em;
-}
-
-.vp-doc h2:first-of-type {
   border-top: none;
-  margin-top: 1.4rem;
+  letter-spacing: 0.01em;
 }
 
 .vp-doc h3 {
@@ -328,19 +390,23 @@
   margin-top: 0.35em;
 }
 
+.vp-doc li::marker {
+  color: var(--vp-c-text-3);
+}
+
 .vp-doc img {
-  border-radius: 6px;
+  border-radius: 0;
   cursor: zoom-in;
 }
 
 .vp-doc table {
   display: table;
   width: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--vp-c-divider);
-  border-collapse: separate;
-  border-spacing: 0;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--vp-c-divider);
+  border-collapse: collapse;
 }
 
 .vp-doc tr {
@@ -349,16 +415,17 @@
 
 .vp-doc th,
 .vp-doc td {
-  border-color: var(--vp-c-divider);
+  border: none;
+  border-bottom: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc div[class*="language-"] {
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc a {
-  font-weight: 500;
+  font-weight: inherit;
   text-decoration: none !important;
   color: var(--blog-link);
   transition: color 0.15s ease;
@@ -375,9 +442,7 @@
 .VPNav a:link,
 .VPNav a:visited,
 .VPSidebar a:link,
-.VPSidebar a:visited,
-.VPFooter a:link,
-.VPFooter a:visited {
+.VPSidebar a:visited {
   color: inherit;
 }
 
@@ -590,136 +655,6 @@
   margin-top: 0.35rem;
 }
 
-/* ---------- Home: hero / features / 最近更新 同宽左右对齐 ---------- */
-/*
- * VitePress 默认 VPHero 用负 margin、绝对定位图片、固定 320 盒，
- * 这里整段覆盖，避免文案被裁切 / 插画错位。
- */
-
-:root {
-  --blog-home-max: 960px;
-  --blog-home-pad-x: 24px;
-}
-
-/* 取消顶栏负 margin，正常从导航下开始 */
-.VPHome .VPHero.VPHomeHero {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding: 2.5rem var(--blog-home-pad-x) 1.25rem !important;
-}
-
-.VPHome .VPHero.has-image .container,
-.VPHome .VPHero .container {
-  display: flex !important;
-  flex-direction: column !important; /* 移动端：图上文下（order 控制） */
-  align-items: stretch !important;
-  gap: 1.25rem;
-  margin: 0 auto !important;
-  max-width: var(--blog-home-max) !important;
-  width: 100% !important;
-  text-align: left !important;
-}
-
-.VPHome .VPHero.has-image .main,
-.VPHome .VPHero .main {
-  order: 2 !important; /* 文案在后：移动端在下，桌面在右 */
-  position: relative;
-  z-index: 2;
-  flex: 1 1 auto !important;
-  width: 100% !important;
-  max-width: none !important;
-  padding: 0 !important;
-}
-
-.VPHome .VPHero .heading {
-  display: block;
-}
-
-/* 仅展示「看，烟花！」：去掉默认 max-width / 居中 / 裁切风险 */
-.VPHome .VPHero .name,
-.VPHome .VPHero .tagline {
-  display: none !important;
-}
-
-.VPHome .VPHero .text {
-  display: block !important;
-  width: auto !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: clamp(2.1rem, 5vw, 3rem) !important;
-  font-weight: 700 !important;
-  line-height: 1.25 !important;
-  letter-spacing: 0.04em;
-  white-space: normal !important;
-  color: var(--vp-c-text-1) !important;
-  background: none !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-.VPHome .VPHero .actions {
-  display: none !important; /* 路线2：板块导航改由顶栏；Hero 仅 HomeHeroCta */
-}
-
-/* 插画：文档流排版，取消绝对定位与负边距 */
-.VPHome .VPHero.has-image .image,
-.VPHome .VPHero .image {
-  order: 1 !important; /* 插画在前：移动端在上，桌面在左 */
-  position: relative !important;
-  flex: 0 0 auto !important;
-  width: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  overflow: visible !important;
-}
-
-.VPHome .VPHero .image-container {
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  transform: none !important;
-}
-
-.VPHome .VPHero .image-bg {
-  display: none !important;
-}
-
-/*
- * 主图为透明底 PNG（无矩形画布）：
- * 浅色深墨线；深色反相成浅线，透明区仍透明，避免「画框」。
- */
-.VPHome .VPHero .image-src,
-.VPHome .VPHero .image .VPImage {
-  position: static !important;
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  display: block !important;
-  /* 相对 540px 再放大 1.3 倍 → 702px，窄屏不超过容器 */
-  width: min(702px, 100%) !important;
-  max-width: 100% !important;
-  max-height: none !important;
-  height: auto !important;
-  margin: 0 auto !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  object-fit: contain !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-}
-
-.dark .VPHome .VPHero .image-src,
-.dark .VPHome .VPHero .image .VPImage {
-  filter: invert(1);
-  opacity: 0.92;
-}
-
 /* 同资源用于周记封面/栏目标题时，深色模式一并融入 */
 .dark .vp-doc img[src*='hero-fireworks'] {
   filter: invert(1);
@@ -727,240 +662,6 @@
   background: transparent !important;
   box-shadow: none !important;
   border: 0 !important;
-}
-
-/* 桌面：强制 左插画 + 右文案 */
-@media (min-width: 768px) {
-  .VPHome .VPHero.VPHomeHero {
-    padding: 3rem var(--blog-home-pad-x) 1.5rem !important;
-  }
-
-  .VPHome .VPHero.has-image .container,
-  .VPHome .VPHero .container {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    column-gap: 1.5rem;
-    row-gap: 0;
-  }
-
-  .VPHome .VPHero.has-image .image,
-  .VPHome .VPHero .image {
-    order: 1 !important;
-    flex: 0 1 52% !important;
-    width: 52% !important;
-    max-width: 702px !important;
-  }
-
-  .VPHome .VPHero.has-image .main,
-  .VPHome .VPHero .main {
-    order: 2 !important;
-    flex: 1 1 44% !important;
-    width: auto !important;
-    max-width: none !important;
-  }
-
-  .VPHome .VPHero .image-src,
-  .VPHome .VPHero .image .VPImage {
-    width: 100% !important;
-    max-width: 702px !important;
-    margin: 0 auto 0 0 !important; /* 靠左 */
-  }
-}
-
-/* 双卡片：与 hero / 最近更新同一内容宽 */
-.VPHomeFeatures {
-  padding: 0.5rem var(--blog-home-pad-x) 1.1rem !important;
-}
-
-.VPHomeFeatures .container {
-  margin: 0 auto !important;
-  max-width: var(--blog-home-max) !important;
-  width: 100%;
-}
-
-.VPHomeFeatures .items {
-  margin: 0 !important;
-  width: 100% !important;
-  justify-content: stretch;
-}
-
-.VPHomeFeatures .item {
-  width: 100% !important;
-  max-width: none !important;
-  padding: 8px !important;
-}
-
-@media (min-width: 640px) {
-  .VPHomeFeatures .item {
-    flex-grow: 0 !important;
-    width: calc(100% / 2) !important;
-  }
-}
-
-/* ---------- Home recent：墨纸卡 + 编辑向元信息 ---------- */
-
-.home-recent {
-  padding: 0.3rem var(--blog-home-pad-x) 2.75rem;
-}
-
-.home-recent__inner {
-  margin: 0 auto;
-  max-width: var(--blog-home-max);
-}
-
-.home-recent__head {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem 0.85rem;
-  margin-bottom: 0.9rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--blog-ink-line);
-}
-
-.home-recent__head::before {
-  content: "RECENT / 近期";
-  position: absolute;
-  top: -0.62rem;
-  right: 0;
-  padding-left: 0.6rem;
-  background: var(--vp-c-bg);
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--vp-c-text-3);
-}
-
-.home-recent__head h2 {
-  margin: 0;
-  border: none;
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--vp-c-text-1);
-}
-
-.home-recent__sub {
-  margin: 0;
-  font-size: 0.82rem;
-  letter-spacing: 0.02em;
-  color: var(--vp-c-text-3);
-}
-
-.home-recent__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  border: 0;
-  border-radius: 0;
-  overflow: visible;
-  background: transparent;
-}
-
-.home-recent__item {
-  min-width: 0;
-  border: 1px solid var(--blog-ink-line);
-  border-radius: 4px;
-  background:
-    linear-gradient(135deg, var(--blog-ink-wash), transparent 62%),
-    var(--vp-c-bg-soft);
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.home-recent__item:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
-}
-
-.home-recent__link {
-  display: block;
-  height: 100%;
-  padding: 1rem 1.15rem 1.05rem;
-  text-decoration: none !important;
-  color: inherit;
-  transition: none;
-}
-
-.home-recent__link:hover {
-  background: transparent;
-}
-
-.home-recent__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.55rem;
-}
-
-.home-recent__date {
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: var(--vp-c-text-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.home-recent__dot {
-  color: var(--vp-c-text-3);
-  font-size: 0.72rem;
-  line-height: 1;
-}
-
-/* 分类：字色区分，非胶囊 pill */
-.home-recent__cat {
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: var(--vp-c-text-2);
-}
-
-.home-recent__cat.is-invest {
-  color: var(--blog-cat-invest);
-}
-
-.home-recent__cat.is-life {
-  color: var(--blog-cat-life);
-}
-
-.home-recent__title {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.45;
-  letter-spacing: 0.02em;
-  color: var(--vp-c-text-1);
-}
-
-.home-recent__desc {
-  margin: 0.45rem 0 0;
-  font-size: 0.86rem;
-  line-height: 1.7;
-  color: var(--vp-c-text-2);
-}
-
-.home-recent__empty {
-  margin: 0;
-  padding: 1.15rem;
-  border: 1px dashed var(--blog-ink-line);
-  border-radius: 4px;
-  color: var(--vp-c-text-3);
-  text-align: center;
-  font-size: 0.88rem;
 }
 
 /* ---------- Category list (板块 index) ---------- */
@@ -1043,12 +744,6 @@
 
 /* ---------- Footer ---------- */
 
-.VPFooter .message strong {
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-}
-
-.VPFooter .copyright a,
 .site-beian a {
   color: inherit;
   text-decoration: underline;
@@ -1061,6 +756,28 @@
   text-align: center;
   font-size: 13px;
   color: var(--vp-c-text-2);
+  /* §4.2：版权、ICP、公网安备排成一行，窄屏自动折行 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 14px;
+}
+
+.site-beian .beian-mps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* VitePress 基础样式把 img 设成 block，图标会脱离文字 */
+.site-beian .beian-mps__icon {
+  display: inline-block;
+}
+
+/* 清单页（首页、/投资/、/归档）不显示文末的「最后更新」与翻页 */
+.site-list .VPDocFooter {
+  display: none;
 }
 
 #app {
@@ -1070,332 +787,8 @@
 /* ---------- Home layout refinement: compact ink-tech ---------- */
 
 :root {
-  --blog-home-max: 1040px;
-  --blog-home-pad-x: clamp(20px, 4vw, 40px);
   --blog-ink-line: color-mix(in srgb, var(--vp-c-text-1) 12%, transparent);
   --blog-ink-wash: color-mix(in srgb, var(--vp-c-brand-1) 7%, transparent);
-}
-
-.VPHome {
-  position: relative;
-  overflow: hidden;
-}
-
-.VPHome::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: 30px;
-  left: 50%;
-  width: min(1120px, calc(100% - 32px));
-  height: 580px;
-  pointer-events: none;
-  transform: translateX(-50%);
-  opacity: 0.5;
-  background-image:
-    linear-gradient(90deg, transparent 49.9%, var(--blog-ink-line) 50%, transparent 50.1%),
-    radial-gradient(circle, var(--blog-ink-line) 1px, transparent 1.2px);
-  background-size: 100% 100%, 28px 28px;
-  mask-image: linear-gradient(to bottom, black, transparent 92%);
-}
-
-.VPHome > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* 保持“插画在上、标题在下”的现有构图，但压缩首屏高度。 */
-.VPHome .VPHero.VPHomeHero {
-  padding: 1rem var(--blog-home-pad-x) 0.8rem !important;
-}
-
-.VPHome .VPHero.has-image .container,
-.VPHome .VPHero .container {
-  flex-direction: column !important;
-  gap: 0.25rem !important;
-  max-width: var(--blog-home-max) !important;
-}
-
-.VPHome .VPHero.has-image .image,
-.VPHome .VPHero .image {
-  order: 1 !important;
-  flex: none !important;
-  width: 100% !important;
-  max-width: none !important;
-}
-
-.VPHome .VPHero .image-container {
-  height: auto !important;
-  overflow: visible !important;
-}
-
-.VPHome .VPHero .image-src,
-.VPHome .VPHero .image .VPImage {
-  width: clamp(300px, 36vw, 380px) !important;
-  max-width: 100% !important;
-  margin: 0 auto !important;
-  transform: none !important;
-  filter: contrast(1.04) saturate(0.74);
-}
-
-.VPHome .VPHero.has-image .main,
-.VPHome .VPHero .main {
-  order: 2 !important;
-  flex: none !important;
-  width: 100% !important;
-  max-width: none !important;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: 1rem 2rem;
-  padding-top: 0.25rem !important;
-}
-
-.VPHome .VPHero .heading {
-  min-width: 0;
-}
-
-.VPHome .VPHero .text {
-  font-family: "SourceHanSerifCN", "NotoSerifSC-Hero", "Noto Serif SC",
-    "Source Han Serif SC", "Songti SC", "STSong", serif !important;
-  font-size: clamp(2rem, 4.5vw, 3.25rem) !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.06em;
-  text-wrap: balance;
-}
-
-/* Hero 唯一 CTA：墨纸编辑向入口，非 VitePress 胶囊按钮 */
-.VPHome .VPHero .home-hero-cta {
-  align-self: center;
-  justify-self: end;
-}
-
-.VPHome .VPHero .home-hero-cta__link {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.45rem;
-  padding: 0.35rem 0 0.4rem;
-  border: none;
-  border-bottom: 1px solid var(--blog-ink-line);
-  border-radius: 0;
-  background: transparent;
-  color: var(--vp-c-text-1);
-  text-decoration: none !important;
-  letter-spacing: 0.04em;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-
-.VPHome .VPHero .home-hero-cta__kicker {
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  color: var(--vp-c-text-3);
-}
-
-.VPHome .VPHero .home-hero-cta__text {
-  font-size: 0.92rem;
-  font-weight: 500;
-}
-
-.VPHome .VPHero .home-hero-cta__arrow {
-  font-size: 0.88rem;
-  color: var(--vp-c-brand-1);
-  transition: transform 0.15s ease;
-}
-
-.VPHome .VPHero .home-hero-cta__link:hover {
-  border-bottom-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
-}
-
-.VPHome .VPHero .home-hero-cta__link:hover .home-hero-cta__kicker {
-  color: var(--vp-c-brand-1);
-}
-
-.VPHome .VPHero .home-hero-cta__link:hover .home-hero-cta__arrow {
-  transform: translateX(2px);
-}
-
-/* 板块入口：横排（方案 B）— 左标题 / 右三行主张，整卡可点 */
-.VPHomeFeatures {
-  padding: 0.35rem var(--blog-home-pad-x) 1rem !important;
-}
-
-.VPHomeFeatures .item {
-  padding: 6px !important;
-  display: flex;
-}
-
-.VPHomeFeatures .VPFeature {
-  position: relative;
-  display: block;
-  flex: 1 1 auto;
-  width: 100%;
-  min-height: 0;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid var(--blog-ink-line);
-  border-radius: 4px;
-  background:
-    linear-gradient(135deg, var(--blog-ink-wash), transparent 62%),
-    var(--vp-c-bg-soft);
-  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.VPHomeFeatures .VPFeature::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 42px;
-  height: 2px;
-  background: var(--vp-c-brand-1);
-}
-
-.VPHomeFeatures .VPFeature:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--vp-c-brand-1) 35%, var(--vp-c-divider));
-}
-
-/* 默认 .box 是竖排；改为左标题右文案，两卡共用固定标题栏宽 */
-.VPHomeFeatures .VPFeature .box {
-  display: grid;
-  /* 固定左栏：短标题不“塌”，长标题不把箭头挤到第二行 */
-  grid-template-columns: 8.25rem minmax(0, 1fr);
-  align-items: center; /* 标题与三行文案垂直居中 */
-  justify-items: stretch;
-  column-gap: 0;
-  row-gap: 0;
-  height: 100%;
-  min-height: 0;
-  padding: 1.05rem 1.05rem 1.05rem 1.1rem;
-}
-
-.VPHomeFeatures .title {
-  margin: 0;
-  padding: 0 0.75rem 0 0;
-  max-width: none;
-  white-space: nowrap;
-  line-height: 1.45;
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--vp-c-text-1);
-  text-align: center; /* 投研 / AI下的生活 在标题栏内居中 */
-}
-
-/* 标题后轻箭头：与标题同一行 */
-.VPHomeFeatures .title::after {
-  content: "→";
-  margin-left: 0.3em;
-  font-weight: 500;
-  color: var(--vp-c-brand-1);
-  opacity: 0.85;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.VPHomeFeatures .VPFeature:hover .title::after {
-  transform: translateX(2px);
-  opacity: 1;
-}
-
-.VPHomeFeatures .details {
-  margin: 0;
-  padding: 0 0 0 0.95rem;
-  border-left: 1px solid var(--section-line, var(--blog-ink-line));
-  /* 与标题同字号体系下的次级字重；两卡共用，避免一侧更“满” */
-  font-size: 0.84rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--vp-c-text-2);
-  white-space: pre-line; /* 保留 frontmatter 三行 */
-  overflow-wrap: anywhere;
-  text-align: left;
-  display: block;
-}
-
-/* 整卡可点；无 linkText 时卡片本身即入口 */
-.VPHomeFeatures .VPFeature.link {
-  cursor: pointer;
-  text-decoration: none !important;
-  color: inherit;
-}
-
-/* 窄屏：仍横排优先；极窄才上下叠，三行照旧 */
-@media (max-width: 420px) {
-  .VPHomeFeatures .VPFeature .box {
-    grid-template-columns: 1fr;
-    row-gap: 0.55rem;
-    align-items: center;
-    justify-items: center;
-  }
-
-  .VPHomeFeatures .title {
-    padding-right: 0;
-  }
-
-  .VPHomeFeatures .details {
-    border-left: 0;
-    padding-left: 0;
-    border-top: 1px solid var(--section-line, var(--blog-ink-line));
-    padding-top: 0.55rem;
-    width: 100%;
-    text-align: left;
-  }
-}
-
-@media (max-width: 767px) {
-  .VPHome::before {
-    top: 12px;
-    height: 480px;
-    background-size: 100% 100%, 24px 24px;
-  }
-
-  .VPHome .VPHero.VPHomeHero {
-    padding-top: 0.45rem !important;
-  }
-
-  .VPHome .VPHero .image-container {
-    height: auto !important;
-  }
-
-  .VPHome .VPHero .image-src,
-  .VPHome .VPHero .image .VPImage {
-    width: min(310px, 86vw) !important;
-    transform: none !important;
-  }
-
-  .VPHome .VPHero.has-image .main,
-  .VPHome .VPHero .main {
-    display: block;
-  }
-
-  .VPHome .VPHero .text {
-    font-size: clamp(1.9rem, 9vw, 2.6rem) !important;
-  }
-
-  .VPHome .VPHero .home-hero-cta {
-    margin-top: 0.85rem;
-    justify-self: start;
-  }
-
-  .home-recent__list {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .VPHomeFeatures .VPFeature,
-  .home-recent__item {
-    transition: none;
-  }
-
-  .home-recent__item:hover {
-    transform: none;
-  }
 }
 
 /* ---------- Legacy investment index: retained for old snapshots ---------- */
@@ -1897,7 +1290,6 @@
 .invest-path:hover,
 .industry-row:hover,
 .subject-row:hover,
-.tracked-subject:hover,
 .journal-featured:hover {
   background-color: var(--vp-c-bg-soft);
 }
@@ -1990,7 +1382,6 @@
   color: var(--vp-c-text-3);
 }
 
-.tracked-subject,
 .industry-row,
 .subject-row {
   display: grid;
@@ -2003,22 +1394,10 @@
   transition: background-color 0.15s ease;
 }
 
-.tracked-subject {
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
-}
-
-.tracked-subject > span,
 .subject-row__ticker {
   font-family: var(--vp-font-family-mono);
   font-size: 0.7rem;
   color: var(--vp-c-brand-1);
-}
-
-.tracked-subject small,
-.tracked-subject em {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-  font-style: normal;
 }
 
 .journal-masthead {
@@ -3211,15 +2590,12 @@
     border-left: 0;
   }
 
-  .tracked-subject,
   .industry-row,
   .subject-row,
   .journal-featured {
     grid-template-columns: 1fr auto;
   }
 
-  .tracked-subject small,
-  .tracked-subject em,
   .industry-row__subjects,
   .subject-row p,
   .subject-row__status {
@@ -4054,4 +3430,986 @@
     border-left: 0;
     border-top: 1px solid var(--section-line);
   }
+}
+
+/* ===== 首页 C 版（头条式）：页头、研报区、视频区，挂在 .research-desk 页面类下 ===== */
+/* 研报区色彩变量：研报变量只注入在浅色模式，暗色给显式值 */
+.research-desk {
+  --desk-bear-fg: var(--primary, #991b1b);
+  --desk-bear-bg: var(--primary-soft, #fef2f2);
+  --desk-bear-line: var(--primary-border, #fecaca);
+  --desk-bull-fg: #065f46;
+  --desk-bull-bg: #ecfdf5;
+  --desk-bull-line: #a7f3d0;
+  --desk-neutral-fg: var(--slate, #475569);
+  --desk-neutral-bg: var(--slate-soft, #f1f5f9);
+  --desk-neutral-line: var(--slate-border, #cbd5e1);
+  --desk-amber-fg: var(--amber, #b45309);
+  --desk-amber-bg: var(--amber-soft, #fffbeb);
+  --desk-amber-line: var(--amber-border, #fde68a);
+  --desk-card-bg: var(--vp-c-bg-elv, #ffffff);
+  --desk-card-head: #fcfcfb;
+  --desk-card-side: #fdfdfc;
+  --desk-card-foot: #f8f7f4;
+  --desk-card-line: var(--vp-c-divider, #e4e4e7);
+  --desk-card-line-soft: #efede8;
+  --desk-toc-hover: #f2efe9;
+  --desk-judge-fg: var(--fg-secondary, #3f3f46);
+}
+
+.dark .research-desk {
+  --desk-bear-fg: #fca5a5;
+  --desk-bear-bg: rgba(220, 38, 38, 0.14);
+  --desk-bear-line: rgba(248, 113, 113, 0.35);
+  --desk-bull-fg: #6ee7b7;
+  --desk-bull-bg: rgba(16, 185, 129, 0.12);
+  --desk-bull-line: rgba(52, 211, 153, 0.35);
+  --desk-neutral-fg: #cbd5e1;
+  --desk-neutral-bg: rgba(148, 163, 184, 0.12);
+  --desk-neutral-line: rgba(148, 163, 184, 0.35);
+  --desk-amber-fg: #fcd34d;
+  --desk-amber-bg: rgba(245, 158, 11, 0.12);
+  --desk-amber-line: rgba(252, 211, 77, 0.35);
+  --desk-card-bg: #202127;
+  --desk-card-head: #25252b;
+  --desk-card-side: #232329;
+  --desk-card-foot: #27272d;
+  --desk-card-line: #3c3c43;
+  --desk-card-line-soft: #2e2e34;
+  --desk-toc-hover: #303037;
+  --desk-judge-fg: rgba(255, 255, 245, 0.86);
+}
+
+/* 版心：1160px 含左右各 40px 内边距（≤760px 为 20px），内容 1080px；--content-max 不改，归档仍为 900 */
+.research-desk .VPContent .VPDoc.VPDoc,
+.research-desk .VPContent .VPDoc.VPDoc .content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.research-desk .VPContent .VPDoc.VPDoc {
+  padding-top: 0;
+}
+
+.research-desk .research-desk-root,
+.research-desk .video-shelf {
+  box-sizing: border-box;
+  width: min(1080px, calc(100% - 80px));
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 首页刊头：全宽柔炭暖灰背板，内层 .hero 承接 1080 版心；明暗两种模式取值一致 */
+.research-desk .site-masthead {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(125deg, #2b292d 0%, #343238 55%, #3d3a40 100%);
+  border-bottom: 3px solid var(--primary, #991b1b);
+  color: #fafaf9;
+}
+
+.research-desk .site-masthead .hero {
+  box-sizing: border-box;
+  width: min(1080px, calc(100% - 80px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  column-gap: 52px;
+  min-height: 396px;
+}
+
+.research-desk .site-masthead .hero-art {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  position: relative;
+  height: 396px;
+  pointer-events: none;
+}
+
+.research-desk .site-masthead .hero-text {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  padding: 44px 0 48px;
+}
+
+.research-desk .site-masthead .art-stage {
+  position: absolute;
+  left: -16px;
+  bottom: -31px;           /* 图底 7.5% 是透明留白，下移后手臂刚好落在红线上 */
+  width: 416px;
+  height: 416px;
+  isolation: isolate;
+  mix-blend-mode: screen;
+  background: #000;
+  pointer-events: none;
+}
+
+/* 特异性 (0,4,1) 压过 :660 的 .dark .vp-doc img[src*='hero-fireworks']（0,3,1） */
+.research-desk .site-masthead .art-stage img.art-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  opacity: 1;
+  filter: invert(1) contrast(1.3) brightness(1.22);
+  cursor: default;
+  pointer-events: none;
+}
+
+.research-desk .site-masthead .art-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 82%, #ffffff 0%, #ffffff 22%, transparent 34%),
+    radial-gradient(circle at 57% 28%, #fef08a 0%, #fde047 36%, transparent 66%),
+    radial-gradient(circle at 82% 20%, #fecdd3 0%, #fda4af 40%, transparent 68%),
+    radial-gradient(circle at 74% 48%, #fed7aa 0%, #fdba74 42%, transparent 72%),
+    linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.research-desk .site-masthead .kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  font: 600 14px/1.75 var(--font-serif, serif);
+  letter-spacing: 0.28em;
+  color: #fde68a;
+}
+.research-desk .site-masthead .kicker::before {
+  content: "";
+  width: 22px;
+  height: 1.5px;
+  background: #fde68a;
+}
+.research-desk .site-masthead h1 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: 600 48px/1.28 var(--font-serif, serif);
+  letter-spacing: 0.015em;
+  color: #fafaf9;
+}
+.research-desk .site-masthead h1 .line { display: block; white-space: nowrap; }
+.research-desk .site-masthead h1 em { font-style: normal; color: #fde68a; }
+.research-desk .site-masthead .sub {
+  margin: 20px 0 0;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #e4e4e7;
+}
+.research-desk .site-masthead .sub span { white-space: nowrap; }
+.research-desk .site-masthead .stats {
+  margin: 22px 0 0;
+  font: 13px/1.75 var(--font-mono, monospace);
+  letter-spacing: 0.04em;
+  color: #d4d4d8;
+}
+.research-desk .site-masthead .stats b { font-weight: 600; color: #ffffff; }
+
+/* 中屏：保持左图右文，整体缩一档 */
+@media (max-width: 1099px) {
+  .research-desk .site-masthead .hero { grid-template-columns: 340px minmax(0, 1fr); column-gap: 40px; min-height: 320px; }
+  .research-desk .site-masthead .hero-art { height: 320px; }
+  .research-desk .site-masthead .art-stage { left: -13px; bottom: -25px; width: 336px; height: 336px; }
+  .research-desk .site-masthead .hero-text { padding: 36px 0 40px; }
+  .research-desk .site-masthead h1 { font-size: 42px; }
+}
+
+/* 竖排：文字在上，烟花在下，手臂落在红线上 */
+@media (max-width: 899px) {
+  .research-desk .site-masthead .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .research-desk .site-masthead .hero-text { grid-column: 1; grid-row: 1; padding: 36px 0 4px; }
+  .research-desk .site-masthead .hero-art { grid-column: 1; grid-row: 2; height: 280px; margin-top: 8px; }
+  .research-desk .site-masthead .art-stage { left: -8px; bottom: -23px; width: 300px; height: 300px; }
+  .research-desk .site-masthead .kicker { margin-bottom: 12px; font-size: 13px; }
+  .research-desk .site-masthead h1 { font-size: min(44px, calc((100vw - 40px) / 10.4)); }
+  .research-desk .site-masthead .sub { margin-top: 14px; font-size: 15px; }
+  .research-desk .site-masthead .stats { margin-top: 12px; }
+}
+
+@media (max-width: 760px) {
+  .research-desk .site-masthead .hero { width: calc(100% - 40px); }
+}
+
+/* 首页专属（只挂 .home-masthead）：顶栏与刊头同一块柔炭，靠重定义 token 让站名、链接、搜索、汉堡、移动菜单一起跟上 */
+.Layout.home-masthead .VPNav {
+  --vp-c-bg: #2c2a2e;
+  --vp-c-bg-alt: #343238;
+  --vp-c-bg-soft: #3a383e;
+  --vp-c-bg-elv: #343238;
+  --vp-c-text-1: #fafaf9;
+  --vp-c-text-2: #d4d4d8;
+  --vp-c-text-3: #a1a1aa;
+  --vp-c-divider: rgba(255, 255, 255, 0.09);
+  --vp-c-gutter: rgba(255, 255, 255, 0.09);
+  --vp-c-border: rgba(255, 255, 255, 0.16);
+  --vp-c-brand-1: #fde68a;
+  --vp-c-brand-2: #fde68a;
+  --vp-c-brand-3: #fde68a;
+  --vp-nav-bg-color: #2c2a2e;
+  --vp-nav-screen-bg-color: #2c2a2e;
+  /* 明暗开关圆钮用 neutral-inverse（浅色模式默认白），图标是浅色 text-2 会白上白；统一成暗钮，与暗色模式一致 */
+  --vp-c-neutral-inverse: #1c1b1e;
+  /* :442 的 .VPNav a:link { color: inherit } 让链接继承祖先字色、绕过 token；这里给 .VPNav 本身定浅色（取样张 #d4d4d8） */
+  color: var(--vp-c-text-2);
+}
+/* 移动菜单面板链接字号大、要更亮（定稿 V11：亮度 > 0.7） */
+.Layout.home-masthead .VPNavScreen {
+  color: var(--vp-c-text-1);
+}
+
+/* 压过 :102 / :108 的毛玻璃（均为 (0,3,0)/(0,4,0) + !important）：首页顶栏实色、不透底 */
+.Layout.home-masthead .VPNav .content .content-body {
+  background-color: #2c2a2e !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* 当前项：白字 + 只盖住文字宽度的微金下划线（VPNavBarMenuLink 左右 padding 各 12px，已核对） */
+.Layout.home-masthead .VPNavBarMenuLink.active {
+  color: #ffffff;
+  background: linear-gradient(#fde68a, #fde68a) no-repeat center bottom / calc(100% - 24px) 2px;
+}
+
+/* 分区标题行（研报区与视频区共用） */
+.research-desk .sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 24px;
+  padding: 22px 0 6px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.research-desk .sec-head h1,
+.research-desk .sec-head h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: 600 24px var(--font-serif, serif);
+  letter-spacing: 0;
+}
+
+.research-desk .sec-head .count {
+  font: 13px/1.75 var(--font-mono, monospace);
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .sec-head .more,
+.research-desk .sec-head .more:visited {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .sec-head .more:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.research-desk .filters {
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+  margin-left: auto;
+  font-size: 14px;
+}
+
+.research-desk .filters .label {
+  font: 12px/1.75 var(--font-mono, monospace);
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--vp-c-text-3) 65%, var(--vp-c-bg));
+}
+
+.research-desk .filters button {
+  all: unset;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+  color: var(--vp-c-text-3);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.research-desk .filters button sup {
+  margin-left: 3px;
+  font: 11px var(--font-mono, monospace);
+  vertical-align: 4px;
+}
+
+.research-desk .filters button:hover {
+  color: var(--vp-c-text-1);
+}
+
+.research-desk .filters button.is-active {
+  color: var(--vp-c-text-1);
+  box-shadow: inset 0 -2px 0 var(--vp-c-brand-1);
+}
+
+.research-desk .filters button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* 研报卡：/ 与 /投资/ 共用；视觉基准 scratch/style-prototype/entry-opt-1-card.html */
+.research-desk .research-desk__list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px 0 8px;
+}
+
+.research-desk .research-desk__entry {
+  --card-tone: var(--desk-neutral-fg);
+  overflow: hidden;
+  background: var(--desk-card-bg);
+  border: 1px solid var(--desk-card-line);
+  border-top: 2px solid var(--card-tone);
+}
+.research-desk .research-desk__entry.is-bear { --card-tone: var(--desk-bear-fg); }
+.research-desk .research-desk__entry.is-bull { --card-tone: var(--desk-bull-fg); }
+
+/* 顶眉栏：行业 / 更新 / 收盘价 + 立场 */
+.research-desk .research-desk__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 13px 28px;
+  border-bottom: 1px solid var(--desk-card-line-soft);
+  background: var(--desk-card-head);
+}
+.research-desk .research-desk__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--vp-c-text-3);
+}
+.research-desk .research-desk__meta .sep { margin-right: 10px; color: var(--desk-card-line); }
+.research-desk .research-desk__meta .date { white-space: nowrap; }
+.research-desk .research-desk__meta .date time {
+  font: 12.5px/1.75 var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 行业标签：浅琥珀方签（选择器特异性与旧规则相同，压得过 .vp-doc a） */
+.research-desk .research-desk__meta a.ind,
+.research-desk .research-desk__meta a.ind:visited {
+  display: inline-block;
+  padding: 1px 9px;
+  border: 1px solid var(--desk-amber-line);
+  border-radius: 0;
+  background: var(--desk-amber-bg);
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--desk-amber-fg);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.research-desk .research-desk__meta a.ind:hover {
+  border-color: var(--desk-amber-fg);
+  background: var(--desk-amber-line);
+  color: var(--desk-amber-fg);
+}
+
+/* 立场：方形徽章 + 6px 实心方点 */
+.research-desk .research-desk__entry .stance {
+  --tone-fg: var(--desk-neutral-fg);
+  --tone-bg: var(--desk-neutral-bg);
+  --tone-line: var(--desk-neutral-line);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  margin: 0;
+  padding: 3px 10px;
+  border: 1px solid var(--tone-line);
+  border-radius: 0;
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+.research-desk .research-desk__entry .stance--bear { --tone-fg: var(--desk-bear-fg); --tone-bg: var(--desk-bear-bg); --tone-line: var(--desk-bear-line); }
+.research-desk .research-desk__entry .stance--bull { --tone-fg: var(--desk-bull-fg); --tone-bg: var(--desk-bull-bg); --tone-line: var(--desk-bull-line); }
+.research-desk .research-desk__entry .stance .dot { flex: none; width: 6px; height: 6px; background: currentColor; }
+
+/* 中段：左判断 + 右参数 */
+.research-desk .research-desk__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 248px;
+}
+.research-desk .research-desk__main {
+  min-width: 0;
+  padding: 26px 32px 26px 28px;
+}
+.research-desk .research-desk__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.research-desk .research-desk__entry h3 {
+  position: static;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: 600 32px/1.2 var(--font-serif, serif);
+  letter-spacing: 0.01em;
+}
+.research-desk .research-desk__entry h3 a,
+.research-desk .research-desk__entry h3 a:visited {
+  color: var(--vp-c-text-1);
+  overflow-wrap: anywhere;
+}
+.research-desk .research-desk__entry h3 a:hover { color: var(--vp-c-brand-1); }
+.research-desk .research-desk__title .code {
+  font: 400 13.5px/1.6 var(--font-mono, monospace);
+  letter-spacing: 0.05em;
+  color: var(--vp-c-text-3);
+}
+.research-desk .research-desk__entry .judge {
+  max-width: 38em;
+  margin: 14px 0 0;
+  font: 400 17.5px/1.75 var(--font-serif, serif);
+  color: var(--desk-judge-fg);
+}
+
+.research-desk .research-desk__metrics {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  margin: 0;
+  padding: 24px 28px;
+  border-left: 1px solid var(--desk-card-line-soft);
+  background: var(--desk-card-side);
+}
+.research-desk .research-desk__metrics .metric { display: flex; flex-direction: column; gap: 2px; }
+.research-desk .research-desk__metrics .metric + .metric {
+  padding-top: 14px;
+  border-top: 1px dashed var(--desk-card-line);
+}
+.research-desk .research-desk__metrics dt {
+  font-size: 11.5px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--vp-c-text-3);
+}
+.research-desk .research-desk__metrics dd {
+  margin: 0;
+  font: 600 21px/1.25 var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--vp-c-text-1);
+}
+.research-desk .research-desk__metrics dd small {
+  margin-left: 4px;
+  font: 400 12.5px var(--font-sans, sans-serif);
+  letter-spacing: 0;
+  color: var(--vp-c-text-3);
+}
+
+/* 底栏目录：按页数等分；每格画上线和右线，容器右移 1px 由卡片 overflow 裁掉最右一条，换行后线条照样成立 */
+.research-desk .research-desk__toc {
+  display: grid;
+  grid-template-columns: repeat(var(--toc-cols, 6), minmax(0, 1fr));
+  margin-right: -1px;
+  background: var(--desk-card-foot);
+}
+.research-desk .research-desk__toc a,
+.research-desk .research-desk__toc a:visited {
+  display: block;
+  min-width: 0;
+  padding: 11px 14px;
+  border-top: 1px solid var(--desk-card-line-soft);
+  border-right: 1px solid var(--desk-card-line-soft);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color 0.15s, color 0.15s;
+}
+.research-desk .research-desk__toc a span {
+  margin-right: 6px;
+  font: 11px var(--font-mono, monospace);
+  color: var(--desk-amber-fg);
+  opacity: 0.82;
+}
+.research-desk .research-desk__toc a:hover {
+  background: var(--desk-toc-hover);
+  color: var(--vp-c-brand-1);
+}
+
+/* 平板：目录 3 列 */
+@media (max-width: 1023px) {
+  .research-desk .research-desk__toc { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.research-desk .video-shelf .facts,
+.research-desk .research-desk__empty {
+  margin: 14px 0 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .research-desk__empty {
+  padding-bottom: 14px;
+}
+
+/* 视频区：没有视频时组件不输出 DOM；有视频时接在研报区之后 */
+.research-desk .video-shelf {
+  margin-top: 84px;
+}
+
+.research-desk .video-shelf--empty {
+  margin-top: 0;
+}
+
+.research-desk .video-shelf__rule {
+  height: 3px;
+  background: var(--vp-c-text-1);
+}
+
+.research-desk .video-shelf__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  padding: 30px 0 0;
+}
+
+.research-desk .video-shelf__thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--vp-c-text-1);
+}
+
+.research-desk .video-shelf__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.research-desk .video-shelf__play {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--vp-c-bg) 94%, transparent);
+}
+
+.research-desk .video-shelf__play::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 13px;
+  border-left: 14px solid var(--vp-c-text-1);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.research-desk .video-shelf__dur {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 1px 7px;
+  background: color-mix(in srgb, var(--vp-c-text-1) 55%, transparent);
+  color: var(--vp-c-bg);
+  font: 12px/1.75 var(--font-mono, monospace);
+}
+
+.research-desk .video-shelf__card h4 {
+  margin: 16px 0 6px;
+  font: 600 19px/1.45 var(--font-serif, serif);
+  letter-spacing: 0;
+}
+
+.research-desk .video-shelf__card a,
+.research-desk .video-shelf__card a:visited {
+  color: var(--vp-c-text-1);
+}
+
+.research-desk .video-shelf__card > a:hover h4 {
+  color: var(--vp-c-brand-1);
+}
+
+.research-desk .video-shelf__card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .video-shelf__card p a,
+.research-desk .video-shelf__card p a:visited {
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .video-shelf__card p a:hover {
+  color: var(--vp-c-brand-1);
+}
+
+/* vp-doc 的链接悬停下划线在这些链接上不要 */
+.research-desk .site-masthead a,
+.research-desk .research-desk-root a,
+.research-desk .video-shelf a {
+  text-decoration: none !important;
+}
+
+@media (max-width: 760px) {
+  .research-desk .research-desk-root,
+  .research-desk .video-shelf {
+    width: calc(100% - 40px);
+  }
+
+  .research-desk .sec-head {
+    padding-top: 16px;
+  }
+
+  .research-desk .filters {
+    width: 100%;
+    margin-left: 0;
+    gap: 20px;
+    overflow-x: auto;
+  }
+
+  .research-desk .research-desk__list { gap: 18px; padding-top: 20px; }
+  .research-desk .research-desk__head { padding: 11px 16px; }
+  .research-desk .research-desk__body { grid-template-columns: minmax(0, 1fr); }
+  .research-desk .research-desk__main { padding: 20px 16px 18px; }
+  .research-desk .research-desk__entry h3 { font-size: 28px; }
+  .research-desk .research-desk__entry .judge { font-size: 16.5px; }
+  .research-desk .research-desk__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    padding: 0;
+    border-left: 0;
+    border-top: 1px solid var(--desk-card-line-soft);
+  }
+  .research-desk .research-desk__metrics .metric { padding: 14px 16px; }
+  .research-desk .research-desk__metrics .metric + .metric {
+    padding-top: 14px;
+    border-top: 0;
+    border-left: 1px dashed var(--desk-card-line);
+  }
+  .research-desk .research-desk__toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .research-desk .research-desk__toc a { padding: 10px 12px; }
+
+  .research-desk .video-shelf {
+    margin-top: 56px;
+  }
+
+  .research-desk .video-shelf--empty {
+    margin-top: 0;
+  }
+
+  .research-desk .video-shelf__grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+}
+
+/* ===== 归档清单行 ===== */
+.archive-index .archive-index__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.archive-index .archive-index__date,
+.archive-index .archive-index__code {
+  font-family: var(--font-mono, var(--vp-font-family-mono));
+  font-size: 0.78rem;
+  color: var(--vp-c-text-3);
+}
+
+.archive-index .archive-index__date {
+  flex: 0 0 6.2rem;
+}
+
+.archive-index .archive-index__link,
+.archive-index .archive-index__link:visited {
+  font-family: var(--font-serif, inherit);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+  overflow-wrap: anywhere;
+}
+
+.archive-index .archive-index__link:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.archive-index .archive-index__meta {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+}
+
+.archive-index .archive-index__sub {
+  margin: 1.4rem 0 0;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-serif, inherit);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--vp-c-text-2);
+}
+
+/* ===== 归档 .archive-index ===== */
+.archive-index .archive-index-root {
+  padding-bottom: 3rem;
+  font-family: var(--font-sans, inherit);
+}
+
+.archive-index .archive-index__title {
+  margin: 0 0 1rem;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-serif, inherit);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.archive-index .archive-index__section {
+  margin: 0 0 2rem;
+}
+
+.archive-index .archive-index__heading {
+  margin: 0 0 0.25rem;
+  border: 0;
+  padding: 0 0 0.4rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-family: var(--font-serif, inherit);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+}
+
+.archive-index .archive-index__section > .archive-index__row:first-of-type {
+  padding-top: 0.6rem;
+}
+
+.archive-index .archive-index__lead {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.85rem;
+  color: var(--vp-c-text-3);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-index .archive-index__has-report,
+.archive-index .archive-index__has-report:visited,
+.archive-index .archive-index__more,
+.archive-index .archive-index__more:visited {
+  font-size: 0.8rem;
+  color: var(--vp-c-brand-1);
+  white-space: nowrap;
+}
+
+.archive-index .archive-index__more {
+  display: inline-block;
+  margin-top: 0.7rem;
+}
+
+@media (max-width: 640px) {
+  .archive-index .archive-index__date {
+    flex-basis: 100%;
+  }
+
+  .archive-index .archive-index__lead {
+    flex-basis: 100%;
+  }
+}
+
+/* ===== 方法页 / 关于页去盒子 .site-article（追加在文件末尾，不改既有规则） ===== */
+.site-article .invest-hub-masthead,
+.site-article .invest-hub-disclaimer,
+.site-article .invest-hub-section,
+.site-article .subject-masthead,
+.site-article .subject-masthead dl > div,
+.site-article .invest-path,
+.site-article .reading-list__item,
+.site-article .philosophy-boundary-list li,
+.site-article .research-breadcrumb {
+  padding-left: 0;
+  padding-right: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.site-article .invest-hub-masthead,
+.site-article .subject-masthead,
+.site-article .subject-masthead dl > div,
+.site-article .invest-path,
+.site-article .reading-list__item {
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.site-article .invest-path:hover,
+.site-article .reading-list__item:hover {
+  background: transparent;
+}
+
+.site-article .invest-path:hover h2,
+.site-article .reading-list__item:hover h2 {
+  color: var(--vp-c-brand-1);
+}
+
+/* 唯一强调层：引用 */
+.site-article .philosophy-quote,
+.site-article .vp-doc blockquote,
+.site-article .vp-doc blockquote:hover {
+  width: auto;
+  padding: 0 0 0 1rem;
+  border: 0;
+  border-left: 3px solid var(--vp-c-brand-1);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: var(--font-serif, inherit);
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--vp-c-text-1);
+}
+
+.site-article .philosophy-quote::before,
+.site-article .vp-doc blockquote::before {
+  content: none;
+}
+
+/* 小标签 */
+.site-article .invest-hub-section__head p,
+.site-article .invest-path__index,
+.site-article .reading-list__index,
+.site-article .subject-masthead p {
+  font-family: var(--font-mono, var(--vp-font-family-mono));
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--vp-c-text-3);
+  background: transparent;
+  border: 0;
+}
+
+/* 修订表：沿用正文表格规则（上下边线 + 行线） */
+.site-article .revision-table {
+  border-top: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.site-article .revision-table th,
+.site-article .revision-table td {
+  border: 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+  background: transparent;
+}
+
+/* 主题卡片 → 单列清单：每条一行，隐藏「阅读本页 →」 */
+.site-article .invest-paths {
+  grid-template-columns: 1fr;
+  border: 0;
+}
+
+.site-article .invest-paths .invest-path {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  column-gap: 0.85rem;
+  padding: 0.9rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.site-article .invest-path h2 {
+  margin: 0 !important; /* 原规则 .invest-path h2 的 margin-top 带 !important */
+  font-size: 1.1rem;
+}
+
+.site-article .invest-path p {
+  min-height: 0;
+  margin: 0.25rem 0 0;
+}
+
+.site-article .invest-path__index {
+  grid-row: 1 / span 2;
+  padding-top: 0.25rem;
+}
+
+.site-article .invest-path h2,
+.site-article .invest-path p {
+  grid-column: 2;
+}
+
+.site-article .invest-path strong {
+  display: none;
+}
+
+/* ===== 返工 1：方法页补充 ===== */
+.site-article .subject-masthead h1 {
+  font-weight: 500;
+}
+
+/* 左侧主题栏：无底色、一条细线（只限桌面；窄屏抽屉保留 VitePress 底色，否则正文会透出来） */
+@media (min-width: 960px) {
+  .site-article .VPSidebar,
+  .site-article .VPSidebar .curtain {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .site-article .VPSidebar {
+    border-right: 1px solid var(--vp-c-divider);
+  }
+}
+
+/* 引用之外不再有第二强调层 */
+.site-article .philosophy-loop,
+.site-article .research-note {
+  padding-left: 0;
+  padding-right: 0;
+  border: 0;
+  border-bottom: 1px solid var(--vp-c-divider);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.site-article .research-note strong {
+  color: var(--vp-c-text-3);
 }

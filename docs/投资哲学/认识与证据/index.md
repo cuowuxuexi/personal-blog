@@ -8,7 +8,7 @@ hubIndex: 01 / EPISTEMOLOGY
 hubLead: 事实、陈述、前提、假设与解释如何区分；逻辑能说明什么，不能保证什么。
 ---
 
-<nav class="research-breadcrumb"><a href="/投资哲学/">投资哲学档</a><span>/</span><strong>认识与证据</strong></nav>
+<nav class="research-breadcrumb"><a href="/投资哲学/">方法</a><span>/</span><strong>认识与证据</strong></nav>
 
 <section class="subject-masthead">
   <div>

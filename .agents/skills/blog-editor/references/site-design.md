@@ -13,13 +13,31 @@
 | 自定义绝对链接的 preview base | `docs/.vitepress/theme/href-with-base.ts` |
 | 周记条目 | `docs/.vitepress/theme/components/WeeklyEntry.vue` |
 | 独立 HTML 嵌入 | `docs/.vitepress/theme/components/StandaloneHtml.vue` |
-| 首页 CTA / 最近更新 | `HomeHeroCta.vue` / `HomeRecent.vue` |
+| 首页头条式页头 / 归档清单 / 研报卡 | `SiteMasthead.vue` / `ArchiveIndex.vue` / `ResearchDesk.vue` |
+| 视频区 / 视频数据 | `VideoShelf.vue` / `docs/视频/videos.json` |
 | 分类列表 / 最新一期跳转 | `CategoryList.vue` / `LatestWeeklyRedirect.vue` |
-| 文章元信息 / 站名入口 / 备案 | `PostMeta.vue` / `SiteTitleMenu.vue` / `SiteBeian.vue` |
+| 文章元信息 / 站名入口 / 备案（全站一行） | `PostMeta.vue` / `SiteTitleMenu.vue` / `SiteBeian.vue` |
 | 周记标题与公式预处理 | `normalize-weekly-headings.mjs` / `normalize-math.mjs` |
 | 全站样式（迁移前） | `docs/.vitepress/theme/style.css` |
 
+视频只存元数据（外链托管）：加视频即往 `docs/视频/videos.json` 追加一条，首页视频区和顶栏「视频」会自动出现。
+
 `SiteTitleMenu` 当前是站名回首页入口，不是下拉菜单。`WeeklyEvents.vue` / `WeeklyEventYear.vue` 已注册但没有公开 Markdown 调用；删除前仍需证明无引用。
+
+## 三种版式
+
+`transformPageData`（`config.mts`）按路径给页面追加版式 class：`site-list`（研报清单与视频：`/`、`/投资/`、`/视频/`）、`site-article`（方法：`/投资哲学/` 及其下）、`site-archive`（`/归档`）。研报页是独立 HTML，不在站内版式之内。局部样式挂在这三个 class 下。
+
+- D1：文章页单栏只指正文、论点、公式收成一条版心（`--prose-max`，740px）；方法页左侧主题栏和右侧大纲保留，做安静（无底色、细线）。
+- D3：归档旧文只继承全站的字、色和正文排版（`.vp-doc` 基础规则），周记卡片、旧投研档案头、医药图谱等页面族结构不改。
+- 首页 `docs/index.md` 另挂 `home-masthead`：柔炭通栏刊头与首页炭色顶栏只挂在它下面，`/投资/` 不挂；刊头与首页顶栏明暗模式同色。
+
+## 样式变量
+
+颜色和字体来自研报 `report.css` 的 `:root`，由 `config.mts` 的 `head` 注入（改 `report.css` 需重启 dev）。组件只引用 `--vp-c-*`、`--font-*`、`--prose-max` / `--content-max`。没有研报时回退到 `style.css` 原配色。
+
+- D2：字体完全跟研报：标题 `--font-serif`，正文 `--font-sans`；不再用自托管思源宋体。
+- 研报区色彩用 `.research-desk` 下的 `--desk-*` 变量（暗色另给值，因为研报变量只注入在浅色模式下）；立场色调由 `research-reports.mjs` 的 `stanceTone` 在构建期算成 `tone`（bear / bull / neutral）。研报卡的底色与分隔线用 `--desk-card-*`（明暗各给值），清单顺序由 `sortReports` 按 `updatedAt` 定，组件不另排。
 
 ## 页面族
 
@@ -59,4 +77,4 @@
 
 最小代表页：首页、周记/历程阅读页、周记入口、投研 hub、研究正文、普通文章。构建通过只证明编译正确；没有浏览器证据时明确标记未做视觉验收。
 
-最后更新：2026-08-22
+最后更新：2026-11-22
