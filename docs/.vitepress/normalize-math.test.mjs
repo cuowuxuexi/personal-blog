@@ -9,3 +9,13 @@ test('turns \\[ \\] into $$ so Vue never sees {cases}', () => {
   assert.doesNotMatch(out, /\\\[/)
   assert.match(out, /begin\{cases\}/)
 })
+
+test('double-escaped \\\\[ \\\\] still becomes one closed $$ pair', () => {
+  const src = `一般计算方式：\n\n\\\\[ \\text{应纳税额}=x\\times20\\\\% \\\\]\n\n后文还在。\n`
+  const out = normalizeDisplayMath(src)
+  const fences = [...out.matchAll(/\$\$/g)]
+  assert.equal(fences.length, 2)
+  assert.match(out, /应纳税额/)
+  assert.match(out, /后文还在/)
+  assert.doesNotMatch(out, /\\\[/)
+})
