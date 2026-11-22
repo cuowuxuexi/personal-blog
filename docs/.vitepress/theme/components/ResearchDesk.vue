@@ -153,6 +153,7 @@ const tocCols = (n: number) => (n <= 7 ? n : Math.ceil(n / Math.ceil(n / 6)))
             <div class="research-desk__title">
               <h3><a :href="reportHref(r.slug, 'index.html')">{{ r.title }}</a></h3>
               <span class="code">{{ r.code }}</span>
+              <span class="read-cue" aria-hidden="true">读研报 →</span>
             </div>
             <p class="judge">{{ r.thesis }}</p>
           </div>
@@ -162,7 +163,7 @@ const tocCols = (n: number) => (n <= 7 ? n : Math.ceil(n / Math.ceil(n / 6)))
           </dl>
         </div>
         <nav class="research-desk__toc" aria-label="各页直达" :style="{ '--toc-cols': tocCols(r.pages.length) }">
-          <a v-for="(p, n) in r.pages" :key="p.href" :href="reportHref(r.slug, p.href)"><span>{{ pad2(n + 1) }}</span>{{ p.text }}</a>
+          <a v-for="(p, n) in r.pages" :key="p.href" :href="reportHref(r.slug, p.href)" :title="p.text"><span>{{ pad2(n + 1) }}</span>{{ p.text }}</a>
         </nav>
       </article>
       <p v-if="!items.length" class="research-desk__empty">暂无</p>
