@@ -11,11 +11,12 @@
     "preview:ready": "node scripts/preview-ready.mjs",
     "check:html": "node scripts/check-standalone-html.mjs",
     "publish:guonei": "node scripts/publish-guonei.mjs",
+    "report:ship": "node scripts/ship-report.mjs",
     "panel": "node panel/start.mjs",
     "panel:cleanup": "node panel/cleanup.mjs",
     "panel:shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-panel-shortcut.ps1",
     "test:panel": "node --test panel/*.test.mjs",
-    "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs scripts/check-standalone-html.test.mjs scripts/land-report.test.mjs docs/.vitepress/research-reports.test.mjs docs/.vitepress/videos.test.mjs scripts/publish-guonei.test.mjs"
+    "test:content": "node --test content-catalog/*.test.mjs docs/.vitepress/recent-posts.test.mjs docs/.vitepress/site-projection.test.mjs scripts/check-standalone-html.test.mjs scripts/land-report.test.mjs docs/.vitepress/research-reports.test.mjs docs/.vitepress/videos.test.mjs scripts/publish-guonei.test.mjs scripts/ship-report.test.mjs"
   },
   "dependencies": {
     "markdown-it": "^15.0.0",

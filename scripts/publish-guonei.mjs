@@ -1,8 +1,10 @@
 /**
- * 构建当前仓库并上传到 cuowo.cn。不 commit、不 push。
- * 作者说「上传」且投研改动已提交后，再跑 pnpm publish:guonei。
+ * 把当前提交（HEAD）构建后上传到 cuowo.cn。不 commit、不 push。
+ * 构建在临时 git worktree 里做，工作区里没提交的改动不会上线，也不会挡住上传。
  */
 import { execFileSync, spawn } from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -12,27 +14,20 @@ import {
 } from '../panel/lib/guonei.mjs'
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const DIST_DIR = path.join(REPO_ROOT, 'docs', '.vitepress', 'dist')
 
-const BLOCKING_PATH = /^(docs\/|panel\/|content-catalog\/|scripts\/|package\.json|pnpm-lock\.yaml)/
+const SITE_PATH = /^(docs\/|panel\/|content-catalog\/|scripts\/|package\.json|pnpm-lock\.yaml)/
 
-export function publishBlockingPaths(porcelain) {
-  const blocked = []
+/** 工作区里没提交、因而这次不会上线的站点文件（只用于提示）。 */
+export function uncommittedSitePaths(porcelain) {
+  const paths = []
   for (const line of String(porcelain || '').split(/\r?\n/)) {
     if (!line.trim()) continue
     const rest = line.slice(3).replace(/^"|"$/g, '')
     const dest = rest.includes(' -> ') ? rest.split(' -> ').pop() : rest
     const rel = String(dest || '').replace(/\\/g, '/')
-    if (BLOCKING_PATH.test(rel)) blocked.push(rel)
+    if (SITE_PATH.test(rel)) paths.push(rel)
   }
-  return blocked
-}
-
-export function assertPublishReady(porcelain) {
-  const blocked = publishBlockingPaths(porcelain)
-  if (blocked.length) {
-    throw new Error(`工作区还有未提交的站点改动，先只提交这次要上的文件：\n${blocked.join('\n')}`)
-  }
+  return paths
 }
 
 function run(command, args, { cwd = REPO_ROOT, timeout = 300000, env = process.env } = {}) {
@@ -58,11 +53,11 @@ function run(command, args, { cwd = REPO_ROOT, timeout = 300000, env = process.e
   })
 }
 
-function runPnpm(args, env = process.env) {
+function runPnpm(args, env = process.env, cwd = REPO_ROOT) {
   if (process.platform === 'win32') {
-    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${args.join(' ')}`], { env })
+    return run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', `pnpm ${args.join(' ')}`], { cwd, env, timeout: 600000 })
   }
-  return run('pnpm', args, { env })
+  return run('pnpm', args, { cwd, env, timeout: 600000 })
 }
 
 export async function fetchExpectedBaselineSha(origin = DEFAULT_PRODUCTION_ORIGIN) {
@@ -77,17 +72,16 @@ export async function fetchExpectedBaselineSha(origin = DEFAULT_PRODUCTION_ORIGI
   }
 }
 
-async function main() {
-  const porcelain = execFileSync('git', ['status', '--porcelain'], {
-    cwd: REPO_ROOT,
+function git(args, cwd = REPO_ROOT) {
+  return execFileSync('git', ['-c', 'core.quotePath=false', ...args], {
+    cwd,
     encoding: 'utf8',
-  })
-  assertPublishReady(porcelain)
-
-  const sha = execFileSync('git', ['rev-parse', 'HEAD'], {
-    cwd: REPO_ROOT,
-    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
   }).trim()
+}
+
+async function main() {
+  const sha = git(['rev-parse', 'HEAD'])
   if (!/^[0-9a-f]{7,40}$/i.test(sha)) throw new Error('无法读取当前提交 SHA')
 
   const config = readGuoneiConfig()
@@ -95,20 +89,44 @@ async function main() {
     throw new Error('未配置国内站上传：请设置 PANEL_GUONEI_KEY，或把 id_ed25519_servers 放到本机 .ssh')
   }
 
-  await runPnpm(['docs:build'], { ...process.env, VITEPRESS_BASE: '/' })
-  await run(process.execPath, [path.join(REPO_ROOT, 'scripts', 'write-build-metadata.mjs')], {
-    env: { ...process.env, PANEL_BUILD_SHA: sha },
-  })
+  const pending = uncommittedSitePaths(git(['status', '--porcelain']))
+  if (pending.length) {
+    console.log(`提示：以下 ${pending.length} 个没提交的站点文件不会上线（从提交 ${sha.slice(0, 7)} 构建）`)
+    for (const rel of pending.slice(0, 10)) console.log(`  ${rel}`)
+    if (pending.length > 10) console.log('  …')
+  }
 
-  const expectedBaselineSha = await fetchExpectedBaselineSha()
-  const result = await uploadDist({
-    distDir: DIST_DIR,
-    config,
-    run,
-    sha,
-    expectedBaselineSha,
-  })
-  console.log(`cuowo.cn 已上传 ${result.mode} sha=${sha}`)
+  const tree = fs.mkdtempSync(path.join(os.tmpdir(), `guonei-${sha.slice(0, 7)}-`))
+  fs.rmSync(tree, { recursive: true, force: true })
+  git(['worktree', 'add', '--detach', tree, sha])
+  try {
+    const distDir = path.join(tree, 'docs', '.vitepress', 'dist')
+    await runPnpm(['install', '--frozen-lockfile', '--prefer-offline'], process.env, tree)
+    await runPnpm(['docs:build'], { ...process.env, VITEPRESS_BASE: '/' }, tree)
+    await run(process.execPath, [path.join(tree, 'scripts', 'write-build-metadata.mjs'), distDir], {
+      cwd: tree,
+      env: { ...process.env, PANEL_BUILD_SHA: sha },
+    })
+
+    const expectedBaselineSha = await fetchExpectedBaselineSha()
+    const result = await uploadDist({
+      distDir,
+      config,
+      run,
+      sha,
+      expectedBaselineSha,
+    })
+    console.log(`cuowo.cn 已上传 ${result.mode} sha=${sha}`)
+  } finally {
+    // node_modules 层级深，git 在 Windows 上删不掉长路径，先由 Node 删
+    fs.rmSync(path.join(tree, 'node_modules'), { recursive: true, force: true })
+    try {
+      git(['worktree', 'remove', '--force', tree])
+    } catch {
+      fs.rmSync(tree, { recursive: true, force: true })
+      try { git(['worktree', 'prune']) } catch {}
+    }
+  }
 }
 
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)

@@ -19,6 +19,7 @@ The author finishes research in the investment system, then hands a draft to thi
 | The author says | Do this | Do not |
 | --- | --- | --- |
 | 「写入博客」 / 「把这份草稿写进去」 | Land the handed draft. New company → archive root Markdown. Existing company → new chapter. If the draft is HTML: copy to `docs/public/html/<name>/index.html`. Chapter: `publicHref: /html/<name>`, body only `<JumpToStandalone />`. Archive root: same `publicHref` covers `/投资/投研/<行业>/<标的>/`; sidebar keeps that URL. If the draft is Markdown / prose: rewrite as a full archive page. Preview, then wait. | Do not re-run Gate 1. Do not reread the private system unless asked. Do not iframe-embed a handed HTML draft. |
+| 投研系统说「上博客」/「更新到 cuowo.cn」并给研报目录 | `pnpm report:ship <研报目录> --upload`：落页→登记→测试与构建→只提交这家研报→push main→`publish:guonei`→线上核对。研报已在投研系统过了作者验收，不再停下等「上传」。 | Do not edit report content or layout. Do not stage other files. |
 | 交来研报目录并说「写入博客」 | Follow 「研报集约定」 below. | Do not re-run Gate 1. Do not edit report content or layout. Do not create new industry pages or research maps. |
 | 「上传」 | Commit only this research change, `push main`, then `pnpm publish:guonei`. | Do not rewrite the argument. Do not include weekly/panel WIP. |
 | 「按投资系统改认识」 | Resolve `research-sources.local.yaml` and rewrite the named page. | Do not treat this as the default handoff. |
@@ -33,6 +34,8 @@ Publication is still deny-by-default. 「写入博客」 is not 「上传」.
 1. `node scripts/land-report.mjs <研报目录>`；行业推不出来时加 `--industry <行业>`。研报引言 `#s1-1` 的终审参数（价格时点、终审价、总市值）是落页必填项，缺一项 `land-report.mjs` 与构建都会失败。`land-report.mjs` 每次落页都把 `blog-meta.json` 的 `updatedAt` 刷新为本次落页时间（北京时间 `YYYY-MM-DDTHH:mm:ss+08:00`）；首页与 `/投资/` 的研报按 `updatedAt` 降序排，缺省时回退价格时点；
 2. 在 `docs/public/html/README.md` 登记 `report-<slug>/`（重落同一家可跳过）；
 3. 跑 `pnpm test:content`、`pnpm check:html`、`pnpm docs:build`，预览后等「上传」。
+
+以上三步与「上传」已合成 `pnpm report:ship <研报目录> [--industry <行业>] [--upload]`（`scripts/ship-report.mjs`）；不带 `--upload` 停在本地构建通过。
 
 该标的旧页原样保留，从 `/归档` 进入，归档页旧版投研段自动标出「已有研报」。研报与旧版并存是正常状态。旧页的删除由作者另行下达，不随落页进行。研报内容与版式不在本仓库修改；入口页数据由构建期从研报和 `blog-meta.json` 提取，不手抄。不再新建行业页和研究地图。
 
