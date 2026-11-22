@@ -155,11 +155,30 @@ export function stanceTone(stance) {
   return best ? best.tone : 'neutral'
 }
 
+/** 页签里文字恰为「引言」的那页：新研报是 intro.html，老研报就是 index.html。 */
+function readIntroHtml(setDir, indexHtml, slug) {
+  const tabs = findElement(indexHtml, { tag: 'nav', className: 'layer-tabs' })
+  if (!tabs) return indexHtml
+  for (const m of tabs.inner.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    if (textOf(m[2]).replace(/\s/g, '') !== '引言') continue
+    const raw = (m[1].match(/\bhref\s*=\s*["']([^"']*)["']/i) || [])[1] || ''
+    const href = raw.split('#')[0].replace(/^\.\//, '')
+    if (!href || href === 'index.html') return indexHtml
+    const file = path.resolve(setDir, href)
+    const rel = path.relative(path.resolve(setDir), file)
+    if (rel.startsWith('..') || path.isAbsolute(rel)) return indexHtml
+    if (!fs.existsSync(file)) throw new Error(`${slug}: 引言页 ${href} 不存在`)
+    return fs.readFileSync(file, 'utf8')
+  }
+  return indexHtml
+}
+
 export function readReport(setDir) {
   const slug = path.basename(setDir)
   const indexFile = path.join(setDir, 'index.html')
   if (!fs.existsSync(indexFile)) throw new Error(`${slug}: 缺少 index.html`)
-  const fields = extractReportFields(fs.readFileSync(indexFile, 'utf8'), slug)
+  const indexHtml = fs.readFileSync(indexFile, 'utf8')
+  const fields = extractReportFields(readIntroHtml(setDir, indexHtml, slug), slug)
   const { company, code, stance, priceDate, finalPrice, marketCap, thesis, pages } = fields
   const { industry, updatedAt } = readReportMeta(setDir)
   const updatedDate = updatedAt ? updatedAt.slice(0, 10) : priceDate

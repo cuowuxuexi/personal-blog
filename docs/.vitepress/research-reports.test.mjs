@@ -9,6 +9,7 @@ import {
   formatUpdatedAt,
   isValidUpdatedAt,
   loadReports,
+  readReport,
   siteTokenCss,
   sortReports,
   stanceTone,
@@ -229,5 +230,47 @@ test('stanceTone 把立场文字映射为 bear / bull / neutral', () => {
   ]
   for (const [input, expected] of cases) {
     assert.equal(stanceTone(input), expected, `stanceTone(${JSON.stringify(input)})`)
+  }
+})
+
+test('readReport 新布局：从页签「引言」指向的 intro.html 取元数据', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rr-intro-'))
+  try {
+    const set = path.join(dir, 'report-000001-sz')
+    fs.mkdirSync(set)
+    fs.writeFileSync(path.join(set, 'blog-meta.json'), '{"industry":"测试"}')
+    const tabs = '<nav class="layer-tabs"><a class="layer-tab" href="index.html">逻辑拆解</a><a class="layer-tab" href="./intro.html#s1-1">引言</a></nav>'
+    fs.writeFileSync(
+      path.join(set, 'index.html'),
+      `<html><body><span class="ticker-box">测试公司 <span class="ticker-code">000001.SZ</span></span>${tabs}</body></html>`,
+    )
+    fs.writeFileSync(
+      path.join(set, 'intro.html'),
+      INTRO.replace(/<nav class="layer-tabs"[\s\S]*?<\/nav>/, tabs.replace('./intro.html#s1-1', 'intro.html')),
+    )
+    const r = readReport(set)
+    assert.equal(r.finalPrice, '44.85')
+    assert.equal(r.code, '000001.SZ')
+    assert.equal(r.pages.length, 2)
+
+    fs.rmSync(path.join(set, 'intro.html'))
+    assert.throws(() => readReport(set), /引言页 intro\.html 不存在/)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('readReport 老布局：index.html 就是引言页', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rr-old-'))
+  try {
+    const set = path.join(dir, 'report-000001-sz')
+    fs.mkdirSync(set)
+    fs.writeFileSync(path.join(set, 'blog-meta.json'), '{"industry":"测试"}')
+    fs.writeFileSync(path.join(set, 'index.html'), INTRO)
+    const r = readReport(set)
+    assert.equal(r.finalPrice, '44.85')
+    assert.equal(r.pages.length, 2)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
   }
 })

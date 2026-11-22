@@ -35,6 +35,8 @@ Publication is still deny-by-default. 「写入博客」 is not 「上传」.
 2. 在 `docs/public/html/README.md` 登记 `report-<slug>/`（重落同一家可跳过）；
 3. 跑 `pnpm test:content`、`pnpm check:html`、`pnpm docs:build`，预览后等「上传」。
 
+元数据从页签名为「引言」的那页取（新研报是 `intro.html`，老研报是 `index.html`）；首页 `index.html` 仍必须存在。
+
 以上三步与「上传」已合成 `pnpm report:ship <研报目录> [--industry <行业>] [--upload]`（`scripts/ship-report.mjs`）；不带 `--upload` 停在本地构建通过。
 
 该标的旧页原样保留，从 `/归档` 进入，归档页旧版投研段自动标出「已有研报」。研报与旧版并存是正常状态。旧页的删除由作者另行下达，不随落页进行。研报内容与版式不在本仓库修改；入口页数据由构建期从研报和 `blog-meta.json` 提取，不手抄。不再新建行业页和研究地图。
