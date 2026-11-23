@@ -1,5 +1,5 @@
 (function () {
-  var WIDTH_KEY = 'my002714-r07:width';
+  var WIDTH_KEY = 'my002714-r08:width';
   var DATA = window["MY_REPORT"] || {};
 
   // 版宽切换：只存版宽
