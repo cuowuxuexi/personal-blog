@@ -5,6 +5,7 @@ import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { getContentKind } from '../content-catalog/index.mjs'
 import {
+  ALLOWED_PREFIXES,
   assertPublishable,
   isAllowedPublishPath,
   isJourneyChapterPath,
@@ -29,37 +30,47 @@ function assetPath(kindId, name) {
   return `${getContentKind(kindId).assets.directory}/${name}`
 }
 
-test('weekly and journey allow-lists follow ContentKind dirs and assets', () => {
+test('journey allow-list follows ContentKind dir and assets; frozen weekly kinds have no allow-list', () => {
   const lifeBody = bodyPath('weekly-life')
   const investBody = bodyPath('weekly-investment')
   const journeyBody = `${getContentKind('journey').contentDir}/基础设施篇.md`
   const weeklyImage = assetPath('weekly-life', 'shot.webp')
   const journeyImage = assetPath('journey', 'cover.webp')
 
-  assert.equal(isAllowedPublishPath(lifeBody, weeklyOpts), true)
-  assert.equal(isAllowedPublishPath(investBody, investOpts), true)
-  assert.equal(isAllowedPublishPath(weeklyImage, weeklyOpts), true)
+  // 周记 kind 冻结后不带 panel surface：面板允许清单里没有周记目录，周记正文与图片都不放行。
+  assert.deepEqual(ALLOWED_PREFIXES, [])
+  assert.equal(isAllowedPublishPath(lifeBody, weeklyOpts), false)
+  assert.equal(isAllowedPublishPath(investBody, investOpts), false)
+  assert.equal(isAllowedPublishPath(weeklyImage, weeklyOpts), false)
   assert.equal(isAllowedPublishPath(journeyBody, weeklyOpts), false)
   assert.equal(isAllowedPublishPath(journeyImage, weeklyOpts), false)
 
   assert.equal(isAllowedPublishPath(journeyBody, journeyOpts), true)
   assert.equal(isAllowedPublishPath(journeyImage, journeyOpts), true)
   assert.equal(isAllowedPublishPath(lifeBody, journeyOpts), false)
+  assert.equal(isAllowedPublishPath(investBody, journeyOpts), false)
   assert.equal(isAllowedPublishPath(weeklyImage, journeyOpts), false)
 
-  assert.deepEqual(assertPublishable([lifeBody, weeklyImage], weeklyOpts), [lifeBody, weeklyImage])
-  assert.deepEqual(assertPublishable([investBody, weeklyImage], investOpts), [investBody, weeklyImage])
+  for (const [files, opts] of [
+    [[lifeBody, weeklyImage], weeklyOpts],
+    [[investBody, weeklyImage], investOpts],
+  ]) {
+    assert.throws(
+      () => assertPublishable(files, opts),
+      (error) => error.status === 422 && /超出发布面板范围/.test(error.message) && error.message.includes(files[0]),
+    )
+  }
   assert.deepEqual(assertPublishable([journeyBody, journeyImage], journeyOpts), [journeyBody, journeyImage])
 })
 
-test('publication source asks kind scan, not a third path tree', () => {
+test('publication source asks kind scan; frozen weekly bodies are not publication sources', () => {
   const lifeBody = bodyPath('weekly-life')
   const investBody = bodyPath('weekly-investment')
   const journeyBody = `${getContentKind('journey').contentDir}/基础设施篇.md`
   const journeyIndex = `${getContentKind('journey').contentDir}/index.md`
 
-  assert.equal(isPublicationSourcePath(lifeBody, 'life'), true)
-  assert.equal(isPublicationSourcePath(investBody, 'invest'), true)
+  assert.equal(isPublicationSourcePath(lifeBody, 'life'), false)
+  assert.equal(isPublicationSourcePath(investBody, 'invest'), false)
   assert.equal(isPublicationSourcePath(journeyBody, 'journey'), true)
   assert.equal(isPublicationSourcePath(journeyBody, 'life'), false)
   assert.equal(isPublicationSourcePath(lifeBody, 'journey'), false)

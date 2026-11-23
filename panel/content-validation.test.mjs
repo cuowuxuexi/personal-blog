@@ -49,38 +49,35 @@ const entry = `<div class="weekly-outline-only" aria-hidden="true">
 
 </WeeklyEntry>`
 
-test('fast snapshot validation accepts unique entries with existing images', () => {
+const EMPTY_COUNT = { files: 0, entries: 0, images: 0 }
+
+// 两类周记已冻结（creation.surfaces 为空），面板校验不再扫描、计数周记文件。
+test('frozen weekly files are not scanned or counted by snapshot validation', () => {
   const root = fixture(entry)
   try {
-    assert.deepEqual(validateWeeklySnapshot(root), { files: 1, entries: 1, images: 1 })
+    assert.deepEqual(validateWeeklySnapshot(root), EMPTY_COUNT)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
 })
 
-test('fast snapshot validation rejects duplicate entries', () => {
-  const root = fixture(`${entry}\n\n${entry}`)
+test('frozen weekly files are not validated: duplicate entries and missing images pass unnoticed', () => {
+  const duplicated = fixture(`${entry}\n\n${entry}`)
+  const missingImage = fixture(entry, { withImage: false })
   try {
-    assert.throws(() => validateWeeklySnapshot(root), /重复条目.*测试/)
+    assert.deepEqual(validateWeeklySnapshot(duplicated), EMPTY_COUNT)
+    assert.deepEqual(validateWeeklySnapshot(missingImage), EMPTY_COUNT)
   } finally {
-    fs.rmSync(root, { recursive: true, force: true })
+    fs.rmSync(duplicated, { recursive: true, force: true })
+    fs.rmSync(missingImage, { recursive: true, force: true })
   }
 })
 
-test('fast snapshot validation rejects missing weekly images', () => {
-  const root = fixture(entry, { withImage: false })
-  try {
-    assert.throws(() => validateWeeklySnapshot(root), /缺少周记图片.*test\.webp/)
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true })
-  }
-})
-
-test('default weekly validation ignores unrelated journey chapters with missing images', () => {
+test('default validation ignores unrelated journey chapters with missing images', () => {
   const root = fixture(entry)
   writeBrokenJourney(root, '无关篇章.md')
   try {
-    assert.deepEqual(validateWeeklySnapshot(root), { files: 1, entries: 1, images: 1 })
+    assert.deepEqual(validateWeeklySnapshot(root), EMPTY_COUNT)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }
@@ -121,15 +118,16 @@ test('journey validation accepts the scoped chapter when its image exists and ig
   ].join('\n'))
   writeBrokenJourney(root, '工具篇.md')
   try {
+    // 只数章节引用的图片；同目录下冻结的周记文件不计入 files / entries / images。
     assert.deepEqual(validateWeeklySnapshot(root, {
       kindId: 'journey',
       contentFiles: [`${journey.contentDir}/基础设施篇.md`],
-    }), { files: 1, entries: 1, images: 2 })
-    assert.deepEqual(validateWeeklySnapshot(root, { kindId: 'life' }), {
-      files: 1,
-      entries: 1,
-      images: 1,
-    })
+    }), { files: 0, entries: 0, images: 1 })
+    assert.deepEqual(validateWeeklySnapshot(root, { kindId: 'life' }), EMPTY_COUNT)
+    assert.deepEqual(validateWeeklySnapshot(root, {
+      kindId: 'life',
+      contentFiles: [`${journey.contentDir}/基础设施篇.md`],
+    }), EMPTY_COUNT)
   } finally {
     fs.rmSync(root, { recursive: true, force: true })
   }

@@ -167,6 +167,9 @@ function initRepo(dir) {
   fs.writeFileSync(invest, INVEST_MD)
   fs.writeFileSync(image, 'webp')
   fs.writeFileSync(path.join(dir, 'docs', 'public', 'images', 'weekly', '2026-08-13-01-test.webp'), 'webp')
+  const journeyImages = path.join(dir, 'docs', 'public', 'images', 'journey')
+  fs.mkdirSync(journeyImages, { recursive: true })
+  fs.writeFileSync(path.join(journeyImages, '2026-08-12-01-test.webp'), 'webp')
   fs.writeFileSync(path.join(journeyDir, '基础设施篇.md'), JOURNEY_MD)
   fs.writeFileSync(path.join(journeyDir, '工具篇.md'), JOURNEY_MD.replaceAll('基础设施篇', '工具篇'))
   fs.writeFileSync(path.join(journeyDir, 'AI开支记录与优化.md'), JOURNEY_MD.replaceAll('基础设施篇', 'AI开支记录与优化'))
@@ -355,7 +358,20 @@ function rawGet(port, pathname) {
   })
 }
 
+const JOURNEY_CHAPTER_LINK = '/AI与生活/我的AI历程/基础设施篇'
+const JOURNEY_CHAPTER_FILE = 'docs/AI与生活/我的AI历程/基础设施篇.md'
+const JOURNEY_IMAGE_URL = '/images/journey/2026-08-12-01-test.webp'
+
+// 发布流程样例用 journey：两类周记已冻结，不再进入面板发布范围。
 const appendBody = {
+  kindId: 'journey',
+  mode: 'append',
+  issueLink: JOURNEY_CHAPTER_LINK,
+  entry: { title: '新的一条', body: `追加正文 ![图](${JOURNEY_IMAGE_URL})`, tags: '测试' },
+}
+
+// 冻结的周记样例：只用来断言「面板不再处理周记」。
+const frozenLifeBody = {
   kindId: 'life',
   mode: 'append',
   issueLink: '/AI与生活/2026-08-12',
@@ -507,6 +523,7 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.equal(draft.status, 200)
     assert.ok(draft.payload.draftId)
     assert.equal(draft.payload.previewKind, 'workspace')
+    // journey 没有固定标题锚点：客户端传来的 headingAnchor 会被忽略。
     const prepared = await post(url, '/api/publish/prepare', {
       draftId: draft.payload.draftId,
       headingAnchor: 'kan-yanhua',
@@ -515,11 +532,11 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.equal(prepared.payload.state, 'PreviewReady')
     assert.equal(expectedPreviewBase, `/release-preview/${prepared.payload.jobId}/`)
     assert.deepEqual(expectedPreviewTarget, {
-      previewPath: '/AI与生活/2026-08-12',
-      headingAnchor: 'kan-yanhua',
+      previewPath: JOURNEY_CHAPTER_LINK,
+      headingAnchor: '',
     })
     assert.ok(prepared.payload.confirmationToken)
-    assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-12.md')))
+    assert.ok(prepared.payload.manifest.some((item) => item.path === JOURNEY_CHAPTER_FILE))
     assert.equal(prepared.payload.manifest.filter((item) => item.path.includes('2026-08-12-01-test.webp')).length, 1)
     assert.equal(prepared.payload.wechatPreview.copyAllowed, false)
     const wechatReady = await waitWechatChecked(url, prepared.payload.jobId)
@@ -528,10 +545,10 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.match(prepared.payload.wechatPreview.url, new RegExp(`/wechat-preview/${prepared.payload.jobId}/`))
     const preview = await fetch(`${url}${prepared.payload.releasePreviewUrl}`)
     assert.equal(preview.status, 200)
-    assert.match(await preview.text(), /id="kan-yanhua"/)
+    assert.match(await preview.text(), /id="preview"/)
     const wechatPreview = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
     assert.equal(wechatPreview.status, 200)
-    assert.match(await wechatPreview.text(), /第一条/)
+    assert.match(await wechatPreview.text(), /新的一条/)
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
@@ -541,9 +558,9 @@ test('prepare, preview, confirm, push and production verification succeed', asyn
     assert.equal(confirmed.payload.wechatPreview.status, 'ProductionVerified')
     assert.equal(confirmed.payload.wechatPreview.copyAllowed, true)
     assert.ok(confirmed.payload.commitSha)
-    assert.equal(confirmed.payload.verifiedUrl, `https://blog.example.test/AI与生活/2026-08-12#kan-yanhua`)
+    assert.equal(confirmed.payload.verifiedUrl, `https://blog.example.test${JOURNEY_CHAPTER_LINK}`)
     assert.ok(git(dir, ['log', '-1', '--format=%H']))
-    assert.match(git(dir, ['log', '-1', '--name-only']), /2026-08-12\.md/)
+    assert.match(git(dir, ['-c', 'core.quotepath=false', 'log', '-1', '--name-only']), /基础设施篇\.md/)
   })
 })
 
@@ -589,7 +606,8 @@ test('prepare returns PreviewReady before online image probe finishes and keeps 
   }, async ({ url }) => {
     const draft = await post(url, '/api/draft', appendBody)
     const preparePromise = post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    await started
+    // prepare 先失败时探针永远不会启动；竞速返回，避免用例在这里永久挂住整个测试进程。
+    await Promise.race([started, preparePromise])
     const began = Date.now()
     const prepared = await preparePromise
     assert.ok(Date.now() - began < 400, 'prepare blocked on onlineAssets')
@@ -733,8 +751,8 @@ test('wechat preview is rendered from the isolated snapshot and artifacts stay o
   await withPanel({}, async ({ url, dir, ctx }) => {
     const draft = await post(url, '/api/draft', appendBody)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
-    fs.appendFileSync(weekly, '\n工作区后续漂移，不应进入已准备的公众号快照\n')
+    const chapter = path.join(dir, ...JOURNEY_CHAPTER_FILE.split('/'))
+    fs.appendFileSync(chapter, '\n工作区后续漂移，不应进入已准备的公众号快照\n')
     const response = await fetch(`${url}${prepared.payload.wechatPreview.url}`)
     const html = await response.text()
     assert.match(html, /新的一条/)
@@ -750,7 +768,7 @@ test('wechat preview asset route rejects malformed encoding and traversal varian
     const draft = await post(url, '/api/draft', appendBody)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
     const jobId = prepared.payload.jobId
-    const image = await rawGet(port, `/wechat-preview-assets/${jobId}/images/weekly/2026-08-12-01-test.webp`)
+    const image = await rawGet(port, `/wechat-preview-assets/${jobId}/images/journey/2026-08-12-01-test.webp`)
     assert.equal(image.status, 200)
     assert.equal(image.body.toString('utf8'), 'webp')
 
@@ -838,8 +856,8 @@ test('hash drift invalidates confirmation', async () => {
   await withPanel({}, async ({ url, dir }) => {
     const draft = await post(url, '/api/draft', appendBody)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
-    fs.appendFileSync(weekly, '\n被改了\n')
+    const chapter = path.join(dir, ...JOURNEY_CHAPTER_FILE.split('/'))
+    fs.appendFileSync(chapter, '\n被改了\n')
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
@@ -854,13 +872,13 @@ test('new issue writes article only; projection owns posts/sidebar', async () =>
     const postsBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
     const configBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8')
     const draft = await post(url, '/api/draft', {
-      kindId: 'life',
+      kindId: 'journey',
       mode: 'newIssue',
-      entry: { title: '开篇', body: '新期正文 ![图](/images/weekly/2026-08-12-01-test.webp)' },
+      entry: { title: '开篇', body: `新期正文 ![图](${JOURNEY_IMAGE_URL})` },
       issue: { theme: '测试期', date: '2026-08-16' },
     })
     assert.equal(draft.status, 200)
-    assert.ok(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-16.md')))
+    assert.ok(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '2026-08-16.md')))
     assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), postsBefore)
     assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'utf8'), configBefore)
     assert.ok(!draft.payload.files.some((f) => f.endsWith('posts.ts') || f.endsWith('config.mts')))
@@ -878,18 +896,18 @@ test('new issue writes article only; projection owns posts/sidebar', async () =>
 test('new issue uses a YAML-safe text summary when the body starts with an image', async () => {
   await withPanel({}, async ({ url, dir }) => {
     const draft = await post(url, '/api/draft', {
-      kindId: 'life',
+      kindId: 'journey',
       mode: 'newIssue',
       entry: {
         title: '图片开篇',
-        body: '![题图](/images/weekly/2026-08-12-01-test.webp)',
+        body: `![题图](${JOURNEY_IMAGE_URL})`,
       },
       issue: { theme: '图片开篇测试', date: '2026-08-16' },
     })
     assert.equal(draft.status, 200)
 
     const weekly = fs.readFileSync(
-      path.join(dir, 'docs', 'AI与生活', '2026-08-16.md'),
+      path.join(dir, 'docs', 'AI与生活', '我的AI历程', '2026-08-16.md'),
       'utf8',
     )
     assert.match(weekly, /^description: "图片开篇测试"$/m)
@@ -904,15 +922,15 @@ test('new issue uses a YAML-safe text summary when the body starts with an image
 
 test('deleting an existing entry creates a publishable draft without touching other entries', async () => {
   await withPanel({}, async ({ url, dir }) => {
-    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+    const weekly = path.join(dir, ...JOURNEY_CHAPTER_FILE.split('/'))
     const appended = await post(url, '/api/draft', appendBody)
     assert.equal(appended.status, 200)
     const before = fs.readFileSync(weekly, 'utf8')
     const beforeCount = (before.match(/<WeeklyEntry\b/g) || []).length
     const deleted = await post(url, '/api/draft', {
-      kindId: 'life',
+      kindId: 'journey',
       mode: 'delete',
-      issueLink: '/AI与生活/2026-08-12',
+      issueLink: JOURNEY_CHAPTER_LINK,
       entryIndex: 0,
     })
     assert.equal(deleted.status, 200)
@@ -928,7 +946,7 @@ test('deleting an existing entry creates a publishable draft without touching ot
 
 test('repeating the same append is rejected before another entry is written', async () => {
   await withPanel({}, async ({ url, dir }) => {
-    const weekly = path.join(dir, 'docs', 'AI与生活', '2026-08-12.md')
+    const weekly = path.join(dir, ...JOURNEY_CHAPTER_FILE.split('/'))
     const first = await post(url, '/api/draft', appendBody)
     assert.equal(first.status, 200)
     const countAfterFirst = (fs.readFileSync(weekly, 'utf8').match(/<WeeklyEntry\b/g) || []).length
@@ -944,13 +962,13 @@ test('new issue still writes markdown when sidebar shell is empty', async () => 
     fs.writeFileSync(path.join(dir, 'docs', '.vitepress', 'config.mts'), 'export default { themeConfig: { sidebar: {} } }\n')
     const postsBefore = fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8')
     const draft = await post(url, '/api/draft', {
-      kindId: 'life',
+      kindId: 'journey',
       mode: 'newIssue',
       entry: { title: '开篇', body: '新期正文' },
       issue: { theme: '空壳期', date: '2026-08-17' },
     })
     assert.equal(draft.status, 200)
-    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-17.md')), true)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '我的AI历程', '2026-08-17.md')), true)
     assert.equal(fs.readFileSync(path.join(dir, 'docs', '.vitepress', 'posts.ts'), 'utf8'), postsBefore)
   })
 })
@@ -1012,23 +1030,28 @@ test('theme and research paths cannot enter the weekly manifest', async () => {
   })
 })
 
-test('only explicitly listed deleted weekly files enter the manifest', async () => {
+test('journey manifest is body plus referenced images; deleted files in the work tree stay out', async () => {
+  // 原「显式列出的删除文件才入清单」是周记路径的行为；周记冻结后不可达。
+  // journey 清单固定为一篇正文 + 正文引用的图片，被删的无关图片即使写进草稿也不入清单、不进提交。
   await withPanel({}, async ({ url, dir, ctx }) => {
-    const extra = path.join(dir, 'docs', 'AI与生活', '2026-08-10-gone.md')
-    const unrelated = path.join(dir, 'docs', 'AI与生活', '2026-08-09-unrelated.md')
-    fs.writeFileSync(extra, LIFE_MD)
-    fs.writeFileSync(unrelated, LIFE_MD)
-    git(dir, ['add', 'docs/AI与生活/2026-08-10-gone.md', 'docs/AI与生活/2026-08-09-unrelated.md'])
+    const imageDir = path.join(dir, 'docs', 'public', 'images', 'journey')
+    const extra = path.join(imageDir, '2026-08-10-gone.webp')
+    const unrelated = path.join(imageDir, '2026-08-09-unrelated.webp')
+    fs.writeFileSync(extra, 'webp')
+    fs.writeFileSync(unrelated, 'webp')
+    git(dir, ['add', 'docs/public/images/journey/2026-08-10-gone.webp', 'docs/public/images/journey/2026-08-09-unrelated.webp'])
     git(dir, ['commit', '-m', 'extra'])
     fs.unlinkSync(extra)
     fs.unlinkSync(unrelated)
     const draft = await post(url, '/api/draft', appendBody)
     const storedDraft = ctx.drafts.get(draft.payload.draftId)
-    storedDraft.files.push('docs/AI与生活/2026-08-10-gone.md')
+    storedDraft.files.push('docs/public/images/journey/2026-08-10-gone.webp')
     ctx.drafts.set(draft.payload.draftId, storedDraft)
     const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    assert.ok(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-10-gone.md') && item.action === 'delete'))
-    assert.equal(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-09-unrelated.md')), false)
+    assert.equal(prepared.status, 200)
+    assert.equal(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-10-gone.webp')), false)
+    assert.equal(prepared.payload.manifest.some((item) => item.path.endsWith('2026-08-09-unrelated.webp')), false)
+    assert.ok(prepared.payload.manifest.some((item) => item.path === JOURNEY_CHAPTER_FILE))
     const confirmed = await post(url, '/api/publish/confirm', {
       jobId: prepared.payload.jobId,
       confirmationToken: prepared.payload.confirmationToken,
@@ -1036,9 +1059,11 @@ test('only explicitly listed deleted weekly files enter the manifest', async () 
     assert.equal(confirmed.payload.state, 'Published')
     assert.equal(fs.existsSync(extra), false)
     const names = git(dir, ['ls-tree', '-r', '--name-only', 'HEAD'])
-    assert.equal(names.includes('2026-08-10-gone.md'), false)
-    assert.equal(names.includes('2026-08-09-unrelated.md'), true)
-    assert.match(git(dir, ['status', '--short']), /2026-08-09-unrelated\.md/)
+    assert.equal(names.includes('2026-08-10-gone.webp'), true)
+    assert.equal(names.includes('2026-08-09-unrelated.webp'), true)
+    const status = git(dir, ['status', '--short'])
+    assert.match(status, /2026-08-10-gone\.webp/)
+    assert.match(status, /2026-08-09-unrelated\.webp/)
   })
 })
 
@@ -1135,10 +1160,10 @@ test('concurrent confirmations of different jobs do not race', async () => {
     const firstDraft = await post(url, '/api/draft', appendBody)
     const firstPrep = await post(url, '/api/publish/prepare', { draftId: firstDraft.payload.draftId })
     const secondDraft = await post(url, '/api/draft', {
-      kindId: 'invest',
+      kindId: 'journey',
       mode: 'append',
-      issueLink: '/投资/周记/2026-08-13-看烟花',
-      entry: { title: '另一条', body: '投资追加', tags: '测试' },
+      issueLink: '/AI与生活/我的AI历程/工具篇',
+      entry: { title: '另一条', body: '工具篇追加', tags: '测试' },
     })
     const secondPrep = await post(url, '/api/publish/prepare', { draftId: secondDraft.payload.draftId })
     const [a, b] = await Promise.all([
@@ -1248,10 +1273,10 @@ test('panel restart restores WeChat preview, image serving, and copy gate', asyn
 
     const preview = await rawGet(listen2.port, recovered.wechatPreview.url)
     assert.equal(preview.status, 200)
-    assert.match(preview.body.toString('utf8'), /第一条/)
+    assert.match(preview.body.toString('utf8'), /新的一条/)
     const image = await rawGet(
       listen2.port,
-      `/wechat-preview-assets/${recovered.jobId}/images/weekly/2026-08-12-01-test.webp`,
+      `/wechat-preview-assets/${recovered.jobId}/images/journey/2026-08-12-01-test.webp`,
     )
     assert.equal(image.status, 200)
     assert.equal(image.body.toString('utf8'), 'webp')
@@ -1267,10 +1292,10 @@ test('panel restart restores WeChat preview, image serving, and copy gate', asyn
     assert.match(missingPreview.contentType, /application\/json/)
     assert.match(missingPreview.body.toString('utf8'), /还没有公众号预览/)
 
-    fs.rmSync(path.join(job.snapshotDir, 'docs', 'public', 'images', 'weekly', '2026-08-12-01-test.webp'), { force: true })
+    fs.rmSync(path.join(job.snapshotDir, 'docs', 'public', 'images', 'journey', '2026-08-12-01-test.webp'), { force: true })
     const missingImage = await rawGet(
       listen2.port,
-      `/wechat-preview-assets/${recovered.jobId}/images/weekly/2026-08-12-01-test.webp`,
+      `/wechat-preview-assets/${recovered.jobId}/images/journey/2026-08-12-01-test.webp`,
     )
     assert.equal(missingImage.status, 404)
     assert.equal(missingImage.body.toString('utf8'), 'not found')
@@ -1283,9 +1308,7 @@ test('panel restart restores WeChat preview, image serving, and copy gate', asyn
 test('oversized JSON is rejected', async () => {
   await withPanel({ maxJsonBytes: 64 }, async ({ url }) => {
     const draft = await post(url, '/api/draft', {
-      kindId: 'life',
-      mode: 'append',
-      issueLink: '/AI与生活/2026-08-12',
+      ...appendBody,
       entry: { title: 'x'.repeat(200), body: 'y'.repeat(200) },
     })
     assert.equal(draft.status, 413)
@@ -1373,11 +1396,11 @@ test('release preview site root redirects to the article preview', async () => {
     assert.equal(root.status, 302)
     assert.equal(
       decodeURI(root.headers.get('location') || ''),
-      `/release-preview/${jobId}/AI与生活/2026-08-12#kan-yanhua`,
+      `/release-preview/${jobId}${JOURNEY_CHAPTER_LINK}`,
     )
     const article = await fetch(`${url}${prepared.payload.releasePreviewUrl}`, { redirect: 'manual' })
     assert.notEqual(article.status, 302)
-    assert.match(prepared.payload.releasePreviewUrl, /#kan-yanhua$/)
+    assert.doesNotMatch(prepared.payload.releasePreviewUrl, /#/)
   })
 })
 
@@ -1720,39 +1743,47 @@ test('journey prepare rejects a missing referenced journey image', async () => {
   })
 })
 
-test('life prepare ignores an unrelated journey chapter with a missing image', async () => {
-  await withPanel({
-    probes: {
-      async test({ snapshotDir, kindId, contentFiles }) {
-        return { ok: true, ...validateWeeklySnapshot(snapshotDir, { kindId, contentFiles }) }
-      },
-    },
-  }, async ({ url, dir }) => {
-    const broken = path.join(dir, 'docs', 'AI与生活', '我的AI历程', '工具篇.md')
-    fs.writeFileSync(broken, [
-      '---',
-      'type: journey',
-      '---',
-      '',
-      '![图](/images/journey/missing.webp)',
-      '',
-    ].join('\n'))
-    git(dir, ['add', 'docs/AI与生活/我的AI历程/工具篇.md'])
-    git(dir, ['commit', '-m', 'fixture: broken unrelated journey'])
+test('frozen weekly kinds: life and invest drafts are rejected at prepare, journey is unaffected', async () => {
+  await withPanel({}, async ({ url, dir }) => {
+    const headBefore = git(dir, ['rev-parse', 'HEAD'])
+    const life = await post(url, '/api/draft', frozenLifeBody)
+    assert.equal(life.status, 200)
+    const lifePrepared = await post(url, '/api/publish/prepare', { draftId: life.payload.draftId })
+    assert.equal(lifePrepared.status, 422)
+    assert.match(lifePrepared.payload.error, /超出发布面板范围/)
+    assert.notEqual(lifePrepared.payload.state, 'PreviewReady')
+
+    const invest = await post(url, '/api/draft', {
+      kindId: 'invest',
+      mode: 'append',
+      issueLink: '/投资/周记/2026-08-13-看烟花',
+      entry: { title: '投资追加', body: '正文', tags: '测试' },
+    })
+    assert.equal(invest.status, 200)
+    const investPrepared = await post(url, '/api/publish/prepare', { draftId: invest.payload.draftId })
+    assert.equal(investPrepared.status, 422)
+    assert.match(investPrepared.payload.error, /超出发布面板范围/)
+    assert.notEqual(investPrepared.payload.state, 'PreviewReady')
+
+    assert.equal(git(dir, ['rev-parse', 'HEAD']), headBefore)
+
+    const journey = await post(url, '/api/draft', appendBody)
+    const journeyPrepared = await post(url, '/api/publish/prepare', { draftId: journey.payload.draftId })
+    assert.equal(journeyPrepared.status, 200)
+    assert.equal(journeyPrepared.payload.state, 'PreviewReady')
+  })
+})
+
+test('frozen weekly kinds cannot open a new issue from the panel', async () => {
+  await withPanel({}, async ({ url, dir }) => {
     const draft = await post(url, '/api/draft', {
       kindId: 'life',
-      mode: 'append',
-      issueLink: '/AI与生活/2026-08-12',
-      entry: {
-        title: '周记条目',
-        body: '正常周记正文',
-        tags: '测试',
-      },
+      mode: 'newIssue',
+      entry: { title: '开篇', body: '新期正文' },
+      issue: { theme: '冻结期', date: '2026-08-16' },
     })
-    assert.equal(draft.status, 200)
-    const prepared = await post(url, '/api/publish/prepare', { draftId: draft.payload.draftId })
-    assert.equal(prepared.status, 200)
-    assert.equal(prepared.payload.state, 'PreviewReady')
+    assert.equal(draft.status, 400)
+    assert.equal(fs.existsSync(path.join(dir, 'docs', 'AI与生活', '2026-08-16.md')), false)
   })
 })
 
@@ -1835,17 +1866,18 @@ test('prepare rejects an explicit unknown kindId', async () => {
   })
 })
 
-test('prepare infers a registered life or journey kind when kindId is missing', async () => {
+test('prepare infers journey from the URL when kindId is missing; frozen life stays out of scope', async () => {
   await withPanel({}, async ({ url, ctx }) => {
-    const lifeDraft = await post(url, '/api/draft', appendBody)
+    // 周记已冻结：缺 kindId 时仍按 URL 认出 life，但整个草稿超出面板范围，不进入预览。
+    const lifeDraft = await post(url, '/api/draft', frozenLifeBody)
     assert.equal(lifeDraft.status, 200)
     const lifeStored = ctx.drafts.get(lifeDraft.payload.draftId)
     delete lifeStored.kindId
     ctx.drafts.set(lifeDraft.payload.draftId, lifeStored)
     const lifePrepared = await post(url, '/api/publish/prepare', { draftId: lifeDraft.payload.draftId })
-    assert.equal(lifePrepared.status, 200)
-    assert.equal(lifePrepared.payload.state, 'PreviewReady')
-    assert.equal(lifePrepared.payload.kindId, 'life')
+    assert.equal(lifePrepared.status, 422)
+    assert.match(lifePrepared.payload.error, /超出发布面板范围/)
+    assert.notEqual(lifePrepared.payload.state, 'PreviewReady')
 
     const journeyDraft = await post(url, '/api/draft', {
       kindId: 'journey',
