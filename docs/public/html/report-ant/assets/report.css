@@ -1203,7 +1203,7 @@ body[data-width="wide"]   { --content-max: 1060px; --prose-max: 840px; }
 /* Responsive */
 @media (max-width: 1040px) {
   .shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     padding: 24px 18px 72px;
   }
@@ -1241,6 +1241,8 @@ body[data-width="wide"]   { --content-max: 1060px; --prose-max: 840px; }
   }
   .rail-mobile select {
     flex: 1;
+    min-width: 0;
+    width: 100%;
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--fg);
@@ -1257,6 +1259,19 @@ body[data-width="wide"]   { --content-max: 1060px; --prose-max: 840px; }
   .slider-readouts {
     grid-template-columns: 1fr;
   }
+  /* 生成器可能给 .slider-readouts 写行内列数，手机上要压过它 */
+  .slider-readouts[style] { grid-template-columns: minmax(0, 1fr) !important; }
+  /* 宽图表在手机上保留可读字号，在图框内横向滑动 */
+  .chart-body,
+  .svg-panel,
+  .axis-box { overflow-x: auto; }
+  .chart-body > svg,
+  .svg-panel > svg,
+  .axis-box > svg { min-width: 640px; }
+  /* 图框里的图例、说明卡不随图横滑 */
+  .chart-body > :not(svg),
+  .svg-panel > :not(svg),
+  .axis-box > :not(svg) { position: sticky; left: 0; }
 }
 
 @media (max-width: 540px) {

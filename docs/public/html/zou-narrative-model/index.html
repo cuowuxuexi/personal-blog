@@ -70,7 +70,7 @@ section{margin-bottom:34px}
 .identity p{color:var(--ink2);font-size:14.5px}
 .formula{margin:14px 0;padding:14px 18px;border-radius:12px;background:#fbfcfd;border:1px solid var(--line);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.85;white-space:pre-wrap;color:var(--ink)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+@media(max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .part .lbl,.io .lbl{font-size:11.5px;color:var(--ink3);letter-spacing:.3px;margin-bottom:6px;display:block}
 .io ul{margin:8px 0 0 0;padding:0;list-style:none}
 .io li{font-size:13.5px;color:var(--ink2);padding:3px 0 3px 12px;position:relative}
@@ -97,6 +97,7 @@ section{margin-bottom:34px}
 .field input[type=text],.field input[type=number]{width:140px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:14px;background:#fff}
 .field input[type=range]{flex:1;accent-color:var(--author)}
 .field .val{width:56px;text-align:right;font-size:13px;font-weight:650}
+@media(max-width:600px){.field label{width:112px}.field input[type=text],.field input[type=number]{width:0;flex:1;min-width:0}.field input[type=range]{min-width:0}}
 .pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .pill{font-size:12.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;font-weight:600}
 .pill.on{background:var(--author);color:#fff;border-color:var(--author)}

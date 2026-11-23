@@ -428,6 +428,16 @@
   border-bottom: 1px solid var(--vp-c-divider);
 }
 
+/* 手机上宽表在自身内部横向滚动，不撑宽页面、也不被收起的卡片裁掉 */
+@media (max-width: 767px) {
+  .vp-doc table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
 .vp-doc div[class*="language-"] {
   border-radius: 0;
   border: 1px solid var(--vp-c-divider);
