@@ -28,6 +28,6 @@ Frozen and archived: legacy research (`/投资/投研/`), AI下的生活 (我的
 
 ## Safety guardrails
 
-- Do not commit, push, publish, deploy, or upload without explicit author intent.
+- 「提交」与「上传」是同一个指令，一次走完整条发布链：只 stage 本次任务的文件 → 本地 commit → `push main` → `pnpm publish:guonei` → 核对 `blog.cuowo.win` 与 `cuowo.cn` 线上已是新版。中途不停下再问。没有这个指令时，改动留在工作区。
 - Keep private absolute paths, credentials, workpapers, raw review files, cognition originals, and non-redistributable source copies out of public docs.
 - `push main` updates Cloudflare Pages / `blog.cuowo.win`. Weekly/journey go to `cuowo.cn` via the publishing panel; research says 「上传」 then `pnpm publish:guonei`. Preserve `闽ICP备2026032381号-1`; read `ops/腾讯云备案与博客接入-Cursor操作说明.md` before changing domestic deployment or filing behavior.
