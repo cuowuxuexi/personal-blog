@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anthropic（ANT）· 生意与前提</title>
+  <link rel="stylesheet" href="assets/report.css" />
+</head>
+<body data-width="medium">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <a class="back-link" href="/投资/">← 研究入口</a>
+        <span class="ticker-box">Anthropic <span class="ticker-code">ANT</span></span>
+      </div>
+      <nav class="layer-tabs" aria-label="研报七页导航"><a class="layer-tab" href="index.html">对谈与分析</a><a class="layer-tab" href="intro.html">引言</a><a class="layer-tab" aria-current="page" href="business.html">生意与前提</a><a class="layer-tab" href="root.html">财报之根</a><a class="layer-tab" href="stem.html">估值之茎</a><a class="layer-tab" href="fruit.html">叙事之果</a><a class="layer-tab" href="ledger.html">数据底表与口径</a></nav>
+      <div class="width-control" aria-label="版宽调节">
+        <span>版宽</span>
+        <button class="width-btn" data-w="narrow" type="button">窄</button>
+        <button class="width-btn active" data-w="medium" type="button">中</button>
+        <button class="width-btn" data-w="wide" type="button">宽</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="rail" aria-label="本页目录">
+      <div class="rail-title">逻辑导览</div>
+      <div class="rail-mobile">
+        <label for="rail-select-business" class="rail-select-label">逻辑导览</label>
+        <select id="rail-select-business" class="rail-select" aria-label="本页逻辑导览"><option value="#sb-1">行业怎么运作</option><option value="#sb-2">谁在场内分钱</option><option value="#sb-3">Anthropic 的生意模式</option><option value="#sb-4">研究前提与认知标记</option></select>
+      </div>
+      <nav class="rail-nav"><a class="rail-link" href="#sb-1">行业怎么运作</a><a class="rail-link" href="#sb-2">谁在场内分钱</a><a class="rail-link" href="#sb-3">Anthropic 的生意模式</a><a class="rail-link" href="#sb-4">研究前提与认知标记</a></nav>
+      <div class="rail-meta"><strong>价格与参数</strong>价格时点：2026-11-19 首日收盘<br />首日收盘价：<span class="num" data-key="收盘价" data-raw="97.17">97.17</span> 美元<br />完全稀释市值：<span class="num" data-key="市值_收盘" data-raw="17633.1091344672">17,633</span> 亿美元<br />回报门槛：<span class="num" data-key="门槛" data-raw="10.0">10</span>%<br />q：<span class="num" data-key="q" data-raw="0.9">0.9</span></div>
+    </aside>
+
+    <main class="canvas">
+      <section id="sb-1" data-title="行业怎么运作">
+  <div class="badge-row">
+    <span class="badge badge-dark">生意与前提</span>
+    <span class="badge">整篇研报的土壤与地基</span>
+    <span class="badge">行业机制 · 公司模式 · 认知前提</span>
+  </div>
+  <div class="sec-head">
+    <span class="sec-num">一</span>
+    <h2>行业怎么运作</h2>
+    <p class="sec-sub">不是零边际成本的传统软件，而是隔代重砸训练、按次烧电交付、越强越便宜的重算力服务</p>
+  </div>
+  <div class="thesis-banner">大模型卖的不是写好一次代码就近乎零成本复制的传统软件，而是一门隔代重砸前沿训练、按次实时烧电交付、且技术越强单次越便宜的重算力智力服务。</div>
+  <div class="prose">
+    <p class="lead-strong">翻开财报与估值尺子前，先把行业底层脾气钉死：产品属性、算力折旧周期与反直觉的代际降价剪刀，决定了高增长为什么不自动等于高利润。</p>
+  </div>
+  <figure class="diagram-box">
+    <div class="diagram-head">
+      <div class="diagram-title">大模型生意如何运转：重投算力与效率剪刀</div>
+      <span class="diagram-kicker">图一 · 行业机制</span>
+    </div>
+    <div class="diagram-stage">
+      <img class="diagram-img" src="assets/diag_01_model_ops.png" alt="等轴剖面信息图：左侧算力机房与芯片换代齿轮，中央模型核心按次向右侧办公终端输送算力，右下方以斜置天平剪刀表现换代降本与用量放大对冲" />
+    </div>
+    <figcaption class="diagram-cap">图注：从左向右读这门生意的重资产链条——前端反复投入训练与硬件更新、中段按次交付，右侧则是 Fable 5.1 典型负载降约 <span class="num" data-key="换代降本_Fable" data-raw="25.0">25</span>% 与 Opus 5.5 降约 <span class="num" data-key="换代降本_Opus" data-raw="40.0">40</span>% 所体现的单价下行压力。</figcaption>
+  </figure>
+  <div class="prose">
+    <ul class="bullet-steps">
+      <li><strong>先破传统软件直觉：卖的不是买断拷贝，而是按次计费的智力算力。</strong> 传统软件一次研发、边际复制成本近乎为零；大模型每响应一次编程、问答或接口调用，机房都须实时通电运行推理算力，变动成本随用量同步发生。</li>
+      <li><strong>重资产与短折旧叠加：训练投入隔代保级，芯片三到五年换代。</strong> 供给侧须提前租买庞大算力集群投入前沿训练；竞争对手追平后，下一代模型须重新砸钱训练才能保住一线位置，叠加专用算力芯片三到五年的换代折旧，资本开支与更新账单难以停手。</li>
+      <li><strong>反直觉“效率剪刀”：产品越强，单次任务收费反而大降。</strong> 多数行业产品升级伴随提价，大模型恰恰相反——模型能力跃升与推理效率优化，会把同一任务的客户账单大幅拉低，收入扩张必须靠调用量成倍放大来对冲。</li>
+    </ul>
+    <p>招股书管理层讨论直接给出了换代降本的一手实证：「For example, with the release of Fable 5.1 in September 2026, we reduced the cost of typical workloads by approximately 25% compared to Fable 5, with savings of up to 45% for complex coding and highly agentic tasks. Similarly, with the release of Opus 5.5 that same month, we reduced customers’ cost per task by approximately 40% compared to Opus 5. In each case, the reduction was a combination of a lower price and improved efficiency, the contributions of which depend on the task.」</p>
+    <p>2026 年 9 月发布新版本后，Fable 5.1 处理典型负载的客户成本较 Fable 5 降约 <span class="num" data-key="换代降本_Fable" data-raw="25.0">25</span>%，复杂编码与高度代理任务最高降 <span class="num" data-key="换代降本_编码" data-raw="45.0">45</span>%；同月 Opus 5.5 较 Opus 5 每任务降约 <span class="num" data-key="换代降本_Opus" data-raw="40.0">40</span>%，且降幅系降价与效率提升共同作用、占比视任务而定。这组数字把行业剪刀摆上台面：单价越跑越低，模型商若拉不动客户用量成倍扩盘，高增速就会反被新一轮训练费吃掉。具体到财报里的收入爬坡、毛利率与研发算力拆解，详见<a href="root.html#s2-1">财报之根·收入从哪来</a>与<a href="root.html#s2-2">今天赚不赚钱</a>。</p>
+  </div>
+</section>
+
+<section id="sb-2" class="section" data-title="谁在场内分钱">
+  <div class="sec-head">
+    <span class="sec-num">二</span>
+    <h2>谁在场内分钱</h2>
+    <p class="sec-sub">价值在产业链四方之间切分，真正决定终局利润的是走成“操作系统”还是沦为“发电厂”</p>
+  </div>
+  <div class="thesis-banner">AI 为企业省出或赚出的每一笔价值，都要先在客户、应用层、云与算力商之间切走大头；没有锁住客户的壁垒，量的爆发就会被同行价格战压成薄利“发电厂”。</div>
+  <div class="prose">
+    <p>把钱从终端企业往上游追，AI 创造的价值至少经过四方分账：客户自己留走大头（否则没有部署动力），封装工作流与界面的应用层抽走产品集成费，掌握云端入口与机房硬件的云厂商和芯片算力商收走通道费与租金，最后剩下的净留存才归模型商。</p>
+    <p>模型商这一层分成三股力量：自带云生态与既有流量的科技巨头、专注前沿能力的独立模型商，以及持续拉低价格地板的开源模型与追赶者。2026 年前三季，Anthropic 约 <span class="num" data-key="云渠道占比_9M26" data-raw="44.0">44</span>% 的收入仍经云厂商市场卖出——云巨头既是核心分销渠道，也是同场竞争对手。同期大客户集中度极高，截至 2026 年 9 月末滚动四季，年收入达 <span class="num" data-key="客户门槛" data-raw="10.0">10</span> 万美元以上的客户已逾 <span class="num" data-key="客户_十万数" data-raw="11900.0">11,900</span> 家，跨过更高两档大型门槛的分别逾 <span class="num" data-key="客户_百万数" data-raw="1900.0">1,900</span> 家与约 <span class="num" data-key="客户_千万数" data-raw="250.0">250</span> 家，格局定位读数见下表。</p>
+  </div>
+  <div class="report-block" data-block="T-biz_profile"><div class="table-block"><div class="table-scroll"><table class="data-table"><thead><tr><th>维度</th><th>读数</th><th>单位</th><th>性质与条款边界</th></tr></thead><tbody><tr><td>按量计费占比（滚动四季）</td><td>79.3</td><td>%</td><td>事实；按实际调用量确认收入，波动随客户用量放大或收缩</td></tr><tr><td>订阅计费占比（滚动四季）</td><td>20.7</td><td>%</td><td>事实；含企业席位与个人固定月费订阅，通常按不超过十二个月服务期确认</td></tr><tr><td>经云厂商市场销售占比（2026 年前三季）</td><td>44</td><td>%</td><td>事实（公司约数）；2025 全年为 47%；经云市场成交按主责方总额法确认，通道费另计</td></tr><tr><td>年收入十万美元以上大客户数</td><td>11,900</td><td>家</td><td>事实（招股书“逾”）；截至 2026 年 9 月末滚动四季口径，高档包含在低档内</td></tr><tr><td>年收入百万美元以上大客户数</td><td>1,900</td><td>家</td><td>事实（招股书“逾”）；截至 2026 年 9 月末滚动四季口径</td></tr><tr><td>年收入千万美元以上大客户数</td><td>250</td><td>家</td><td>事实（招股书“约”）；截至 2026 年 9 月末滚动四季口径</td></tr><tr><td>剩余履约义务（2026 年 9 月末）</td><td>138</td><td>亿美元</td><td>事实；其中预计未来十二个月确认占 75%，不等于全周期续约率</td></tr><tr><td>Fable 5.1 较 Fable 5 降本</td><td>25</td><td>%</td><td>事实（公司约数）；默认设置典型负载成本降幅，复杂编码与高度代理任务最高降 45%</td></tr><tr><td>Opus 5.5 较 Opus 5 降本</td><td>40</td><td>%</td><td>事实（公司约数）；每任务成本降幅，系下调定价与效率提升共同作用</td></tr><tr><td>谷歌云最低消费承诺</td><td>1,213</td><td>亿美元</td><td>事实（公司“至少约”）；无论实际用量须补足差额，不可取消并可触发信贷交叉违约</td></tr><tr><td>亚马逊云最低消费承诺</td><td>1,100</td><td>亿美元</td><td>事实（公司“至少”）；无论实际用量须补足差额，仅留特定调整与重大违约例外</td></tr><tr><td>微软云算力承诺区间</td><td>472–492</td><td>亿美元</td><td>事实；写明无论实际用量须支付，除未补救重大违约外不可取消</td></tr><tr><td>博通五年设备融资租赁</td><td>1,612</td><td>亿美元</td><td>事实（公司“约”，不含息）；不可撤销且付款义务绝对无条件，违约可立即催收约定损失值</td></tr><tr><td>SpaceXAI 算力承诺上限</td><td>1,205</td><td>亿美元</td><td>事实（公司“最高”，至 2029 年）；初始不可撤销期满后任一方可提前九十天书面取消</td></tr></tbody></table></div><p class="table-note">生意与格局定位表：全部数值引用冻结底表键，覆盖计费结构、云渠道、大客户分层、剩余履约义务、代际降本与主要算力长约边界。</p></div></div>
+  <figure class="diagram-box">
+    <div class="diagram-head">
+      <div class="diagram-title">产业链四方分钱与护城河分叉</div>
+      <span class="diagram-kicker">图二 · 格局与分钱</span>
+    </div>
+    <div class="diagram-stage">
+      <img class="diagram-img" src="assets/diag_02_value_split.png" alt="立体流程与双路分叉插画：上方企业办公楼流出的金色价值水流经四道闸口逐级分流，下方分出工作流齿轮锁扣与多电站插头比价两条岔路" />
+    </div>
+    <figcaption class="diagram-cap">图注：先看上半部价值流如何在客户、应用层、云与算力商、模型商四方之间层层切分（Anthropic 2026 年前三季约 <span class="num" data-key="云渠道占比_9M26" data-raw="44.0">44</span>% 的收入经云厂商市场分销，此为渠道占比而非云算力分润比例），再看下半部决定模型商终局利润率的护城河分叉。</figcaption>
+  </figure>
+  <div class="prose">
+    <p>行业盘子做大，不等于场内公司就能留住厚利。研究方法里有一条硬边界：「如果没有壁垒，量的空间无法转化为利润的空间，量的空间就会大幅贬值。」</p>
+    <p>历史上的电力与光纤已演过同一场戏：它们将人类经济蛋糕放大数倍，但一旦供给同质、客户随时可换，发电厂与管道商最终只赚薄薄一层加工费，超额价值流向消费者与终端平台。回到大模型赛道，这构成全篇核心博弈与待探索空间：</p>
+    <ul class="bullet-steps">
+      <li><strong>走成“操作系统”：工作流深度绑定锁住定价权。</strong> 若企业把代码库、审批链、权限与业务流深度嵌进单一模型，迁移摩擦拉高，模型商才能在换代降价时留住老客并成倍扩量。</li>
+      <li><strong>沦为“发电厂”：多模型比价打薄模型层利润。</strong> 现实中已有大型企业主动规避单一绑定——如沃尔玛内部开发工具同时接入多个模型，按任务随时切换。一旦前沿能力趋近，客户随时比价换线，价格战会直接挤压利润率。</li>
+      <li><strong>待探索空间（护城河尚未证成）：</strong> 公开资料目前缺少换代后同批客户的任务量、实现单价与续约队列交叉表。Anthropic 最终站稳“操作系统”还是滑向“发电厂”，眼下无法拍板，须待上市后客户队列数据核验。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sb-3" class="section" data-title="Anthropic 的生意模式">
+  <div class="sec-head">
+    <span class="sec-num">三</span>
+    <h2>Anthropic 的生意模式</h2>
+    <p class="sec-sub">前端按量计费与云端分发弹性极高，后端压着退不掉的算力硬长约，另以混合算力计划提升资本调度弹性</p>
+  </div>
+  <div class="thesis-banner">Anthropic 把高弹性的按量收费与云市场分发握在前端，却把总计 <span class="num" data-key="承诺总" data-raw="9008.93">9,009</span> 亿美元的算力与租赁长约扛在后端——顺风放大收入，逆风硬账单退不掉。</div>
+  <div class="prose">
+    <p>放回前两节的行业棋盘，Anthropic 选的是一台“前端高度弹性、后端高度刚性”的商业机器。拆开收入侧、供给侧与自建路线，能一眼看清这套模式拿什么换什么：</p>
+  </div>
+  <figure class="diagram-box">
+    <div class="diagram-head">
+      <div class="diagram-title">高弹性前端与高刚性后端的取舍</div>
+      <span class="diagram-kicker">图三 · 公司机器</span>
+    </div>
+    <div class="diagram-stage">
+      <img class="diagram-img" src="assets/diag_03_compute_tradeoff.png" alt="上下分栏与左右对照剖面图：上方为按量计量仪表与云端分发货架，下方左侧为锁链与火漆合同压住的外部云机房，右侧为专用托管设施内吊装直租芯片机柜并配沙漏" />
+    </div>
+    <figcaption class="diagram-cap">图注：上方对应按量计费占 <span class="num" data-key="按量占比_TTM" data-raw="79.29539141772008">79.3</span>% 的高弹性收入侧，下方左右对照 <span class="num" data-key="承诺总" data-raw="9008.93">9,009</span> 亿美元算力总承诺（扣条件余额 <span class="num" data-key="承诺扣条件" data-raw="7146.93">7,147</span> 亿）与 Anthropic Direct 混合算力补充路线的合同与资本结构差异。</figcaption>
+  </figure>
+  <div class="prose">
+    <ul class="bullet-steps">
+      <li><strong>收入侧按量主导、大客扩量极猛，但高留存读数带明确口径边界。</strong> 截至 2026 年 9 月末的滚动四季，按量计费占总收入 <span class="num" data-key="按量占比_TTM" data-raw="79.29539141772008">79.3</span>%、订阅占 <span class="num" data-key="订阅占比_TTM" data-raw="20.704608582279917">20.7</span>%，2026 年前三季经云厂商市场卖出约 <span class="num" data-key="云渠道占比_9M26" data-raw="44.0">44</span>%。同期净收入留存约 <span class="num" data-key="NRR" data-raw="900.0">900</span>%，但须先核定义原句：「A Qualified Customer is a customer with at least $1 of revenue during the Base Period, excluding subscribers to our Claude Pro, Max, and Ultra plans, whose fixed-price subscriptions do not reflect the expansion and contraction behavior this metric is intended to capture.」该口径剔除了固定月费个人订阅客户，也未拆客户分位数与流失率，只证明合格按量与企业客户过去一年剧烈扩量，不等同于长期锁死；同期剩余履约义务 <span class="num" data-key="RPO_26Q3" data-raw="138.0">138</span> 亿美元中约 <span class="num" data-key="RPO一年占比" data-raw="75.0">75</span>% 预计十二个月内确认，仅反映近一年订单能见度。</li>
+      <li><strong>供给侧长约并非铁板一块，但核心硬骨头没有便宜退路。</strong> 算力与租赁总承诺达 <span class="num" data-key="承诺总" data-raw="9008.93">9,009</span> 亿美元，其中约 <span class="num" data-key="承诺有条件" data-raw="1862.0">1,862</span> 亿美元写明附条件或可提前终止（如 SpaceXAI 至 2029 年最高 <span class="num" data-key="SpaceXAI承诺上限" data-raw="1205.0">1,205</span> 亿美元安排，初始不可撤销期后可提前九十天书面取消，但截至 2026-11-21 无正式取消公告）；扣掉有条件部分，硬承诺余额仍有 <span class="num" data-key="承诺扣条件" data-raw="7146.93">7,147</span> 亿美元。谷歌云至少约 <span class="num" data-key="谷歌云承诺" data-raw="1213.0">1,213</span> 亿、亚马逊云至少 <span class="num" data-key="亚马逊云承诺" data-raw="1100.0">1,100</span> 亿、微软云 <span class="num" data-key="微软云承诺低" data-raw="472.0">472</span>–<span class="num" data-key="微软云承诺高" data-raw="492.0">492</span> 亿协议均约定无论实际用量须补足差额；全部博通相关五年设备融资租赁不含息合计约 <span class="num" data-key="博通租约总额" data-raw="1612.0">1,612</span> 亿美元，不可撤销且违约触发约定损失值加速催收；部分核心商业合同违约还可能联动银行信贷与可转债交叉违约。</li>
+      <li><strong>补充路线（Anthropic Direct）拆开场地与芯片承诺，但不改变算力换代约束。</strong> 招股书披露了作为额外算力来源的混合计划 Anthropic Direct，包含直接租用芯片并托管于代运营专用设施，旨在将数据中心场地承诺与内部算力部署拆开，以提升资本使用弹性。但该计划仍属补充布局，不替代已签死的外部云长约，且三到五年算力换代的底层支出压力仍在，长期经济性尚待验证。</li>
+      <li><strong>顺风与逆风劈叉。</strong> 需求狂飙时按量收费迅速拉升收入，一旦增速放缓或价格战打响，后端硬合同难以同步收缩。七类承诺期限拆分、现金桥与 2030 年流动性条件压测，详见<a href="root.html#s2-3">财报之根·账上现金与算力合同</a>与<a href="fruit.html#s4-5">叙事之果·算力付款与股东现金</a>。</li>
+    </ul>
+    <details class="kc">
+      <summary>口径与条款备忘：主要算力长约、交叉违约与自建计划的招股书及合同原句</summary>
+      <div class="kc-body">
+        <p><strong>三大云长约无视用量补差原句。</strong>谷歌与亚马逊：「If our actual spend falls short, we must pay Google the difference as a true-up subject to certain adjustments and exceptions if available. Our commitments under such agreement are non-cancelable except in the event of Google’s uncured material breach.」；「If our actual spend falls short, we must pay Amazon the difference as a true-up subject to certain adjustments and exceptions if available. Our commitment under such agreement is non-cancelable except in the event of Amazon’s uncured material breach.」微软：「Our commitment under such agreement is non-cancelable except in the event of Microsoft’s uncured material breach or, on a per-tranche basis, for certain undelivered tranches.」</p>
+        <p><strong>SpaceXAI 提前九十天书面取消原句。</strong>「Following initial non-cancelable periods ending in January 2027 and March 2027 under the respective agreements, each agreement may be cancelled by either party upon 90 days’ advance written notice.」初始不可撤销期分别止于 2027 年 1 月与 3 月，截至 2026-11-21 无正式取消公告。</p>
+        <p><strong>博通主租约不可撤销与加速催收原句。</strong>「Each Lease shall, subject to the terms of this Master Agreement, be non-cancelable by Lessee and Lessor.」；「LESSEE’S OBLIGATION TO PAY ALL RENT AND OTHER AMOUNTS WHEN DUE AND TO OTHERWISE PERFORM AS REQUIRED UNDER THIS MASTER AGREEMENT, ANY SCHEDULE OR ANY OTHER TRANSACTION DOCUMENT BETWEEN LESSEE AND LESSOR SHALL BE ABSOLUTE AND UNCONDITIONAL」；「immediately due and payable as a pre-estimate of liquidated damages for loss of bargain and not as a penalty, the Stipulated Loss Value of the Equipment in lieu of any further Rent」须注意，<span class="num" data-key="博通租约总额" data-raw="1612.0">1,612</span> 亿美元系全部博通相关五年设备融资租赁不含息合计（含受让方），勿与单一租约混用。</p>
+        <p><strong>商业合同交叉违约原句。</strong>「In particular, a default under certain commercial agreements could trigger cross-default provisions under the A&amp;R Credit Agreement (as defined below) and certain of our outstanding convertible promissory notes, potentially resulting in the acceleration of substantially all of our outstanding, and any future, indebtedness.」</p>
+        <p><strong>Anthropic Direct 混合计划原句。</strong>「We refer to this additional source of compute as Anthropic Direct, which helps to address our scaling compute requirements and we believe will provide long-term economic advantages. Anthropic Direct represents a more flexible use of capital by allowing us to separate our commitments for data center capacity from our commitments for the compute infrastructure deployed inside them.」该计划属招股书披露方向，长期经济性待落地检验。</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="sb-4" class="section" data-title="研究前提与认知标记">
+  <div class="sec-head">
+    <span class="sec-num">四</span>
+    <h2>研究前提与认知标记</h2>
+    <p class="sec-sub">全篇七块承重地基的性质分类与推翻开关，以及四条最易看偏的直觉误判</p>
+  </div>
+  <div class="thesis-banner">后面的财报、估值和叙事再严密，也只是“若前提成立则推出结论”——这里把全篇七块地基按性质贴标并钉死推翻开关，哪条被现实击穿，顺着开关当场重算。</div>
+  <div class="prose">
+    <p>下面七条标记按可推翻难度分三类：<span class="tag-inline tag-slate">技术与合同约束</span> 是技术机制、会计结构与白纸黑字合同写死的硬约束，最难改变；<span class="tag-inline tag-amber">历史归纳</span> 取自过往基础设施或科技巨头样本，换环境可能失效；<span class="tag-inline tag-crimson">研究假设</span> 是研究者在未知处押下的关键参数与情景，也是全篇最要盯紧的脆弱点。</p>
+  </div>
+  <div class="premise-grid">
+    <div class="premise-card">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基一</span>
+          <span class="tag-inline tag-slate">技术与合同约束</span>
+        </div>
+        <div class="premise-title">亏损期市盈率失灵，估值回到归母股东现金流折现，员工股票“两刀切界”不重扣</div>
+      </div>
+      <p class="premise-body">已授及未归属股票已按完全稀释计入今日市值，未来新授作为费用扣在净利润，占比压不下时砍的是终局净利率，不在利润可分配比例中重复扣第二次。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="intro.html#s1-1">引言·判断与价格时点</a>、<a href="stem.html#s3-1">估值之茎·从零爬坡十年</a>、<a href="root.html#s2-4">财报之根·员工股票</a>。</span>
+        <span><strong>推翻开关：</strong>公司改变股本结构（如大额新募稀释或超额配售行使）或出现持续稳定正利润时，切换或重算估值起点与分母。</span>
+      </div>
+    </div>
+    <div class="premise-card">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基二</span>
+          <span class="tag-inline tag-slate">技术与合同约束</span>
+        </div>
+        <div class="premise-title">核心算力长约强刚性，芯片三到五年换代折旧，混合算力计划尚待验证长期经济性</div>
+      </div>
+      <p class="premise-body">三大云长约无视用量补差，博通租约不可撤销且违约触发约定损失值加速催收，部分核心商业合同违约还可能联动信贷交叉违约；Anthropic Direct 混合算力计划虽拆分场地与芯片承诺，但不替代已签长约，长期经济性尚待落地检验。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="business.html#sb-3">本页·Anthropic 的生意模式</a>、<a href="root.html#s2-3">财报之根·现金与合同</a>、<a href="fruit.html#s4-5">叙事之果·算力付款</a>。</span>
+        <span><strong>推翻开关：</strong>季报或公告披露重大合同重签减免、起租推迟与实际付款大幅低于约束下界，或硬件寿命与换代成本结构根本改善。</span>
+      </div>
+    </div>
+    <div class="premise-card kind-induct">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基三</span>
+          <span class="tag-inline tag-amber">历史归纳</span>
+        </div>
+        <div class="premise-title">缺少壁垒时行业蛋糕放大会流向客户与下游，每代降价须靠老客成倍扩量对冲</div>
+      </div>
+      <p class="premise-body">电力与光纤放大社会蛋糕但供给方仅赚薄利；模型每代降价 <span class="num" data-key="降价30" data-raw="30.0">30</span>%–<span class="num" data-key="降价40" data-raw="40.0">40</span>% 后，若不能靠工作流锁住老客让任务量扩至 <span class="num" data-key="量倍数30" data-raw="1.4285714285714286">1.43</span>–<span class="num" data-key="量倍数40" data-raw="1.6666666666666667">1.67</span> 倍，利润就会流失（待探索空间：发电厂 vs 护城河）。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="business.html#sb-2">本页·谁在场内分钱</a>、<a href="fruit.html#s4-4">叙事之果·保级训练与利润</a>、<a href="fruit.html#s4-7">叙事之果·什么会推翻</a>。</span>
+        <span><strong>推翻开关：</strong>披露同批客户换代前后任务量、实现单价、续约率与直客占比交叉表，证实竞品同质量降价后老客仍稳定留存扩量。</span>
+      </div>
+    </div>
+    <div class="premise-card kind-induct">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基四</span>
+          <span class="tag-inline tag-amber">历史归纳</span>
+        </div>
+        <div class="premise-title">成熟科技巨头 AI 资本开支激增前的自由现金转化比例，可作十年后趋稳参照</div>
+      </div>
+      <p class="premise-body">2019–2023 年谷歌（<span class="num" data-key="谷歌_自由比_1923" data-raw="95.0494353262169">95</span>%）与 Meta（<span class="num" data-key="Meta_自由比_1923" data-raw="98.55792738062546">99</span>%）五年合计自由现金占净利润比例，构成行业趋稳时现金转化的外部样本。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="stem.html#s3-3">估值之茎·利润能分出几成</a>、<a href="stem.html#s3-4">估值之茎·三个数各值多少回报</a>。</span>
+        <span><strong>推翻开关：</strong>前沿训练竞赛与换代长期不收敛，参照巨头自由现金比停留在 2025 年低位（谷歌 <span class="num" data-key="谷歌_自由比_2025" data-raw="55.43315427101461">55</span>%、Meta <span class="num" data-key="Meta_自由比_2025" data-raw="76.26616824903239">76</span>%）甚至更低，则须大幅下调可分配比例。</span>
+      </div>
+    </div>
+    <div class="premise-card kind-assume">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基五</span>
+          <span class="tag-inline tag-crimson">研究假设</span>
+        </div>
+        <div class="premise-title">研究者将成熟期利润可分配比例暂定为 <span class="num" data-key="q" data-raw="0.9">0.9</span>，美股读水位尺子与回报门槛统一取 <span class="num" data-key="门槛" data-raw="10.0">10</span>%</div>
+      </div>
+      <p class="premise-body">可分配比例取 <span class="num" data-key="q" data-raw="0.9">0.9</span> 依托十年后算力投入趋稳假设；尺子与门槛统一按 <span class="num" data-key="门槛" data-raw="10.0">10</span>% 设定，其余档位在后文作敏感度对照。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="intro.html#s1-1">引言·判断与价格时点</a>、<a href="stem.html#s3-2">估值之茎·价格押了什么</a>、<a href="stem.html#s3-3">估值之茎·利润能分出几成</a>。</span>
+        <span><strong>推翻开关：</strong>实测硬件换代现金拖累长期超折旧三成以上，或员工股票归属代缴税流出持续高企，须将可分配比例降至 <span class="num" data-key="q低" data-raw="0.7">0.7</span> 或更低重算全部回报。</span>
+      </div>
+    </div>
+    <div class="premise-card kind-assume">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基六</span>
+          <span class="tag-inline tag-crimson">研究假设</span>
+        </div>
+        <div class="premise-title">研究者定下最可能 <span class="num" data-key="可能低" data-raw="669.7292821776388">670</span>–<span class="num" data-key="可能高" data-raw="803.6751386131666">804</span> 亿与最好 <span class="num" data-key="最好低" data-raw="2816.8380436878565">2,817</span> / <span class="num" data-key="最好高" data-raw="3219.2434785004075">3,219</span> 亿美元终局，暂未计入蛋糕放大盲区</div>
+      </div>
+      <p class="premise-body">上述终局由 2036 年演绎收入粗乘利润率得出（2024 年工资美元、未跑成本模型）；基准模型以全球白领 <span class="num" data-key="劳动池高万亿" data-raw="23.101963851653267">23.1</span> 万亿美元旧工资池为起点，新产业增量单列为待探索空间。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="intro.html#s1-3">引言·三个数各给多少回报</a>、<a href="fruit.html#s4-2">叙事之果·两条路与蛋糕盲区</a>、<a href="fruit.html#s4-3">叙事之果·最可能多出的那块</a>。</span>
+        <span><strong>推翻开关：</strong>季报增速大幅偏离路径、生命科学或科研等垂直行业披露成规模对外收入，或下一轮按更低欧洲倍数重跑改变情景落位。</span>
+      </div>
+    </div>
+    <div class="premise-card kind-assume span-full">
+      <div>
+        <div class="premise-head">
+          <span class="premise-num">地基七</span>
+          <span class="tag-inline tag-crimson">研究假设</span>
+        </div>
+        <div class="premise-title">主读数按从零爬坡 <span class="num" data-key="年限" data-raw="10.0">10</span> 年进入稳态、工资停在 2024 年水平对比现价，并附 <span class="num" data-key="名义倍数" data-raw="1.4845298058992933">1.48</span> 倍名义美元换算对照</div>
+      </div>
+      <p class="premise-body">2024 年工资美元等于假定工资到 2036 年共十二年不涨，与当前名义市值存在通胀口径差；名义换算按近两年工资年增 <span class="num" data-key="工资年增" data-raw="3.347286162959029">3.35</span>% 外推十二年（推算），用于对照水位漂移。</p>
+      <div class="premise-foot">
+        <span><strong>支撑结论：</strong><a href="intro.html#s1-2">引言·价格押的落在哪</a>、<a href="stem.html#s3-6">估值之茎·换一换读数变多少</a>、<a href="ledger.html#s5-4">数据底表与口径·口径与记号</a>。</span>
+        <span><strong>推翻开关：</strong>行业真实渗透爬坡大幅长于十年，或全球名义工资路径大幅偏离近两年 <span class="num" data-key="工资年增" data-raw="3.347286162959029">3.35</span>% 年率，须更新爬坡年限与名义倍数。</span>
+      </div>
+    </div>
+  </div>
+  <div class="table-block">
+    <div class="table-title">最容易看错这门生意的常见误判对照</div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>常见误判</th>
+            <th>更贴近生意的读法</th>
+            <th>对应本页哪一节</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>把 <span class="num" data-key="运行率_1031" data-raw="810.0">810</span> 亿美元运行率当已落袋年收入</td>
+            <td>运行率仅是近二十八天按量流水乘十三加月订阅乘十二的估算速度，如同黄金周单日流水直接乘全年天数，不等同于会计确认收入。</td>
+            <td>第三节 · 前端弹性与财报之根</td>
+          </tr>
+          <tr>
+            <td>被 <span class="num" data-key="净亏_TTM" data-raw="-1208.97">−1,208.97</span> 亿美元净亏吓跑，或轻信 <span class="num" data-key="调整后营业利润_TTM" data-raw="23.6">23.60</span> 亿美元调整后盈利</td>
+            <td>巨亏大头是上市前可转债与衍生工具公允价值重估 <span class="num" data-key="公允价值损失_TTM" data-raw="-1085.25">−1,085.25</span> 亿美元（不花现金）；调整后盈利则靠加回 <span class="num" data-key="股权薪酬_TTM" data-raw="38.29">38.29</span> 亿美元员工股票，剥开两头主业仍未站稳正利润。</td>
+            <td>第一节 · 重投特征与财报之根</td>
+          </tr>
+          <tr>
+            <td>以为算力硬合同赔笔小违约金就能退，或拿 <span class="num" data-key="可用现金" data-raw="2014.0338394999997">2,014</span> 亿现金直接减市值</td>
+            <td>三大云长约写死无论用量须补差，博通租约不可撤销且违约可加速催收，部分核心商业合同违约还可能触发交叉违约；到 2030 年底预计发生 <span class="num" data-key="发生至2030" data-raw="4516.0">4,516</span> 亿美元压在前头，现金留多少须看后续季报。</td>
+            <td>第三节 · 供给侧硬账单</td>
+          </tr>
+          <tr>
+            <td>以为“AI 蛋糕变大几倍，模型商利润就稳涨几倍”</td>
+            <td>混淆社会总价值放大与模型层留存壁垒；缺少锁客壁垒时，量的爆发会被同质降价与高额保级训练费吞掉。</td>
+            <td>第二节 · 四方分钱与护城河之问</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">本表沉淀大模型行业与 Anthropic 模式中最易踩偏的四处误判；单期科目明细与完整现金桥分别归入“财报之根”与“数据底表与口径”。</p>
+  </div>
+  <div class="prose">
+    <details class="kc">
+      <summary>算清的账、两大待探索空间与复查节点</summary>
+      <div class="kc-body">
+        <p><strong>算清的账。</strong>2026-11-19 首日收盘完全稀释市值、发行后推算可用现金底数、核心算力长约刚性条款、员工股票“两刀切界”及全球白领 <span class="num" data-key="劳动池高万亿" data-raw="23.101963851653267">23.1</span> 万亿美元旧工资池六关连乘，均已对齐底表口径。</p>
+        <p><strong>待探索空间一（蛋糕放大盲区）。</strong>基准模型衡量旧白领工资池内的替代与工时等价增产；若新产业掀翻旧池子，十年内仍受当前全球名义国内生产总值 <span class="num" data-key="全球GDP万亿_2024" data-raw="111.669432109121">111.7</span> 万亿美元尺度与电力、芯片、监管及支付能力等慢变量制约，且目前财报无新用途收入披露。</p>
+        <p><strong>待探索空间二（发电厂 vs 操作系统）。</strong>能否靠工作流锁住大客户避免沦为薄利发电厂，缺换代后同批客户量价与续约队列交叉表，留待上市后财报核验。</p>
+        <p><strong>复查节点。</strong>锁定上市后首份季报（日期待公布），重点对照季度收入增速、垂直行业收入披露、可用现金消耗速度及员工股票与训练开支占比；完整清单见<a href="fruit.html#s4-7">叙事之果·什么会推翻</a>。</p>
+      </div>
+    </details>
+    <p>至此，行业机制、四方分钱、公司模式与七块前提地基已摊清。接下来进入定量验真：先去<a href="root.html#s2-1">财报之根</a>核实收入、盈亏与硬账单，再去<a href="stem.html#s3-1">估值之茎</a>反算现价押了多大的未来，最后到<a href="fruit.html#s4-1">叙事之果</a>走完六关连乘与反方核对，全部原始序列收于<a href="ledger.html#s5-1">数据底表与口径</a>。</p>
+  </div>
+</section>
+      <footer class="doc-footer"><span>预演 · 价格时点 2026-11-19 首日收盘</span></footer>
+    </main>
+  </div>
+
+  <script src="assets/report-data.js"></script>
+  <script src="assets/report.js"></script>
+</body>
+</html>
