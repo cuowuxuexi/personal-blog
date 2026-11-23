@@ -1,5 +1,5 @@
 (function () {
-  var WIDTH_KEY = 'mt600519-r06:width';
+  var WIDTH_KEY = 'mt600519-r07:width';
   var DATA = window["MT_REPORT"] || {};
 
   // 版宽切换：只存版宽
