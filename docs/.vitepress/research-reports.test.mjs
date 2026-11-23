@@ -68,6 +68,34 @@ test('缺总市值 badge 时抛错并含「总市值」', () => {
   )
 })
 
+test('A 股夹具：单位为元、亿元', () => {
+  const f = extractReportFields(INTRO, 'report-000001-sz')
+  assert.equal(f.priceUnit, '元')
+  assert.equal(f.capUnit, '亿元')
+})
+
+test('港股夹具：取到港元、亿港元', () => {
+  const html = INTRO
+    .replace(/终审价 <span class="num">44.85<\/span> 元/, '收盘价 <span class="num">3.21</span> 港元')
+    .replace(/总市值 <span class="num">2,589<\/span> 亿元/, '总市值 <span class="num">1,234</span> 亿港元')
+  const f = extractReportFields(html, 'report-00001-hk')
+  assert.deepEqual([f.finalPrice, f.priceUnit, f.marketCap, f.capUnit], ['3.21', '港元', '1,234', '亿港元'])
+})
+
+test('美股夹具：取到美元、亿美元', () => {
+  const html = INTRO
+    .replace(/终审价 <span class="num">44.85<\/span> 元/, '首日收盘价 <span class="num">97.17</span> 美元')
+    .replace(/总市值 <span class="num">2,589<\/span> 亿元/, '完全稀释市值 <span class="num">17,633</span> 亿美元')
+  const f = extractReportFields(html, 'report-ant-o')
+  assert.deepEqual([f.finalPrice, f.priceUnit, f.marketCap, f.capUnit], ['97.17', '美元', '17,633', '亿美元'])
+})
+
+test('美股夹具缺市值徽标时仍抛错', () => {
+  const html = withoutPart(INTRO, /<span class="badge">总市值[\s\S]*?亿元<\/span>/)
+    .replace(/终审价 <span class="num">44.85<\/span> 元/, '首日收盘价 <span class="num">97.17</span> 美元')
+  assert.throws(() => extractReportFields(html, 'report-ant-o'), (err) => err.message.includes('总市值'))
+})
+
 test('缺终审价 badge 时抛错并含「终审价」', () => {
   const html = withoutPart(INTRO, /<span class="badge">终审价[\s\S]*?元<\/span>/)
   assert.throws(

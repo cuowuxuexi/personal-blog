@@ -18,7 +18,9 @@ interface Report {
   updatedAt: string
   updatedDate: string
   finalPrice: string
+  priceUnit: string
   marketCap: string
+  capUnit: string
   thesis: string
   pages: ReportPage[]
 }
@@ -28,7 +30,9 @@ interface Item {
   updatedAt: string
   updatedDate: string
   finalPrice: string
+  priceUnit: string
   marketCap: string
+  capUnit: string
   title: string
   slug: string
   code: string
@@ -51,7 +55,9 @@ const items: Item[] = reports
     updatedAt: r.updatedAt,
     updatedDate: r.updatedDate,
     finalPrice: r.finalPrice,
+    priceUnit: r.priceUnit,
     marketCap: r.marketCap,
+    capUnit: r.capUnit,
     title: r.company,
     slug: r.slug,
     code: r.code,
@@ -158,8 +164,8 @@ const tocCols = (n: number) => (n <= 7 ? n : Math.ceil(n / Math.ceil(n / 6)))
             <p class="judge">{{ r.thesis }}</p>
           </div>
           <dl class="research-desk__metrics">
-            <div class="metric"><dt>终审价</dt><dd>{{ r.finalPrice }}<small>元</small></dd></div>
-            <div class="metric"><dt>总市值</dt><dd>{{ r.marketCap }}<small>亿元</small></dd></div>
+            <div class="metric"><dt>终审价</dt><dd>{{ r.finalPrice }}<small>{{ r.priceUnit }}</small></dd></div>
+            <div class="metric"><dt>总市值</dt><dd>{{ r.marketCap }}<small>{{ r.capUnit }}</small></dd></div>
           </dl>
         </div>
         <nav class="research-desk__toc" aria-label="各页直达" :style="{ '--toc-cols': tocCols(r.pages.length) }">

@@ -74,10 +74,12 @@ export function extractReportFields(html, slug = '?') {
   const stance = need('立场', crimson && textOf(crimson.inner))
   const dateMatch = textOf(row.inner).match(/价格时点\s*(\d{4}-\d{2}-\d{2})/)
   const priceDate = need('价格时点', dateMatch && dateMatch[1])
-  const priceMatch = textOf(row.inner).match(/(?:终审价|收盘价)\s*([\d.,]+)\s*元/)
+  const priceMatch = textOf(row.inner).match(/(?:终审价|收盘价)\s*([\d.,]+)\s*(港元|美元|元)/)
   const finalPrice = need('终审价', priceMatch && priceMatch[1])
-  const capMatch = textOf(row.inner).match(/总市值\s*([\d.,]+)\s*亿元/)
+  const priceUnit = priceMatch[2]
+  const capMatch = textOf(row.inner).match(/(?:总市值|完全稀释市值)\s*([\d.,]+)\s*亿(港元|美元|元)/)
   const marketCap = need('总市值', capMatch && capMatch[1])
+  const capUnit = `亿${capMatch[2]}`
   const banner = findElement(section.inner, { className: 'thesis-banner' })
   const thesis = need('一句判断', banner && textOf(banner.inner))
 
@@ -90,7 +92,7 @@ export function extractReportFields(html, slug = '?') {
   }
   need('各页直达', pages.length ? pages : null)
 
-  return { company, code, stance, priceDate, finalPrice, marketCap, thesis, pages }
+  return { company, code, stance, priceDate, finalPrice, priceUnit, marketCap, capUnit, thesis, pages }
 }
 
 const UPDATED_AT_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+08:00$/
@@ -179,10 +181,10 @@ export function readReport(setDir) {
   if (!fs.existsSync(indexFile)) throw new Error(`${slug}: 缺少 index.html`)
   const indexHtml = fs.readFileSync(indexFile, 'utf8')
   const fields = extractReportFields(readIntroHtml(setDir, indexHtml, slug), slug)
-  const { company, code, stance, priceDate, finalPrice, marketCap, thesis, pages } = fields
+  const { company, code, stance, priceDate, finalPrice, priceUnit, marketCap, capUnit, thesis, pages } = fields
   const { industry, updatedAt } = readReportMeta(setDir)
   const updatedDate = updatedAt ? updatedAt.slice(0, 10) : priceDate
-  return { slug, company, code, industry, stance, tone: stanceTone(stance), priceDate, updatedAt, updatedDate, finalPrice, marketCap, thesis, pages }
+  return { slug, company, code, industry, stance, tone: stanceTone(stance), priceDate, updatedAt, updatedDate, finalPrice, priceUnit, marketCap, capUnit, thesis, pages }
 }
 
 const sortKey = (r) => r.updatedAt || `${r.priceDate}T00:00:00+08:00`
