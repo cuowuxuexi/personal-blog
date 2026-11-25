@@ -79,5 +79,6 @@ docs/public/html/report-<slug>/
 | `report-002714-sz/` | 牧原股份研报（六页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 | `report-600519-sh/` | 贵州茅台研报（六页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 | `report-ant/` | Anthropic研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
+| `report-002415-sz/` | 海康威视研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 
 最后更新：2026-11-22
