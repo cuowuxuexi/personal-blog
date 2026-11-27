@@ -42,7 +42,7 @@ export function normalizeVideos(list, reports = [], { coverRoot = COVER_DIR } = 
   const byCode = new Map(reports.map((r) => [String(r.code).toUpperCase(), r]))
   const rows = list.map((raw, i) => {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw bad(i, '条目', '必须是对象')
-    const { title, date, duration, cover, url, report } = raw
+    const { title, date, duration, cover, url, videoUrl, report } = raw
     if (typeof title !== 'string' || !title.trim()) throw bad(i, 'title', '必须是非空字符串')
     if (typeof date !== 'string' || !DATE_RE.test(date) || !isRealDate(date)) {
       throw bad(i, 'date', '必须是 YYYY-MM-DD')
@@ -61,6 +61,10 @@ export function normalizeVideos(list, reports = [], { coverRoot = COVER_DIR } = 
     }
     if (!isHttps(url)) throw bad(i, 'url', '必须是 https:// 外链')
     const out = { title: title.trim(), date, duration, cover, url }
+    if (videoUrl !== undefined) {
+      if (!isHttps(videoUrl)) throw bad(i, 'videoUrl', '必须是 https:// 外链')
+      out.videoUrl = videoUrl
+    }
     if (report !== undefined) {
       const hit = typeof report === 'string' ? byCode.get(report.toUpperCase()) : undefined
       if (!hit) throw bad(i, 'report', `对不上已落地研报：${report}`)

@@ -4,6 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { normalizeVideos } from './videos.mjs'
+import { resolveVideoPlayer } from './video-embed.mjs'
 
 const REPORTS = [{ code: '002714.SZ', slug: 'report-002714-sz', company: '牧原股份' }]
 const GOOD = {
@@ -85,4 +86,30 @@ test('按日期降序，同日按标题排序', () => {
     REPORTS,
   )
   assert.deepEqual(rows.map((r) => r.title), ['a', 'b', 'B'])
+})
+
+test('可选 videoUrl 校验与站内播放器解析（直链优先，B站/YouTube 嵌入，未知回退）', () => {
+  const [withSrc] = normalizeVideos([{ ...GOOD, videoUrl: 'https://cdn.example.com/ep1.mp4' }], REPORTS)
+  assert.equal(withSrc.videoUrl, 'https://cdn.example.com/ep1.mp4')
+  assert.throws(() => normalizeVideos([{ ...GOOD, videoUrl: 'http://cdn.example.com/ep1.mp4' }], REPORTS), /「videoUrl」/)
+
+  assert.deepEqual(resolveVideoPlayer(withSrc), {
+    kind: 'native',
+    provider: 'self',
+    src: 'https://cdn.example.com/ep1.mp4',
+  })
+
+  const bili = resolveVideoPlayer({ url: 'https://www.bilibili.com/video/BV1J417zmE4K/?p=2' })
+  assert.equal(bili.kind, 'iframe')
+  assert.equal(bili.provider, 'bilibili')
+  assert.match(bili.src, /player\.bilibili\.com\/player\.html\?.*bvid=BV1J417zmE4K.*page=2/)
+
+  const yt = resolveVideoPlayer({ url: 'https://youtu.be/dQw4w9WgXcQ' })
+  assert.deepEqual(yt, {
+    kind: 'iframe',
+    provider: 'youtube',
+    src: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0',
+  })
+
+  assert.equal(resolveVideoPlayer({ url: 'https://example.com/watch/1' }), null)
 })
