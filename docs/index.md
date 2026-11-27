@@ -10,6 +10,6 @@ outline: false
 
 <SiteMasthead />
 
-<ResearchDesk />
+<VideoShelf :limit="3" featured />
 
-<VideoShelf :limit="3" />
+<ResearchDesk />

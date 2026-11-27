@@ -4041,9 +4041,14 @@
   padding-bottom: 14px;
 }
 
-/* 视频区：没有视频时组件不输出 DOM；有视频时接在研报区之后 */
+/* 视频区：没有视频时组件不输出 DOM；首页置顶态（featured）用紧凑间距与单期横向精选卡，独立页 /视频/ 保持完整网格 */
 .research-desk .video-shelf {
   margin-top: 84px;
+}
+
+.research-desk .video-shelf--featured {
+  margin-top: 8px;
+  margin-bottom: 18px;
 }
 
 .research-desk .video-shelf--empty {
@@ -4060,6 +4065,164 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
   padding: 30px 0 0;
+}
+
+.research-desk .video-shelf--featured .video-shelf__grid {
+  padding-top: 22px;
+}
+
+.research-desk .video-shelf--pair .video-shelf__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.research-desk .video-shelf__featured {
+  padding-top: 22px;
+}
+
+.research-desk .video-shelf__lead {
+  position: relative;
+  display: grid;
+  grid-template-columns: 356px minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--desk-card-bg);
+  border: 1px solid var(--desk-card-line);
+  border-top: 2px solid var(--vp-c-text-1);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.research-desk .video-shelf__lead:hover {
+  border-color: var(--vp-c-border, #d4d4d8);
+  border-top-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 24px -16px rgba(24, 24, 27, 0.16);
+}
+
+.dark .research-desk .video-shelf__lead:hover {
+  border-color: #52515c;
+  border-top-color: var(--vp-c-brand-1);
+  box-shadow: 0 10px 28px -16px rgba(0, 0, 0, 0.45);
+}
+
+.research-desk .video-shelf__lead .video-shelf__thumb {
+  height: 100%;
+  min-height: 100%;
+}
+
+.research-desk .video-shelf__lead-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 22px 28px;
+  border-left: 1px solid var(--desk-card-line-soft);
+}
+
+.research-desk .video-shelf__lead-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--vp-c-text-3);
+}
+
+.dark .research-desk .video-shelf__lead-meta {
+  color: rgba(235, 235, 245, 0.64);
+}
+
+.research-desk .video-shelf__lead-meta .sep {
+  margin-right: 8px;
+  color: var(--desk-card-line);
+}
+
+.research-desk .video-shelf__tag {
+  display: inline-block;
+  padding: 1px 9px;
+  border: 1px solid var(--desk-amber-line);
+  border-radius: 0;
+  background: var(--desk-amber-bg);
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--desk-amber-fg);
+}
+
+.research-desk .video-shelf__date time {
+  font: 12.5px/1.75 var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.research-desk .video-shelf__meta-dur {
+  white-space: nowrap;
+}
+
+.research-desk .video-shelf__lead h3 {
+  position: static;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+  font: 600 22px/1.45 var(--font-serif, serif);
+  letter-spacing: 0.01em;
+}
+
+.research-desk .video-shelf__lead h3 a,
+.research-desk .video-shelf__lead h3 a:visited {
+  color: var(--vp-c-text-1);
+  overflow-wrap: anywhere;
+  transition: color 0.15s;
+}
+
+.research-desk .video-shelf__lead h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  background: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.research-desk .video-shelf__lead:hover h3 a {
+  color: var(--vp-c-brand-1);
+}
+
+.research-desk .video-shelf__lead-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.research-desk .video-shelf__cta {
+  color: var(--vp-c-brand-1);
+  font-weight: 500;
+  transition: transform 0.18s;
+}
+
+.research-desk .video-shelf__lead:hover .video-shelf__cta {
+  transform: translateX(3px);
+}
+
+.research-desk .video-shelf__rel {
+  position: relative;
+  z-index: 1;
+  color: var(--vp-c-text-3);
+}
+
+.research-desk .video-shelf__rel a,
+.research-desk .video-shelf__rel a:visited {
+  color: var(--vp-c-text-2);
+  border-bottom: 1px solid var(--desk-card-line);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.research-desk .video-shelf__rel a:hover {
+  color: var(--vp-c-brand-1);
+  border-bottom-color: var(--vp-c-brand-1);
 }
 
 .research-desk .video-shelf__thumb {
@@ -4087,6 +4250,26 @@
   height: 42px;
   border-radius: 50%;
   background: color-mix(in srgb, var(--vp-c-bg) 94%, transparent);
+  transition: transform 0.18s;
+}
+
+.research-desk .video-shelf__lead:hover .video-shelf__play,
+.research-desk .video-shelf__card > a:hover .video-shelf__play {
+  transform: scale(1.06);
+}
+
+@media (max-width: 1023px) {
+  .research-desk .video-shelf__lead {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+
+  .research-desk .video-shelf__lead-body {
+    padding: 18px 22px;
+  }
+
+  .research-desk .video-shelf__lead h3 {
+    font-size: 19px;
+  }
 }
 
 .research-desk .video-shelf__play::after {
@@ -4160,7 +4343,8 @@
 
   .research-desk .sec-head h1,
   .research-desk .sec-head h2,
-  .research-desk .sec-head .count {
+  .research-desk .sec-head .count,
+  .research-desk .sec-head .more {
     padding-bottom: 6px;
   }
 
@@ -4201,13 +4385,52 @@
     margin-top: 56px;
   }
 
+  .research-desk .video-shelf--featured {
+    margin-top: 4px;
+    margin-bottom: 12px;
+  }
+
   .research-desk .video-shelf--empty {
     margin-top: 0;
   }
 
+  .research-desk .video-shelf--featured .video-shelf__grid,
+  .research-desk .video-shelf__featured {
+    padding-top: 18px;
+  }
+
+  .research-desk .video-shelf--pair .video-shelf__grid,
   .research-desk .video-shelf__grid {
     grid-template-columns: 1fr;
     gap: 26px;
+  }
+
+  .research-desk .video-shelf__lead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .research-desk .video-shelf__lead .video-shelf__thumb {
+    height: auto;
+    min-height: 0;
+  }
+
+  .research-desk .video-shelf__lead-body {
+    padding: 16px 16px 18px;
+    border-left: 0;
+    border-top: 1px solid var(--desk-card-line-soft);
+  }
+
+  .research-desk .video-shelf__lead-meta .sep {
+    display: none;
+  }
+
+  .research-desk .video-shelf__lead h3 {
+    margin-top: 10px;
+    font-size: 18.5px;
+  }
+
+  .research-desk .video-shelf__lead-foot {
+    margin-top: 12px;
   }
 }
 
