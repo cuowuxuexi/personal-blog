@@ -81,5 +81,6 @@ docs/public/html/report-<slug>/
 | `report-ant/` | Anthropic研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 | `report-002415-sz/` | 海康威视研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 | `report-300750-sz/` | 宁德时代研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
+| `report-000858-sz/` | 五粮液研报（七页）；行业见 `blog-meta.json`；`/投资/` 研报段入口 |
 
 最后更新：2026-11-22
